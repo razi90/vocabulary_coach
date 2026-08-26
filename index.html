@@ -19,6 +19,8 @@
     <nav class="tabs" id="tabs">
       <button class="tab active" data-view="home">Start</button>
       <button class="tab" data-view="browse">Vokabeln</button>
+      <button class="tab" data-view="conj">Verben</button>
+      <button class="tab" data-view="grammar">Grammatik</button>
       <button class="tab" data-view="stats">Statistik</button>
     </nav>
     <div class="streak" id="streakBadge" title="Tagesserie">🔥 <span id="streakCount">0</span></div>
@@ -47,6 +49,11 @@
         </div>
       </div>
 
+      <div class="direction-toggle" id="directionToggle">
+        <button class="dir-btn active" data-dir="es-de">🇪🇸 → 🇩🇪 Español–Deutsch</button>
+        <button class="dir-btn" data-dir="de-es">🇩🇪 → 🇪🇸 Deutsch–Español</button>
+      </div>
+
       <div class="ring-wrap">
         <svg viewBox="0 0 120 120" class="ring">
           <circle cx="60" cy="60" r="52" class="ring-bg"/>
@@ -60,6 +67,7 @@
 
       <button class="btn-primary btn-huge" id="startSessionBtn">Sitzung starten</button>
       <p class="hint" id="sessionHint">Karteikarten &middot; Multiple Choice &middot; Tippen</p>
+      <button class="btn-secondary" id="keepLearningBtn" hidden>Trotzdem weiterlernen</button>
 
       <div class="goal-row">
         <label for="dailyGoal">Tagesziel</label>
@@ -120,6 +128,7 @@
           <button class="btn-primary" id="typeCheckBtn">Prüfen</button>
         </div>
 
+        <button class="btn-primary btn-huge" id="sessionContinueBtn" hidden style="margin-top: 16px;">Weiter</button>
       </div>
     </section>
 
@@ -129,9 +138,9 @@
         <div class="done-emoji">🎉</div>
         <h2>Sitzung abgeschlossen!</h2>
         <div class="done-stats">
-          <div><strong id="doneReviewed">0</strong><span>Karten geübt</span></div>
+          <div><strong id="doneReviewed">0</strong><span id="doneReviewedLabel">Karten geübt</span></div>
           <div><strong id="doneAccuracy">0%</strong><span>Genauigkeit</span></div>
-          <div><strong id="doneStreak">0</strong><span>Serie</span></div>
+          <div id="doneStreakBlock"><strong id="doneStreak">0</strong><span>Serie</span></div>
         </div>
         <button class="btn-primary btn-huge" id="doneContinueBtn">Weiter</button>
       </div>
@@ -145,6 +154,85 @@
         <select id="browseLevel"><option value="">Alle Stufen</option></select>
       </div>
       <div class="browse-list" id="browseList"></div>
+    </section>
+
+    <!-- ================= KONJUGATION: Übersicht ================= -->
+    <section id="view-conj" class="view">
+      <h2 class="section-title">Konjugationstrainer</h2>
+
+      <div class="conj-lookup">
+        <label for="conjVerbSelect" class="conj-group-label">Nachschlagen</label>
+        <select id="conjVerbSelect"></select>
+        <div class="conj-table" id="conjTable"></div>
+      </div>
+
+      <div class="conj-group-label" style="margin-top: 26px;">Zeiten üben</div>
+      <div class="chip-row" id="tenseChips"></div>
+
+      <div class="conj-group-label">Verben</div>
+      <div class="chip-row" id="verbsetChips">
+        <button class="chip active" data-set="irregular">Unregelmäßig</button>
+        <button class="chip" data-set="regular">Regelmäßig</button>
+        <button class="chip" data-set="all">Alle</button>
+      </div>
+
+      <button class="btn-primary btn-huge" id="startConjBtn" style="margin-top: 20px;">Konjugation üben</button>
+      <p class="hint" id="conjHint"></p>
+    </section>
+
+    <!-- ================= KONJUGATION: Drill ================= -->
+    <section id="view-conjsession" class="view">
+      <div class="session-top">
+        <button class="icon-btn" id="exitConjBtn" aria-label="Beenden">✕</button>
+        <div class="session-progress">
+          <div class="session-progress-bar" id="conjProgressBar"></div>
+        </div>
+        <div class="session-counter"><span id="conjIdx">0</span>/<span id="conjTotal">0</span></div>
+      </div>
+
+      <div class="mode-panel">
+        <span class="pos-badge" id="conjTenseLabel"></span>
+        <div class="conj-infinitive" id="conjInfinitive"></div>
+        <div class="conj-person" id="conjPersonLabel"></div>
+        <div class="conj-drill-explanation" id="conjDrillExplanation"></div>
+        <input type="text" id="conjInput" class="type-input" placeholder="Form eintippen (Akzente optional) …" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <div class="type-feedback" id="conjFeedback"></div>
+        <button class="btn-primary" id="conjCheckBtn">Prüfen</button>
+        <button class="btn-primary btn-huge" id="conjContinueBtn" hidden style="margin-top: 10px;">Weiter</button>
+        <div class="conj-score" id="conjScore"></div>
+      </div>
+    </section>
+
+    <!-- ================= GRAMMATIK: Übersicht ================= -->
+    <section id="view-grammar" class="view">
+      <h2 class="section-title">Grammatiktrainer</h2>
+      <p class="hint" style="margin-bottom: 16px;">Lückentexte zu typischen Stolperfallen — jede Frage hat eine eindeutig richtige Antwort.</p>
+
+      <div class="conj-group-label">Kategorie</div>
+      <div class="chip-row" id="grammarCategoryChips"></div>
+      <div class="conj-tense-explanation" id="grammarCategoryExplanation" style="margin-top: 10px;"></div>
+
+      <button class="btn-primary btn-huge" id="startGrammarBtn" style="margin-top: 20px;">Grammatik üben</button>
+    </section>
+
+    <!-- ================= GRAMMATIK: Drill ================= -->
+    <section id="view-grammarsession" class="view">
+      <div class="session-top">
+        <button class="icon-btn" id="exitGrammarBtn" aria-label="Beenden">✕</button>
+        <div class="session-progress">
+          <div class="session-progress-bar" id="grammarProgressBar"></div>
+        </div>
+        <div class="session-counter"><span id="grammarIdx">0</span>/<span id="grammarTotal">0</span></div>
+      </div>
+
+      <div class="mode-panel">
+        <span class="pos-badge" id="grammarCategoryLabel"></span>
+        <div class="grammar-prompt" id="grammarPrompt"></div>
+        <div class="mc-grid" id="grammarGrid"></div>
+        <div class="conj-drill-explanation" id="grammarExplanation"></div>
+        <button class="btn-primary btn-huge" id="grammarContinueBtn" hidden style="margin-top: 10px;">Weiter</button>
+        <div class="conj-score" id="grammarScore"></div>
+      </div>
     </section>
 
     <!-- ================= STATS ================= -->
@@ -173,6 +261,50 @@
       <h3 class="section-title small">Reifegrad</h3>
       <div class="maturity-bar" id="maturityBar"></div>
       <div class="maturity-legend" id="maturityLegend"></div>
+
+      <h3 class="section-title small">Konjugation</h3>
+      <div class="stats-grid">
+        <div class="stats-card">
+          <div class="stats-card-num" id="conjStatAttempts">0</div>
+          <div class="stats-card-label">Versuche gesamt</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-card-num" id="conjStatAccuracy">0%</div>
+          <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+        </div>
+      </div>
+      <div class="conj-stats-sub" id="conjStatsSub" hidden>
+        <h4 class="conj-stats-subtitle">Häufige Fehler</h4>
+        <div class="conj-log-list" id="conjMistakesList"></div>
+        <h4 class="conj-stats-subtitle">Letzte Versuche</h4>
+        <div class="conj-log-list" id="conjRecentList"></div>
+      </div>
+      <p class="empty-state" id="conjStatsEmpty" style="display:none;">Noch keine Konjugationsübung gemacht.</p>
+
+      <h3 class="section-title small">Grammatik</h3>
+      <div class="stats-grid">
+        <div class="stats-card">
+          <div class="stats-card-num" id="grammarStatAttempts">0</div>
+          <div class="stats-card-label">Versuche gesamt</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-card-num" id="grammarStatAccuracy">0%</div>
+          <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+        </div>
+      </div>
+      <div class="conj-stats-sub" id="grammarStatsSub" hidden>
+        <h4 class="conj-stats-subtitle">Häufige Fehler</h4>
+        <div class="conj-log-list" id="grammarMistakesList"></div>
+        <h4 class="conj-stats-subtitle">Letzte Versuche</h4>
+        <div class="conj-log-list" id="grammarRecentList"></div>
+      </div>
+      <p class="empty-state" id="grammarStatsEmpty" style="display:none;">Noch keine Grammatikübung gemacht.</p>
+
+      <h3 class="section-title small">Daten exportieren</h3>
+      <p class="hint" style="margin-bottom: 12px;">Verknüpfe eine Datei einmalig — danach wird dein Fortschritt automatisch bei jeder Änderung hineingeschrieben, ganz ohne erneuten Klick. Ideal, um sie einer KI für gezielte Übungen zu geben.</p>
+      <button class="btn-secondary" id="connectSyncBtn" style="margin: 0 0 8px;">Datei verknüpfen (automatisch)</button>
+      <div class="sync-status" id="syncStatus"></div>
+      <button class="btn-secondary" id="exportDataBtn" style="margin: 10px 0 0;">Einmalig exportieren (JSON-Download)</button>
     </section>
 
   </main>
@@ -180,6 +312,8 @@
 
 <script src="src/deck.js"></script>
 <script src="src/srs.js"></script>
+<script src="src/conjugate.js"></script>
+<script src="src/grammar.js"></script>
 <script src="src/app.js"></script>
 </body>
 </html>

@@ -20,6 +20,14 @@
       newIntroducedOn: {},     // "YYYY-MM-DD" -> count neuer Karten eingeführt
       lastActiveDay: null,
       streak: 0,
+      direction: "es-de",      // "es-de" oder "de-es"
+      newCapOverrideDay: null,  // "YYYY-MM-DD" -> Tageslimit für neue Karten an diesem Tag aufgehoben
+      conjCards: {},           // "infinitiv|zeit|person" -> { attempts, correct, wrongCount, lastResult, lastAt }
+      conjLog: {},              // "YYYY-MM-DD" -> { reviewed, correct }
+      conjRecent: [],           // letzte Konjugationsversuche, neueste zuerst
+      grammarCards: {},        // Item-ID -> { attempts, correct, wrongCount, lastResult, lastAt }
+      grammarLog: {},           // "YYYY-MM-DD" -> { reviewed, correct }
+      grammarRecent: [],        // letzte Grammatikversuche, neueste zuerst
     };
   }
   function migrate(s) {
@@ -28,6 +36,14 @@
     s.newIntroducedOn = s.newIntroducedOn || {};
     s.dailyGoal = s.dailyGoal || 20;
     s.streak = s.streak || 0;
+    s.direction = s.direction || "es-de";
+    s.newCapOverrideDay = s.newCapOverrideDay || null;
+    s.conjCards = s.conjCards || {};
+    s.conjLog = s.conjLog || {};
+    s.conjRecent = s.conjRecent || [];
+    s.grammarCards = s.grammarCards || {};
+    s.grammarLog = s.grammarLog || {};
+    s.grammarRecent = s.grammarRecent || [];
     return s;
   }
   let state = loadState();
@@ -36,7 +52,23 @@
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* Speicher voll o.ä. */ }
+      writeSyncFile();
     }, 150);
+  }
+
+  // ---------- Automatische Dateisynchronisierung (File System Access API) ----------
+  let syncFileHandle = null;
+  function exportPayload() {
+    return { exportedAt: new Date().toISOString(), deckVersion: DECK.length, state };
+  }
+  async function writeSyncFile() {
+    if (!syncFileHandle) return;
+    try {
+      if ((await syncFileHandle.queryPermission({ mode: "readwrite" })) !== "granted") return;
+      const writable = await syncFileHandle.createWritable();
+      await writable.write(JSON.stringify(exportPayload(), null, 2));
+      await writable.close();
+    } catch (e) { /* Handle verloren, Berechtigung entzogen o.ä. – stillschweigend überspringen */ }
   }
 
   function ensureCard(id) {
@@ -44,18 +76,21 @@
     return state.cards[id];
   }
 
-  const NEW_PER_DAY_CAP = 12;
-
   function cardsDueNow(now = Date.now()) {
     return DECK.filter((d) => {
       const c = state.cards[d.es];
       return c && c.state !== "new" && c.due <= now;
     });
   }
+  function allFreshCards() {
+    return DECK.filter((d) => !state.cards[d.es] || state.cards[d.es].state === "new");
+  }
+  // Tageslimit für neue Karten entspricht dem Tagesziel, kann aber per Klick aufgehoben werden.
   function cardsNewAvailable() {
+    const fresh = allFreshCards();
+    if (state.newCapOverrideDay === todayKey()) return fresh;
     const introducedToday = state.newIntroducedOn[todayKey()] || 0;
-    const remainingCap = Math.max(0, NEW_PER_DAY_CAP - introducedToday);
-    const fresh = DECK.filter((d) => !state.cards[d.es] || state.cards[d.es].state === "new");
+    const remainingCap = Math.max(0, state.dailyGoal - introducedToday);
     return fresh.slice(0, remainingCap);
   }
   function learnedCount() {
@@ -95,8 +130,10 @@
     Object.entries(views).forEach(([k, el]) => el.classList.toggle("active", k === name));
     tabs.forEach((t) => t.classList.toggle("active", t.dataset.view === name));
     if (name === "browse") renderBrowse();
-    if (name === "stats") renderStats();
+    if (name === "stats") { renderStats(); renderSyncStatus(); }
     if (name === "home") renderHome();
+    if (name === "conj") renderConjOverview();
+    if (name === "grammar") renderGrammarOverview();
   }
   tabs.forEach((t) => t.addEventListener("click", () => showView(t.dataset.view)));
 
@@ -113,6 +150,8 @@
     el("totalCount").textContent = DECK.length;
     el("streakCount").textContent = state.streak;
 
+    document.querySelectorAll(".dir-btn").forEach((b) => b.classList.toggle("active", b.dataset.dir === state.direction));
+
     const goal = state.dailyGoal;
     const doneToday = (state.log[todayKey()] || { reviewed: 0 }).reviewed;
     const pct = Math.min(1, doneToday / goal);
@@ -124,22 +163,41 @@
     el("dailyGoalDisplay").textContent = goal;
 
     const startBtn = el("startSessionBtn");
+    const moreWordsWaiting = allFreshCards().length > fresh;
+    const keepLearningBtn = el("keepLearningBtn");
     if (due + fresh === 0) {
       startBtn.disabled = true;
       startBtn.textContent = "Alles erledigt für heute ✓";
-      el("sessionHint").textContent = "Komm morgen für neue Wiederholungen wieder.";
+      el("sessionHint").textContent = moreWordsWaiting
+        ? "Tageslimit für neue Wörter erreicht."
+        : "Komm morgen für neue Wiederholungen wieder.";
+      keepLearningBtn.hidden = !moreWordsWaiting;
     } else {
       startBtn.disabled = false;
       startBtn.textContent = "Sitzung starten";
       el("sessionHint").textContent = `${due} fällig, ${fresh} neu · Karteikarten · Multiple Choice · Tippen`;
+      keepLearningBtn.hidden = true;
     }
   }
+  el("keepLearningBtn").addEventListener("click", () => {
+    state.newCapOverrideDay = todayKey();
+    save();
+    renderHome();
+  });
 
   el("dailyGoal").addEventListener("input", (e) => {
     state.dailyGoal = Number(e.target.value);
     el("dailyGoalDisplay").textContent = state.dailyGoal;
     el("dailyGoalNum").textContent = state.dailyGoal;
     save();
+  });
+
+  document.querySelectorAll(".dir-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.direction = btn.dataset.dir;
+      save();
+      renderHome();
+    });
   });
 
   // ---------- Session ----------
@@ -181,7 +239,9 @@
   }
   el("startSessionBtn").addEventListener("click", startSession);
   el("exitSessionBtn").addEventListener("click", () => { session = null; showView("home"); });
-  el("doneContinueBtn").addEventListener("click", () => showView("home"));
+
+  let doneReturnView = "home";
+  el("doneContinueBtn").addEventListener("click", () => showView(doneReturnView));
 
   function currentItem() { return session.queue[session.idx]; }
 
@@ -194,6 +254,7 @@
     el("sessionProgressBar").style.width = `${(session.idx / session.queue.length) * 100}%`;
 
     ["flip", "mc", "type"].forEach((m) => el(`mode-${m}`).hidden = m !== item.mode);
+    el("sessionContinueBtn").hidden = true;
 
     if (item.mode === "flip") renderFlip(d);
     else if (item.mode === "mc") renderMC(d);
@@ -206,14 +267,22 @@
   let flipped = false;
 
   function renderFlip(d) {
+    // Transition kurz abschalten, damit das Zurückklappen der vorigen Karte
+    // nicht animiert wird und dabei die neue Antwort schon durchscheint.
+    flashcardInner.style.transition = "none";
     flipped = false;
     flashcardEl.classList.remove("flipped");
-    el("flipPos").textContent = posLabel(d.pos);
-    el("flipFront").textContent = d.es;
-    el("flipBack").textContent = germanPrimary(d.de);
+
+    const dir = state.direction;
+    el("flipPos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
+    el("flipFront").textContent = promptWord(d, dir);
+    el("flipBack").textContent = answerPrimary(d, dir);
     el("flipEx").textContent = d.ex || "";
     el("flipExDe").textContent = d.exDe || "";
     el("gradeRow").classList.add("hidden-until-flip");
+
+    void flashcardInner.offsetWidth; // Reflow erzwingen, bevor die Transition wieder aktiviert wird
+    flashcardInner.style.transition = "";
 
     const c = ensureCard(d.es);
     const preview = SRS.previewIntervals(c, { desiredRetention: 0.9, now: Date.now() });
@@ -237,15 +306,16 @@
 
   // --- Multiple Choice ---
   function renderMC(d) {
-    el("mcPos").textContent = posLabel(d.pos);
-    el("mcPrompt").textContent = d.es;
-    const correct = germanPrimary(d.de);
+    const dir = state.direction;
+    el("mcPos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
+    el("mcPrompt").textContent = promptWord(d, dir);
+    const correct = answerPrimary(d, dir);
     const distractors = shuffle(
-      DECK.filter((x) => x.es !== d.es && x.pos === d.pos).map((x) => germanPrimary(x.de))
+      DECK.filter((x) => x.es !== d.es && x.pos === d.pos).map((x) => answerPrimary(x, dir))
     );
     let options = distractors.slice(0, 3);
     if (options.length < 3) {
-      const more = shuffle(DECK.filter((x) => x.es !== d.es).map((x) => germanPrimary(x.de)))
+      const more = shuffle(DECK.filter((x) => x.es !== d.es).map((x) => answerPrimary(x, dir)))
         .filter((o) => !options.includes(o) && o !== correct);
       options = options.concat(more.slice(0, 3 - options.length));
     }
@@ -265,7 +335,9 @@
           if (o.textContent === correct) o.classList.add("correct");
           else if (o === b && !ok) o.classList.add("wrong");
         });
-        setTimeout(() => gradeCurrent(ok ? 3 : 1, ok), ok ? 500 : 900);
+        const continueBtn = el("sessionContinueBtn");
+        continueBtn.hidden = false;
+        continueBtn.onclick = () => gradeCurrent(ok ? 3 : 1, ok);
       });
       grid.appendChild(b);
     });
@@ -273,29 +345,37 @@
 
   // --- Tippen ---
   function renderType(d) {
-    el("typePos").textContent = posLabel(d.pos);
-    el("typePrompt").textContent = d.es;
+    const dir = state.direction;
+    el("typePos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
+    el("typePrompt").textContent = promptWord(d, dir);
     const input = el("typeInput");
     input.value = "";
     input.className = "type-input";
     input.disabled = false;
+    input.placeholder = dir === "es-de" ? "Deutsche Übersetzung eintippen …" : "Übersetzung auf Spanisch eintippen …";
     el("typeFeedback").textContent = "";
     el("typeFeedback").className = "type-feedback";
     setTimeout(() => input.focus(), 50);
 
     const check = () => {
-      const answers = d.de.split("|").map(norm);
+      const answers = answerAlternatives(d, dir);
       const ok = answers.includes(norm(input.value));
       input.className = "type-input " + (ok ? "correct" : "wrong");
       const fb = el("typeFeedback");
       fb.className = "type-feedback " + (ok ? "correct" : "wrong");
-      fb.textContent = ok ? "Richtig!" : `Richtig wäre: ${germanPrimary(d.de)}`;
+      fb.textContent = ok ? "Richtig!" : `Richtig wäre: ${answerPrimary(d, dir)}`;
       el("typeCheckBtn").disabled = true;
       input.disabled = true;
-      setTimeout(() => gradeCurrent(ok ? 3 : 1, ok), ok ? 500 : 1400);
+      const continueBtn = el("sessionContinueBtn");
+      continueBtn.hidden = false;
+      continueBtn.onclick = () => gradeCurrent(ok ? 3 : 1, ok);
     };
     el("typeCheckBtn").onclick = check;
-    input.onkeydown = (e) => { if (e.key === "Enter") check(); };
+    input.onkeydown = (e) => {
+      if (e.key !== "Enter") return;
+      if (!input.disabled) check();
+      else el("sessionContinueBtn").click();
+    };
     el("typeCheckBtn").disabled = false;
   }
   function norm(s) {
@@ -303,9 +383,20 @@
   }
 
   function posLabel(pos) {
-    return { noun: "Substantiv", verb: "Verb", adj: "Adjektiv", adv: "Adverb", phrase: "Redewendung" }[pos] || pos;
+    return {
+      noun: "Substantiv", verb: "Verb", adj: "Adjektiv", adv: "Adverb", phrase: "Redewendung",
+      num: "Zahlwort", pron: "Pronomen", prep: "Präposition", conj: "Konjunktion",
+    }[pos] || pos;
   }
   function germanPrimary(de) { return de.split("|")[0]; }
+
+  // ---------- Übungsrichtung ----------
+  function promptWord(d, dir) { return dir === "es-de" ? d.es : germanPrimary(d.de); }
+  function answerPrimary(d, dir) { return dir === "es-de" ? germanPrimary(d.de) : d.es; }
+  function answerAlternatives(d, dir) {
+    return dir === "es-de" ? d.de.split("|").map(norm) : [norm(d.es)];
+  }
+  function promptFlag(dir) { return dir === "es-de" ? "🇪🇸" : "🇩🇪"; }
 
   function gradeCurrent(grade, correct) {
     const item = currentItem();
@@ -333,10 +424,328 @@
   function finishSession() {
     const reviewed = session ? session.reviewed : 0;
     const correct = session ? session.correct : 0;
+    el("doneReviewedLabel").textContent = "Karten geübt";
     el("doneReviewed").textContent = reviewed;
     el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
     el("doneStreak").textContent = state.streak;
+    el("doneStreakBlock").hidden = false;
     session = null;
+    doneReturnView = "home";
+    showView("done");
+  }
+
+  // ---------- Konjugation ----------
+  let conjSelectedTenses = new Set(["presente", "indefinido"]);
+  let conjVerbSet = "irregular";
+  let conjSession = null; // { queue: [{infinitive, tense, person}], idx, reviewed, correct }
+
+  function conjVerbsForSet(setName) {
+    if (setName === "irregular") return CONJUGATE.ALL_VERBS.filter((v) => v.irregular);
+    if (setName === "regular") return CONJUGATE.ALL_VERBS.filter((v) => !v.irregular);
+    return CONJUGATE.ALL_VERBS;
+  }
+
+  function renderConjTable(infinitive) {
+    const verb = CONJUGATE.findVerb(infinitive);
+    if (!verb) { el("conjTable").innerHTML = ""; return; }
+    const forms = CONJUGATE.getForms(verb);
+    el("conjTable").innerHTML = CONJUGATE.TENSES.map((t) => `
+      <div class="conj-tense-block">
+        <div class="conj-tense-title">${CONJUGATE.TENSE_LABELS[t]}</div>
+        <div class="conj-tense-explanation">${CONJUGATE.TENSE_EXPLANATIONS[t]}</div>
+        <div class="conj-pattern">${verb.irregular
+          ? "⚠️ Unregelmäßig — weicht vom Muster ab, am besten auswendig lernen."
+          : CONJUGATE.regularPatternExplanation(verb.infinitive, verb.group, t)}</div>
+        <div class="conj-form-grid">
+          ${forms[t].map((f, i) => `<div class="conj-form-row"><span class="conj-form-person">${CONJUGATE.PERSON_LABELS[i]}</span><span class="conj-form-value">${f}</span></div>`).join("")}
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function renderConjOverview() {
+    const select = el("conjVerbSelect");
+    if (!select.dataset.filled) {
+      const optGroup = (label, verbs) => {
+        const og = document.createElement("optgroup");
+        og.label = label;
+        verbs.forEach((v) => {
+          const o = document.createElement("option");
+          o.value = v.infinitive;
+          o.textContent = `${v.infinitive} — ${v.de}`;
+          og.appendChild(o);
+        });
+        return og;
+      };
+      select.appendChild(optGroup("Unregelmäßig", CONJUGATE.ALL_VERBS.filter((v) => v.irregular)));
+      select.appendChild(optGroup("Regelmäßig", CONJUGATE.ALL_VERBS.filter((v) => !v.irregular)));
+      select.dataset.filled = "1";
+      select.addEventListener("change", (e) => renderConjTable(e.target.value));
+    }
+    renderConjTable(select.value || select.options[0]?.value);
+
+    const tenseChips = el("tenseChips");
+    if (!tenseChips.dataset.filled) {
+      tenseChips.innerHTML = CONJUGATE.TENSES.map((t) =>
+        `<button class="chip" data-tense="${t}" title="${CONJUGATE.TENSE_EXPLANATIONS[t].replace(/"/g, "&quot;")}">${CONJUGATE.TENSE_LABELS[t]}</button>`
+      ).join("");
+      tenseChips.addEventListener("click", (e) => {
+        const btn = e.target.closest(".chip");
+        if (!btn) return;
+        const t = btn.dataset.tense;
+        if (conjSelectedTenses.has(t)) conjSelectedTenses.delete(t);
+        else conjSelectedTenses.add(t);
+        renderConjOverview();
+      });
+      tenseChips.dataset.filled = "1";
+    }
+    document.querySelectorAll("#tenseChips .chip").forEach((c) => c.classList.toggle("active", conjSelectedTenses.has(c.dataset.tense)));
+    document.querySelectorAll("#verbsetChips .chip").forEach((c) => c.classList.toggle("active", c.dataset.set === conjVerbSet));
+
+    const verbCount = conjVerbsForSet(conjVerbSet).length;
+    const tenseCount = conjSelectedTenses.size;
+    el("conjHint").textContent = tenseCount === 0
+      ? "Wähle mindestens eine Zeit aus."
+      : `${verbCount} Verben × ${tenseCount} Zeit(en) × 6 Personen`;
+    el("startConjBtn").disabled = tenseCount === 0;
+  }
+  el("verbsetChips").addEventListener("click", (e) => {
+    const btn = e.target.closest(".chip");
+    if (!btn) return;
+    conjVerbSet = btn.dataset.set;
+    renderConjOverview();
+  });
+
+  function buildConjQueue() {
+    const verbs = shuffle([...conjVerbsForSet(conjVerbSet)]);
+    const tenses = [...conjSelectedTenses];
+    const items = [];
+    verbs.forEach((v) => {
+      tenses.forEach((t) => {
+        for (let p = 0; p < 6; p++) items.push({ infinitive: v.infinitive, tense: t, person: p });
+      });
+    });
+    return shuffle(items).slice(0, 40);
+  }
+
+  el("startConjBtn").addEventListener("click", () => {
+    const queue = buildConjQueue();
+    if (!queue.length) return;
+    conjSession = { queue, idx: 0, reviewed: 0, correct: 0 };
+    showView("conjsession");
+    renderConjItem();
+  });
+  el("exitConjBtn").addEventListener("click", () => { conjSession = null; showView("conj"); });
+
+  function renderConjItem() {
+    if (!conjSession || conjSession.idx >= conjSession.queue.length) return finishConjSession();
+    const item = conjSession.queue[conjSession.idx];
+    const verb = CONJUGATE.findVerb(item.infinitive);
+    el("conjIdx").textContent = conjSession.idx + 1;
+    el("conjTotal").textContent = conjSession.queue.length;
+    el("conjProgressBar").style.width = `${(conjSession.idx / conjSession.queue.length) * 100}%`;
+    el("conjTenseLabel").textContent = CONJUGATE.TENSE_LABELS[item.tense];
+    el("conjInfinitive").textContent = verb.infinitive;
+    el("conjPersonLabel").textContent = CONJUGATE.PERSON_LABELS[item.person];
+    const pattern = verb.irregular
+      ? "⚠️ Unregelmäßig — weicht vom Muster ab."
+      : CONJUGATE.regularPatternExplanation(verb.infinitive, verb.group, item.tense);
+    el("conjDrillExplanation").innerHTML = `${CONJUGATE.TENSE_EXPLANATIONS[item.tense]}<br><strong>${pattern}</strong>`;
+    const input = el("conjInput");
+    input.value = "";
+    input.className = "type-input";
+    input.disabled = false;
+    el("conjFeedback").textContent = "";
+    el("conjFeedback").className = "type-feedback";
+    el("conjScore").textContent = `${conjSession.correct} / ${conjSession.reviewed} richtig`;
+    el("conjCheckBtn").disabled = false;
+    el("conjCheckBtn").hidden = false;
+    el("conjContinueBtn").hidden = true;
+    setTimeout(() => input.focus(), 50);
+  }
+
+  function logConjAttempt(item, ok, correctForm, typed) {
+    const key = `${item.infinitive}|${item.tense}|${item.person}`;
+    if (!state.conjCards[key]) state.conjCards[key] = { attempts: 0, correct: 0, wrongCount: 0, lastResult: null, lastAt: 0 };
+    const c = state.conjCards[key];
+    c.attempts += 1;
+    if (ok) c.correct += 1; else c.wrongCount += 1;
+    c.lastResult = ok ? "correct" : "wrong";
+    c.lastAt = Date.now();
+
+    const k = todayKey();
+    if (!state.conjLog[k]) state.conjLog[k] = { reviewed: 0, correct: 0 };
+    state.conjLog[k].reviewed += 1;
+    if (ok) state.conjLog[k].correct += 1;
+
+    state.conjRecent.unshift({
+      infinitive: item.infinitive, tense: item.tense, person: item.person,
+      correct: ok, typed: typed.trim(), correctForm, at: Date.now(),
+    });
+    if (state.conjRecent.length > 50) state.conjRecent.length = 50;
+    save();
+  }
+
+  function checkConjAnswer() {
+    if (!conjSession) return;
+    const item = conjSession.queue[conjSession.idx];
+    const verb = CONJUGATE.findVerb(item.infinitive);
+    const forms = CONJUGATE.getForms(verb);
+    const correctForm = forms[item.tense][item.person];
+    const input = el("conjInput");
+    const ok = norm(input.value) === norm(correctForm);
+    input.className = "type-input " + (ok ? "correct" : "wrong");
+    const fb = el("conjFeedback");
+    fb.className = "type-feedback " + (ok ? "correct" : "wrong");
+    fb.textContent = ok ? "¡Correcto!" : `Richtig wäre: ${correctForm}`;
+    input.disabled = true;
+    el("conjCheckBtn").disabled = true;
+    el("conjCheckBtn").hidden = true;
+    logConjAttempt(item, ok, correctForm, input.value);
+    conjSession.reviewed += 1;
+    if (ok) conjSession.correct += 1;
+    if (!ok && !item.requeued) {
+      const reinsertAt = Math.min(conjSession.queue.length, conjSession.idx + 3 + Math.floor(Math.random() * 3));
+      conjSession.queue.splice(reinsertAt, 0, { ...item, requeued: true });
+    }
+    el("conjContinueBtn").hidden = false;
+  }
+  el("conjCheckBtn").addEventListener("click", checkConjAnswer);
+  el("conjContinueBtn").addEventListener("click", () => { conjSession.idx += 1; renderConjItem(); });
+  el("conjInput").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    if (!el("conjCheckBtn").disabled && !el("conjCheckBtn").hidden) checkConjAnswer();
+    else el("conjContinueBtn").click();
+  });
+
+  function finishConjSession() {
+    const reviewed = conjSession ? conjSession.reviewed : 0;
+    const correct = conjSession ? conjSession.correct : 0;
+    el("doneReviewedLabel").textContent = "Formen geübt";
+    el("doneReviewed").textContent = reviewed;
+    el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
+    el("doneStreakBlock").hidden = true;
+    conjSession = null;
+    doneReturnView = "conj";
+    showView("done");
+  }
+
+  // ---------- Grammatik ----------
+  let grammarSelectedCategories = new Set(GRAMMAR.CATEGORIES);
+  let grammarSession = null; // { queue: [item...], idx, reviewed, correct }
+
+  function renderGrammarOverview() {
+    const chips = el("grammarCategoryChips");
+    if (!chips.dataset.filled) {
+      chips.innerHTML = GRAMMAR.CATEGORIES.map((c) =>
+        `<button class="chip" data-cat="${c}" title="${GRAMMAR.CATEGORY_EXPLANATIONS[c].replace(/"/g, "&quot;")}">${GRAMMAR.CATEGORY_LABELS[c]}</button>`
+      ).join("");
+      chips.addEventListener("click", (e) => {
+        const btn = e.target.closest(".chip");
+        if (!btn) return;
+        const c = btn.dataset.cat;
+        if (grammarSelectedCategories.has(c)) grammarSelectedCategories.delete(c);
+        else grammarSelectedCategories.add(c);
+        renderGrammarOverview();
+      });
+      chips.dataset.filled = "1";
+    }
+    document.querySelectorAll("#grammarCategoryChips .chip").forEach((c) => c.classList.toggle("active", grammarSelectedCategories.has(c.dataset.cat)));
+
+    const selected = [...grammarSelectedCategories];
+    el("grammarCategoryExplanation").innerHTML = selected.length
+      ? selected.map((c) => `<strong>${GRAMMAR.CATEGORY_LABELS[c]}:</strong> ${GRAMMAR.CATEGORY_EXPLANATIONS[c]}`).join("<br><br>")
+      : "Wähle mindestens eine Kategorie aus.";
+
+    const itemCount = selected.reduce((sum, c) => sum + GRAMMAR.itemsForCategory(c).length, 0);
+    el("startGrammarBtn").disabled = itemCount === 0;
+  }
+
+  function buildGrammarQueue() {
+    const items = [];
+    grammarSelectedCategories.forEach((c) => items.push(...GRAMMAR.itemsForCategory(c)));
+    return shuffle([...items]).slice(0, 40);
+  }
+
+  el("startGrammarBtn").addEventListener("click", () => {
+    const queue = buildGrammarQueue();
+    if (!queue.length) return;
+    grammarSession = { queue, idx: 0, reviewed: 0, correct: 0 };
+    showView("grammarsession");
+    renderGrammarItem();
+  });
+  el("exitGrammarBtn").addEventListener("click", () => { grammarSession = null; showView("grammar"); });
+
+  function logGrammarAttempt(item, ok, chosen) {
+    if (!state.grammarCards[item.id]) state.grammarCards[item.id] = { attempts: 0, correct: 0, wrongCount: 0, lastResult: null, lastAt: 0 };
+    const c = state.grammarCards[item.id];
+    c.attempts += 1;
+    if (ok) c.correct += 1; else c.wrongCount += 1;
+    c.lastResult = ok ? "correct" : "wrong";
+    c.lastAt = Date.now();
+
+    const k = todayKey();
+    if (!state.grammarLog[k]) state.grammarLog[k] = { reviewed: 0, correct: 0 };
+    state.grammarLog[k].reviewed += 1;
+    if (ok) state.grammarLog[k].correct += 1;
+
+    state.grammarRecent.unshift({
+      id: item.id, category: item.category, prompt: item.prompt,
+      correct: ok, chosen, answer: item.answer, at: Date.now(),
+    });
+    if (state.grammarRecent.length > 50) state.grammarRecent.length = 50;
+    save();
+  }
+
+  function renderGrammarItem() {
+    if (!grammarSession || grammarSession.idx >= grammarSession.queue.length) return finishGrammarSession();
+    const item = grammarSession.queue[grammarSession.idx];
+    el("grammarIdx").textContent = grammarSession.idx + 1;
+    el("grammarTotal").textContent = grammarSession.queue.length;
+    el("grammarProgressBar").style.width = `${(grammarSession.idx / grammarSession.queue.length) * 100}%`;
+    el("grammarCategoryLabel").textContent = GRAMMAR.CATEGORY_LABELS[item.category];
+    el("grammarPrompt").textContent = item.prompt;
+    el("grammarExplanation").textContent = "";
+    el("grammarScore").textContent = `${grammarSession.correct} / ${grammarSession.reviewed} richtig`;
+    el("grammarContinueBtn").hidden = true;
+
+    const grid = el("grammarGrid");
+    grid.innerHTML = "";
+    shuffle([...item.options]).forEach((opt) => {
+      const b = document.createElement("button");
+      b.className = "mc-option";
+      b.textContent = opt;
+      b.addEventListener("click", () => {
+        const ok = opt === item.answer;
+        grid.querySelectorAll(".mc-option").forEach((o) => {
+          o.classList.add("disabled");
+          if (o.textContent === item.answer) o.classList.add("correct");
+          else if (o === b && !ok) o.classList.add("wrong");
+        });
+        el("grammarExplanation").textContent = item.explanation;
+        logGrammarAttempt(item, ok, opt);
+        grammarSession.reviewed += 1;
+        if (ok) grammarSession.correct += 1;
+        if (!ok && !item.requeued) {
+          const reinsertAt = Math.min(grammarSession.queue.length, grammarSession.idx + 3 + Math.floor(Math.random() * 3));
+          grammarSession.queue.splice(reinsertAt, 0, { ...item, requeued: true });
+        }
+        el("grammarContinueBtn").hidden = false;
+      });
+      grid.appendChild(b);
+    });
+  }
+  el("grammarContinueBtn").addEventListener("click", () => { grammarSession.idx += 1; renderGrammarItem(); });
+
+  function finishGrammarSession() {
+    const reviewed = grammarSession ? grammarSession.reviewed : 0;
+    const correct = grammarSession ? grammarSession.correct : 0;
+    el("doneReviewedLabel").textContent = "Fragen beantwortet";
+    el("doneReviewed").textContent = reviewed;
+    el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
+    el("doneStreakBlock").hidden = true;
+    grammarSession = null;
+    doneReturnView = "grammar";
     showView("done");
   }
 
@@ -424,12 +833,152 @@
     el("maturityLegend").innerHTML = Object.entries(buckets).map(([k, v]) =>
       `<span><span class="dot" style="background:${colors[k]}"></span>${labels[k]} (${v})</span>`
     ).join("");
+
+    renderConjStats();
+    renderGrammarStats();
+  }
+
+  function personShort(personIdx) {
+    return ["yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas"][personIdx];
+  }
+  function timeAgo(ts) {
+    const mins = Math.round((Date.now() - ts) / 60000);
+    if (mins < 1) return "gerade eben";
+    if (mins < 60) return `vor ${mins} Min.`;
+    const hours = Math.round(mins / 60);
+    if (hours < 24) return `vor ${hours} Std.`;
+    return `vor ${Math.round(hours / 24)} Tg.`;
+  }
+
+  function renderConjStats() {
+    const totalConjReviews = Object.values(state.conjLog).reduce((s, d) => s + d.reviewed, 0);
+    el("conjStatAttempts").textContent = totalConjReviews;
+
+    const last30 = last30Keys();
+    let rev = 0, cor = 0;
+    last30.forEach((k) => { const d = state.conjLog[k]; if (d) { rev += d.reviewed; cor += d.correct; } });
+    el("conjStatAccuracy").textContent = rev ? `${Math.round((cor / rev) * 100)}%` : "–";
+
+    const hasData = state.conjRecent.length > 0;
+    el("conjStatsSub").hidden = !hasData;
+    el("conjStatsEmpty").style.display = hasData ? "none" : "block";
+    if (!hasData) return;
+
+    const mistakes = Object.entries(state.conjCards)
+      .filter(([, c]) => c.wrongCount > 0)
+      .sort((a, b) => b[1].wrongCount - a[1].wrongCount)
+      .slice(0, 8);
+    el("conjMistakesList").innerHTML = mistakes.length
+      ? mistakes.map(([key, c]) => {
+          const [infinitive, tense, person] = key.split("|");
+          const form = CONJUGATE.getForms(CONJUGATE.findVerb(infinitive))[tense][Number(person)];
+          return `<div class="conj-log-row">
+            <span class="conj-log-icon wrong">✗</span>
+            <span class="conj-log-main"><strong>${form}</strong> <span class="conj-log-dim">(${infinitive}, ${CONJUGATE.TENSE_LABELS[tense]}, ${personShort(Number(person))})</span></span>
+            <span class="conj-log-count">${c.wrongCount}×</span>
+          </div>`;
+        }).join("")
+      : `<div class="conj-log-empty">Bisher keine wiederholten Fehler — gut gemacht!</div>`;
+
+    el("conjRecentList").innerHTML = state.conjRecent.slice(0, 15).map((r) => {
+      const icon = r.correct ? `<span class="conj-log-icon correct">✓</span>` : `<span class="conj-log-icon wrong">✗</span>`;
+      const detail = r.correct
+        ? `<strong>${r.correctForm}</strong> <span class="conj-log-dim">(${r.infinitive}, ${CONJUGATE.TENSE_LABELS[r.tense]}, ${personShort(r.person)})</span>`
+        : `<strong>${r.correctForm}</strong> <span class="conj-log-dim">(${r.infinitive}, ${CONJUGATE.TENSE_LABELS[r.tense]}, ${personShort(r.person)}) — du: „${r.typed || "–"}“</span>`;
+      return `<div class="conj-log-row">${icon}<span class="conj-log-main">${detail}</span><span class="conj-log-time">${timeAgo(r.at)}</span></div>`;
+    }).join("");
   }
   function last30Keys() {
     const out = [];
     for (let i = 29; i >= 0; i--) out.push(todayKey(Date.now() - i * DAY));
     return out;
   }
+
+  function renderGrammarStats() {
+    const totalReviews = Object.values(state.grammarLog).reduce((s, d) => s + d.reviewed, 0);
+    el("grammarStatAttempts").textContent = totalReviews;
+
+    const last30 = last30Keys();
+    let rev = 0, cor = 0;
+    last30.forEach((k) => { const d = state.grammarLog[k]; if (d) { rev += d.reviewed; cor += d.correct; } });
+    el("grammarStatAccuracy").textContent = rev ? `${Math.round((cor / rev) * 100)}%` : "–";
+
+    const hasData = state.grammarRecent.length > 0;
+    el("grammarStatsSub").hidden = !hasData;
+    el("grammarStatsEmpty").style.display = hasData ? "none" : "block";
+    if (!hasData) return;
+
+    const mistakes = Object.entries(state.grammarCards)
+      .filter(([, c]) => c.wrongCount > 0)
+      .sort((a, b) => b[1].wrongCount - a[1].wrongCount)
+      .slice(0, 8);
+    el("grammarMistakesList").innerHTML = mistakes.length
+      ? mistakes.map(([id, c]) => {
+          const item = GRAMMAR.findItem(id);
+          return `<div class="conj-log-row">
+            <span class="conj-log-icon wrong">✗</span>
+            <span class="conj-log-main">${item.prompt.replace("___", `<strong>${item.answer}</strong>`)} <span class="conj-log-dim">(${GRAMMAR.CATEGORY_LABELS[item.category]})</span></span>
+            <span class="conj-log-count">${c.wrongCount}×</span>
+          </div>`;
+        }).join("")
+      : `<div class="conj-log-empty">Bisher keine wiederholten Fehler — gut gemacht!</div>`;
+
+    el("grammarRecentList").innerHTML = state.grammarRecent.slice(0, 15).map((r) => {
+      const icon = r.correct ? `<span class="conj-log-icon correct">✓</span>` : `<span class="conj-log-icon wrong">✗</span>`;
+      const filled = r.prompt.replace("___", `<strong>${r.answer}</strong>`);
+      const detail = r.correct
+        ? `${filled} <span class="conj-log-dim">(${GRAMMAR.CATEGORY_LABELS[r.category]})</span>`
+        : `${filled} <span class="conj-log-dim">(${GRAMMAR.CATEGORY_LABELS[r.category]}) — du: „${r.chosen}“</span>`;
+      return `<div class="conj-log-row">${icon}<span class="conj-log-main">${detail}</span><span class="conj-log-time">${timeAgo(r.at)}</span></div>`;
+    }).join("");
+  }
+
+  el("exportDataBtn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(exportPayload(), null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `vokabeltrainer-fortschritt-${todayKey()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  function renderSyncStatus() {
+    const status = el("syncStatus");
+    if (!window.showSaveFilePicker) {
+      status.textContent = "Automatische Synchronisierung wird von diesem Browser nicht unterstützt (nur Chrome/Edge). Nutze den manuellen Export.";
+      el("connectSyncBtn").disabled = true;
+      return;
+    }
+    status.textContent = syncFileHandle
+      ? `Verknüpft mit „${syncFileHandle.name}“ — wird bei jeder Änderung automatisch aktualisiert.`
+      : "Noch keine Datei verknüpft.";
+  }
+
+  el("connectSyncBtn").addEventListener("click", async () => {
+    if (!window.showSaveFilePicker) return;
+    try {
+      syncFileHandle = await window.showSaveFilePicker({
+        suggestedName: "vokabeltrainer-fortschritt.json",
+        types: [{ description: "JSON", accept: { "application/json": [".json"] } }],
+      });
+      await writeSyncFile();
+      renderSyncStatus();
+    } catch (e) { /* Nutzer hat den Dialog abgebrochen */ }
+  });
+
+  // Enter drückt den sichtbaren "Weiter"-Button, auch wenn das Eingabefeld
+  // gerade deaktiviert ist (deaktivierte Inputs erhalten keine eigenen Key-Events mehr).
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    ["sessionContinueBtn", "conjContinueBtn", "grammarContinueBtn"].some((id) => {
+      const btn = el(id);
+      if (btn && !btn.hidden) { btn.click(); return true; }
+      return false;
+    });
+  });
 
   // ---------- Start ----------
   renderHome();
