@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: voco-db
+    environment:
+      POSTGRES_USER: voco
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-voco}
+      POSTGRES_DB: voco
+    # Kein veröffentlichter Port: die Datenbank ist nur im Docker-Netz
+    # erreichbar. Für psql: docker compose exec db psql -U voco -d voco
+    volumes:
+      - voco-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U voco -d voco"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: vokabeltrainer
+    environment:
+      PGHOST: db
+      PGUSER: voco
+      PGPASSWORD: ${POSTGRES_PASSWORD:-voco}
+      PGDATABASE: voco
+    # Ohne Anmeldung – deshalb nur localhost. Für Zugriff vom Handy siehe README.
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Wird nicht mitgestartet, sondern vom MCP-Client als Kindprozess
+  # aufgerufen (siehe mcp/run.sh). Läuft im selben Netz wie die Datenbank.
+  mcp:
+    build: .
+    profiles: ["mcp"]
+    environment:
+      PGHOST: db
+      PGUSER: voco
+      PGPASSWORD: ${POSTGRES_PASSWORD:-voco}
+      PGDATABASE: voco
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["node", "mcp/server.js"]
+
+volumes:
+  voco-db:

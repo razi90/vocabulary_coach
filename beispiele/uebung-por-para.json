@@ -1,0 +1,29 @@
+{
+  "schema": "vocab-coach/exercise-pack@1",
+  "id": "por-para-grund-vs-zweck",
+  "title": "Por vs. para — Grund und Zweck",
+  "description": "Sechs Sätze, die genau die Unterscheidung erzwingen, plus zwei freie Übersetzungen.",
+  "createdBy": "Claude",
+  "createdAt": "2026-08-26T12:00:00Z",
+  "focus": ["por_para"],
+  "items": [
+    { "type": "choice", "prompt": "Lo hice ___ ti, porque me lo pediste.", "options": ["por", "para"],
+      "answer": "por", "explanation": "Beweggrund („deinetwegen“) → por. Wäre es der Empfänger, stünde para." },
+    { "type": "choice", "prompt": "Compré este regalo ___ ti.", "options": ["por", "para"],
+      "answer": "para", "explanation": "Empfänger des Geschenks → para." },
+    { "type": "choice", "prompt": "Estudio mucho ___ aprobar el examen.", "options": ["por", "para"],
+      "answer": "para", "explanation": "Zweck der Handlung → para." },
+    { "type": "choice", "prompt": "No salimos ___ la lluvia.", "options": ["por", "para"],
+      "answer": "por", "explanation": "Ursache („wegen des Regens“) → por." },
+    { "type": "cloze", "prompt": "Te llamo ___ preguntarte una cosa.", "answer": "para",
+      "explanation": "Zweck des Anrufs → para. Merksatz: para + Infinitiv heißt fast immer „um zu“." },
+    { "type": "cloze", "prompt": "Me multaron ___ conducir demasiado rápido.", "answer": "por",
+      "explanation": "Grund der Strafe → por. por + Infinitiv heißt „weil“, nicht „um zu“." },
+    { "type": "translate", "prompt": "Ich arbeite, um Geld zu verdienen.", "answer": "Trabajo para ganar dinero",
+      "alternatives": ["Trabajo para ganar dinero."], "from": "de", "to": "es",
+      "explanation": "Zweck → para ganar." },
+    { "type": "translate", "prompt": "Danke für deine Hilfe.", "answer": "Gracias por tu ayuda",
+      "alternatives": ["Gracias por tu ayuda."], "from": "de", "to": "es",
+      "explanation": "Grund des Danks → por." }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "vokabeltrainer",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Spanisch-Vokabeltrainer mit Postgres-Backend und MCP-Zugang für Agenten",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/server.js",
+    "mcp": "node mcp/server.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.1"
+  },
+  "engines": { "node": ">=20" }
+}

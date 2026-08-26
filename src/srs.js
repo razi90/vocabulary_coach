@@ -54,7 +54,6 @@ const SRS = (() => {
     return {
       id, state: "new", stability: 0, difficulty: W.initD[3],
       due: 0, lastReview: 0, reps: 0, lapses: 0, step: 0,
-      history: [],           // { t, grade, mode }
     };
   }
 
@@ -65,7 +64,7 @@ const SRS = (() => {
   function review(card, grade, opts = {}) {
     const now = opts.now ?? Date.now();
     const retention = opts.desiredRetention ?? 0.9;
-    const c = { ...card, history: [...card.history, { t: now, grade, mode: opts.mode || "?" }] };
+    const c = { ...card };
     c.reps += 1;
 
     if (c.state === "new" || c.state === "learning" || c.state === "relearning") {

@@ -4,86 +4,80 @@
 
   const STORAGE_KEY = "voco.es.v1";
   const DAY = SRS.DAY;
-  const todayKey = (t = Date.now()) => new Date(t).toISOString().slice(0, 10);
+  // Lokales Datum, nicht UTC: toISOString() würde den Tageswechsel in
+  // Mitteleuropa auf 01:00/02:00 Ortszeit legen und Serie sowie Tagesziel verschieben.
+  const todayKey = (t = Date.now()) => {
+    const d = new Date(t);
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  };
+  /** Tage zwischen zwei Tagesschlüsseln, unabhängig von Sommer-/Winterzeit. */
+  function daysBetween(fromKey, toKey) {
+    const [ay, am, ad] = fromKey.split("-").map(Number);
+    const [by, bm, bd] = toKey.split("-").map(Number);
+    return Math.round((Date.UTC(by, bm - 1, bd) - Date.UTC(ay, am - 1, ad)) / DAY);
+  }
 
-  // ---------- State laden/speichern ----------
-  function loadState() {
-    let raw = null;
-    try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { /* privater Modus etc. */ }
-    if (raw) {
-      try { return migrate(JSON.parse(raw)); } catch (e) { /* fällt durch auf Default */ }
-    }
-    return {
-      cards: {},              // id -> SRS-Karte
-      dailyGoal: 20,
-      log: {},                 // "YYYY-MM-DD" -> { reviewed, correct }
-      newIntroducedOn: {},     // "YYYY-MM-DD" -> count neuer Karten eingeführt
-      lastActiveDay: null,
-      streak: 0,
-      direction: "es-de",      // "es-de" oder "de-es"
-      newCapOverrideDay: null,  // "YYYY-MM-DD" -> Tageslimit für neue Karten an diesem Tag aufgehoben
-      conjCards: {},           // "infinitiv|zeit|person" -> { attempts, correct, wrongCount, lastResult, lastAt }
-      conjLog: {},              // "YYYY-MM-DD" -> { reviewed, correct }
-      conjRecent: [],           // letzte Konjugationsversuche, neueste zuerst
-      grammarCards: {},        // Item-ID -> { attempts, correct, wrongCount, lastResult, lastAt }
-      grammarLog: {},           // "YYYY-MM-DD" -> { reviewed, correct }
-      grammarRecent: [],        // letzte Grammatikversuche, neueste zuerst
-    };
-  }
-  function migrate(s) {
-    s.cards = s.cards || {};
-    s.log = s.log || {};
-    s.newIntroducedOn = s.newIntroducedOn || {};
-    s.dailyGoal = s.dailyGoal || 20;
-    s.streak = s.streak || 0;
-    s.direction = s.direction || "es-de";
-    s.newCapOverrideDay = s.newCapOverrideDay || null;
-    s.conjCards = s.conjCards || {};
-    s.conjLog = s.conjLog || {};
-    s.conjRecent = s.conjRecent || [];
-    s.grammarCards = s.grammarCards || {};
-    s.grammarLog = s.grammarLog || {};
-    s.grammarRecent = s.grammarRecent || [];
-    return s;
-  }
-  let state = loadState();
+  const esc = TEXT.esc;
+  const norm = TEXT.norm;
+
+  // ---------- Zustand ----------
+  /* Die Wahrheit liegt in IndexedDB (siehe store.js). Hier stehen nur die
+     Arbeitskopien: `state` für Einstellungen und Aggregate, `cards` für den
+     Lernstand je Vokabel. Die Historie steht ausschließlich im Ereignislog. */
+  let state = null;
+  let cards = {};
+  let events = [];
+  let packs = [];
+
   let saveTimer = null;
-  function save() {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* Speicher voll o.ä. */ }
-      writeSyncFile();
-    }, 150);
-  }
+  const dirtyCards = new Set();
 
-  // ---------- Automatische Dateisynchronisierung (File System Access API) ----------
-  let syncFileHandle = null;
-  function exportPayload() {
-    return { exportedAt: new Date().toISOString(), deckVersion: DECK.length, state };
+  async function persist() {
+    await STORE.saveState(state);
+    const pending = [...dirtyCards];
+    dirtyCards.clear();
+    await Promise.all(pending.map((id) => cards[id] && STORE.saveCard(cards[id])));
   }
-  async function writeSyncFile() {
-    if (!syncFileHandle) return;
+  function save(cardId) {
+    if (cardId) dirtyCards.add(cardId);
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { saveTimer = null; persist(); }, 150);
+  }
+  function flushSave() {
+    if (saveTimer === null) return;
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    persist();
+  }
+  window.addEventListener("pagehide", flushSave);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushSave();
+  });
+
+  /** Jede Antwort wird als Ereignis protokolliert – das ist die Historie. */
+  async function logEvent(event) {
+    const stored = { t: Date.now(), ...event };
+    events.push(stored);
     try {
-      if ((await syncFileHandle.queryPermission({ mode: "readwrite" })) !== "granted") return;
-      const writable = await syncFileHandle.createWritable();
-      await writable.write(JSON.stringify(exportPayload(), null, 2));
-      await writable.close();
-    } catch (e) { /* Handle verloren, Berechtigung entzogen o.ä. – stillschweigend überspringen */ }
+      const seq = await STORE.appendEvent(stored);
+      stored.seq = seq;
+    } catch (e) { /* Protokoll darf die Übung nie blockieren */ }
   }
 
   function ensureCard(id) {
-    if (!state.cards[id]) state.cards[id] = SRS.newCard(id);
-    return state.cards[id];
+    if (!cards[id]) cards[id] = SRS.newCard(id);
+    return cards[id];
   }
 
   function cardsDueNow(now = Date.now()) {
     return DECK.filter((d) => {
-      const c = state.cards[d.es];
+      const c = cards[d.es];
       return c && c.state !== "new" && c.due <= now;
     });
   }
   function allFreshCards() {
-    return DECK.filter((d) => !state.cards[d.es] || state.cards[d.es].state === "new");
+    return DECK.filter((d) => !cards[d.es] || cards[d.es].state === "new");
   }
   // Tageslimit für neue Karten entspricht dem Tagesziel, kann aber per Klick aufgehoben werden.
   function cardsNewAvailable() {
@@ -94,10 +88,10 @@
     return fresh.slice(0, remainingCap);
   }
   function learnedCount() {
-    return Object.values(state.cards).filter((c) => c.state !== "new").length;
+    return Object.values(cards).filter((c) => c.state !== "new").length;
   }
   function matureCount() {
-    return Object.values(state.cards).filter((c) => c.state === "review" && c.stability >= 21).length;
+    return Object.values(cards).filter((c) => c.state === "review" && c.stability >= 21).length;
   }
 
   // ---------- Streak ----------
@@ -105,7 +99,7 @@
     const today = todayKey();
     if (state.lastActiveDay === today) return;
     if (state.lastActiveDay) {
-      const gapDays = Math.round((new Date(today) - new Date(state.lastActiveDay)) / DAY);
+      const gapDays = daysBetween(state.lastActiveDay, today);
       state.streak = gapDays === 1 ? state.streak + 1 : 1;
     } else {
       state.streak = 1;
@@ -126,16 +120,38 @@
   document.querySelectorAll(".view").forEach((v) => (views[v.id.replace("view-", "")] = v));
   const tabs = document.querySelectorAll(".tab");
 
+  let currentView = "home";
   function showView(name) {
+    currentView = name;
     Object.entries(views).forEach(([k, el]) => el.classList.toggle("active", k === name));
-    tabs.forEach((t) => t.classList.toggle("active", t.dataset.view === name));
+    tabs.forEach((t) => {
+      const on = t.dataset.view === name;
+      t.classList.toggle("active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
     if (name === "browse") renderBrowse();
     if (name === "stats") { renderStats(); renderSyncStatus(); }
     if (name === "home") renderHome();
     if (name === "conj") renderConjOverview();
     if (name === "grammar") renderGrammarOverview();
+    if (name === "packs") { el("tab-packs").classList.remove("tab-alert"); renderPacks(); }
   }
-  tabs.forEach((t) => t.addEventListener("click", () => showView(t.dataset.view)));
+  /** Läuft gerade eine Übung, die durch den Wechsel verloren ginge? */
+  function activeDrill() {
+    if (session && session.reviewed >= 0 && currentView === "session") return () => { session = null; };
+    if (conjSession && currentView === "conjsession") return () => { conjSession = null; };
+    if (grammarSession && currentView === "grammarsession") return () => { grammarSession = null; };
+    if (packSession && currentView === "packsession") return () => { packSession = null; };
+    return null;
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => {
+    const abandon = activeDrill();
+    if (abandon) {
+      if (!confirm("Die laufende Übung wird beendet. Fortfahren?")) return;
+      abandon();
+    }
+    showView(t.dataset.view);
+  }));
 
   // ---------- Home ----------
   const el = (id) => document.getElementById(id);
@@ -213,7 +229,7 @@
   }
 
   function pickMode(deckItem) {
-    const c = state.cards[deckItem.es];
+    const c = cards[deckItem.es];
     if (!c || c.state === "new") return "flip";           // Neues immer erst als Karteikarte
     const strength = SRS.strength(c);
     if (strength < 0.35) return Math.random() < 0.5 ? "flip" : "mc";
@@ -238,12 +254,19 @@
     renderCurrentCard();
   }
   el("startSessionBtn").addEventListener("click", startSession);
-  el("exitSessionBtn").addEventListener("click", () => { session = null; showView("home"); });
+  el("exitSessionBtn").addEventListener("click", () => { session = null; el("sessionContinueBtn").hidden = true; showView("home"); });
 
   let doneReturnView = "home";
   el("doneContinueBtn").addEventListener("click", () => showView(doneReturnView));
 
-  function currentItem() { return session.queue[session.idx]; }
+  /** Balkenbreite, die nie kleiner wird – Nachzügler verlängern die Queue. */
+  function progressWidth(sess) {
+    const pct = sess.queue.length ? (sess.idx / sess.queue.length) * 100 : 0;
+    sess.barPct = Math.max(sess.barPct || 0, pct);
+    return `${sess.barPct}%`;
+  }
+
+  function currentItem() { return (session && session.queue[session.idx]) || null; }
 
   function renderCurrentCard() {
     if (!session || session.idx >= session.queue.length) return finishSession();
@@ -251,7 +274,7 @@
     const d = item.deck;
     el("sessionIdx").textContent = session.idx + 1;
     el("sessionTotal").textContent = session.queue.length;
-    el("sessionProgressBar").style.width = `${(session.idx / session.queue.length) * 100}%`;
+    el("sessionProgressBar").style.width = progressWidth(session);
 
     ["flip", "mc", "type"].forEach((m) => el(`mode-${m}`).hidden = m !== item.mode);
     el("sessionContinueBtn").hidden = true;
@@ -275,6 +298,12 @@
 
     const dir = state.direction;
     el("flipPos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
+    // Sprache je Seite auszeichnen, damit Screenreader spanische Wörter
+    // nicht mit deutscher Aussprache vorlesen.
+    const promptLang = dir === "es-de" ? "es" : "de";
+    const answerLang = dir === "es-de" ? "de" : "es";
+    el("flipFront").lang = promptLang;
+    el("flipBack").lang = answerLang;
     el("flipFront").textContent = promptWord(d, dir);
     el("flipBack").textContent = answerPrimary(d, dir);
     el("flipEx").textContent = d.ex || "";
@@ -291,11 +320,13 @@
     el("iv3").textContent = preview[3];
     el("iv4").textContent = preview[4];
   }
-  flashcardEl.addEventListener("click", () => {
+  function toggleFlip() {
     flipped = !flipped;
     flashcardEl.classList.toggle("flipped", flipped);
+    flashcardEl.setAttribute("aria-pressed", flipped ? "true" : "false");
     el("gradeRow").classList.toggle("hidden-until-flip", !flipped);
-  });
+  }
+  flashcardEl.addEventListener("click", toggleFlip);
   document.querySelectorAll(".grade-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       if (!flipped) return;
@@ -308,35 +339,47 @@
   function renderMC(d) {
     const dir = state.direction;
     el("mcPos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
+    el("mcPrompt").lang = dir === "es-de" ? "es" : "de";
     el("mcPrompt").textContent = promptWord(d, dir);
     const correct = answerPrimary(d, dir);
-    const distractors = shuffle(
-      DECK.filter((x) => x.es !== d.es && x.pos === d.pos).map((x) => answerPrimary(x, dir))
-    );
-    let options = distractors.slice(0, 3);
-    if (options.length < 3) {
-      const more = shuffle(DECK.filter((x) => x.es !== d.es).map((x) => answerPrimary(x, dir)))
-        .filter((o) => !options.includes(o) && o !== correct);
-      options = options.concat(more.slice(0, 3 - options.length));
-    }
+    // Ablenker dürfen weder mit der Antwort noch mit einem gleichwertigen
+    // Synonym übereinstimmen – sonst stünden zwei richtige Optionen zur Wahl
+    // und die Deduplizierung ließe am Ende nur drei Felder übrig.
+    const accepted = new Set(answerAlternatives(d, dir));
+    const collect = (candidates, into) => {
+      for (const x of shuffle([...candidates])) {
+        if (into.length >= 3) break;
+        const opt = answerPrimary(x, dir);
+        if (accepted.has(norm(opt)) || into.includes(opt)) continue;
+        into.push(opt);
+      }
+      return into;
+    };
+    let options = collect(DECK.filter((x) => x.es !== d.es && x.pos === d.pos), []);
+    if (options.length < 3) collect(DECK.filter((x) => x.es !== d.es), options);
     options.push(correct);
-    options = shuffle([...new Set(options)]);
+    options = shuffle(options);
 
     const grid = el("mcGrid");
     grid.innerHTML = "";
-    options.forEach((opt) => {
+    options.forEach((opt, i) => {
       const b = document.createElement("button");
       b.className = "mc-option";
-      b.textContent = opt;
+      b.dataset.answer = opt;
+      b.innerHTML = `<span class="mc-key">${i + 1}</span>`;
+      b.append(document.createTextNode(opt));
+      if (dir === "de-es") b.lang = "es";
       b.addEventListener("click", () => {
-        const ok = opt === correct;
+        lastTyped = opt;
+        const ok = accepted.has(norm(opt));
         grid.querySelectorAll(".mc-option").forEach((o) => {
           o.classList.add("disabled");
-          if (o.textContent === correct) o.classList.add("correct");
+          if (o.dataset.answer === correct) o.classList.add("correct");
           else if (o === b && !ok) o.classList.add("wrong");
         });
         const continueBtn = el("sessionContinueBtn");
         continueBtn.hidden = false;
+        continueBtn.focus();
         continueBtn.onclick = () => gradeCurrent(ok ? 3 : 1, ok);
       });
       grid.appendChild(b);
@@ -347,41 +390,50 @@
   function renderType(d) {
     const dir = state.direction;
     el("typePos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
+    el("typePrompt").lang = dir === "es-de" ? "es" : "de";
     el("typePrompt").textContent = promptWord(d, dir);
     const input = el("typeInput");
     input.value = "";
     input.className = "type-input";
     input.disabled = false;
     input.placeholder = dir === "es-de" ? "Deutsche Übersetzung eintippen …" : "Übersetzung auf Spanisch eintippen …";
+    input.lang = dir === "es-de" ? "de" : "es";
     el("typeFeedback").textContent = "";
     el("typeFeedback").className = "type-feedback";
     setTimeout(() => input.focus(), 50);
 
     const check = () => {
-      const answers = answerAlternatives(d, dir);
-      const ok = answers.includes(norm(input.value));
+      const verdict = judgeAnswer(input.value, answerAlternatives(d, dir));
+      lastTyped = input.value.trim();
+      const ok = verdict !== "wrong";
+      const solution = answerPrimary(d, dir);
       input.className = "type-input " + (ok ? "correct" : "wrong");
       const fb = el("typeFeedback");
       fb.className = "type-feedback " + (ok ? "correct" : "wrong");
-      fb.textContent = ok ? "Richtig!" : `Richtig wäre: ${answerPrimary(d, dir)}`;
+      fb.textContent = verdict === "exact" ? "Richtig!"
+        : verdict === "close" ? `Fast — richtig geschrieben: ${solution}`
+        : `Richtig wäre: ${solution}`;
       el("typeCheckBtn").disabled = true;
       input.disabled = true;
       const continueBtn = el("sessionContinueBtn");
       continueBtn.hidden = false;
-      continueBtn.onclick = () => gradeCurrent(ok ? 3 : 1, ok);
+      continueBtn.focus();
+      // Ein Tippfehler zählt als "schwer", nicht als vergessen.
+      const grade = verdict === "exact" ? 3 : verdict === "close" ? 2 : 1;
+      continueBtn.onclick = () => gradeCurrent(grade, ok);
     };
     el("typeCheckBtn").onclick = check;
     input.onkeydown = (e) => {
       if (e.key !== "Enter") return;
-      if (!input.disabled) check();
-      else el("sessionContinueBtn").click();
+      // Nicht weiterreichen: der globale Enter-Handler würde sonst denselben
+      // Tastendruck nutzen, um sofort "Weiter" zu drücken – die Rückmeldung
+      // wäre nie zu sehen.
+      e.preventDefault();
+      e.stopPropagation();
+      check();
     };
     el("typeCheckBtn").disabled = false;
   }
-  function norm(s) {
-    return s.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-  }
-
   function posLabel(pos) {
     return {
       noun: "Substantiv", verb: "Verb", adj: "Adjektiv", adv: "Adverb", phrase: "Redewendung",
@@ -393,10 +445,33 @@
   // ---------- Übungsrichtung ----------
   function promptWord(d, dir) { return dir === "es-de" ? d.es : germanPrimary(d.de); }
   function answerPrimary(d, dir) { return dir === "es-de" ? germanPrimary(d.de) : d.es; }
-  function answerAlternatives(d, dir) {
-    return dir === "es-de" ? d.de.split("|").map(norm) : [norm(d.es)];
-  }
   function promptFlag(dir) { return dir === "es-de" ? "🇪🇸" : "🇩🇪"; }
+
+  /* Mehrere spanische Wörter teilen sich dieselbe deutsche Hauptbedeutung
+     ("gehen" -> ir/andar/caminar). In Richtung DE->ES sind deshalb alle
+     Wörter derselben Gruppe richtig, sonst würde eine korrekte Antwort als
+     Fehler gewertet und die Karte zurückgestuft. */
+  let synonymIndex = null;
+  function germanGroup(d) {
+    if (!synonymIndex) {
+      synonymIndex = new Map();
+      DECK.forEach((x) => {
+        const key = norm(germanPrimary(x.de));
+        if (!synonymIndex.has(key)) synonymIndex.set(key, []);
+        synonymIndex.get(key).push(x);
+      });
+    }
+    return synonymIndex.get(norm(germanPrimary(d.de))) || [d];
+  }
+  function answerAlternatives(d, dir) {
+    return dir === "es-de"
+      ? d.de.split("|").map(norm)
+      : germanGroup(d).map((x) => norm(x.es));
+  }
+
+  const judgeAnswer = (typed, alternatives) => TEXT.judge(typed, alternatives);
+
+  let lastTyped = null;   // letzte Eingabe, fürs Protokoll
 
   function gradeCurrent(grade, correct) {
     const item = currentItem();
@@ -405,11 +480,16 @@
       const k = todayKey();
       state.newIntroducedOn[k] = (state.newIntroducedOn[k] || 0) + 1;
     }
-    state.cards[item.deck.es] = SRS.review(c, grade, { desiredRetention: 0.9, mode: item.mode });
+    cards[item.deck.es] = SRS.review(c, grade, { desiredRetention: 0.9, mode: item.mode });
     session.reviewed += 1;
     if (correct) session.correct += 1;
     logReview(correct);
-    save();
+    logEvent({
+      kind: "vocab", id: item.deck.es, dir: state.direction, mode: item.mode,
+      grade, ok: correct, typed: lastTyped, expected: answerPrimary(item.deck, state.direction),
+    });
+    lastTyped = null;
+    save(item.deck.es);
 
     // "Nochmal" -> Karte später in derselben Sitzung erneut einstreuen
     if (grade === 1 && !item.requeued) {
@@ -429,13 +509,15 @@
     el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
     el("doneStreak").textContent = state.streak;
     el("doneStreakBlock").hidden = false;
+    el("sessionContinueBtn").hidden = true;
     session = null;
+    syncFolder();
     doneReturnView = "home";
     showView("done");
   }
 
   // ---------- Konjugation ----------
-  let conjSelectedTenses = new Set(["presente", "indefinido"]);
+  let conjSelectedTenses = new Set();
   let conjVerbSet = "irregular";
   let conjSession = null; // { queue: [{infinitive, tense, person}], idx, reviewed, correct }
 
@@ -495,6 +577,8 @@
         const t = btn.dataset.tense;
         if (conjSelectedTenses.has(t)) conjSelectedTenses.delete(t);
         else conjSelectedTenses.add(t);
+        state.conjTenses = [...conjSelectedTenses];
+        save();
         renderConjOverview();
       });
       tenseChips.dataset.filled = "1";
@@ -513,29 +597,48 @@
     const btn = e.target.closest(".chip");
     if (!btn) return;
     conjVerbSet = btn.dataset.set;
+    state.conjVerbSet = conjVerbSet;
+    save();
     renderConjOverview();
   });
 
+  /**
+   * Priorität einer Übungseinheit. Fehler wiegen am schwersten, danach kommt
+   * Ungeübtes, danach lange nicht Wiederholtes. Der Zufallsanteil sorgt dafür,
+   * dass nicht jede Sitzung mit derselben Liste beginnt.
+   */
+  function practiceScore(rec) {
+    if (!rec || !rec.attempts) return 4 + Math.random() * 2;      // noch nie geübt
+    const wrongWeight = rec.wrongCount * 2 + (rec.lastResult === "wrong" ? 3 : 0);
+    const staleness = Math.min(3, (Date.now() - rec.lastAt) / (7 * DAY));
+    const mastered = rec.wrongCount === 0 ? -2 : 0;
+    return wrongWeight + staleness + mastered + Math.random() * 2;
+  }
+
   function buildConjQueue() {
-    const verbs = shuffle([...conjVerbsForSet(conjVerbSet)]);
     const tenses = [...conjSelectedTenses];
     const items = [];
-    verbs.forEach((v) => {
+    conjVerbsForSet(conjVerbSet).forEach((v) => {
       tenses.forEach((t) => {
         for (let p = 0; p < 6; p++) items.push({ infinitive: v.infinitive, tense: t, person: p });
       });
     });
-    return shuffle(items).slice(0, 40);
+    return items
+      .map((it) => ({ it, score: practiceScore(state.conjCards[`${it.infinitive}|${it.tense}|${it.person}`]) }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 40)
+      .map((x) => x.it);
   }
 
   el("startConjBtn").addEventListener("click", () => {
-    const queue = buildConjQueue();
+    const queue = shuffle(buildConjQueue());
     if (!queue.length) return;
     conjSession = { queue, idx: 0, reviewed: 0, correct: 0 };
+    touchStreak();
     showView("conjsession");
     renderConjItem();
   });
-  el("exitConjBtn").addEventListener("click", () => { conjSession = null; showView("conj"); });
+  el("exitConjBtn").addEventListener("click", () => { conjSession = null; el("conjContinueBtn").hidden = true; showView("conj"); });
 
   function renderConjItem() {
     if (!conjSession || conjSession.idx >= conjSession.queue.length) return finishConjSession();
@@ -543,7 +646,7 @@
     const verb = CONJUGATE.findVerb(item.infinitive);
     el("conjIdx").textContent = conjSession.idx + 1;
     el("conjTotal").textContent = conjSession.queue.length;
-    el("conjProgressBar").style.width = `${(conjSession.idx / conjSession.queue.length) * 100}%`;
+    el("conjProgressBar").style.width = progressWidth(conjSession);
     el("conjTenseLabel").textContent = CONJUGATE.TENSE_LABELS[item.tense];
     el("conjInfinitive").textContent = verb.infinitive;
     el("conjPersonLabel").textContent = CONJUGATE.PERSON_LABELS[item.person];
@@ -578,11 +681,10 @@
     state.conjLog[k].reviewed += 1;
     if (ok) state.conjLog[k].correct += 1;
 
-    state.conjRecent.unshift({
-      infinitive: item.infinitive, tense: item.tense, person: item.person,
-      correct: ok, typed: typed.trim(), correctForm, at: Date.now(),
+    logEvent({
+      kind: "conj", verb: item.infinitive, tense: item.tense, person: item.person,
+      ok, typed: typed.trim(), expected: correctForm,
     });
-    if (state.conjRecent.length > 50) state.conjRecent.length = 50;
     save();
   }
 
@@ -611,11 +713,12 @@
     el("conjContinueBtn").hidden = false;
   }
   el("conjCheckBtn").addEventListener("click", checkConjAnswer);
-  el("conjContinueBtn").addEventListener("click", () => { conjSession.idx += 1; renderConjItem(); });
+  el("conjContinueBtn").addEventListener("click", () => { if (!conjSession) return; conjSession.idx += 1; renderConjItem(); });
   el("conjInput").addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
+    e.preventDefault();
+    e.stopPropagation();   // siehe renderType: sonst prüft und blättert derselbe Enter
     if (!el("conjCheckBtn").disabled && !el("conjCheckBtn").hidden) checkConjAnswer();
-    else el("conjContinueBtn").click();
   });
 
   function finishConjSession() {
@@ -625,13 +728,15 @@
     el("doneReviewed").textContent = reviewed;
     el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
     el("doneStreakBlock").hidden = true;
+    el("conjContinueBtn").hidden = true;
     conjSession = null;
+    syncFolder();
     doneReturnView = "conj";
     showView("done");
   }
 
   // ---------- Grammatik ----------
-  let grammarSelectedCategories = new Set(GRAMMAR.CATEGORIES);
+  let grammarSelectedCategories = new Set();
   let grammarSession = null; // { queue: [item...], idx, reviewed, correct }
 
   function renderGrammarOverview() {
@@ -646,6 +751,8 @@
         const c = btn.dataset.cat;
         if (grammarSelectedCategories.has(c)) grammarSelectedCategories.delete(c);
         else grammarSelectedCategories.add(c);
+        state.grammarCategories = [...grammarSelectedCategories];
+        save();
         renderGrammarOverview();
       });
       chips.dataset.filled = "1";
@@ -664,17 +771,22 @@
   function buildGrammarQueue() {
     const items = [];
     grammarSelectedCategories.forEach((c) => items.push(...GRAMMAR.itemsForCategory(c)));
-    return shuffle([...items]).slice(0, 40);
+    return items
+      .map((it) => ({ it, score: practiceScore(state.grammarCards[it.id]) }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 40)
+      .map((x) => x.it);
   }
 
   el("startGrammarBtn").addEventListener("click", () => {
-    const queue = buildGrammarQueue();
+    const queue = shuffle(buildGrammarQueue());
     if (!queue.length) return;
     grammarSession = { queue, idx: 0, reviewed: 0, correct: 0 };
+    touchStreak();
     showView("grammarsession");
     renderGrammarItem();
   });
-  el("exitGrammarBtn").addEventListener("click", () => { grammarSession = null; showView("grammar"); });
+  el("exitGrammarBtn").addEventListener("click", () => { grammarSession = null; el("grammarContinueBtn").hidden = true; showView("grammar"); });
 
   function logGrammarAttempt(item, ok, chosen) {
     if (!state.grammarCards[item.id]) state.grammarCards[item.id] = { attempts: 0, correct: 0, wrongCount: 0, lastResult: null, lastAt: 0 };
@@ -689,11 +801,10 @@
     state.grammarLog[k].reviewed += 1;
     if (ok) state.grammarLog[k].correct += 1;
 
-    state.grammarRecent.unshift({
-      id: item.id, category: item.category, prompt: item.prompt,
-      correct: ok, chosen, answer: item.answer, at: Date.now(),
+    logEvent({
+      kind: "grammar", id: item.id, category: item.category,
+      ok, chosen, expected: item.answer,
     });
-    if (state.grammarRecent.length > 50) state.grammarRecent.length = 50;
     save();
   }
 
@@ -702,7 +813,7 @@
     const item = grammarSession.queue[grammarSession.idx];
     el("grammarIdx").textContent = grammarSession.idx + 1;
     el("grammarTotal").textContent = grammarSession.queue.length;
-    el("grammarProgressBar").style.width = `${(grammarSession.idx / grammarSession.queue.length) * 100}%`;
+    el("grammarProgressBar").style.width = progressWidth(grammarSession);
     el("grammarCategoryLabel").textContent = GRAMMAR.CATEGORY_LABELS[item.category];
     el("grammarPrompt").textContent = item.prompt;
     el("grammarExplanation").textContent = "";
@@ -735,7 +846,7 @@
       grid.appendChild(b);
     });
   }
-  el("grammarContinueBtn").addEventListener("click", () => { grammarSession.idx += 1; renderGrammarItem(); });
+  el("grammarContinueBtn").addEventListener("click", () => { if (!grammarSession) return; grammarSession.idx += 1; renderGrammarItem(); });
 
   function finishGrammarSession() {
     const reviewed = grammarSession ? grammarSession.reviewed : 0;
@@ -744,10 +855,252 @@
     el("doneReviewed").textContent = reviewed;
     el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
     el("doneStreakBlock").hidden = true;
+    el("grammarContinueBtn").hidden = true;
     grammarSession = null;
+    syncFolder();
     doneReturnView = "grammar";
     showView("done");
   }
+
+  // ---------- Übungssätze abspielen ----------
+  /* Der einzige Ablauf, der schon auf der generischen DRILL-Mechanik läuft.
+     Ein neuer Aufgabentyp braucht hier nur einen weiteren Renderer und in
+     packs.js eine Prüffunktion. */
+  let packSession = null;
+  let packLoadErrors = [];
+
+  const PACK_RENDERERS = {
+    choice(item, onAnswer) {
+      const grid = el("packGrid");
+      grid.hidden = false;
+      grid.innerHTML = "";
+      shuffle([...item.options]).forEach((opt, i) => {
+        const b = document.createElement("button");
+        b.className = "mc-option";
+        b.dataset.answer = opt;
+        b.lang = item.lang || "es";
+        b.innerHTML = `<span class="mc-key">${i + 1}</span>`;
+        b.append(document.createTextNode(opt));
+        b.addEventListener("click", () => {
+          grid.querySelectorAll(".mc-option").forEach((o) => {
+            o.classList.add("disabled");
+            if (o.dataset.answer === item.answer) o.classList.add("correct");
+            else if (o === b) o.classList.add("wrong");
+          });
+          onAnswer(PACKS.checkAnswer(item, opt), opt);
+        });
+        grid.appendChild(b);
+      });
+    },
+
+    typed(item, onAnswer) {
+      const wrap = el("packTypedWrap");
+      wrap.hidden = false;
+      const input = el("packInput");
+      input.value = "";
+      input.className = "type-input";
+      input.disabled = false;
+      input.lang = item.type === "translate" ? (item.to || "es") : (item.lang || "es");
+      input.placeholder = item.hint ? `Tipp: ${item.hint}` : "Antwort eintippen …";
+      el("packCheckBtn").disabled = false;
+      el("packCheckBtn").hidden = false;
+      setTimeout(() => input.focus(), 50);
+
+      const check = () => {
+        const verdict = PACKS.checkAnswer(item, input.value);
+        input.className = "type-input " + (verdict === "wrong" ? "wrong" : "correct");
+        input.disabled = true;
+        el("packCheckBtn").disabled = true;
+        el("packCheckBtn").hidden = true;
+        onAnswer(verdict, input.value.trim());
+      };
+      el("packCheckBtn").onclick = check;
+      input.onkeydown = (e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        e.stopPropagation();   // sonst prüft und blättert derselbe Enter
+        if (!input.disabled) check();
+      };
+    },
+  };
+  const rendererFor = (item) => (item.type === "choice" ? PACK_RENDERERS.choice : PACK_RENDERERS.typed);
+
+  function startPack(pack) {
+    const key = (it) => `${pack.id}|${pack.items.indexOf(it)}`;
+    const chosen = DRILL.select(pack.items, key, state.packCards || {}, 40);
+    packSession = DRILL.create(chosen, { meta: { packId: pack.id, title: pack.title } });
+    touchStreak();
+    showView("packsession");
+    renderPackItem();
+  }
+
+  function renderPackItem() {
+    if (DRILL.isDone(packSession)) return finishPackSession();
+    const item = DRILL.current(packSession);
+    el("packIdx").textContent = packSession.idx + 1;
+    el("packTotal").textContent = packSession.items.length;
+    el("packProgressBar").style.width = DRILL.progress(packSession);
+    el("packTypeLabel").textContent = PACKS.typeLabel(item.type);
+    el("packPrompt").textContent = item.prompt;
+    el("packPrompt").lang = item.type === "translate" ? (item.from || "de") : (item.lang || "es");
+    el("packFeedback").textContent = "";
+    el("packFeedback").className = "type-feedback";
+    el("packExplanation").textContent = "";
+    el("packContinueBtn").hidden = true;
+    el("packScore").textContent = `${packSession.correct} / ${packSession.reviewed} richtig`;
+    el("packGrid").hidden = true;
+    el("packTypedWrap").hidden = true;
+
+    rendererFor(item)(item, (verdict, given) => onPackAnswer(item, verdict, given));
+  }
+
+  function onPackAnswer(item, verdict, given) {
+    const ok = verdict !== "wrong";
+    const solution = PACKS.acceptedAnswers(item)[0];
+    const fb = el("packFeedback");
+    fb.className = "type-feedback " + (ok ? "correct" : "wrong");
+    fb.textContent = verdict === "exact" ? "Richtig!"
+      : verdict === "close" ? `Fast — richtig geschrieben: ${solution}`
+      : `Richtig wäre: ${solution}`;
+    el("packExplanation").textContent = item.explanation || "";
+
+    const packId = packSession.meta.packId;
+    const key = `${packId}|${(packs.find((p) => p.id === packId) || { items: [] }).items.indexOf(item)}`;
+    if (!state.packCards) state.packCards = {};
+    const rec = state.packCards[key] || (state.packCards[key] = { attempts: 0, correct: 0, wrongCount: 0, lastResult: null, lastAt: 0 });
+    rec.attempts += 1;
+    if (ok) rec.correct += 1; else rec.wrongCount += 1;
+    rec.lastResult = ok ? "correct" : "wrong";
+    rec.lastAt = Date.now();
+
+    const k = todayKey();
+    if (!state.packLog) state.packLog = {};
+    if (!state.packLog[k]) state.packLog[k] = { reviewed: 0, correct: 0 };
+    state.packLog[k].reviewed += 1;
+    if (ok) state.packLog[k].correct += 1;
+
+    logEvent({ kind: "pack", packId, itemType: item.type, prompt: item.prompt, ok, typed: given, expected: solution });
+    DRILL.record(packSession, ok);
+    save();
+    el("packScore").textContent = `${packSession.correct} / ${packSession.reviewed} richtig`;
+    const cont = el("packContinueBtn");
+    cont.hidden = false;
+    cont.focus();
+  }
+
+  el("packContinueBtn").addEventListener("click", () => {
+    if (!packSession) return;
+    DRILL.advance(packSession);
+    renderPackItem();
+  });
+  el("exitPackBtn").addEventListener("click", () => {
+    packSession = null;
+    el("packContinueBtn").hidden = true;
+    showView("packs");
+  });
+
+  function finishPackSession() {
+    const reviewed = packSession ? packSession.reviewed : 0;
+    el("doneReviewedLabel").textContent = "Aufgaben gelöst";
+    el("doneReviewed").textContent = reviewed;
+    el("doneAccuracy").textContent = DRILL.accuracy(packSession) == null ? "–" : `${DRILL.accuracy(packSession)}%`;
+    el("doneStreakBlock").hidden = true;
+    el("packContinueBtn").hidden = true;
+    packSession = null;
+    doneReturnView = "packs";
+    showView("done");
+    syncFolder();
+  }
+
+  function renderPacks() {
+    const list = el("packList");
+    const msg = el("packMessage");
+    const errBox = el("packErrors");
+
+    errBox.hidden = !packLoadErrors.length;
+    if (packLoadErrors.length) {
+      errBox.innerHTML = `<strong>${packLoadErrors.length} Datei(en) übersprungen:</strong><ul>` +
+        packLoadErrors.slice(0, 8).map((e) => `<li>${esc(e)}</li>`).join("") + "</ul>";
+    }
+
+    if (!packs.length) {
+      msg.hidden = false;
+      msg.innerHTML = "Noch keine Übungen. Ein Agent legt sie über das MCP-Werkzeug " +
+        "<code>create_exercise</code> an — sie erscheinen hier von selbst. " +
+        "Alternativ eine JSON-Datei importieren.";
+      list.innerHTML = "";
+      return;
+    }
+    msg.hidden = true;
+
+    list.innerHTML = packs
+      .slice()
+      .sort((a, b) => b.addedAt - a.addedAt)
+      .map((p) => {
+        const done = events.filter((e) => e.kind === "pack" && e.packId === p.id);
+        const acc = done.length ? Math.round((done.filter((e) => e.ok).length / done.length) * 100) : null;
+        const types = [...new Set(p.items.map((i) => PACKS.typeLabel(i.type)))].join(", ");
+        return `<div class="pack-card">
+          <div class="pack-card-main">
+            <div class="pack-card-title">${esc(p.title)}</div>
+            ${p.description ? `<div class="pack-card-desc">${esc(p.description)}</div>` : ""}
+            <div class="pack-card-meta">${p.items.length} Aufgaben · ${esc(types)} · von ${esc(p.createdBy)}
+              ${acc == null ? "· noch nicht geübt" : `· zuletzt ${acc} % richtig`}</div>
+          </div>
+          <div class="pack-card-actions">
+            <button class="btn-primary pack-start" data-pack="${esc(p.id)}">Üben</button>
+            <button class="icon-btn pack-delete" data-pack="${esc(p.id)}" aria-label="Übung entfernen">🗑</button>
+          </div>
+        </div>`;
+      }).join("");
+
+    list.querySelectorAll(".pack-start").forEach((b) => b.addEventListener("click", () => {
+      const pack = packs.find((p) => p.id === b.dataset.pack);
+      if (pack) startPack(pack);
+    }));
+    list.querySelectorAll(".pack-delete").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("Diese Übung aus der App entfernen? Die Datei im Ordner bleibt.")) return;
+      const target = packs.find((p) => p.id === b.dataset.pack);
+      await STORE.deletePack(b.dataset.pack, target && target.source);
+      packs = await STORE.allPacks();
+      renderPacks();
+    }));
+  }
+
+  el("reloadPacksBtn").addEventListener("click", async () => {
+    const btn = el("reloadPacksBtn");
+    btn.disabled = true;
+    btn.textContent = "Lade …";
+    try {
+      const { count, errors } = await loadPacksFromFolder();
+      const msg = el("packMessage");
+      msg.hidden = false;
+      msg.textContent = `${count} ${count === 1 ? "Übungssatz" : "Übungssätze"} gelesen` +
+        (errors.length ? `, ${errors.length} übersprungen.` : ".");
+    } finally {
+      btn.textContent = "Aus Ordner neu laden";
+      renderSyncStatus();
+    }
+  });
+
+  el("importPackInput").addEventListener("change", async (e) => {
+    const errors = [];
+    let count = 0;
+    for (const file of e.target.files) {
+      try {
+        await STORE.savePack(JSON.parse(await file.text()));
+        count += 1;
+      } catch (err) { errors.push(`${file.name}: ${err.message}`); }
+    }
+    packs = await STORE.allPacks();
+    packLoadErrors = errors;
+    renderPacks();
+    const msg = el("packMessage");
+    msg.hidden = false;
+    msg.textContent = `${count} ${count === 1 ? "Übungssatz" : "Übungssätze"} importiert` +
+      (errors.length ? `, ${errors.length} abgelehnt.` : ".");
+    e.target.value = "";
+  });
 
   // ---------- Browse ----------
   function stateEmoji(c) {
@@ -780,11 +1133,11 @@
       return;
     }
     list.innerHTML = filtered.map((d) => {
-      const c = state.cards[d.es];
+      const c = cards[d.es];
       return `<div class="browse-item">
         <span class="bi-state">${stateEmoji(c)}</span>
-        <div class="bi-main"><div class="bi-es">${d.es}</div><div class="bi-de">${d.de.replace(/\|/g, ", ")}</div></div>
-        <span class="bi-level">${d.level}</span>
+        <div class="bi-main"><div class="bi-es" lang="es">${esc(d.es)}</div><div class="bi-de">${esc(d.de.replace(/\|/g, ", "))}</div></div>
+        <span class="bi-level">${esc(d.level)}</span>
       </div>`;
     }).join("");
   }
@@ -817,13 +1170,13 @@
 
     // Reifegrad
     const buckets = { neu: 0, lernend: 0, jung: 0, reif: 0 };
-    Object.values(state.cards).forEach((c) => {
+    Object.values(cards).forEach((c) => {
       if (c.state === "new") buckets.neu++;
       else if (c.state === "learning" || c.state === "relearning") buckets.lernend++;
       else if (c.stability >= 21) buckets.reif++;
       else buckets.jung++;
     });
-    buckets.neu += DECK.length - Object.keys(state.cards).length;
+    buckets.neu += DECK.length - Object.keys(cards).length;
     const total = DECK.length;
     const colors = { neu: "var(--surface-2)", lernend: "var(--warn)", jung: "var(--blue)", reif: "var(--good)" };
     const labels = { neu: "Neu", lernend: "Lernend", jung: "Jung", reif: "Gefestigt" };
@@ -859,35 +1212,49 @@
     last30.forEach((k) => { const d = state.conjLog[k]; if (d) { rev += d.reviewed; cor += d.correct; } });
     el("conjStatAccuracy").textContent = rev ? `${Math.round((cor / rev) * 100)}%` : "–";
 
-    const hasData = state.conjRecent.length > 0;
+    const recentConj = events.filter((e) => e.kind === "conj").slice(-15).reverse();
+    const hasData = recentConj.length > 0;
     el("conjStatsSub").hidden = !hasData;
     el("conjStatsEmpty").style.display = hasData ? "none" : "block";
     if (!hasData) return;
 
+    // Einträge zu Verben/Zeiten, die es nicht mehr gibt, überspringen –
+    // sonst reißt ein einzelner veralteter Schlüssel die ganze Statistik ab.
     const mistakes = Object.entries(state.conjCards)
       .filter(([, c]) => c.wrongCount > 0)
       .sort((a, b) => b[1].wrongCount - a[1].wrongCount)
+      .map(([key, c]) => {
+        const [infinitive, tense, person] = key.split("|");
+        const verb = CONJUGATE.findVerb(infinitive);
+        const form = verb && CONJUGATE.getForms(verb)[tense]?.[Number(person)];
+        return form ? { infinitive, tense, person: Number(person), form, wrongCount: c.wrongCount } : null;
+      })
+      .filter(Boolean)
       .slice(0, 8);
     el("conjMistakesList").innerHTML = mistakes.length
-      ? mistakes.map(([key, c]) => {
-          const [infinitive, tense, person] = key.split("|");
-          const form = CONJUGATE.getForms(CONJUGATE.findVerb(infinitive))[tense][Number(person)];
-          return `<div class="conj-log-row">
+      ? mistakes.map((m) => `<div class="conj-log-row">
             <span class="conj-log-icon wrong">✗</span>
-            <span class="conj-log-main"><strong>${form}</strong> <span class="conj-log-dim">(${infinitive}, ${CONJUGATE.TENSE_LABELS[tense]}, ${personShort(Number(person))})</span></span>
-            <span class="conj-log-count">${c.wrongCount}×</span>
-          </div>`;
-        }).join("")
+            <span class="conj-log-main"><strong lang="es">${esc(m.form)}</strong> <span class="conj-log-dim">(${esc(m.infinitive)}, ${CONJUGATE.TENSE_LABELS[m.tense]}, ${personShort(m.person)})</span></span>
+            <span class="conj-log-count">${m.wrongCount}×</span>
+          </div>`).join("")
       : `<div class="conj-log-empty">Bisher keine wiederholten Fehler — gut gemacht!</div>`;
 
-    el("conjRecentList").innerHTML = state.conjRecent.slice(0, 15).map((r) => {
-      const icon = r.correct ? `<span class="conj-log-icon correct">✓</span>` : `<span class="conj-log-icon wrong">✗</span>`;
-      const detail = r.correct
-        ? `<strong>${r.correctForm}</strong> <span class="conj-log-dim">(${r.infinitive}, ${CONJUGATE.TENSE_LABELS[r.tense]}, ${personShort(r.person)})</span>`
-        : `<strong>${r.correctForm}</strong> <span class="conj-log-dim">(${r.infinitive}, ${CONJUGATE.TENSE_LABELS[r.tense]}, ${personShort(r.person)}) — du: „${r.typed || "–"}“</span>`;
-      return `<div class="conj-log-row">${icon}<span class="conj-log-main">${detail}</span><span class="conj-log-time">${timeAgo(r.at)}</span></div>`;
+    el("conjRecentList").innerHTML = recentConj.map((r) => {
+      const icon = r.ok ? `<span class="conj-log-icon correct">✓</span>` : `<span class="conj-log-icon wrong">✗</span>`;
+      const meta = `${esc(r.verb)}, ${CONJUGATE.TENSE_LABELS[r.tense] || "?"}, ${personShort(r.person)}`;
+      const detail = r.ok
+        ? `<strong lang="es">${esc(r.expected)}</strong> <span class="conj-log-dim">(${meta})</span>`
+        : `<strong lang="es">${esc(r.expected)}</strong> <span class="conj-log-dim">(${meta}) — du: „${esc(r.typed || "–")}“</span>`;
+      return `<div class="conj-log-row">${icon}<span class="conj-log-main">${detail}</span><span class="conj-log-time">${timeAgo(r.t)}</span></div>`;
     }).join("");
   }
+  /** "Yo ___ profesor." + "soy" -> escapter Text mit hervorgehobener Lösung. */
+  function fillGap(prompt, answer) {
+    const [before, ...rest] = String(prompt).split("___");
+    if (!rest.length) return esc(prompt);
+    return `${esc(before)}<strong>${esc(answer)}</strong>${esc(rest.join("___"))}`;
+  }
+
   function last30Keys() {
     const out = [];
     for (let i = 29; i >= 0; i--) out.push(todayKey(Date.now() - i * DAY));
@@ -903,7 +1270,8 @@
     last30.forEach((k) => { const d = state.grammarLog[k]; if (d) { rev += d.reviewed; cor += d.correct; } });
     el("grammarStatAccuracy").textContent = rev ? `${Math.round((cor / rev) * 100)}%` : "–";
 
-    const hasData = state.grammarRecent.length > 0;
+    const recentGrammar = events.filter((e) => e.kind === "grammar").slice(-15).reverse();
+    const hasData = recentGrammar.length > 0;
     el("grammarStatsSub").hidden = !hasData;
     el("grammarStatsEmpty").style.display = hasData ? "none" : "block";
     if (!hasData) return;
@@ -915,26 +1283,30 @@
     el("grammarMistakesList").innerHTML = mistakes.length
       ? mistakes.map(([id, c]) => {
           const item = GRAMMAR.findItem(id);
+          if (!item) return "";   // Aufgabe wurde entfernt
           return `<div class="conj-log-row">
             <span class="conj-log-icon wrong">✗</span>
-            <span class="conj-log-main">${item.prompt.replace("___", `<strong>${item.answer}</strong>`)} <span class="conj-log-dim">(${GRAMMAR.CATEGORY_LABELS[item.category]})</span></span>
+            <span class="conj-log-main" lang="es">${fillGap(item.prompt, item.answer)} <span class="conj-log-dim" lang="de">(${GRAMMAR.CATEGORY_LABELS[item.category]})</span></span>
             <span class="conj-log-count">${c.wrongCount}×</span>
           </div>`;
         }).join("")
       : `<div class="conj-log-empty">Bisher keine wiederholten Fehler — gut gemacht!</div>`;
 
-    el("grammarRecentList").innerHTML = state.grammarRecent.slice(0, 15).map((r) => {
-      const icon = r.correct ? `<span class="conj-log-icon correct">✓</span>` : `<span class="conj-log-icon wrong">✗</span>`;
-      const filled = r.prompt.replace("___", `<strong>${r.answer}</strong>`);
-      const detail = r.correct
-        ? `${filled} <span class="conj-log-dim">(${GRAMMAR.CATEGORY_LABELS[r.category]})</span>`
-        : `${filled} <span class="conj-log-dim">(${GRAMMAR.CATEGORY_LABELS[r.category]}) — du: „${r.chosen}“</span>`;
-      return `<div class="conj-log-row">${icon}<span class="conj-log-main">${detail}</span><span class="conj-log-time">${timeAgo(r.at)}</span></div>`;
+    el("grammarRecentList").innerHTML = recentGrammar.map((r) => {
+      const icon = r.ok ? `<span class="conj-log-icon correct">✓</span>` : `<span class="conj-log-icon wrong">✗</span>`;
+      const item = GRAMMAR.findItem(r.id);
+      const filled = item ? fillGap(item.prompt, r.expected) : esc(r.expected);
+      const label = GRAMMAR.CATEGORY_LABELS[r.category] || "?";
+      const detail = r.ok
+        ? `${filled} <span class="conj-log-dim">(${label})</span>`
+        : `${filled} <span class="conj-log-dim">(${label}) — du: „${esc(r.chosen)}“</span>`;
+      return `<div class="conj-log-row">${icon}<span class="conj-log-main">${detail}</span><span class="conj-log-time">${timeAgo(r.t)}</span></div>`;
     }).join("");
   }
 
   el("exportDataBtn").addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(exportPayload(), null, 2)], { type: "application/json" });
+    const payload = { exportedAt: new Date().toISOString(), deckSize: DECK.length, state, cards };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -945,41 +1317,137 @@
     URL.revokeObjectURL(url);
   });
 
-  function renderSyncStatus() {
-    const status = el("syncStatus");
-    if (!window.showSaveFilePicker) {
-      status.textContent = "Automatische Synchronisierung wird von diesem Browser nicht unterstützt (nur Chrome/Edge). Nutze den manuellen Export.";
-      el("connectSyncBtn").disabled = true;
-      return;
-    }
-    status.textContent = syncFileHandle
-      ? `Verknüpft mit „${syncFileHandle.name}“ — wird bei jeder Änderung automatisch aktualisiert.`
-      : "Noch keine Datei verknüpft.";
+  /* Browser ohne Ordner-Auswahl (Brave, Firefox, Safari) brauchen trotzdem einen
+     Weg, den Bericht zu Claude zu bekommen. Drei einzelne Downloads statt eines
+     Archivs – das spart eine Bibliothek, der Browser fragt einmal nach. */
+  function download(name, contents, type) {
+    const url = URL.createObjectURL(new Blob([contents], { type }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  el("connectSyncBtn").addEventListener("click", async () => {
-    if (!window.showSaveFilePicker) return;
+  el("exportBriefingBtn").addEventListener("click", async () => {
     try {
-      syncFileHandle = await window.showSaveFilePicker({
-        suggestedName: "vokabeltrainer-fortschritt.json",
-        types: [{ description: "JSON", accept: { "application/json": [".json"] } }],
-      });
-      await writeSyncFile();
-      renderSyncStatus();
-    } catch (e) { /* Nutzer hat den Dialog abgebrochen */ }
+      const [markdown, weak] = await Promise.all([STORE.briefing(), STORE.weaknesses()]);
+      download("BRIEFING.md", markdown, "text/markdown");
+      download("weaknesses.json", JSON.stringify(weak, null, 2), "application/json");
+    } catch (e) {
+      alert("Bericht konnte nicht geladen werden: " + e.message);
+    }
   });
 
-  // Enter drückt den sichtbaren "Weiter"-Button, auch wenn das Eingabefeld
-  // gerade deaktiviert ist (deaktivierte Inputs erhalten keine eigenen Key-Events mehr).
+  /* Bericht und Auswertung entstehen jetzt serverseitig aus SQL-Views –
+     die App muss nach einer Sitzung nichts mehr hochladen. */
+  async function syncFolder() { /* nichts zu tun */ }
+
+  function renderSyncStatus() {
+    const status = el("syncStatus");
+    if (!status) return;
+    status.textContent = "Mit der Datenbank verbunden. Fortschritt, Antwortprotokoll und Auswertung " +
+      "liegen in Postgres; ein Agent liest sie über den MCP-Server und legt dort auch neue Übungen an.";
+  }
+
+  // ---------- Tastatur ----------
+  const CONTINUE_BTN = {
+    session: "sessionContinueBtn",
+    conjsession: "conjContinueBtn",
+    grammarsession: "grammarContinueBtn",
+    packsession: "packContinueBtn",
+  };
+  /* Nur der Button der gerade sichtbaren Übung darf reagieren. Sonst greift
+     Enter auf den zurückgebliebenen Button einer beendeten Übung zu. */
+  function pressContinue() {
+    const btn = el(CONTINUE_BTN[currentView] || "");
+    if (!btn || btn.hidden) return false;
+    btn.click();
+    return true;
+  }
+  function clickNthOption(gridId, n) {
+    const options = el(gridId).querySelectorAll(".mc-option:not(.disabled)");
+    if (options[n - 1]) { options[n - 1].click(); return true; }
+    return false;
+  }
+
   document.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter") return;
-    ["sessionContinueBtn", "conjContinueBtn", "grammarContinueBtn"].some((id) => {
-      const btn = el(id);
-      if (btn && !btn.hidden) { btn.click(); return true; }
-      return false;
-    });
+    // Eingabefelder bearbeiten ihre Tasten selbst.
+    const tag = e.target.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    // Enter bedient den sichtbaren "Weiter"-Button. Der Fall, dass derselbe
+    // Tastendruck erst eine Antwort prüft, ist in renderType/conjInput
+    // abgefangen – dort stoppt das Feld die Weitergabe.
+    if (e.key === "Enter" && pressContinue()) { e.preventDefault(); return; }
+
+    const inFlip = currentView === "session" && session && currentItem().mode === "flip";
+    if (inFlip && (e.key === " " || e.key === "Enter") && tag !== "BUTTON") {
+      e.preventDefault();
+      toggleFlip();
+      return;
+    }
+    if (inFlip && flipped && ["1", "2", "3", "4"].includes(e.key)) {
+      e.preventDefault();
+      const grade = Number(e.key);
+      gradeCurrent(grade, grade >= 3);
+      return;
+    }
+    if (currentView === "session" && session && currentItem().mode === "mc" && ["1", "2", "3", "4"].includes(e.key)) {
+      if (clickNthOption("mcGrid", Number(e.key))) e.preventDefault();
+      return;
+    }
+    if (currentView === "grammarsession" && grammarSession && ["1", "2", "3"].includes(e.key)) {
+      if (clickNthOption("grammarGrid", Number(e.key))) e.preventDefault();
+      return;
+    }
+    if (currentView === "packsession" && packSession && ["1", "2", "3", "4", "5", "6"].includes(e.key)) {
+      if (clickNthOption("packGrid", Number(e.key))) e.preventDefault();
+    }
   });
+
+  // ---------- Übungssätze vom Agenten ----------
+  async function loadPacksFromFolder() {
+    packs = await STORE.allPacks();
+    packLoadErrors = [];
+    renderPacks();
+    return { count: packs.length, errors: [] };
+  }
 
   // ---------- Start ----------
-  renderHome();
+  async function boot() {
+    await STORE.init();
+    state = await STORE.loadState();
+    cards = await STORE.loadCards();
+    events = await STORE.allEvents();
+    packs = await STORE.allPacks();
+
+    if (!state.grammarCategories) state.grammarCategories = [...GRAMMAR.CATEGORIES];
+    conjSelectedTenses = new Set(state.conjTenses);
+    conjVerbSet = state.conjVerbSet;
+    grammarSelectedCategories = new Set(state.grammarCategories);
+
+    renderHome();
+    renderPacks();
+    renderSyncStatus();
+
+    // Legt ein Agent eine Übung an, taucht sie ohne Zutun auf.
+    STORE.onExercisesChanged(async () => {
+      packs = await STORE.allPacks();
+      if (currentView === "packs") renderPacks();
+      const badge = el("tab-packs");
+      if (badge && currentView !== "packs") badge.classList.add("tab-alert");
+    });
+  }
+
+  boot().catch((e) => {
+    const box = el("bootError");
+    box.hidden = false;
+    box.textContent = "Keine Verbindung zur Datenbank: " + e.message +
+      " — läuft der Server? (docker compose up -d)";
+    console.error("Start fehlgeschlagen", e);
+  });
 })();

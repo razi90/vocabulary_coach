@@ -1,0 +1,10 @@
+.git
+.gitignore
+fortschritt
+node_modules
+*.md
+!beispiele/*.md
+.DS_Store
+Dockerfile
+docker-compose.yml
+__*.html
