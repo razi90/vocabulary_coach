@@ -1,13 +1,20 @@
 # Architektur
 
 ```
-Browser ──HTTP──> Node-Server ──┐
-                                ├──> Postgres
-Agent ──MCP(stdio)──> MCP-Server┘
+                    Docker-Netz
+                 ┌──────────────────────────┐
+Browser ──HTTP──>│ Node-Server ──┐          │
+                 │               ├──> Postgres
+Agent ──stdio──> │ MCP-Server ───┘          │
+                 └──────────────────────────┘
 ```
 
-Beide Wege reden mit derselben Datenbank. Der MCP-Server umgeht den Node-Server
-bewusst: ein Agent soll auch arbeiten können, wenn niemand die App offen hat.
+Alles läuft in Containern; nach außen ist nur Port 8080 offen. Der MCP-Client
+startet `mcp/run.sh`, das per `docker exec` in den laufenden App-Container geht
+(oder notfalls einen eigenen Container startet) und stdio durchreicht.
+
+Der MCP-Server umgeht den Node-Server bewusst und spricht direkt mit Postgres:
+ein Agent soll auch arbeiten können, wenn niemand die App offen hat.
 
 ## Dateien
 
@@ -19,6 +26,9 @@ bewusst: ein Agent soll auch arbeiten können, wenn niemand die App offen hat.
 | `server/briefing.js` | Formuliert die Auswertung als Text. Rechnet nichts — das tun die Views. |
 | `server/server.js` | HTTP-API, Auslieferung der App, SSE für Live-Aktualisierung. |
 | `mcp/server.js` | JSON-RPC über stdio, ohne SDK. Werkzeuge für den Agenten. |
+| `mcp/run.sh` | Startet ihn im Container und reicht stdio durch. Ausgaben nur nach stderr. |
+| `server/mcp-http.js` | Derselbe Server über HTTP unter `/mcp`, optional mit Bearer-Token. |
+| `mcpb/` | Quellen der `.mcpb`-Erweiterung für Claude Desktop / Cowork. |
 | `src/store.js` | Browserseitiger Zugang zur API. Kein lokaler Speicher mehr. |
 | `src/text.js` | Normalisierung und Antwortbewertung. Läuft in Browser **und** Node. |
 | `src/packs.js` | Schema und Prüfung der Übungssätze. Ebenfalls in beiden Welten. |

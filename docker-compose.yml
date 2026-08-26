@@ -25,6 +25,11 @@ services:
       PGUSER: voco
       PGPASSWORD: ${POSTGRES_PASSWORD:-voco}
       PGDATABASE: voco
+      # Leer = kein Token. Sobald der Port nicht mehr nur auf localhost liegt,
+      # unbedingt setzen: sonst darf jeder Erreichbare Übungen schreiben.
+      MCP_TOKEN: ${MCP_TOKEN:-}
+      # Zweiter Port, der ausschließlich /mcp bedient. Nur er wird getunnelt.
+      MCP_PORT: ${MCP_PORT:-}
     # Ohne Anmeldung – deshalb nur localhost. Für Zugriff vom Handy siehe README.
     ports:
       - "127.0.0.1:8080:8080"
@@ -33,20 +38,18 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # Wird nicht mitgestartet, sondern vom MCP-Client als Kindprozess
-  # aufgerufen (siehe mcp/run.sh). Läuft im selben Netz wie die Datenbank.
-  mcp:
-    build: .
-    profiles: ["mcp"]
-    environment:
-      PGHOST: db
-      PGUSER: voco
-      PGPASSWORD: ${POSTGRES_PASSWORD:-voco}
-      PGDATABASE: voco
+  # Öffentlicher HTTPS-Endpunkt für Clients, die keine localhost-URL annehmen.
+  # Startet nur mit: docker compose --profile tunnel up -d
+  # Zeigt bewusst auf den MCP-only-Port, nicht auf die App.
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: voco-tunnel
+    profiles: ["tunnel"]
+    command: tunnel --no-autoupdate --url http://app:8081
     depends_on:
-      db:
+      app:
         condition: service_healthy
-    command: ["node", "mcp/server.js"]
+    restart: unless-stopped
 
 volumes:
   voco-db:

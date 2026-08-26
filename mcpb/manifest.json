@@ -1,0 +1,33 @@
+{
+  "manifest_version": "0.4",
+  "name": "vokabeltrainer",
+  "display_name": "Vokabeltrainer (Español)",
+  "version": "2.0.0",
+  "description": "Lernstand eines Spanisch-Vokabeltrainers lesen und gezielte Übungen anlegen.",
+  "long_description": "Verbindet sich mit dem lokal laufenden Vokabeltrainer (Docker) und stellt dessen Lernstand bereit: hartnäckige Vokabeln samt Verwechslungen, Konjugations- und Grammatikschwächen. Neu angelegte Übungssätze erscheinen sofort in der App.",
+  "author": { "name": "Andreas Razmyslov" },
+  "license": "MIT",
+  "keywords": ["spanisch", "vokabeln", "lernen", "postgres"],
+  "server": {
+    "type": "node",
+    "entry_point": "launcher.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/launcher.js"]
+    }
+  },
+  "tools": [
+    { "name": "get_briefing", "description": "Lernstand als Markdown samt konkretem Übungsauftrag." },
+    { "name": "get_weaknesses", "description": "Dieselbe Auswertung strukturiert als JSON." },
+    { "name": "query_events", "description": "Rohes Antwortprotokoll inklusive der tatsächlichen Eingaben." },
+    { "name": "search_vocabulary", "description": "Wortschatz nach Thema, Niveau oder Wortart durchsuchen." },
+    { "name": "list_exercises", "description": "Vorhandene Übungssätze und ihre Ergebnisse." },
+    { "name": "create_exercise", "description": "Übungssatz anlegen; erscheint sofort in der App." },
+    { "name": "set_exercise_status", "description": "Übungssatz sichtbar, verborgen oder archiviert schalten." },
+    { "name": "delete_exercise", "description": "Übungssatz entfernen." }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "linux", "win32"],
+    "runtimes": { "node": ">=18.0.0" }
+  }
+}

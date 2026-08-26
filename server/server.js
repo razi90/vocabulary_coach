@@ -11,6 +11,7 @@ const path = require("path");
 const db = require("./db.js");
 const store = require("./store.js");
 const briefing = require("./briefing.js");
+const mcpHttp = require("./mcp-http.js");
 
 globalThis.TEXT = require("../src/text.js");
 const PACKS = require("../src/packs.js");
@@ -18,6 +19,10 @@ const PACKS = require("../src/packs.js");
 const PORT = Number(process.env.PORT || 8080);
 const HOST = process.env.HOST || "0.0.0.0";
 const APP_DIR = process.env.APP_DIR || path.join(__dirname, "..");
+/* Getrennter Port, der ausschließlich /mcp bedient. Nur dieser wird nach außen
+   getunnelt – die App und /api bleiben lokal. Ohne den zweiten Listener würde
+   ein Tunnel die komplette, ungeschützte API mit veröffentlichen. */
+const MCP_PORT = Number(process.env.MCP_PORT || 0);
 const MAX_BODY = 32 * 1024 * 1024;
 
 // ---------- HTTP-Hilfen ----------
@@ -192,6 +197,8 @@ const server = http.createServer(async (req, res) => {
   try { url = new URL(req.url, `http://${req.headers.host || "localhost"}`); }
   catch (e) { return send(res, 400, { error: "ungültige URL" }); }
   try {
+    // MCP über HTTP – dieselben Werkzeuge wie über stdio.
+    if (url.pathname === "/mcp" || url.pathname === "/mcp/") return await mcpHttp.handle(req, res);
     if (url.pathname.startsWith("/api/")) return await handleApi(req, res, url);
     if (req.method !== "GET" && req.method !== "HEAD") return send(res, 405, { error: "nur GET" });
     return await serveStatic(res, path.resolve(APP_DIR), url.pathname === "/" ? "/index.html" : url.pathname);
@@ -218,17 +225,48 @@ function shutdown(signal) {
   });
   // Offene Keep-alive-Verbindungen würden server.close() sonst hinhalten.
   if (server.closeAllConnections) server.closeAllConnections();
+  if (mcpOnlyServer) {
+    mcpOnlyServer.close();
+    if (mcpOnlyServer.closeAllConnections) mcpOnlyServer.closeAllConnections();
+  }
   setTimeout(() => process.exit(0), 5000).unref();
 }
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
+/* Nur MCP, sonst nichts. Alles andere bekommt 404, damit ein Tunnel auf diesen
+   Port keine weitere Angriffsfläche öffnet. */
+const mcpOnlyServer = MCP_PORT ? http.createServer(async (req, res) => {
+  let url;
+  try { url = new URL(req.url, `http://${req.headers.host || "localhost"}`); }
+  catch (e) { return send(res, 400, { error: "ungültige URL" }); }
+  if (url.pathname !== "/mcp" && url.pathname !== "/mcp/") {
+    return send(res, 404, { error: "Dieser Port bedient ausschließlich /mcp." });
+  }
+  try { await mcpHttp.handle(req, res); }
+  catch (e) { if (!res.headersSent) send(res, 500, { error: e.message }); }
+}) : null;
+
 (async () => {
+  // Ein öffentlich erreichbarer Endpunkt ohne Token wäre ein offenes
+  // Schreibrecht auf die Datenbank. Lieber gar nicht starten.
+  if (MCP_PORT && !mcpHttp.requiresToken()) {
+    console.error("MCP_PORT ist gesetzt, aber MCP_TOKEN fehlt. Ein öffentlicher " +
+                  "Endpunkt ohne Token käme einem offenen Schreibzugriff gleich. Abbruch.");
+    process.exit(1);
+  }
   await db.init();
   await startNotifyBridge();
   server.listen(PORT, HOST, () => {
-    console.log(`Vokabeltrainer läuft auf http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT}`);
+    const base = `http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT}`;
+    console.log(`Vokabeltrainer läuft auf ${base}`);
+    console.log(`MCP-Endpunkt: ${base}/mcp` +
+      (mcpHttp.requiresToken() ? " (Bearer-Token nötig)" : " (ohne Token – nur für localhost geeignet)"));
   });
+  if (mcpOnlyServer) {
+    mcpOnlyServer.listen(MCP_PORT, HOST, () =>
+      console.log(`MCP-only-Port ${MCP_PORT} bereit (nur /mcp, Token erzwungen) — für den Tunnel`));
+  }
 })().catch((e) => {
   console.error("Start fehlgeschlagen:", e.message);
   process.exit(1);

@@ -1,3 +1,6 @@
 .DS_Store
 fortschritt/
 node_modules/
+.env
+# gebautes Bündel – wird aus mcpb/ erzeugt
+vokabeltrainer.mcpb
