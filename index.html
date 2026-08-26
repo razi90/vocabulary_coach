@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Español – Vokabeltrainer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="flag">🇪🇸</span>
+      <span class="brand-name">Español</span>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-view="home">Start</button>
+      <button class="tab" data-view="browse">Vokabeln</button>
+      <button class="tab" data-view="stats">Statistik</button>
+    </nav>
+    <div class="streak" id="streakBadge" title="Tagesserie">🔥 <span id="streakCount">0</span></div>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= HOME ================= -->
+    <section id="view-home" class="view active">
+      <div class="hero-stats">
+        <div class="stat-card due">
+          <div class="stat-num" id="dueCount">0</div>
+          <div class="stat-label">fällig</div>
+        </div>
+        <div class="stat-card new">
+          <div class="stat-num" id="newCount">0</div>
+          <div class="stat-label">neu</div>
+        </div>
+        <div class="stat-card learned">
+          <div class="stat-num" id="learnedCount">0</div>
+          <div class="stat-label">gelernt</div>
+        </div>
+        <div class="stat-card total">
+          <div class="stat-num" id="totalCount">0</div>
+          <div class="stat-label">gesamt</div>
+        </div>
+      </div>
+
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120" class="ring">
+          <circle cx="60" cy="60" r="52" class="ring-bg"/>
+          <circle cx="60" cy="60" r="52" class="ring-fg" id="dailyRing"/>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-num" id="dailyDoneNum">0</div>
+          <div class="ring-sub">/ <span id="dailyGoalNum">20</span> heute</div>
+        </div>
+      </div>
+
+      <button class="btn-primary btn-huge" id="startSessionBtn">Sitzung starten</button>
+      <p class="hint" id="sessionHint">Karteikarten &middot; Multiple Choice &middot; Tippen</p>
+
+      <div class="goal-row">
+        <label for="dailyGoal">Tagesziel</label>
+        <input type="range" id="dailyGoal" min="5" max="60" step="5" value="20">
+        <span id="dailyGoalDisplay">20</span>
+      </div>
+    </section>
+
+    <!-- ================= SESSION (Karteikarte / MC / Tippen) ================= -->
+    <section id="view-session" class="view">
+      <div class="session-top">
+        <button class="icon-btn" id="exitSessionBtn" aria-label="Beenden">✕</button>
+        <div class="session-progress">
+          <div class="session-progress-bar" id="sessionProgressBar"></div>
+        </div>
+        <div class="session-counter"><span id="sessionIdx">0</span>/<span id="sessionTotal">0</span></div>
+      </div>
+
+      <div class="card-stage" id="cardStage">
+
+        <!-- Karteikarte -->
+        <div class="mode-panel" id="mode-flip">
+          <div class="flashcard" id="flashcard">
+            <div class="flashcard-inner" id="flashcardInner">
+              <div class="flashcard-face front">
+                <span class="pos-badge" id="flipPos"></span>
+                <div class="es-word" id="flipFront"></div>
+                <div class="tap-hint">Zum Umdrehen tippen</div>
+              </div>
+              <div class="flashcard-face back">
+                <div class="de-word" id="flipBack"></div>
+                <div class="ex-sentence" id="flipEx"></div>
+                <div class="ex-sentence-de" id="flipExDe"></div>
+              </div>
+            </div>
+          </div>
+          <div class="grade-row" id="gradeRow">
+            <button class="grade-btn again" data-grade="1"><span class="g-label">Nochmal</span><span class="g-iv" id="iv1"></span></button>
+            <button class="grade-btn hard" data-grade="2"><span class="g-label">Schwer</span><span class="g-iv" id="iv2"></span></button>
+            <button class="grade-btn good" data-grade="3"><span class="g-label">Gut</span><span class="g-iv" id="iv3"></span></button>
+            <button class="grade-btn easy" data-grade="4"><span class="g-label">Leicht</span><span class="g-iv" id="iv4"></span></button>
+          </div>
+        </div>
+
+        <!-- Multiple Choice -->
+        <div class="mode-panel" id="mode-mc" hidden>
+          <span class="pos-badge" id="mcPos"></span>
+          <div class="es-word" id="mcPrompt"></div>
+          <div class="mc-grid" id="mcGrid"></div>
+        </div>
+
+        <!-- Tippen -->
+        <div class="mode-panel" id="mode-type" hidden>
+          <span class="pos-badge" id="typePos"></span>
+          <div class="es-word" id="typePrompt"></div>
+          <input type="text" id="typeInput" class="type-input" placeholder="Übersetzung eintippen …" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <div class="type-feedback" id="typeFeedback"></div>
+          <button class="btn-primary" id="typeCheckBtn">Prüfen</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SESSION COMPLETE ================= -->
+    <section id="view-done" class="view">
+      <div class="done-panel">
+        <div class="done-emoji">🎉</div>
+        <h2>Sitzung abgeschlossen!</h2>
+        <div class="done-stats">
+          <div><strong id="doneReviewed">0</strong><span>Karten geübt</span></div>
+          <div><strong id="doneAccuracy">0%</strong><span>Genauigkeit</span></div>
+          <div><strong id="doneStreak">0</strong><span>Serie</span></div>
+        </div>
+        <button class="btn-primary btn-huge" id="doneContinueBtn">Weiter</button>
+      </div>
+    </section>
+
+    <!-- ================= BROWSE ================= -->
+    <section id="view-browse" class="view">
+      <div class="browse-toolbar">
+        <input type="search" id="browseSearch" placeholder="Suchen …">
+        <select id="browseTopic"><option value="">Alle Themen</option></select>
+        <select id="browseLevel"><option value="">Alle Stufen</option></select>
+      </div>
+      <div class="browse-list" id="browseList"></div>
+    </section>
+
+    <!-- ================= STATS ================= -->
+    <section id="view-stats" class="view">
+      <h2 class="section-title">Fortschritt</h2>
+      <div class="stats-grid">
+        <div class="stats-card">
+          <div class="stats-card-num" id="statTotalReviews">0</div>
+          <div class="stats-card-label">Wiederholungen gesamt</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-card-num" id="statAccuracy">0%</div>
+          <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-card-num" id="statStreak">0</div>
+          <div class="stats-card-label">Aktuelle Serie</div>
+        </div>
+        <div class="stats-card">
+          <div class="stats-card-num" id="statMature">0</div>
+          <div class="stats-card-label">Gefestigte Karten</div>
+        </div>
+      </div>
+      <h3 class="section-title small">Letzte 14 Tage</h3>
+      <div class="bar-chart" id="barChart"></div>
+      <h3 class="section-title small">Reifegrad</h3>
+      <div class="maturity-bar" id="maturityBar"></div>
+      <div class="maturity-legend" id="maturityLegend"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="src/deck.js"></script>
+<script src="src/srs.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
