@@ -135,6 +135,9 @@
     if (name === "conj") renderConjOverview();
     if (name === "grammar") renderGrammarOverview();
     if (name === "packs") { el("tab-packs").classList.remove("tab-alert"); renderPacks(); }
+    if (name === "lesson") { el("tab-lesson").classList.remove("tab-alert"); LESSON.render(); }
+    // Video weiterlaufen zu lassen, während man Vokabeln übt, will niemand.
+    if (name !== "lesson") { LESSON.stoppen(); const f = el("listeningFrame"); if (f && f.src) f.src = f.src; }
   }
   /** Läuft gerade eine Übung, die durch den Wechsel verloren ginge? */
   function activeDrill() {
@@ -1409,6 +1412,13 @@
     }
   });
 
+  /** Auf der Startseite anzeigen, ob für heute eine Lektion bereitliegt. */
+  function markiereLektion() {
+    const hinweis = el("lessonHint");
+    if (!hinweis) return;
+    hinweis.hidden = !LESSON.hatLektion();
+  }
+
   // ---------- Übungssätze vom Agenten ----------
   async function loadPacksFromFolder() {
     packs = await STORE.allPacks();
@@ -1433,14 +1443,22 @@
     renderHome();
     renderPacks();
     renderSyncStatus();
+    await LESSON.load();
+    markiereLektion();
 
-    // Legt ein Agent eine Übung an, taucht sie ohne Zutun auf.
+    // Legt ein Agent eine Übung oder Lektion an, taucht sie ohne Zutun auf.
     STORE.onExercisesChanged(async () => {
       packs = await STORE.allPacks();
       if (currentView === "packs") renderPacks();
       const badge = el("tab-packs");
       if (badge && currentView !== "packs") badge.classList.add("tab-alert");
     });
+    STORE.onLessonsChanged(async () => {
+      await LESSON.load();
+      if (currentView !== "lesson") el("tab-lesson").classList.add("tab-alert");
+      markiereLektion();
+    });
+    LESSON.setOnSubmitted(markiereLektion);
   }
 
   boot().catch((e) => {

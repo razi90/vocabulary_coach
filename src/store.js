@@ -75,26 +75,28 @@ const STORE = (() => {
 
   /* Der Server meldet über Server-Sent-Events, wenn ein Agent eine Übung
      angelegt hat. Ohne das bräuchte es wieder einen „Neu laden“-Knopf. */
-  function onExercisesChanged(handler) {
-    if (typeof EventSource !== "function") return () => {};
-    let source = null;
-    let closed = false;
+  /* Eine Verbindung für alle Ereignisarten; Zuhörer melden sich je Name an. */
+  const listeners = { exercises: [], lessons: [] };
+  let source = null;
+  function ensureStream() {
+    if (source || typeof EventSource !== "function") return;
     const connect = () => {
-      if (closed) return;
       source = new EventSource("/api/stream");
-      source.addEventListener("exercises", () => handler());
-      source.onerror = () => { source.close(); if (!closed) setTimeout(connect, 3000); };
+      Object.keys(listeners).forEach((name) =>
+        source.addEventListener(name, () => listeners[name].forEach((fn) => fn())));
+      source.onerror = () => { source.close(); source = null; setTimeout(() => { if (!source) connect(); }, 3000); };
     };
     connect();
-    return () => { closed = true; if (source) source.close(); };
   }
+  const onExercisesChanged = (fn) => { listeners.exercises.push(fn); ensureStream(); };
+  const onLessonsChanged = (fn) => { listeners.lessons.push(fn); ensureStream(); };
 
   return {
     init, isReady, defaultState,
     loadState, saveState, loadCards, saveCard,
     appendEvent, allEvents,
     allPacks, savePack, deletePack,
-    weaknesses, briefing, onExercisesChanged,
+    weaknesses, briefing, onExercisesChanged, onLessonsChanged,
   };
 })();
 

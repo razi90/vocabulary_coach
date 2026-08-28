@@ -400,3 +400,56 @@ main { flex: 1; padding: 20px 18px 40px; }
   content: ""; position: absolute; top: 5px; right: 4px;
   width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
 }
+
+/* ---------- Tageslektion ---------- */
+.lesson-head { margin-bottom: 20px; }
+.lesson-date { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-dim); font-weight: 700; }
+.lesson-meta { font-size: 13px; color: var(--text-dim); }
+.lesson-part {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 18px; margin-bottom: 16px; box-shadow: var(--shadow);
+}
+.lesson-part[hidden] { display: none; }
+.lesson-part-head { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+.lesson-part-head h3 { margin: 0; font-size: 16px; font-weight: 800; }
+.lesson-part-icon { font-size: 18px; }
+.lesson-done { margin-left: auto; color: var(--good); font-weight: 800; }
+.lesson-done[hidden] { display: none; }
+.lesson-task { font-size: 14.5px; line-height: 1.5; margin: 0 0 12px; }
+
+.video-wrap { position: relative; padding-top: 56.25%; border-radius: 12px; overflow: hidden; background: var(--surface-2); }
+.video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-caption { font-size: 12px; color: var(--text-dim); margin: 6px 0 14px; }
+
+.target-words { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.target-word {
+  font-size: 12.5px; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border);
+  color: var(--text-dim); background: var(--surface-2); transition: background .15s, color .15s, border-color .15s;
+}
+.target-word.used { background: var(--good-soft); color: var(--good); border-color: var(--good); }
+
+.lesson-textarea {
+  width: 100%; font-size: 15px; line-height: 1.55; padding: 12px 14px; border-radius: 12px;
+  border: 2px solid var(--border); background: var(--surface); color: var(--text);
+  font-family: inherit; resize: vertical;
+}
+.lesson-textarea:focus { outline: none; border-color: var(--accent); }
+.lesson-counter { font-size: 12.5px; color: var(--text-dim); margin: 6px 0 12px; text-align: right; }
+.lesson-counter.reached { color: var(--good); font-weight: 700; }
+
+.lesson-prompts { margin: 0 0 12px; padding-left: 20px; font-size: 14px; line-height: 1.7; }
+.speak-controls { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.speak-timer { font-variant-numeric: tabular-nums; font-size: 14px; color: var(--text-dim); font-weight: 700; }
+.speak-hint { font-size: 12.5px; color: var(--text-dim); margin-bottom: 10px; min-height: 18px; }
+.speak-hint.warn { color: var(--warn); }
+#speakStart.recording { background: var(--bad); }
+
+.lesson-feedback {
+  margin-top: 14px; padding: 12px 14px; border-radius: 12px;
+  background: var(--blue-soft); border-left: 3px solid var(--blue);
+  font-size: 14px; line-height: 1.55; white-space: pre-wrap;
+}
+.lesson-feedback[hidden] { display: none; }
+.lesson-feedback-head { font-weight: 700; color: var(--blue); margin-bottom: 6px; font-size: 12.5px;
+  text-transform: uppercase; letter-spacing: .03em; }
+.lesson-await { font-size: 12.5px; color: var(--text-dim); margin-top: 10px; font-style: italic; }

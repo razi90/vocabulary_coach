@@ -33,6 +33,8 @@ ein Agent soll auch arbeiten können, wenn niemand die App offen hat.
 | `src/text.js` | Normalisierung und Antwortbewertung. Läuft in Browser **und** Node. |
 | `src/packs.js` | Schema und Prüfung der Übungssätze. Ebenfalls in beiden Welten. |
 | `src/drill.js` | Generischer Übungsablauf ohne DOM. |
+| `src/lesson.js` | Tageslektion: Video, Schreibfeld, Spracherkennung. |
+| `server/lessons.js` | Lektionen anlegen und prüfen, inklusive YouTube-Verifikation. |
 | `src/app.js` | UI. Die einzige Datei, die das DOM kennt. |
 | `src/deck.js` `conjugate.js` `grammar.js` | Lerninhalte als Quelltext. |
 

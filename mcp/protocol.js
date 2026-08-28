@@ -6,6 +6,7 @@
 const db = require("../server/db.js");
 const store = require("../server/store.js");
 const briefing = require("../server/briefing.js");
+const lessons = require("../server/lessons.js");
 
 globalThis.TEXT = require("../src/text.js");
 const PACKS = require("../src/packs.js");
@@ -192,6 +193,121 @@ const TOOLS = [
       const r = await store.deleteExercise(id);
       if (!r.rowCount) { const e = new Error(`Kein Übungssatz mit id "${id}"`); e.isUserError = true; throw e; }
       return { ok: true, id };
+    },
+  },
+
+  // ---------- Tageslektionen ----------
+  {
+    name: "create_lesson",
+    description:
+      "Legt die Tageslektion an (überschreibt eine vorhandene desselben Tages). Eine Lektion " +
+      "besteht aus bis zu drei Teilen: listening (YouTube-Video mit Verständnisfragen), " +
+      "writing (Schreibauftrag) und speaking (Sprechthema). Mindestens einer ist nötig.\n\n" +
+      "WICHTIG zum Video: Die videoId wird beim Anlegen gegen YouTube geprüft. Eine erfundene " +
+      "oder nicht einbettbare ID führt zur Ablehnung. Nimm eine ID aus einem echten Suchtreffer, " +
+      "nie aus dem Gedächtnis. Titel und Kanal holt der Server selbst.",
+    inputSchema: {
+      type: "object",
+      required: ["title"],
+      properties: {
+        day: { type: "string", description: "JJJJ-MM-TT. Ohne Angabe: heute (Europe/Berlin)." },
+        title: { type: "string" },
+        theme: { type: "string", description: "Thema, z. B. „Im Restaurant bestellen“." },
+        level: { type: "string", enum: ["A1", "A2", "B1"] },
+        status: { type: "string", enum: ["ready", "draft"], default: "ready" },
+        listening: {
+          type: "object",
+          properties: {
+            url: { type: "string", description: "YouTube-URL oder 11-stellige videoId." },
+            videoId: { type: "string" },
+            task: { type: "string", description: "Was beim Hören zu tun ist." },
+            questions: {
+              type: "array", minItems: 1, maxItems: 10,
+              description: "Verständnisfragen als Auswahl; answer muss exakt eine der options sein.",
+              items: {
+                type: "object",
+                required: ["prompt", "options", "answer"],
+                properties: {
+                  prompt: { type: "string" },
+                  options: { type: "array", items: { type: "string" }, minItems: 2 },
+                  answer: { type: "string" },
+                  explanation: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        writing: {
+          type: "object",
+          required: ["prompt"],
+          properties: {
+            prompt: { type: "string", description: "Der Schreibauftrag, auf Deutsch gestellt." },
+            targetWords: { type: "array", items: { type: "string" },
+              description: "Spanische Wörter/Wendungen, die vorkommen sollen." },
+            minWords: { type: "integer", minimum: 10, maximum: 500, default: 50 },
+            hints: { type: "array", items: { type: "string" } },
+          },
+        },
+        speaking: {
+          type: "object",
+          required: ["topic"],
+          properties: {
+            topic: { type: "string" },
+            prompts: { type: "array", items: { type: "string" },
+              description: "Leitfragen, die beim Sprechen helfen." },
+            usefulPhrases: { type: "array", items: { type: "string" } },
+            minSeconds: { type: "integer", minimum: 15, maximum: 600, default: 60 },
+          },
+        },
+      },
+    },
+    handler: async (args) => {
+      const row = await lessons.createLesson(args);
+      return {
+        ok: true, day: row.day.toISOString().slice(0, 10), title: row.title,
+        teile: ["listening", "writing", "speaking"].filter((k) => row[k]),
+        video: row.listening ? { id: row.listening.videoId, titel: row.listening.videoTitle,
+                                 kanal: row.listening.channel } : null,
+        hinweis: "Die Lektion steht sofort im Tab „Lektion“ der App.",
+      };
+    },
+  },
+  {
+    name: "get_lesson",
+    description: "Eine Lektion samt Abgaben des Lernenden. Ohne day: heute.",
+    inputSchema: { type: "object", properties: { day: { type: "string" } } },
+    handler: async ({ day }) => (await lessons.getLesson(day)) || { hinweis: "Für diesen Tag gibt es keine Lektion." },
+  },
+  {
+    name: "list_lessons",
+    description: "Bisherige Lektionen mit Übersicht, was abgegeben und was schon rückgemeldet wurde.",
+    inputSchema: { type: "object", properties: { limit: { type: "integer", minimum: 1, maximum: 100, default: 30 } } },
+    handler: ({ limit }) => lessons.listLessons(limit),
+  },
+  {
+    name: "get_pending_feedback",
+    description:
+      "Abgaben zu Schreiben und Sprechen, die noch keine Rückmeldung haben – samt Aufgabenstellung " +
+      "und dem, was der Lernende geschrieben oder gesagt hat. Beim Sprechen ist es ein Transkript " +
+      "aus der Spracherkennung des Browsers; Erkennungsfehler sind möglich und keine Sprachfehler.",
+    inputSchema: { type: "object", properties: {} },
+    handler: () => lessons.pendingFeedback(),
+  },
+  {
+    name: "give_feedback",
+    description:
+      "Rückmeldung zu einer Abgabe hinterlegen. Sie erscheint in der App unter der Aufgabe. " +
+      "Auf Deutsch schreiben, konkret auf den Text eingehen, Fehler benennen und verbessert zeigen.",
+    inputSchema: {
+      type: "object", required: ["submissionId", "feedback"],
+      properties: {
+        submissionId: { type: "integer" },
+        feedback: { type: "string" },
+      },
+    },
+    handler: async ({ submissionId, feedback }) => {
+      const row = await lessons.giveFeedback(submissionId, feedback);
+      return { ok: true, id: row.id, part: row.part };
     },
   },
 ];

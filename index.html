@@ -20,6 +20,7 @@
     </div>
     <nav class="tabs" id="tabs" role="tablist" aria-label="Bereiche">
       <button class="tab active" role="tab" id="tab-home" aria-controls="view-home" aria-selected="true" data-view="home">Start</button>
+      <button class="tab" role="tab" id="tab-lesson" aria-controls="view-lesson" aria-selected="false" data-view="lesson">Lektion</button>
       <button class="tab" role="tab" id="tab-browse" aria-controls="view-browse" aria-selected="false" data-view="browse">Vokabeln</button>
       <button class="tab" role="tab" id="tab-conj" aria-controls="view-conj" aria-selected="false" data-view="conj">Verben</button>
       <button class="tab" role="tab" id="tab-grammar" aria-controls="view-grammar" aria-selected="false" data-view="grammar">Grammatik</button>
@@ -75,6 +76,7 @@
       <button class="btn-primary btn-huge" id="startSessionBtn">Sitzung starten</button>
       <p class="hint" id="sessionHint">Karteikarten &middot; Multiple Choice &middot; Tippen</p>
       <button class="btn-secondary" id="keepLearningBtn" hidden>Trotzdem weiterlernen</button>
+      <p class="hint" id="lessonHint" hidden>📚 Für heute liegt eine Lektion bereit — Tab „Lektion“.</p>
 
       <div class="goal-row">
         <label for="dailyGoal">Tagesziel</label>
@@ -153,6 +155,67 @@
           <div id="doneStreakBlock"><strong id="doneStreak">0</strong><span>Serie</span></div>
         </div>
         <button class="btn-primary btn-huge" id="doneContinueBtn">Weiter</button>
+      </div>
+    </section>
+
+    <!-- ================= TAGESLEKTION ================= -->
+    <section id="view-lesson" class="view" role="tabpanel" aria-labelledby="tab-lesson" tabindex="-1">
+      <div id="lessonEmpty" class="empty-state">
+        Für heute gibt es noch keine Lektion. Bitte deinen Coach um eine —
+        er legt sie über <code>create_lesson</code> an und sie erscheint hier von selbst.
+      </div>
+
+      <div id="lessonBody" hidden>
+        <div class="lesson-head">
+          <div class="lesson-date" id="lessonDate"></div>
+          <h2 class="section-title" id="lessonTitle" style="margin-bottom:4px;"></h2>
+          <div class="lesson-meta" id="lessonMeta"></div>
+        </div>
+
+        <!-- Hören -->
+        <section class="lesson-part" id="partListening" hidden>
+          <div class="lesson-part-head"><span class="lesson-part-icon">🎧</span>
+            <h3>Hören</h3><span class="lesson-done" id="doneListening" hidden>✓</span></div>
+          <p class="lesson-task" id="listeningTask"></p>
+          <div class="video-wrap"><iframe id="listeningFrame" title="Video zur Lektion"
+            allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>
+          <div class="video-caption" id="listeningCaption"></div>
+          <div id="listeningQuestions"></div>
+          <button class="btn-primary" id="listeningSubmit" hidden>Antworten abgeben</button>
+          <div class="lesson-feedback" id="listeningFeedback" hidden></div>
+        </section>
+
+        <!-- Schreiben -->
+        <section class="lesson-part" id="partWriting" hidden>
+          <div class="lesson-part-head"><span class="lesson-part-icon">✍️</span>
+            <h3>Schreiben</h3><span class="lesson-done" id="doneWriting" hidden>✓</span></div>
+          <p class="lesson-task" id="writingPrompt"></p>
+          <div class="target-words" id="writingTargets"></div>
+          <textarea id="writingText" class="lesson-textarea" lang="es" rows="9"
+            placeholder="Schreib deinen Text auf Spanisch …" spellcheck="false"></textarea>
+          <div class="lesson-counter"><span id="writingCount">0</span> / <span id="writingMin">0</span> Wörter</div>
+          <button class="btn-primary" id="writingSubmit" disabled>Text abgeben</button>
+          <div class="lesson-feedback" id="writingFeedback" hidden></div>
+        </section>
+
+        <!-- Sprechen -->
+        <section class="lesson-part" id="partSpeaking" hidden>
+          <div class="lesson-part-head"><span class="lesson-part-icon">🗣️</span>
+            <h3>Sprechen</h3><span class="lesson-done" id="doneSpeaking" hidden>✓</span></div>
+          <p class="lesson-task" id="speakingTopic"></p>
+          <ul class="lesson-prompts" id="speakingPrompts" lang="es"></ul>
+          <div class="target-words" id="speakingPhrases"></div>
+          <div class="speak-controls">
+            <button class="btn-primary" id="speakStart">Aufnahme starten</button>
+            <span class="speak-timer" id="speakTimer">0:00 / 0:00</span>
+          </div>
+          <div class="speak-hint" id="speakHint"></div>
+          <textarea id="speakingText" class="lesson-textarea" lang="es" rows="6"
+            placeholder="Hier erscheint, was erkannt wurde. Du kannst es auch selbst eintippen."></textarea>
+          <button class="btn-primary" id="speakingSubmit" disabled>Abgeben</button>
+          <div class="lesson-feedback" id="speakingFeedback" hidden></div>
+        </section>
       </div>
     </section>
 
@@ -371,6 +434,7 @@
 <script src="src/grammar.js"></script>
 <script src="src/packs.js"></script>
 <script src="src/drill.js"></script>
+<script src="src/lesson.js"></script>
 <script src="src/app.js"></script>
 <script>
   // Offline-Betrieb: nur über http(s) möglich, bei file:// still überspringen.

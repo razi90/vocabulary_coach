@@ -153,6 +153,24 @@ das Warum, nicht die Lösung.
 Ungültige Aufgaben werden abgelehnt und der Grund zurückgemeldet; die Prüfung ist
 dieselbe wie in der App ([src/packs.js](src/packs.js)).
 
+## Tageslektion
+
+Der Coach legt über `create_lesson` eine Lektion für den Tag an: ein
+YouTube-Video mit Verständnisfragen, einen Schreibauftrag und ein Sprechthema.
+Sie erscheint im Tab „Lektion“, ohne dass etwas neu geladen werden muss.
+
+Hören wird sofort ausgewertet. Schreiben und Sprechen kann die App nicht
+bewerten — die Abgabe wird gespeichert, der Coach holt sie sich mit
+`get_pending_feedback` und antwortet über `give_feedback`. Die Rückmeldung
+erscheint dann unter der Aufgabe.
+
+Beim Sprechen nutzt die App die Spracherkennung des Browsers (Spanisch). Ohne
+Mikrofonfreigabe oder wenn der Browser sie sperrt, lässt sich der Text auch
+eintippen.
+
+Jede YouTube-ID wird beim Anlegen gegen YouTube geprüft — eine erfundene ID
+wird abgelehnt, statt später als toter Rahmen in der App zu landen.
+
 ## Direkt in der Datenbank nachsehen
 
 ```bash

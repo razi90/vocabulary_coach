@@ -78,6 +78,45 @@ darauf: du darfst por/para, ser/estar und Ähnliches gefahrlos abfragen.
   Körper, Menschen, Natur, Pronomen, Präpositionen, Redemittel, Reisen, Sport,
   Stadt, Technologie, Tiere, Verben, Wetter, Zahlen, Zeit, Zuhause
 
+## Tageslektion (Hören, Schreiben, Sprechen)
+
+Eine Lektion je Tag, bis zu drei Teile. Sie erscheint sofort im Tab „Lektion“.
+
+**`create_lesson`** — Aufbau:
+
+- `listening`: ein YouTube-Video plus 1–10 Verständnisfragen (Auswahl).
+- `writing`: ein Schreibauftrag mit `targetWords` (spanische Wörter, die
+  vorkommen sollen) und `minWords`. Die App hakt die Zielwörter live ab.
+- `speaking`: ein Thema mit Leitfragen und nützlichen Wendungen.
+
+### Das Video ist die Stolperstelle
+
+**Such das Video wirklich im Netz und übernimm die ID aus einem echten
+Treffer.** Der Server prüft jede ID gegen YouTube und lehnt die Lektion ab,
+wenn es sie nicht gibt oder sie sich nicht einbetten lässt. Titel und Kanal
+holt der Server selbst — die musst du nicht mitschicken.
+
+Achte auf: gesprochenes Spanisch, passend zum Niveau, 3–10 Minuten,
+möglichst mit Untertiteln. Stell die Verständnisfragen so, dass man sie nur
+nach dem Hören beantworten kann — nicht aus dem Weltwissen.
+
+### Rückmeldung geben
+
+Schreiben und Sprechen kann die App nicht bewerten. Sie speichert die Abgabe,
+du meldest zurück:
+
+1. **`get_pending_feedback`** — was offen ist, samt Aufgabe und Abgabe.
+   Prüfe das zu Beginn jeder Sitzung, bevor du Neues anlegst.
+2. **`give_feedback`** — konkret werden: Fehler benennen, korrigierte Fassung
+   zeigen, das Warum dazu. Lob nur, wo es stimmt.
+
+Beim Sprechen ist die Abgabe ein Transkript aus der Spracherkennung des
+Browsers. **Erkennungsfehler sind keine Sprachfehler** — bewerte Wortwahl,
+Satzbau und Inhalt, nicht offensichtliche Verhörer. Fehlende Akzente im
+Transkript nie anmerken; die Erkennung setzt sie ohnehin nicht zuverlässig.
+
+`get_lesson` zeigt eine Lektion samt Abgaben, `list_lessons` die Historie.
+
 ## Grenzen
 
 - Schreib nichts in das Ereignisprotokoll. Es gehört der App.
@@ -88,6 +127,8 @@ darauf: du darfst por/para, ser/estar und Ähnliches gefahrlos abfragen.
   liegen zu lassen. Die Liste soll kurz bleiben. `delete_exercise` nur, wenn
   ausdrücklich gewünscht — archivieren ist der Normalfall, denn die
   protokollierten Antworten bleiben so nachvollziehbar.
+- Erfinde keine YouTube-IDs. Der Server merkt es, aber du verlierst einen
+  Anlauf — such lieber gleich richtig.
 - Läuft der Server nicht, meldet das Werkzeug das. Dann ist die Anweisung an
   den Nutzer: im Projektverzeichnis `docker compose up -d`.
 

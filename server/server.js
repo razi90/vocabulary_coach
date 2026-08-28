@@ -12,6 +12,7 @@ const db = require("./db.js");
 const store = require("./store.js");
 const briefing = require("./briefing.js");
 const mcpHttp = require("./mcp-http.js");
+const lessons = require("./lessons.js");
 
 globalThis.TEXT = require("../src/text.js");
 const PACKS = require("../src/packs.js");
@@ -89,8 +90,10 @@ async function startNotifyBridge() {
   const client = await db.connect().connect();
   notifyClient = client;
   await client.query("LISTEN exercises_changed");
+  await client.query("LISTEN lessons_changed");
   client.on("notification", (msg) => {
-    const data = `event: exercises\ndata: ${JSON.stringify({ id: msg.payload })}\n\n`;
+    const name = msg.channel === "lessons_changed" ? "lessons" : "exercises";
+    const data = `event: ${name}\ndata: ${JSON.stringify({ id: msg.payload })}\n\n`;
     sseClients.forEach((res) => res.write(data));
   });
   client.on("error", (e) => {
@@ -98,7 +101,7 @@ async function startNotifyBridge() {
     client.release(true);
     setTimeout(() => startNotifyBridge().catch(() => {}), 5000);
   });
-  console.log("Auf exercises_changed lauschend");
+  console.log("Auf exercises_changed und lessons_changed lauschend");
 }
 
 function handleEvents(req, res) {
@@ -175,6 +178,21 @@ async function handleApi(req, res, url) {
   if (req.method === "DELETE" && route.startsWith("packs/")) {
     await store.deleteExercise(decodeURIComponent(route.slice("packs/".length)));
     return send(res, 200, { ok: true });
+  }
+
+  // ---------- Lektionen ----------
+  if (req.method === "GET" && route === "lesson") {
+    const lesson = await lessons.getLesson(q.get("day"));
+    return send(res, 200, lesson || null);
+  }
+  if (req.method === "POST" && route.startsWith("lesson/") && route.endsWith("/submit")) {
+    const lessonId = Number(route.slice("lesson/".length, -"/submit".length));
+    const body = await readBody(req);
+    if (!body || !["listening", "writing", "speaking"].includes(body.part)) {
+      return send(res, 400, { error: "part muss listening, writing oder speaking sein" });
+    }
+    const row = await lessons.submit(lessonId, body.part, body.content || {});
+    return send(res, 200, { ok: true, id: row.id, submittedAt: row.submitted_at });
   }
 
   if (req.method === "GET" && route === "weaknesses") {
