@@ -84,6 +84,9 @@ const STORE = (() => {
       source = new EventSource("/api/stream");
       Object.keys(listeners).forEach((name) =>
         source.addEventListener(name, () => listeners[name].forEach((fn) => fn())));
+      // Nur im Entwicklungsbetrieb: der Server meldet geänderte Dateien.
+      // Im Produktionsbetrieb wird dieses Ereignis nie gesendet.
+      source.addEventListener("reload", () => location.reload());
       source.onerror = () => { source.close(); source = null; setTimeout(() => { if (!source) connect(); }, 3000); };
     };
     connect();

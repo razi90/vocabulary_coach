@@ -116,6 +116,34 @@ function handleEvents(req, res) {
   req.on("close", () => { clearInterval(ping); sseClients.delete(res); });
 }
 
+// ---------- Live-Reload im Entwicklungsbetrieb ----------
+/* Ändert sich eine Datei im Arbeitsbaum, lädt der Browser von selbst neu.
+   Läuft nur außerhalb von NODE_ENV=production – im Container hängt der
+   Arbeitsbaum als Mount unter APP_DIR, deshalb reicht ein fs.watch darauf. */
+const RELOAD_EXT = new Set([".html", ".js", ".css", ".webmanifest"]);
+
+function startReloadWatcher() {
+  if (process.env.NODE_ENV === "production") return;
+  let timer = null;
+  try {
+    fs.watch(path.resolve(APP_DIR), { recursive: true }, (_event, file) => {
+      if (!file) return;
+      const rel = file.split(path.sep).join("/");
+      if (rel.startsWith("node_modules/") || rel.startsWith(".git/")) return;
+      if (!RELOAD_EXT.has(path.extname(rel))) return;
+      // Ein einziges Speichern löst mehrere Ereignisse aus; kurz sammeln.
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        console.log(`${rel} geändert – Browser lädt neu`);
+        sseClients.forEach((res) => res.write("event: reload\ndata: {}\n\n"));
+      }, 80);
+    });
+    console.log("Live-Reload aktiv");
+  } catch (e) {
+    console.warn("Live-Reload nicht möglich:", e.message);
+  }
+}
+
 // ---------- API ----------
 async function handleApi(req, res, url) {
   const route = url.pathname.slice("/api/".length);
@@ -275,6 +303,7 @@ const mcpOnlyServer = MCP_PORT ? http.createServer(async (req, res) => {
   }
   await db.init();
   await startNotifyBridge();
+  startReloadWatcher();
   server.listen(PORT, HOST, () => {
     const base = `http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT}`;
     console.log(`Vokabeltrainer läuft auf ${base}`);

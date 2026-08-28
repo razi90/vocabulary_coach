@@ -1,447 +1,482 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#c1440e">
-<title>Español – Vokabeltrainer</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="src/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#c1440e">
+  <title>Español – Vokabeltrainer</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="src/style.css">
 </head>
+
 <body>
 
-<div id="app">
+  <div id="app">
 
-  <header class="topbar">
-    <div class="brand">
-      <span class="flag">🇪🇸</span>
-      <span class="brand-name">Español</span>
-    </div>
-    <nav class="tabs" id="tabs" role="tablist" aria-label="Bereiche">
-      <button class="tab active" role="tab" id="tab-home" aria-controls="view-home" aria-selected="true" data-view="home">Start</button>
-      <button class="tab" role="tab" id="tab-lesson" aria-controls="view-lesson" aria-selected="false" data-view="lesson">Lektion</button>
-      <button class="tab" role="tab" id="tab-browse" aria-controls="view-browse" aria-selected="false" data-view="browse">Vokabeln</button>
-      <button class="tab" role="tab" id="tab-conj" aria-controls="view-conj" aria-selected="false" data-view="conj">Verben</button>
-      <button class="tab" role="tab" id="tab-grammar" aria-controls="view-grammar" aria-selected="false" data-view="grammar">Grammatik</button>
-      <button class="tab" role="tab" id="tab-packs" aria-controls="view-packs" aria-selected="false" data-view="packs">Übungen</button>
-      <button class="tab" role="tab" id="tab-stats" aria-controls="view-stats" aria-selected="false" data-view="stats">Statistik</button>
-    </nav>
-    <div class="streak" id="streakBadge" title="Tagesserie">🔥 <span id="streakCount">0</span></div>
-  </header>
-
-  <p id="bootError" class="boot-error" hidden>
-    Der Lernstand konnte nicht geladen werden. Läuft der Browser im privaten Modus?
-  </p>
-
-  <main id="main">
-
-    <!-- ================= HOME ================= -->
-    <section id="view-home" class="view active" role="tabpanel" aria-labelledby="tab-home" tabindex="-1">
-      <div class="hero-stats">
-        <div class="stat-card due">
-          <div class="stat-num" id="dueCount">0</div>
-          <div class="stat-label">fällig</div>
-        </div>
-        <div class="stat-card new">
-          <div class="stat-num" id="newCount">0</div>
-          <div class="stat-label">neu</div>
-        </div>
-        <div class="stat-card learned">
-          <div class="stat-num" id="learnedCount">0</div>
-          <div class="stat-label">gelernt</div>
-        </div>
-        <div class="stat-card total">
-          <div class="stat-num" id="totalCount">0</div>
-          <div class="stat-label">gesamt</div>
-        </div>
+    <header class="topbar">
+      <div class="brand">
+        <span class="flag">🇪🇸</span>
+        <span class="brand-name">Español</span>
       </div>
+      <nav class="tabs" id="tabs" role="tablist" aria-label="Bereiche">
+        <button class="tab active" role="tab" id="tab-home" aria-controls="view-home" aria-selected="true"
+          data-view="home">Start</button>
+        <button class="tab" role="tab" id="tab-lesson" aria-controls="view-lesson" aria-selected="false"
+          data-view="lesson">Lektion</button>
+        <button class="tab" role="tab" id="tab-browse" aria-controls="view-browse" aria-selected="false"
+          data-view="browse">Vokabeln</button>
+        <button class="tab" role="tab" id="tab-conj" aria-controls="view-conj" aria-selected="false"
+          data-view="conj">Verben</button>
+        <button class="tab" role="tab" id="tab-grammar" aria-controls="view-grammar" aria-selected="false"
+          data-view="grammar">Grammatik</button>
+        <button class="tab" role="tab" id="tab-packs" aria-controls="view-packs" aria-selected="false"
+          data-view="packs">Übungen</button>
+        <button class="tab" role="tab" id="tab-stats" aria-controls="view-stats" aria-selected="false"
+          data-view="stats">Statistik</button>
+      </nav>
+      <div class="streak" id="streakBadge" title="Tagesserie">🔥 <span id="streakCount">0</span></div>
+    </header>
 
-      <div class="direction-toggle" id="directionToggle">
-        <button class="dir-btn active" data-dir="es-de">🇪🇸 → 🇩🇪 Español–Deutsch</button>
-        <button class="dir-btn" data-dir="de-es">🇩🇪 → 🇪🇸 Deutsch–Español</button>
-      </div>
+    <p id="bootError" class="boot-error" hidden>
+      Der Lernstand konnte nicht geladen werden. Läuft der Browser im privaten Modus?
+    </p>
 
-      <div class="ring-wrap">
-        <svg viewBox="0 0 120 120" class="ring">
-          <circle cx="60" cy="60" r="52" class="ring-bg"/>
-          <circle cx="60" cy="60" r="52" class="ring-fg" id="dailyRing"/>
-        </svg>
-        <div class="ring-label">
-          <div class="ring-num" id="dailyDoneNum">0</div>
-          <div class="ring-sub">/ <span id="dailyGoalNum">20</span> heute</div>
+    <main id="main">
+
+      <!-- ================= HOME ================= -->
+      <section id="view-home" class="view active" role="tabpanel" aria-labelledby="tab-home" tabindex="-1">
+        <div class="hero-stats">
+          <div class="stat-card due">
+            <div class="stat-num" id="dueCount">0</div>
+            <div class="stat-label">fällig</div>
+          </div>
+          <div class="stat-card new">
+            <div class="stat-num" id="newCount">0</div>
+            <div class="stat-label">neu</div>
+          </div>
+          <div class="stat-card learned">
+            <div class="stat-num" id="learnedCount">0</div>
+            <div class="stat-label">gelernt</div>
+          </div>
+          <div class="stat-card total">
+            <div class="stat-num" id="totalCount">0</div>
+            <div class="stat-label">gesamt</div>
+          </div>
         </div>
-      </div>
 
-      <button class="btn-primary btn-huge" id="startSessionBtn">Sitzung starten</button>
-      <p class="hint" id="sessionHint">Karteikarten &middot; Multiple Choice &middot; Tippen</p>
-      <button class="btn-secondary" id="keepLearningBtn" hidden>Trotzdem weiterlernen</button>
-      <p class="hint" id="lessonHint" hidden>📚 Für heute liegt eine Lektion bereit — Tab „Lektion“.</p>
-
-      <div class="goal-row">
-        <label for="dailyGoal">Tagesziel</label>
-        <input type="range" id="dailyGoal" min="5" max="60" step="5" value="20">
-        <span id="dailyGoalDisplay">20</span>
-      </div>
-    </section>
-
-    <!-- ================= SESSION (Karteikarte / MC / Tippen) ================= -->
-    <section id="view-session" class="view">
-      <div class="session-top">
-        <button class="icon-btn" id="exitSessionBtn" aria-label="Beenden">✕</button>
-        <div class="session-progress">
-          <div class="session-progress-bar" id="sessionProgressBar"></div>
+        <div class="direction-toggle" id="directionToggle">
+          <button class="dir-btn active" data-dir="es-de">🇪🇸 → 🇩🇪 Español–Deutsch</button>
+          <button class="dir-btn" data-dir="de-es">🇩🇪 → 🇪🇸 Deutsch–Español</button>
         </div>
-        <div class="session-counter"><span id="sessionIdx">0</span>/<span id="sessionTotal">0</span></div>
-      </div>
 
-      <div class="card-stage" id="cardStage">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120" class="ring">
+            <circle cx="60" cy="60" r="52" class="ring-bg" />
+            <circle cx="60" cy="60" r="52" class="ring-fg" id="dailyRing" />
+          </svg>
+          <div class="ring-label">
+            <div class="ring-num" id="dailyDoneNum">0</div>
+            <div class="ring-sub">/ <span id="dailyGoalNum">20</span> heute</div>
+          </div>
+        </div>
 
-        <!-- Karteikarte -->
-        <div class="mode-panel" id="mode-flip">
-          <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-pressed="false" aria-label="Karteikarte umdrehen">
-            <div class="flashcard-inner" id="flashcardInner">
-              <div class="flashcard-face front">
-                <span class="pos-badge" id="flipPos"></span>
-                <div class="es-word" id="flipFront"></div>
-                <div class="tap-hint">Zum Umdrehen tippen <span class="kbd">Leertaste</span></div>
-              </div>
-              <div class="flashcard-face back">
-                <div class="de-word" id="flipBack"></div>
-                <div class="ex-sentence" id="flipEx" lang="es"></div>
-                <div class="ex-sentence-de" id="flipExDe" lang="de"></div>
+        <button class="btn-primary btn-huge" id="startSessionBtn">Sitzung starten</button>
+        <p class="hint" id="sessionHint">Karteikarten &middot; Multiple Choice &middot; Tippen</p>
+        <button class="btn-secondary" id="keepLearningBtn" hidden>Trotzdem weiterlernen</button>
+        <p class="hint" id="lessonHint" hidden>📚 Für heute liegt eine Lektion bereit — Tab „Lektion“.</p>
+
+        <div class="goal-row">
+          <label for="dailyGoal">Tagesziel</label>
+          <input type="range" id="dailyGoal" min="5" max="60" step="5" value="20">
+          <span id="dailyGoalDisplay">20</span>
+        </div>
+      </section>
+
+      <!-- ================= SESSION (Karteikarte / MC / Tippen) ================= -->
+      <section id="view-session" class="view">
+        <div class="session-top">
+          <button class="icon-btn" id="exitSessionBtn" aria-label="Beenden">✕</button>
+          <div class="session-progress">
+            <div class="session-progress-bar" id="sessionProgressBar"></div>
+          </div>
+          <div class="session-counter"><span id="sessionIdx">0</span>/<span id="sessionTotal">0</span></div>
+        </div>
+
+        <div class="card-stage" id="cardStage">
+
+          <!-- Karteikarte -->
+          <div class="mode-panel" id="mode-flip">
+            <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-pressed="false"
+              aria-label="Karteikarte umdrehen">
+              <div class="flashcard-inner" id="flashcardInner">
+                <div class="flashcard-face front">
+                  <span class="pos-badge" id="flipPos"></span>
+                  <div class="es-word" id="flipFront"></div>
+                  <div class="tap-hint">Zum Umdrehen tippen <span class="kbd">Leertaste</span></div>
+                </div>
+                <div class="flashcard-face back">
+                  <div class="de-word" id="flipBack"></div>
+                  <div class="ex-sentence" id="flipEx" lang="es"></div>
+                  <div class="ex-sentence-de" id="flipExDe" lang="de"></div>
+                </div>
               </div>
             </div>
+            <div class="grade-row" id="gradeRow">
+              <button class="grade-btn again" data-grade="1"><span class="g-label">Nochmal</span><span class="g-iv"
+                  id="iv1"></span></button>
+              <button class="grade-btn hard" data-grade="2"><span class="g-label">Schwer</span><span class="g-iv"
+                  id="iv2"></span></button>
+              <button class="grade-btn good" data-grade="3"><span class="g-label">Gut</span><span class="g-iv"
+                  id="iv3"></span></button>
+              <button class="grade-btn easy" data-grade="4"><span class="g-label">Leicht</span><span class="g-iv"
+                  id="iv4"></span></button>
+            </div>
+            <p class="kbd-hint"><span class="kbd">Leertaste</span> umdrehen &middot; <span class="kbd">1</span>–<span
+                class="kbd">4</span> bewerten</p>
           </div>
-          <div class="grade-row" id="gradeRow">
-            <button class="grade-btn again" data-grade="1"><span class="g-label">Nochmal</span><span class="g-iv" id="iv1"></span></button>
-            <button class="grade-btn hard" data-grade="2"><span class="g-label">Schwer</span><span class="g-iv" id="iv2"></span></button>
-            <button class="grade-btn good" data-grade="3"><span class="g-label">Gut</span><span class="g-iv" id="iv3"></span></button>
-            <button class="grade-btn easy" data-grade="4"><span class="g-label">Leicht</span><span class="g-iv" id="iv4"></span></button>
+
+          <!-- Multiple Choice -->
+          <div class="mode-panel" id="mode-mc" hidden>
+            <span class="pos-badge" id="mcPos"></span>
+            <div class="es-word" id="mcPrompt"></div>
+            <div class="mc-grid" id="mcGrid"></div>
+            <p class="kbd-hint"><span class="kbd">1</span>–<span class="kbd">4</span> wählen &middot; <span
+                class="kbd">Enter</span> weiter</p>
           </div>
-          <p class="kbd-hint"><span class="kbd">Leertaste</span> umdrehen &middot; <span class="kbd">1</span>–<span class="kbd">4</span> bewerten</p>
-        </div>
 
-        <!-- Multiple Choice -->
-        <div class="mode-panel" id="mode-mc" hidden>
-          <span class="pos-badge" id="mcPos"></span>
-          <div class="es-word" id="mcPrompt"></div>
-          <div class="mc-grid" id="mcGrid"></div>
-          <p class="kbd-hint"><span class="kbd">1</span>–<span class="kbd">4</span> wählen &middot; <span class="kbd">Enter</span> weiter</p>
-        </div>
-
-        <!-- Tippen -->
-        <div class="mode-panel" id="mode-type" hidden>
-          <span class="pos-badge" id="typePos"></span>
-          <div class="es-word" id="typePrompt"></div>
-          <input type="text" id="typeInput" class="type-input" placeholder="Übersetzung eintippen …" autocomplete="off" autocapitalize="off" spellcheck="false">
-          <div class="type-feedback" id="typeFeedback"></div>
-          <button class="btn-primary" id="typeCheckBtn">Prüfen</button>
-          <p class="kbd-hint"><span class="kbd">Enter</span> prüfen, dann nochmal <span class="kbd">Enter</span> für weiter</p>
-        </div>
-
-        <button class="btn-primary btn-huge" id="sessionContinueBtn" hidden style="margin-top: 16px;">Weiter</button>
-      </div>
-    </section>
-
-    <!-- ================= SESSION COMPLETE ================= -->
-    <section id="view-done" class="view">
-      <div class="done-panel">
-        <div class="done-emoji">🎉</div>
-        <h2>Sitzung abgeschlossen!</h2>
-        <div class="done-stats">
-          <div><strong id="doneReviewed">0</strong><span id="doneReviewedLabel">Karten geübt</span></div>
-          <div><strong id="doneAccuracy">0%</strong><span>Genauigkeit</span></div>
-          <div id="doneStreakBlock"><strong id="doneStreak">0</strong><span>Serie</span></div>
-        </div>
-        <button class="btn-primary btn-huge" id="doneContinueBtn">Weiter</button>
-      </div>
-    </section>
-
-    <!-- ================= TAGESLEKTION ================= -->
-    <section id="view-lesson" class="view" role="tabpanel" aria-labelledby="tab-lesson" tabindex="-1">
-      <div id="lessonEmpty" class="empty-state">
-        Für heute gibt es noch keine Lektion. Bitte deinen Coach um eine —
-        er legt sie über <code>create_lesson</code> an und sie erscheint hier von selbst.
-      </div>
-
-      <div id="lessonBody" hidden>
-        <div class="lesson-head">
-          <div class="lesson-date" id="lessonDate"></div>
-          <h2 class="section-title" id="lessonTitle" style="margin-bottom:4px;"></h2>
-          <div class="lesson-meta" id="lessonMeta"></div>
-        </div>
-
-        <!-- Hören -->
-        <section class="lesson-part" id="partListening" hidden>
-          <div class="lesson-part-head"><span class="lesson-part-icon">🎧</span>
-            <h3>Hören</h3><span class="lesson-done" id="doneListening" hidden>✓</span></div>
-          <p class="lesson-task" id="listeningTask"></p>
-          <div class="video-wrap"><iframe id="listeningFrame" title="Video zur Lektion"
-            allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
-            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>
-          <div class="video-caption" id="listeningCaption"></div>
-          <div id="listeningQuestions"></div>
-          <button class="btn-primary" id="listeningSubmit" hidden>Antworten abgeben</button>
-          <div class="lesson-feedback" id="listeningFeedback" hidden></div>
-        </section>
-
-        <!-- Schreiben -->
-        <section class="lesson-part" id="partWriting" hidden>
-          <div class="lesson-part-head"><span class="lesson-part-icon">✍️</span>
-            <h3>Schreiben</h3><span class="lesson-done" id="doneWriting" hidden>✓</span></div>
-          <p class="lesson-task" id="writingPrompt"></p>
-          <div class="target-words" id="writingTargets"></div>
-          <textarea id="writingText" class="lesson-textarea" lang="es" rows="9"
-            placeholder="Schreib deinen Text auf Spanisch …" spellcheck="false"></textarea>
-          <div class="lesson-counter"><span id="writingCount">0</span> / <span id="writingMin">0</span> Wörter</div>
-          <button class="btn-primary" id="writingSubmit" disabled>Text abgeben</button>
-          <div class="lesson-feedback" id="writingFeedback" hidden></div>
-        </section>
-
-        <!-- Sprechen -->
-        <section class="lesson-part" id="partSpeaking" hidden>
-          <div class="lesson-part-head"><span class="lesson-part-icon">🗣️</span>
-            <h3>Sprechen</h3><span class="lesson-done" id="doneSpeaking" hidden>✓</span></div>
-          <p class="lesson-task" id="speakingTopic"></p>
-          <ul class="lesson-prompts" id="speakingPrompts" lang="es"></ul>
-          <div class="target-words" id="speakingPhrases"></div>
-          <div class="speak-controls">
-            <button class="btn-primary" id="speakStart">Aufnahme starten</button>
-            <span class="speak-timer" id="speakTimer">0:00 / 0:00</span>
+          <!-- Tippen -->
+          <div class="mode-panel" id="mode-type" hidden>
+            <span class="pos-badge" id="typePos"></span>
+            <div class="es-word" id="typePrompt"></div>
+            <input type="text" id="typeInput" class="type-input" placeholder="Übersetzung eintippen …"
+              autocomplete="off" autocapitalize="off" spellcheck="false">
+            <div class="type-feedback" id="typeFeedback"></div>
+            <button class="btn-primary" id="typeCheckBtn">Prüfen</button>
+            <p class="kbd-hint"><span class="kbd">Enter</span> prüfen, dann nochmal <span class="kbd">Enter</span> für
+              weiter</p>
           </div>
-          <div class="speak-hint" id="speakHint"></div>
-          <textarea id="speakingText" class="lesson-textarea" lang="es" rows="6"
-            placeholder="Hier erscheint, was erkannt wurde. Du kannst es auch selbst eintippen."></textarea>
-          <button class="btn-primary" id="speakingSubmit" disabled>Abgeben</button>
-          <div class="lesson-feedback" id="speakingFeedback" hidden></div>
-        </section>
-      </div>
-    </section>
 
-    <!-- ================= BROWSE ================= -->
-    <section id="view-browse" class="view" role="tabpanel" aria-labelledby="tab-browse" tabindex="-1">
-      <div class="browse-toolbar">
-        <input type="search" id="browseSearch" placeholder="Suchen …">
-        <select id="browseTopic"><option value="">Alle Themen</option></select>
-        <select id="browseLevel"><option value="">Alle Stufen</option></select>
-      </div>
-      <div class="browse-list" id="browseList"></div>
-    </section>
-
-    <!-- ================= KONJUGATION: Übersicht ================= -->
-    <section id="view-conj" class="view" role="tabpanel" aria-labelledby="tab-conj" tabindex="-1">
-      <h2 class="section-title">Konjugationstrainer</h2>
-
-      <div class="conj-lookup">
-        <label for="conjVerbSelect" class="conj-group-label">Nachschlagen</label>
-        <select id="conjVerbSelect"></select>
-        <div class="conj-table" id="conjTable" lang="es"></div>
-      </div>
-
-      <div class="conj-group-label" style="margin-top: 26px;">Zeiten üben</div>
-      <div class="chip-row" id="tenseChips"></div>
-
-      <div class="conj-group-label">Verben</div>
-      <div class="chip-row" id="verbsetChips">
-        <button class="chip active" data-set="irregular">Unregelmäßig</button>
-        <button class="chip" data-set="regular">Regelmäßig</button>
-        <button class="chip" data-set="all">Alle</button>
-      </div>
-
-      <button class="btn-primary btn-huge" id="startConjBtn" style="margin-top: 20px;">Konjugation üben</button>
-      <p class="hint" id="conjHint"></p>
-    </section>
-
-    <!-- ================= KONJUGATION: Drill ================= -->
-    <section id="view-conjsession" class="view">
-      <div class="session-top">
-        <button class="icon-btn" id="exitConjBtn" aria-label="Beenden">✕</button>
-        <div class="session-progress">
-          <div class="session-progress-bar" id="conjProgressBar"></div>
+          <button class="btn-primary btn-huge" id="sessionContinueBtn" hidden style="margin-top: 16px;">Weiter</button>
         </div>
-        <div class="session-counter"><span id="conjIdx">0</span>/<span id="conjTotal">0</span></div>
-      </div>
+      </section>
 
-      <div class="mode-panel">
-        <span class="pos-badge" id="conjTenseLabel"></span>
-        <div class="conj-infinitive" id="conjInfinitive" lang="es"></div>
-        <div class="conj-person" id="conjPersonLabel"></div>
-        <div class="conj-drill-explanation" id="conjDrillExplanation"></div>
-        <input type="text" id="conjInput" lang="es" class="type-input" placeholder="Form eintippen (Akzente optional) …" autocomplete="off" autocapitalize="off" spellcheck="false">
-        <div class="type-feedback" id="conjFeedback"></div>
-        <button class="btn-primary" id="conjCheckBtn">Prüfen</button>
-        <button class="btn-primary btn-huge" id="conjContinueBtn" hidden style="margin-top: 10px;">Weiter</button>
-        <div class="conj-score" id="conjScore"></div>
-      </div>
-    </section>
-
-    <!-- ================= GRAMMATIK: Übersicht ================= -->
-    <section id="view-grammar" class="view" role="tabpanel" aria-labelledby="tab-grammar" tabindex="-1">
-      <h2 class="section-title">Grammatiktrainer</h2>
-      <p class="hint" style="margin-bottom: 16px;">Lückentexte zu typischen Stolperfallen — jede Frage hat eine eindeutig richtige Antwort.</p>
-
-      <div class="conj-group-label">Kategorie</div>
-      <div class="chip-row" id="grammarCategoryChips"></div>
-      <div class="conj-tense-explanation" id="grammarCategoryExplanation" style="margin-top: 10px;"></div>
-
-      <button class="btn-primary btn-huge" id="startGrammarBtn" style="margin-top: 20px;">Grammatik üben</button>
-    </section>
-
-    <!-- ================= GRAMMATIK: Drill ================= -->
-    <section id="view-grammarsession" class="view">
-      <div class="session-top">
-        <button class="icon-btn" id="exitGrammarBtn" aria-label="Beenden">✕</button>
-        <div class="session-progress">
-          <div class="session-progress-bar" id="grammarProgressBar"></div>
+      <!-- ================= SESSION COMPLETE ================= -->
+      <section id="view-done" class="view">
+        <div class="done-panel">
+          <div class="done-emoji">🎉</div>
+          <h2>Sitzung abgeschlossen!</h2>
+          <div class="done-stats">
+            <div><strong id="doneReviewed">0</strong><span id="doneReviewedLabel">Karten geübt</span></div>
+            <div><strong id="doneAccuracy">0%</strong><span>Genauigkeit</span></div>
+            <div id="doneStreakBlock"><strong id="doneStreak">0</strong><span>Serie</span></div>
+          </div>
+          <button class="btn-primary btn-huge" id="doneContinueBtn">Weiter</button>
         </div>
-        <div class="session-counter"><span id="grammarIdx">0</span>/<span id="grammarTotal">0</span></div>
-      </div>
+      </section>
 
-      <div class="mode-panel">
-        <span class="pos-badge" id="grammarCategoryLabel"></span>
-        <div class="grammar-prompt" id="grammarPrompt" lang="es"></div>
-        <div class="mc-grid" id="grammarGrid"></div>
-        <p class="kbd-hint"><span class="kbd">1</span>–<span class="kbd">3</span> wählen &middot; <span class="kbd">Enter</span> weiter</p>
-        <div class="conj-drill-explanation" id="grammarExplanation"></div>
-        <button class="btn-primary btn-huge" id="grammarContinueBtn" hidden style="margin-top: 10px;">Weiter</button>
-        <div class="conj-score" id="grammarScore"></div>
-      </div>
-    </section>
-
-    <!-- ================= ÜBUNGEN (vom Agenten geliefert) ================= -->
-    <section id="view-packs" class="view" role="tabpanel" aria-labelledby="tab-packs" tabindex="-1">
-      <h2 class="section-title">Übungen</h2>
-      <p class="hint" style="text-align:left; margin-top:0;">
-        Übungssätze, die ein Agent in den verknüpften Ordner gelegt hat.
-      </p>
-      <div class="pack-toolbar">
-        <button class="btn-secondary" id="reloadPacksBtn" style="margin:0;">Übungen neu laden</button>
-        <label class="btn-secondary pack-import" for="importPackInput" style="margin:0;">Datei importieren</label>
-        <input type="file" id="importPackInput" accept="application/json,.json" multiple hidden>
-      </div>
-      <div class="pack-message" id="packMessage" hidden></div>
-      <div class="pack-errors" id="packErrors" hidden></div>
-      <div class="pack-list" id="packList"></div>
-    </section>
-
-    <!-- ================= ÜBUNGS-SITZUNG ================= -->
-    <section id="view-packsession" class="view">
-      <div class="session-top">
-        <button class="icon-btn" id="exitPackBtn" aria-label="Beenden">✕</button>
-        <div class="session-progress"><div class="session-progress-bar" id="packProgressBar"></div></div>
-        <div class="session-counter"><span id="packIdx">0</span>/<span id="packTotal">0</span></div>
-      </div>
-      <div class="mode-panel">
-        <span class="pos-badge" id="packTypeLabel"></span>
-        <div class="grammar-prompt" id="packPrompt" lang="es"></div>
-
-        <div class="mc-grid" id="packGrid" hidden></div>
-
-        <div class="pack-typed" id="packTypedWrap" hidden>
-          <input type="text" id="packInput" lang="es" class="type-input" placeholder="Antwort eintippen …"
-                 autocomplete="off" autocapitalize="off" spellcheck="false">
-          <button class="btn-primary" id="packCheckBtn" style="margin-top:12px;">Prüfen</button>
+      <!-- ================= TAGESLEKTION ================= -->
+      <section id="view-lesson" class="view" role="tabpanel" aria-labelledby="tab-lesson" tabindex="-1">
+        <div id="lessonEmpty" class="empty-state">
+          Für heute gibt es noch keine Lektion. Bitte deinen Coach um eine —
+          er legt sie über <code>create_lesson</code> an und sie erscheint hier von selbst.
         </div>
 
-        <div class="type-feedback" id="packFeedback"></div>
-        <div class="conj-drill-explanation" id="packExplanation"></div>
-        <button class="btn-primary btn-huge" id="packContinueBtn" hidden style="margin-top:16px;">Weiter</button>
-        <div class="conj-score" id="packScore"></div>
-      </div>
-    </section>
+        <div id="lessonBody" hidden>
+          <div class="lesson-head">
+            <div class="lesson-date" id="lessonDate"></div>
+            <h2 class="section-title" id="lessonTitle" style="margin-bottom:4px;"></h2>
+            <div class="lesson-meta" id="lessonMeta"></div>
+          </div>
 
-    <!-- ================= STATS ================= -->
-    <section id="view-stats" class="view" role="tabpanel" aria-labelledby="tab-stats" tabindex="-1">
-      <h2 class="section-title">Fortschritt</h2>
-      <div class="stats-grid">
-        <div class="stats-card">
-          <div class="stats-card-num" id="statTotalReviews">0</div>
-          <div class="stats-card-label">Wiederholungen gesamt</div>
-        </div>
-        <div class="stats-card">
-          <div class="stats-card-num" id="statAccuracy">0%</div>
-          <div class="stats-card-label">Genauigkeit (30 Tage)</div>
-        </div>
-        <div class="stats-card">
-          <div class="stats-card-num" id="statStreak">0</div>
-          <div class="stats-card-label">Aktuelle Serie</div>
-        </div>
-        <div class="stats-card">
-          <div class="stats-card-num" id="statMature">0</div>
-          <div class="stats-card-label">Gefestigte Karten</div>
-        </div>
-      </div>
-      <h3 class="section-title small">Letzte 14 Tage</h3>
-      <div class="bar-chart" id="barChart"></div>
-      <h3 class="section-title small">Reifegrad</h3>
-      <div class="maturity-bar" id="maturityBar"></div>
-      <div class="maturity-legend" id="maturityLegend"></div>
+          <!-- Hören -->
+          <section class="lesson-part" id="partListening" hidden>
+            <div class="lesson-part-head"><span class="lesson-part-icon">🎧</span>
+              <h3>Hören</h3><span class="lesson-done" id="doneListening" hidden>✓</span>
+            </div>
+            <p class="lesson-task" id="listeningTask"></p>
+            <div class="video-wrap"><iframe id="listeningFrame" title="Video zur Lektion"
+                allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>
+            <div class="video-caption" id="listeningCaption"></div>
+            <div id="listeningQuestions"></div>
+            <button class="btn-primary" id="listeningSubmit" hidden>Antworten abgeben</button>
+            <div class="lesson-feedback" id="listeningFeedback" hidden></div>
+          </section>
 
-      <h3 class="section-title small">Konjugation</h3>
-      <div class="stats-grid">
-        <div class="stats-card">
-          <div class="stats-card-num" id="conjStatAttempts">0</div>
-          <div class="stats-card-label">Versuche gesamt</div>
-        </div>
-        <div class="stats-card">
-          <div class="stats-card-num" id="conjStatAccuracy">0%</div>
-          <div class="stats-card-label">Genauigkeit (30 Tage)</div>
-        </div>
-      </div>
-      <div class="conj-stats-sub" id="conjStatsSub" hidden>
-        <h4 class="conj-stats-subtitle">Häufige Fehler</h4>
-        <div class="conj-log-list" id="conjMistakesList"></div>
-        <h4 class="conj-stats-subtitle">Letzte Versuche</h4>
-        <div class="conj-log-list" id="conjRecentList"></div>
-      </div>
-      <p class="empty-state" id="conjStatsEmpty" style="display:none;">Noch keine Konjugationsübung gemacht.</p>
+          <!-- Schreiben -->
+          <section class="lesson-part" id="partWriting" hidden>
+            <div class="lesson-part-head"><span class="lesson-part-icon">✍️</span>
+              <h3>Schreiben</h3><span class="lesson-done" id="doneWriting" hidden>✓</span>
+            </div>
+            <p class="lesson-task" id="writingPrompt"></p>
+            <div class="target-words" id="writingTargets"></div>
+            <textarea id="writingText" class="lesson-textarea" lang="es" rows="9"
+              placeholder="Schreib deinen Text auf Spanisch …" spellcheck="false"></textarea>
+            <div class="lesson-counter"><span id="writingCount">0</span> / <span id="writingMin">0</span> Wörter</div>
+            <button class="btn-primary" id="writingSubmit" disabled>Text abgeben</button>
+            <div class="lesson-feedback" id="writingFeedback" hidden></div>
+          </section>
 
-      <h3 class="section-title small">Grammatik</h3>
-      <div class="stats-grid">
-        <div class="stats-card">
-          <div class="stats-card-num" id="grammarStatAttempts">0</div>
-          <div class="stats-card-label">Versuche gesamt</div>
+          <!-- Sprechen -->
+          <section class="lesson-part" id="partSpeaking" hidden>
+            <div class="lesson-part-head"><span class="lesson-part-icon">🗣️</span>
+              <h3>Sprechen</h3><span class="lesson-done" id="doneSpeaking" hidden>✓</span>
+            </div>
+            <p class="lesson-task" id="speakingTopic"></p>
+            <ul class="lesson-prompts" id="speakingPrompts" lang="es"></ul>
+            <div class="target-words" id="speakingPhrases"></div>
+            <div class="speak-controls">
+              <button class="btn-primary" id="speakStart">Aufnahme starten</button>
+              <span class="speak-timer" id="speakTimer">0:00 / 0:00</span>
+            </div>
+            <div class="speak-hint" id="speakHint"></div>
+            <textarea id="speakingText" class="lesson-textarea" lang="es" rows="6"
+              placeholder="Hier erscheint, was erkannt wurde. Du kannst es auch selbst eintippen."></textarea>
+            <button class="btn-primary" id="speakingSubmit" disabled>Abgeben</button>
+            <div class="lesson-feedback" id="speakingFeedback" hidden></div>
+          </section>
         </div>
-        <div class="stats-card">
-          <div class="stats-card-num" id="grammarStatAccuracy">0%</div>
-          <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+      </section>
+
+      <!-- ================= BROWSE ================= -->
+      <section id="view-browse" class="view" role="tabpanel" aria-labelledby="tab-browse" tabindex="-1">
+        <div class="browse-toolbar">
+          <input type="search" id="browseSearch" placeholder="Suchen …">
+          <select id="browseTopic">
+            <option value="">Alle Themen</option>
+          </select>
+          <select id="browseLevel">
+            <option value="">Alle Stufen</option>
+          </select>
         </div>
-      </div>
-      <div class="conj-stats-sub" id="grammarStatsSub" hidden>
-        <h4 class="conj-stats-subtitle">Häufige Fehler</h4>
-        <div class="conj-log-list" id="grammarMistakesList"></div>
-        <h4 class="conj-stats-subtitle">Letzte Versuche</h4>
-        <div class="conj-log-list" id="grammarRecentList"></div>
-      </div>
-      <p class="empty-state" id="grammarStatsEmpty" style="display:none;">Noch keine Grammatikübung gemacht.</p>
+        <div class="browse-list" id="browseList"></div>
+      </section>
 
-      <h3 class="section-title small">Daten exportieren</h3>
-      <p class="hint" style="margin-bottom: 12px;">Der Lernstand liegt in der Datenbank. Ein Agent liest ihn über den MCP-Server und legt dort auch neue Übungen an — siehe <code>README.md</code>.</p>
-      <div class="sync-status" id="syncStatus"></div>
-      <button class="btn-secondary" id="exportDataBtn" style="margin: 10px 0 0;">Fortschritt exportieren (JSON)</button>
-      <button class="btn-secondary" id="exportBriefingBtn">Bericht für Claude exportieren</button>
-    </section>
+      <!-- ================= KONJUGATION: Übersicht ================= -->
+      <section id="view-conj" class="view" role="tabpanel" aria-labelledby="tab-conj" tabindex="-1">
+        <h2 class="section-title">Konjugationstrainer</h2>
 
-  </main>
-</div>
+        <div class="conj-lookup">
+          <label for="conjVerbSelect" class="conj-group-label">Nachschlagen</label>
+          <select id="conjVerbSelect"></select>
+          <div class="conj-table" id="conjTable" lang="es"></div>
+        </div>
 
-<script src="src/text.js"></script>
-<script src="src/store.js"></script>
-<script src="src/deck.js"></script>
-<script src="src/srs.js"></script>
-<script src="src/conjugate.js"></script>
-<script src="src/grammar.js"></script>
-<script src="src/packs.js"></script>
-<script src="src/drill.js"></script>
-<script src="src/lesson.js"></script>
-<script src="src/app.js"></script>
-<script>
-  // Offline-Betrieb: nur über http(s) möglich, bei file:// still überspringen.
-  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
-  }
-</script>
+        <div class="conj-group-label" style="margin-top: 26px;">Zeiten üben</div>
+        <div class="chip-row" id="tenseChips"></div>
+
+        <div class="conj-group-label">Verben</div>
+        <div class="chip-row" id="verbsetChips">
+          <button class="chip active" data-set="irregular">Unregelmäßig</button>
+          <button class="chip" data-set="regular">Regelmäßig</button>
+          <button class="chip" data-set="all">Alle</button>
+        </div>
+
+        <button class="btn-primary btn-huge" id="startConjBtn" style="margin-top: 20px;">Konjugation üben</button>
+        <p class="hint" id="conjHint"></p>
+      </section>
+
+      <!-- ================= KONJUGATION: Drill ================= -->
+      <section id="view-conjsession" class="view">
+        <div class="session-top">
+          <button class="icon-btn" id="exitConjBtn" aria-label="Beenden">✕</button>
+          <div class="session-progress">
+            <div class="session-progress-bar" id="conjProgressBar"></div>
+          </div>
+          <div class="session-counter"><span id="conjIdx">0</span>/<span id="conjTotal">0</span></div>
+        </div>
+
+        <div class="mode-panel">
+          <span class="pos-badge" id="conjTenseLabel"></span>
+          <div class="conj-infinitive" id="conjInfinitive" lang="es"></div>
+          <div class="conj-person" id="conjPersonLabel"></div>
+          <div class="conj-drill-explanation" id="conjDrillExplanation"></div>
+          <input type="text" id="conjInput" lang="es" class="type-input"
+            placeholder="Form eintippen (Akzente optional) …" autocomplete="off" autocapitalize="off"
+            spellcheck="false">
+          <div class="type-feedback" id="conjFeedback"></div>
+          <button class="btn-primary" id="conjCheckBtn">Prüfen</button>
+          <button class="btn-primary btn-huge" id="conjContinueBtn" hidden style="margin-top: 10px;">Weiter</button>
+          <div class="conj-score" id="conjScore"></div>
+        </div>
+      </section>
+
+      <!-- ================= GRAMMATIK: Übersicht ================= -->
+      <section id="view-grammar" class="view" role="tabpanel" aria-labelledby="tab-grammar" tabindex="-1">
+        <h2 class="section-title">Grammatiktrainer</h2>
+        <p class="hint" style="margin-bottom: 16px;">Lückentexte zu typischen Stolperfallen — jede Frage hat eine
+          eindeutig richtige Antwort.</p>
+
+        <div class="conj-group-label">Kategorie</div>
+        <div class="chip-row" id="grammarCategoryChips"></div>
+        <div class="conj-tense-explanation" id="grammarCategoryExplanation" style="margin-top: 10px;"></div>
+
+        <button class="btn-primary btn-huge" id="startGrammarBtn" style="margin-top: 20px;">Grammatik üben</button>
+      </section>
+
+      <!-- ================= GRAMMATIK: Drill ================= -->
+      <section id="view-grammarsession" class="view">
+        <div class="session-top">
+          <button class="icon-btn" id="exitGrammarBtn" aria-label="Beenden">✕</button>
+          <div class="session-progress">
+            <div class="session-progress-bar" id="grammarProgressBar"></div>
+          </div>
+          <div class="session-counter"><span id="grammarIdx">0</span>/<span id="grammarTotal">0</span></div>
+        </div>
+
+        <div class="mode-panel">
+          <span class="pos-badge" id="grammarCategoryLabel"></span>
+          <div class="grammar-prompt" id="grammarPrompt" lang="es"></div>
+          <div class="mc-grid" id="grammarGrid"></div>
+          <p class="kbd-hint"><span class="kbd">1</span>–<span class="kbd">3</span> wählen &middot; <span
+              class="kbd">Enter</span> weiter</p>
+          <div class="conj-drill-explanation" id="grammarExplanation"></div>
+          <button class="btn-primary btn-huge" id="grammarContinueBtn" hidden style="margin-top: 10px;">Weiter</button>
+          <div class="conj-score" id="grammarScore"></div>
+        </div>
+      </section>
+
+      <!-- ================= ÜBUNGEN (vom Agenten geliefert) ================= -->
+      <section id="view-packs" class="view" role="tabpanel" aria-labelledby="tab-packs" tabindex="-1">
+        <h2 class="section-title">Übungen</h2>
+        <p class="hint" style="text-align:left; margin-top:0;">
+          Übungssätze, die ein Agent in den verknüpften Ordner gelegt hat.
+        </p>
+        <div class="pack-toolbar">
+          <button class="btn-secondary" id="reloadPacksBtn" style="margin:0;">Übungen neu laden</button>
+          <label class="btn-secondary pack-import" for="importPackInput" style="margin:0;">Datei importieren</label>
+          <input type="file" id="importPackInput" accept="application/json,.json" multiple hidden>
+        </div>
+        <div class="pack-message" id="packMessage" hidden></div>
+        <div class="pack-errors" id="packErrors" hidden></div>
+        <div class="pack-list" id="packList"></div>
+      </section>
+
+      <!-- ================= ÜBUNGS-SITZUNG ================= -->
+      <section id="view-packsession" class="view">
+        <div class="session-top">
+          <button class="icon-btn" id="exitPackBtn" aria-label="Beenden">✕</button>
+          <div class="session-progress">
+            <div class="session-progress-bar" id="packProgressBar"></div>
+          </div>
+          <div class="session-counter"><span id="packIdx">0</span>/<span id="packTotal">0</span></div>
+        </div>
+        <div class="mode-panel">
+          <span class="pos-badge" id="packTypeLabel"></span>
+          <div class="grammar-prompt" id="packPrompt" lang="es"></div>
+
+          <div class="mc-grid" id="packGrid" hidden></div>
+
+          <div class="pack-typed" id="packTypedWrap" hidden>
+            <input type="text" id="packInput" lang="es" class="type-input" placeholder="Antwort eintippen …"
+              autocomplete="off" autocapitalize="off" spellcheck="false">
+            <button class="btn-primary" id="packCheckBtn" style="margin-top:12px;">Prüfen</button>
+          </div>
+
+          <div class="type-feedback" id="packFeedback"></div>
+          <div class="conj-drill-explanation" id="packExplanation"></div>
+          <button class="btn-primary btn-huge" id="packContinueBtn" hidden style="margin-top:16px;">Weiter</button>
+          <div class="conj-score" id="packScore"></div>
+        </div>
+      </section>
+
+      <!-- ================= STATS ================= -->
+      <section id="view-stats" class="view" role="tabpanel" aria-labelledby="tab-stats" tabindex="-1">
+        <h2 class="section-title">Fortschritt</h2>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-num" id="statTotalReviews">0</div>
+            <div class="stats-card-label">Wiederholungen gesamt</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="statAccuracy">0%</div>
+            <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="statStreak">0</div>
+            <div class="stats-card-label">Aktuelle Serie</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="statMature">0</div>
+            <div class="stats-card-label">Gefestigte Karten</div>
+          </div>
+        </div>
+        <h3 class="section-title small">Letzte 14 Tage</h3>
+        <div class="bar-chart" id="barChart"></div>
+        <h3 class="section-title small">Reifegrad</h3>
+        <div class="maturity-bar" id="maturityBar"></div>
+        <div class="maturity-legend" id="maturityLegend"></div>
+
+        <h3 class="section-title small">Konjugation</h3>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-num" id="conjStatAttempts">0</div>
+            <div class="stats-card-label">Versuche gesamt</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="conjStatAccuracy">0%</div>
+            <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+          </div>
+        </div>
+        <div class="conj-stats-sub" id="conjStatsSub" hidden>
+          <h4 class="conj-stats-subtitle">Häufige Fehler</h4>
+          <div class="conj-log-list" id="conjMistakesList"></div>
+          <h4 class="conj-stats-subtitle">Letzte Versuche</h4>
+          <div class="conj-log-list" id="conjRecentList"></div>
+        </div>
+        <p class="empty-state" id="conjStatsEmpty" style="display:none;">Noch keine Konjugationsübung gemacht.</p>
+
+        <h3 class="section-title small">Grammatik</h3>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-num" id="grammarStatAttempts">0</div>
+            <div class="stats-card-label">Versuche gesamt</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="grammarStatAccuracy">0%</div>
+            <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+          </div>
+        </div>
+        <div class="conj-stats-sub" id="grammarStatsSub" hidden>
+          <h4 class="conj-stats-subtitle">Häufige Fehler</h4>
+          <div class="conj-log-list" id="grammarMistakesList"></div>
+          <h4 class="conj-stats-subtitle">Letzte Versuche</h4>
+          <div class="conj-log-list" id="grammarRecentList"></div>
+        </div>
+        <p class="empty-state" id="grammarStatsEmpty" style="display:none;">Noch keine Grammatikübung gemacht.</p>
+
+        <h3 class="section-title small">Daten exportieren</h3>
+        <p class="hint" style="margin-bottom: 12px;">Der Lernstand liegt in der Datenbank. Ein Agent liest ihn über den
+          MCP-Server und legt dort auch neue Übungen an — siehe <code>README.md</code>.</p>
+        <div class="sync-status" id="syncStatus"></div>
+        <button class="btn-secondary" id="exportDataBtn" style="margin: 10px 0 0;">Fortschritt exportieren
+          (JSON)</button>
+        <button class="btn-secondary" id="exportBriefingBtn">Bericht für Claude exportieren</button>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="src/text.js"></script>
+  <script src="src/store.js"></script>
+  <script src="src/deck.js"></script>
+  <script src="src/srs.js"></script>
+  <script src="src/conjugate.js"></script>
+  <script src="src/grammar.js"></script>
+  <script src="src/packs.js"></script>
+  <script src="src/drill.js"></script>
+  <script src="src/lesson.js"></script>
+  <script src="src/app.js"></script>
+  <script>
+    // Offline-Betrieb: nur über http(s) möglich, bei file:// still überspringen.
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => { }));
+    }
+  </script>
 
 </body>
+
 </html>

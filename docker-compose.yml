@@ -21,6 +21,8 @@ services:
     build: .
     container_name: vokabeltrainer
     environment:
+      # Schaltet den Live-Reload-Watcher frei (siehe server/server.js).
+      NODE_ENV: development
       PGHOST: db
       PGUSER: voco
       PGPASSWORD: ${POSTGRES_PASSWORD:-voco}
@@ -30,19 +32,17 @@ services:
       MCP_TOKEN: ${MCP_TOKEN:-}
       # Zweiter Port, der ausschließlich /mcp bedient. Nur er wird getunnelt.
       MCP_PORT: ${MCP_PORT:-}
-    # Quellcode liegt als Mount im Container, nicht nur als Kopie im Image:
-    # Änderungen an src/ sind nach einem Reload im Browser da, server/ startet
-    # über "node --watch" von selbst neu. Kein Rebuild nötig.
-    # readonly, damit der Container den Arbeitsbaum nie verändert.
+    # Der Arbeitsbaum liegt als Mount im Container, nicht nur als Kopie im
+    # Image: Änderungen sind sofort da, kein Rebuild.
+    # Bewusst das ganze Verzeichnis und keine einzelnen Dateien – Editoren
+    # speichern über "temp schreiben + umbenennen". Bei einem Mount auf eine
+    # einzelne Datei zeigt der Container danach auf die alte, gelöschte Datei
+    # und sieht keine Änderung mehr. Bei einem Verzeichnis-Mount nicht.
     volumes:
-      - ./index.html:/app/index.html:ro
-      - ./manifest.webmanifest:/app/manifest.webmanifest:ro
-      - ./sw.js:/app/sw.js:ro
-      - ./src:/app/src:ro
-      - ./server:/app/server:ro
-      - ./mcp:/app/mcp:ro
-      - ./db:/app/db:ro
-      - ./beispiele:/app/beispiele:ro
+      - ./:/app:ro
+      # Anonymes Volume: hält node_modules aus dem Image frei, sonst würde
+      # der Host-Ordner (macOS) es überdecken.
+      - /app/node_modules
     command: ["node", "--watch", "server/server.js"]
     # Ohne Anmeldung – deshalb nur localhost. Für Zugriff vom Handy siehe README.
     ports:
