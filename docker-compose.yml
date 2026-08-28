@@ -30,6 +30,20 @@ services:
       MCP_TOKEN: ${MCP_TOKEN:-}
       # Zweiter Port, der ausschließlich /mcp bedient. Nur er wird getunnelt.
       MCP_PORT: ${MCP_PORT:-}
+    # Quellcode liegt als Mount im Container, nicht nur als Kopie im Image:
+    # Änderungen an src/ sind nach einem Reload im Browser da, server/ startet
+    # über "node --watch" von selbst neu. Kein Rebuild nötig.
+    # readonly, damit der Container den Arbeitsbaum nie verändert.
+    volumes:
+      - ./index.html:/app/index.html:ro
+      - ./manifest.webmanifest:/app/manifest.webmanifest:ro
+      - ./sw.js:/app/sw.js:ro
+      - ./src:/app/src:ro
+      - ./server:/app/server:ro
+      - ./mcp:/app/mcp:ro
+      - ./db:/app/db:ro
+      - ./beispiele:/app/beispiele:ro
+    command: ["node", "--watch", "server/server.js"]
     # Ohne Anmeldung – deshalb nur localhost. Für Zugriff vom Handy siehe README.
     ports:
       - "127.0.0.1:8080:8080"

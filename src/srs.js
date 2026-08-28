@@ -21,6 +21,16 @@ const SRS = (() => {
   const RELEARN_STEPS = [10];
   const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
 
+  /** Wartezeit eines Lernschritts in Minuten.
+      "Schwer" bleibt auf dem Schritt stehen und nimmt die Mitte zum
+      nächsten Schritt (letzter Schritt: das 1,5-fache) – wie in Anki. */
+  function stepDelay(steps, idx, grade) {
+    const cur = steps[idx];
+    if (grade !== 2) return cur;
+    const next = steps[idx + 1];
+    return next ? (cur + next) / 2 : cur * 1.5;
+  }
+
   /** Erinnerungswahrscheinlichkeit nach t Tagen bei Stabilität s */
   function retrievability(s, t) {
     if (s <= 0) return 0;
@@ -84,9 +94,11 @@ const SRS = (() => {
         c.step = 0;
       } else if (grade === 4) {
         c.step = steps.length;           // sofort graduieren
+      } else if (grade === 2) {
+        // "schwer" bleibt auf dem aktuellen Schritt stehen
       } else {
-        c.step += 1;                     // "gut" und "schwer" rücken vor,
-      }                                  // "schwer" nur mit kleinerer Stabilität
+        c.step += 1;                     // nur "gut" rückt vor
+      }
 
       if (c.step >= steps.length) {
         c.state = "review";
@@ -95,7 +107,7 @@ const SRS = (() => {
         c.due = now + iv * DAY;
         c.interval = iv;
       } else {
-        c.due = now + steps[c.step] * 60000;
+        c.due = now + stepDelay(steps, c.step, grade) * 60000;
         c.interval = 0;
       }
       c.lastReview = now;
