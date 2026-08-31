@@ -14,8 +14,8 @@ const MAX_BODY = 4 * 1024 * 1024;
 const PROTOCOL_HEADER = "mcp-protocol-version";
 
 /* Without a token, anyone who can reach the port is allowed to write to the
-   schreiben. Auf 127.0.0.1 vertretbar – sobald der Port nach außen geht, nicht
-   mehr. Deshalb: MCP_TOKEN setzen. */
+   database. Defensible on 127.0.0.1 - no longer so once the port faces
+   outwards. Hence: set MCP_TOKEN. */
 const TOKEN = process.env.MCP_TOKEN || "";
 
 function unauthorized(res) {

@@ -39,7 +39,7 @@ const TEXT = (() => {
      Character distance across the whole sentence would be too generous:
      "gracias para tu ayuda" is only two characters from "gracias por tu ayuda"
      but is
-     aber kein Vertipper, sondern genau der Fehler, der geübt werden soll. */
+     not a typo - it is exactly the mistake the exercise is meant to test. */
   function isTypo(a, b) {
     const wa = a.split(/\s+/), wb = b.split(/\s+/);
     if (wa.length !== wb.length) return false;
