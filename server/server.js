@@ -24,6 +24,9 @@ const APP_DIR = process.env.APP_DIR || path.join(__dirname, "..");
    outside - the app and /api stay local. Without the second listener a tunnel
    would publish the entire unprotected API along with it. */
 const MCP_PORT = Number(process.env.MCP_PORT || 0);
+/* Turns the /mcp route off entirely - for a deployment that only serves the
+   app to browsers and runs no agent against it. */
+const MCP_DISABLED = process.env.MCP_DISABLED === "1";
 const MAX_BODY = 32 * 1024 * 1024;
 
 // ---------- HTTP helpers ----------
@@ -287,7 +290,10 @@ const server = http.createServer(async (req, res) => {
   catch (e) { return send(res, 400, { error: "ungültige URL" }); }
   try {
     // MCP over HTTP - the same tools as over stdio.
-    if (url.pathname === "/mcp" || url.pathname === "/mcp/") return await mcpHttp.handle(req, res);
+    if (url.pathname === "/mcp" || url.pathname === "/mcp/") {
+      if (MCP_DISABLED) return send(res, 404, { error: "MCP ist abgeschaltet." });
+      return await mcpHttp.handle(req, res);
+    }
     if (url.pathname.startsWith("/api/")) return await handleApi(req, res, url);
     if (req.method !== "GET" && req.method !== "HEAD") return send(res, 405, { error: "nur GET" });
     return await serveStatic(res, path.resolve(APP_DIR), url.pathname === "/" ? "/index.html" : url.pathname);
@@ -336,12 +342,28 @@ const mcpOnlyServer = MCP_PORT ? http.createServer(async (req, res) => {
   catch (e) { if (!res.headersSent) send(res, 500, { error: e.message }); }
 }) : null;
 
+/* A reachable endpoint without a token is open write access to the database,
+   so refuse to start rather than serve one. Two ways to get there: an
+   explicit MCP_PORT (always public - that is what it is for), or a
+   production deployment, where the port is on the internet rather than
+   behind a localhost publish. Deploying without the MCP endpoint at all is
+   the third valid answer: MCP_DISABLED=1. */
+function refuseUnprotectedMcp() {
+  if (MCP_DISABLED || mcpHttp.requiresToken()) return null;
+  if (MCP_PORT) return "MCP_PORT ist gesetzt, aber MCP_TOKEN fehlt.";
+  if (process.env.NODE_ENV === "production") {
+    return "NODE_ENV=production, aber MCP_TOKEN fehlt.";
+  }
+  return null;
+}
+
 (async () => {
-  // A publicly reachable endpoint without a token would be open write access
-  // to the database. Better not to start at all.
-  if (MCP_PORT && !mcpHttp.requiresToken()) {
-    console.error("MCP_PORT ist gesetzt, aber MCP_TOKEN fehlt. Ein öffentlicher " +
-                  "Endpunkt ohne Token käme einem offenen Schreibzugriff gleich. Abbruch.");
+  const refusal = refuseUnprotectedMcp();
+  if (refusal) {
+    console.error(`${refusal} Ein erreichbarer MCP-Endpunkt ohne Token käme einem ` +
+                  "offenen Schreibzugriff auf die Datenbank gleich. Entweder MCP_TOKEN " +
+                  "setzen (openssl rand -hex 24) oder mit MCP_DISABLED=1 ganz abschalten. " +
+                  "Abbruch.");
     process.exit(1);
   }
   await db.init();
@@ -350,8 +372,10 @@ const mcpOnlyServer = MCP_PORT ? http.createServer(async (req, res) => {
   server.listen(PORT, HOST, () => {
     const base = `http://${HOST === "0.0.0.0" ? "localhost" : HOST}:${PORT}`;
     console.log(`Vokabeltrainer läuft auf ${base}`);
-    console.log(`MCP-Endpunkt: ${base}/mcp` +
-      (mcpHttp.requiresToken() ? " (Bearer-Token nötig)" : " (ohne Token – nur für localhost geeignet)"));
+    console.log(MCP_DISABLED
+      ? "MCP-Endpunkt: abgeschaltet (MCP_DISABLED=1)"
+      : `MCP-Endpunkt: ${base}/mcp` +
+        (mcpHttp.requiresToken() ? " (Bearer-Token nötig)" : " (ohne Token – nur für localhost geeignet)"));
   });
   if (mcpOnlyServer) {
     mcpOnlyServer.listen(MCP_PORT, HOST, () =>
