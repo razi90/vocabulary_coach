@@ -17,32 +17,52 @@
   <div id="app">
 
     <header class="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Bereiche" aria-expanded="false" aria-controls="sidenav">
+        <span></span><span></span><span></span>
+      </button>
       <div class="brand">
         <span class="flag">🇪🇸</span>
         <span class="brand-name">Español</span>
       </div>
-      <nav class="tabs" id="tabs" role="tablist" aria-label="Bereiche">
-        <button class="tab active" role="tab" id="tab-home" aria-controls="view-home" aria-selected="true"
-          data-view="home">Start</button>
-        <button class="tab" role="tab" id="tab-lesson" aria-controls="view-lesson" aria-selected="false"
-          data-view="lesson">Lektion</button>
-        <button class="tab" role="tab" id="tab-browse" aria-controls="view-browse" aria-selected="false"
-          data-view="browse">Vokabeln</button>
-        <button class="tab" role="tab" id="tab-conj" aria-controls="view-conj" aria-selected="false"
-          data-view="conj">Verben</button>
-        <button class="tab" role="tab" id="tab-grammar" aria-controls="view-grammar" aria-selected="false"
-          data-view="grammar">Grammatik</button>
-        <button class="tab" role="tab" id="tab-packs" aria-controls="view-packs" aria-selected="false"
-          data-view="packs">Übungen</button>
-        <button class="tab" role="tab" id="tab-stats" aria-controls="view-stats" aria-selected="false"
-          data-view="stats">Statistik</button>
-      </nav>
+      <div class="topbar-section" id="topbarSection">Start</div>
       <div class="streak" id="streakBadge" title="Tagesserie">🔥 <span id="streakCount">0</span></div>
     </header>
 
-    <p id="bootError" class="boot-error" hidden>
-      Der Lernstand konnte nicht geladen werden. Läuft der Browser im privaten Modus?
-    </p>
+    <div class="shell">
+      <div class="nav-scrim" id="navScrim" hidden></div>
+
+      <nav class="sidenav" id="sidenav" role="tablist" aria-label="Bereiche">
+        <div class="nav-group">
+          <div class="nav-group-label">Lernen</div>
+          <button class="tab active" role="tab" id="tab-home" aria-controls="view-home" aria-selected="true"
+            data-view="home"><span class="tab-icon">🏠</span>Start</button>
+          <button class="tab" role="tab" id="tab-lesson" aria-controls="view-lesson" aria-selected="false"
+            data-view="lesson"><span class="tab-icon">📅</span>Lektion</button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Üben</div>
+          <button class="tab" role="tab" id="tab-browse" aria-controls="view-browse" aria-selected="false"
+            data-view="browse"><span class="tab-icon">🃏</span>Vokabeln</button>
+          <button class="tab" role="tab" id="tab-conj" aria-controls="view-conj" aria-selected="false"
+            data-view="conj"><span class="tab-icon">🔀</span>Verben</button>
+          <button class="tab" role="tab" id="tab-grammar" aria-controls="view-grammar" aria-selected="false"
+            data-view="grammar"><span class="tab-icon">📐</span>Grammatik</button>
+          <button class="tab" role="tab" id="tab-packs" aria-controls="view-packs" aria-selected="false"
+            data-view="packs"><span class="tab-icon">🎯</span>Übungen</button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-label">Auswertung</div>
+          <button class="tab" role="tab" id="tab-stats" aria-controls="view-stats" aria-selected="false"
+            data-view="stats"><span class="tab-icon">📊</span>Statistik</button>
+        </div>
+      </nav>
+
+      <div class="content">
+        <p id="bootError" class="boot-error" hidden>
+          Der Lernstand konnte nicht geladen werden. Läuft der Browser im privaten Modus?
+        </p>
 
     <main id="main">
 
@@ -218,6 +238,18 @@
             <div class="lesson-counter"><span id="writingCount">0</span> / <span id="writingMin">0</span> Wörter</div>
             <button class="btn-primary" id="writingSubmit" disabled>Text abgeben</button>
             <div class="lesson-feedback" id="writingFeedback" hidden></div>
+          </section>
+
+          <!-- Sätze übersetzen -->
+          <section class="lesson-part" id="partSentences" hidden>
+            <div class="lesson-part-head"><span class="lesson-part-icon">🔤</span>
+              <h3>Sätze</h3><span class="lesson-done" id="doneSentences" hidden>✓</span>
+            </div>
+            <p class="lesson-task" id="sentencesTask"></p>
+            <ol class="satzliste" id="sentencesList"></ol>
+            <div class="lesson-counter"><span id="sentencesCount">0</span> / <span id="sentencesTotal">0</span> übersetzt</div>
+            <button class="btn-primary" id="sentencesSubmit" disabled>Sätze abgeben</button>
+            <div class="lesson-feedback" id="sentencesFeedback" hidden></div>
           </section>
 
           <!-- Sprechen -->
@@ -458,6 +490,8 @@
       </section>
 
     </main>
+      </div><!-- .content -->
+    </div><!-- .shell -->
   </div>
 
   <script src="src/text.js"></script>

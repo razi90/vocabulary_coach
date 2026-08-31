@@ -43,7 +43,6 @@ services:
       # Anonymes Volume: hält node_modules aus dem Image frei, sonst würde
       # der Host-Ordner (macOS) es überdecken.
       - /app/node_modules
-    command: ["node", "--watch", "server/server.js"]
     # Ohne Anmeldung – deshalb nur localhost. Für Zugriff vom Handy siehe README.
     ports:
       - "127.0.0.1:8080:8080"

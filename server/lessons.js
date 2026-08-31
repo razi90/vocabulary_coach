@@ -113,6 +113,25 @@ function normalizeSpeaking(raw) {
   };
 }
 
+function normalizeSentences(raw) {
+  if (!raw) return null;
+  const items = Array.isArray(raw.items) ? raw.items : [];
+  if (items.length < 3 || items.length > 12) {
+    throw new LessonError("sentences.items braucht zwischen 3 und 12 Sätze.");
+  }
+  const clean = items.map((it, i) => {
+    const de = str(it && it.de);
+    const es = str(it && it.es);
+    if (!de) throw new LessonError(`sentences.items[${i}].de fehlt (der deutsche Satz).`);
+    if (!es) throw new LessonError(`sentences.items[${i}].es fehlt (die gedachte Lösung).`);
+    return { de, es, note: str(it.note) };
+  });
+  return {
+    task: str(raw.task) || "Übersetze die Sätze ins Spanische.",
+    items: clean,
+  };
+}
+
 const heute = () => new Date(Date.now() + 0).toLocaleDateString("sv-SE", { timeZone: "Europe/Berlin" });
 
 async function createLesson(input) {
@@ -121,27 +140,29 @@ async function createLesson(input) {
   const title = str(input.title);
   if (!title) throw new LessonError("title fehlt.");
 
-  const [listening, writing, speaking] = [
+  const [listening, writing, speaking, sentences] = [
     await normalizeListening(input.listening),
     normalizeWriting(input.writing),
     normalizeSpeaking(input.speaking),
+    normalizeSentences(input.sentences),
   ];
-  if (!listening && !writing && !speaking) {
-    throw new LessonError("Eine Lektion braucht mindestens einen Teil (listening, writing oder speaking).");
+  if (!listening && !writing && !speaking && !sentences) {
+    throw new LessonError("Eine Lektion braucht mindestens einen Teil (listening, writing, speaking oder sentences).");
   }
 
   const { rows } = await db.query(
-    `INSERT INTO lessons (day, title, theme, level, created_by, status, listening, writing, speaking)
-     VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb,$8::jsonb,$9::jsonb)
+    `INSERT INTO lessons (day, title, theme, level, created_by, status, listening, writing, speaking, sentences)
+     VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb,$8::jsonb,$9::jsonb,$10::jsonb)
      ON CONFLICT (day) DO UPDATE SET
        title = EXCLUDED.title, theme = EXCLUDED.theme, level = EXCLUDED.level,
        created_by = EXCLUDED.created_by, status = EXCLUDED.status,
-       listening = EXCLUDED.listening, writing = EXCLUDED.writing, speaking = EXCLUDED.speaking
+       listening = EXCLUDED.listening, writing = EXCLUDED.writing,
+       speaking = EXCLUDED.speaking, sentences = EXCLUDED.sentences
      RETURNING *`,
     [day, title, str(input.theme), str(input.level) || "A2", str(input.createdBy) || "Claude",
      str(input.status) || "ready",
      listening && JSON.stringify(listening), writing && JSON.stringify(writing),
-     speaking && JSON.stringify(speaking)]
+     speaking && JSON.stringify(speaking), sentences && JSON.stringify(sentences)]
   );
   return rows[0];
 }

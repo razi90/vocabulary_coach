@@ -1,7 +1,7 @@
 /* Offline-Betrieb: Die App besteht nur aus statischen Dateien, deshalb reicht
    ein Cache, der beim Installieren gefüllt und bei jeder Version ersetzt wird.
    VERSION bei Änderungen an den Dateien hochzählen. */
-const VERSION = "voco-v1";
+const VERSION = "voco-v4";
 const ASSETS = [
   ".",
   "index.html",
@@ -28,12 +28,25 @@ self.addEventListener("activate", (e) => {
 
 // Netz zuerst, damit Änderungen sofort ankommen; offline greift der Cache.
 self.addEventListener("fetch", (e) => {
-  if (e.request.method !== "GET" || new URL(e.request.url).origin !== self.location.origin) return;
+  const url = new URL(e.request.url);
+  if (e.request.method !== "GET" || url.origin !== self.location.origin) return;
+
+  /* Alles Dynamische geht am Cache vorbei – vor allem /api/stream.
+     Das ist ein endloser Server-Sent-Events-Strom: ihn zu klonen und in den
+     Cache zu schreiben liest eine Antwort, die nie endet. Die Verbindung
+     gehört dann dem Service Worker statt der Seite, überlebt jedes Neuladen
+     und sammelt sich beim Server an, während die Ereignisse im Puffer
+     hängen bleiben. */
+  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/mcp")) return;
+
   e.respondWith(
     fetch(e.request)
       .then((res) => {
-        const copy = res.clone();
-        caches.open(VERSION).then((c) => c.put(e.request, copy)).catch(() => {});
+        // Nur vollständige, eigene Antworten sind es wert, gespeichert zu werden.
+        if (res.ok && res.type === "basic") {
+          const copy = res.clone();
+          caches.open(VERSION).then((c) => c.put(e.request, copy)).catch(() => {});
+        }
         return res;
       })
       .catch(() => caches.match(e.request).then((hit) => hit || caches.match("index.html")))

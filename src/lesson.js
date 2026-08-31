@@ -33,6 +33,7 @@ const LESSON = (() => {
     const abgaben = lesson.submissions || {};
     renderListening(lesson.listening, abgaben.listening);
     renderWriting(lesson.writing, abgaben.writing);
+    renderSentences(lesson.sentences, abgaben.sentences);
     renderSpeaking(lesson.speaking, abgaben.speaking);
   }
 
@@ -166,6 +167,71 @@ const LESSON = (() => {
     box.querySelectorAll(".target-word").forEach((chip) => {
       chip.classList.toggle("used", norm.includes(chip.dataset.wort));
     });
+  }
+
+  // ---------- Sätze übersetzen ----------
+  /* Bewertet wird hier nichts: ob "Cierra la puerta, por favor" so gut ist wie
+     "Por favor, cierra la puerta", entscheidet der Coach, nicht ein
+     Zeichenkettenvergleich. Die App sammelt nur ein und gibt ab. */
+  function renderSentences(teil, abgabe) {
+    el("partSentences").hidden = !teil;
+    if (!teil) return;
+    el("doneSentences").hidden = !abgabe;
+    el("sentencesTask").textContent = teil.task;
+    el("sentencesTotal").textContent = teil.items.length;
+
+    const liste = el("sentencesList");
+    const submit = el("sentencesSubmit");
+    const antworten = ((abgabe && abgabe.content) || {}).answers || [];
+
+    liste.innerHTML = teil.items.map((it, i) => `
+      <li class="satz">
+        <div class="satz-de">${esc(it.de)}</div>
+        ${it.note ? `<div class="satz-note">${esc(it.note)}</div>` : ""}
+        <input type="text" class="type-input satz-input" lang="es" data-i="${i}"
+          autocomplete="off" autocapitalize="off" spellcheck="false"
+          placeholder="Auf Spanisch …">
+      </li>`).join("");
+
+    const felder = [...liste.querySelectorAll(".satz-input")];
+    felder.forEach((f, i) => { f.value = antworten[i] || ""; });
+
+    if (abgabe) {
+      felder.forEach((f) => { f.disabled = true; });
+      el("sentencesCount").textContent = felder.filter((f) => f.value.trim()).length;
+      submit.hidden = true;
+      renderFeedback("sentencesFeedback", abgabe);
+      return;
+    }
+
+    submit.hidden = false;
+    const pruefe = () => {
+      const n = felder.filter((f) => f.value.trim()).length;
+      el("sentencesCount").textContent = n;
+      el("sentencesCount").parentElement.classList.toggle("reached", n === felder.length);
+      // Alles oder nichts: eine halbe Abgabe kann der Coach schlecht bewerten.
+      submit.disabled = n < felder.length;
+    };
+    felder.forEach((f, i) => {
+      f.oninput = pruefe;
+      // Enter springt zum nächsten Satz statt das Formular abzuschicken.
+      f.onkeydown = (e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        if (felder[i + 1]) felder[i + 1].focus();
+        else if (!submit.disabled) submit.click();
+      };
+    });
+    pruefe();
+
+    submit.onclick = async () => {
+      felder.forEach((f) => { f.disabled = true; });
+      submit.hidden = true;
+      await abgeben("sentences", {
+        answers: felder.map((f) => f.value.trim()),
+        prompts: teil.items.map((it) => it.de),
+      });
+    };
   }
 
   // ---------- Sprechen ----------

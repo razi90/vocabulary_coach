@@ -61,7 +61,7 @@ async function upsertCards(cards) {
 }
 
 // ---------- Ereignisse (append-only) ----------
-const EVENT_KINDS = new Set(["vocab", "conj", "grammar", "pack"]);
+const EVENT_KINDS = new Set(["vocab", "conj", "grammar", "pack", "sentence"]);
 
 async function appendEvents(events) {
   const list = (Array.isArray(events) ? events : [events]).filter((e) => e && EVENT_KINDS.has(e.kind));

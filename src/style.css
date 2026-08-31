@@ -61,35 +61,93 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-#app { max-width: 640px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+#app { max-width: 1040px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
 
 /* ---------- Topbar ---------- */
 .topbar {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 18px; border-bottom: 1px solid var(--border);
-  background: var(--surface); position: sticky; top: 0; z-index: 20;
+  background: var(--surface); position: sticky; top: 0; z-index: 30;
 }
-.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; flex-shrink: 0; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; flex: 1; min-width: 0; }
 .brand .flag { font-size: 20px; }
-.tabs {
-  display: flex; gap: 4px; margin-left: auto; min-width: 0;
-  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
-}
-.tabs::-webkit-scrollbar { display: none; }
-.tab {
-  border: none; background: transparent; color: var(--text-dim);
-  font-size: 14px; font-weight: 600; padding: 8px 10px; border-radius: 10px;
-  cursor: pointer; transition: background .15s, color .15s; white-space: nowrap; flex-shrink: 0;
-}
-.tab:hover { background: var(--surface-2); }
-.tab.active { background: var(--accent-soft); color: var(--accent); }
+/* Neben der offenen Liste wäre der Bereichsname eine Dopplung – er erscheint
+   erst dort, wo die Liste als Schublade zugeklappt ist (Media-Query unten). */
+.topbar-section { display: none; }
 .streak {
   font-size: 14px; font-weight: 700; color: var(--warn);
   background: var(--warn-soft); padding: 6px 10px; border-radius: 10px;
   display: flex; align-items: center; gap: 4px; flex-shrink: 0;
 }
 
-main { flex: 1; padding: 20px 18px 40px; }
+/* Burger: drei Balken, die im offenen Zustand zum X werden. */
+.menu-btn {
+  display: none; flex-direction: column; justify-content: center; gap: 4px;
+  width: 34px; height: 34px; padding: 0 7px; flex-shrink: 0;
+  border: none; background: transparent; border-radius: 9px; cursor: pointer;
+}
+.menu-btn:hover { background: var(--surface-2); }
+.menu-btn span {
+  display: block; height: 2px; width: 100%; background: var(--text); border-radius: 2px;
+  transition: transform .2s ease, opacity .15s ease;
+}
+.menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* ---------- Gerüst: Bereichsliste links, Inhalt rechts ---------- */
+.shell { flex: 1; display: flex; align-items: flex-start; min-height: 0; }
+
+.sidenav {
+  flex: 0 0 200px; width: 200px; align-self: stretch;
+  padding: 20px 12px; border-right: 1px solid var(--border);
+  position: sticky; top: 63px; max-height: calc(100vh - 63px); overflow-y: auto;
+}
+.nav-group + .nav-group { margin-top: 20px; }
+.nav-group-label {
+  font-size: 10.5px; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: .07em; padding: 0 10px 7px;
+}
+.tab {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  border: none; background: transparent; color: var(--text-dim);
+  font-size: 14.5px; font-weight: 600; padding: 9px 10px; border-radius: 10px;
+  cursor: pointer; transition: background .15s, color .15s;
+}
+.tab + .tab { margin-top: 2px; }
+.tab-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.tab:hover { background: var(--surface-2); color: var(--text); }
+.tab.active { background: var(--accent-soft); color: var(--accent); }
+
+.content { flex: 1; min-width: 0; }
+main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
+
+.nav-scrim { display: none; }
+
+/* Schmal: die Liste fährt als Schublade ein. */
+@media (max-width: 860px) {
+  .menu-btn { display: flex; }
+  .topbar-section {
+    display: block; font-size: 14px; font-weight: 600; color: var(--text-dim);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sidenav {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 40;
+    width: 232px; max-height: none; padding-top: 76px;
+    background: var(--surface); border-right: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transform: translateX(-100%); transition: transform .22s ease;
+  }
+  .sidenav.open { transform: none; }
+  .nav-scrim {
+    display: block; position: fixed; inset: 0; z-index: 35;
+    background: rgba(20, 14, 8, .38); border: none; padding: 0;
+    animation: fadein .18s ease;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidenav { transition: none; }
+}
 
 .view { display: none; }
 .view.active { display: block; animation: fadein .2s ease; }
@@ -397,7 +455,7 @@ main { flex: 1; padding: 20px 18px 40px; }
 /* Neue Übung vom Agenten: Tab markieren, bis er geöffnet wurde. */
 .tab.tab-alert { position: relative; }
 .tab.tab-alert::after {
-  content: ""; position: absolute; top: 5px; right: 4px;
+  content: ""; position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
   width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
 }
 
@@ -453,3 +511,10 @@ main { flex: 1; padding: 20px 18px 40px; }
 .lesson-feedback-head { font-weight: 700; color: var(--blue); margin-bottom: 6px; font-size: 12.5px;
   text-transform: uppercase; letter-spacing: .03em; }
 .lesson-await { font-size: 12.5px; color: var(--text-dim); margin-top: 10px; font-style: italic; }
+
+/* ---------- Lektion: Sätze übersetzen ---------- */
+.satzliste { list-style: none; margin: 14px 0 0; padding: 0; }
+.satz + .satz { margin-top: 14px; }
+.satz-de { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.satz-note { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; font-style: italic; }
+.satz-input { width: 100%; }

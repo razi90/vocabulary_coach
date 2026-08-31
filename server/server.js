@@ -112,36 +112,79 @@ function handleEvents(req, res) {
   });
   res.write("retry: 3000\n\n");
   sseClients.add(res);
+  const dev = process.env.NODE_ENV !== "production";
+  if (dev) console.log(`Stream verbunden (${sseClients.size} offen)`);
   const ping = setInterval(() => res.write(": ping\n\n"), 25000);
-  req.on("close", () => { clearInterval(ping); sseClients.delete(res); });
+  req.on("close", () => {
+    clearInterval(ping);
+    sseClients.delete(res);
+    if (dev) console.log(`Stream getrennt (${sseClients.size} offen)`);
+  });
 }
 
 // ---------- Live-Reload im Entwicklungsbetrieb ----------
 /* Ändert sich eine Datei im Arbeitsbaum, lädt der Browser von selbst neu.
-   Läuft nur außerhalb von NODE_ENV=production – im Container hängt der
-   Arbeitsbaum als Mount unter APP_DIR, deshalb reicht ein fs.watch darauf. */
+   Läuft nur außerhalb von NODE_ENV=production.
+
+   Bewusst Abfragen statt fs.watch: über den Docker-Mount unter macOS verliert
+   der rekursive Watcher eine Datei, sobald ein Editor sie durch "temp
+   schreiben + umbenennen" ersetzt. Die erste Änderung kommt an, jede weitere
+   nicht mehr – bis der Prozess neu startet. Ein paar Dutzend stat() alle
+   500 ms kosten nichts und funktionieren zuverlässig. */
 const RELOAD_EXT = new Set([".html", ".js", ".css", ".webmanifest"]);
+const RELOAD_SKIP = new Set(["node_modules", "fortschritt", "beispiele"]);
+const RELOAD_INTERVAL = 500;
+// Änderungen hier betreffen den laufenden Prozess, nicht nur die Seite.
+const SERVER_DIRS = ["server/", "mcp/"];
+
+async function collectStamps(dir, root, out) {
+  const entries = await fsp.readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.name.startsWith(".") || RELOAD_SKIP.has(entry.name)) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) { await collectStamps(full, root, out); continue; }
+    if (!RELOAD_EXT.has(path.extname(entry.name))) continue;
+    const stat = await fsp.stat(full).catch(() => null);
+    if (stat) out.set(path.relative(root, full), `${stat.mtimeMs}:${stat.size}`);
+  }
+  return out;
+}
 
 function startReloadWatcher() {
   if (process.env.NODE_ENV === "production") return;
-  let timer = null;
-  try {
-    fs.watch(path.resolve(APP_DIR), { recursive: true }, (_event, file) => {
-      if (!file) return;
-      const rel = file.split(path.sep).join("/");
-      if (rel.startsWith("node_modules/") || rel.startsWith(".git/")) return;
-      if (!RELOAD_EXT.has(path.extname(rel))) return;
-      // Ein einziges Speichern löst mehrere Ereignisse aus; kurz sammeln.
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        console.log(`${rel} geändert – Browser lädt neu`);
-        sseClients.forEach((res) => res.write("event: reload\ndata: {}\n\n"));
-      }, 80);
-    });
-    console.log("Live-Reload aktiv");
-  } catch (e) {
-    console.warn("Live-Reload nicht möglich:", e.message);
-  }
+  const root = path.resolve(APP_DIR);
+  let known = null;
+  let busy = false;
+
+  const tick = async () => {
+    if (busy || shuttingDown) return;
+    busy = true;
+    try {
+      const now = await collectStamps(root, root, new Map());
+      if (!known) { known = now; return; }
+      const changed = [...now].filter(([f, s]) => known.get(f) !== s).map(([f]) => f);
+      const removed = [...known.keys()].filter((f) => !now.has(f));
+      known = now;
+      const touched = [...changed, ...removed];
+      if (!touched.length) return;
+
+      // Serverdateien: der Prozess muss neu starten. Docker fährt ihn wegen
+      // "restart: unless-stopped" von selbst wieder hoch.
+      if (touched.some((f) => SERVER_DIRS.some((d) => f.startsWith(d)))) {
+        console.log(`${touched.join(", ")} geändert – Server startet neu`);
+        return shutdown("Dateiänderung");
+      }
+      console.log(`${touched.join(", ")} geändert – Browser lädt neu`);
+      sseClients.forEach((res) => res.write("event: reload\ndata: {}\n\n"));
+    } catch (e) {
+      console.warn("Live-Reload: Durchlauf fehlgeschlagen:", e.message);
+    } finally {
+      busy = false;
+    }
+  };
+
+  setInterval(tick, RELOAD_INTERVAL).unref();
+  console.log(`Live-Reload aktiv (Abfrage alle ${RELOAD_INTERVAL} ms)`);
 }
 
 // ---------- API ----------
@@ -216,8 +259,8 @@ async function handleApi(req, res, url) {
   if (req.method === "POST" && route.startsWith("lesson/") && route.endsWith("/submit")) {
     const lessonId = Number(route.slice("lesson/".length, -"/submit".length));
     const body = await readBody(req);
-    if (!body || !["listening", "writing", "speaking"].includes(body.part)) {
-      return send(res, 400, { error: "part muss listening, writing oder speaking sein" });
+    if (!body || !["listening", "writing", "speaking", "sentences"].includes(body.part)) {
+      return send(res, 400, { error: "part muss listening, writing, speaking oder sentences sein" });
     }
     const row = await lessons.submit(lessonId, body.part, body.content || {});
     return send(res, 200, { ok: true, id: row.id, submittedAt: row.submitted_at });

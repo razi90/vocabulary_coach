@@ -121,6 +121,22 @@
   const tabs = document.querySelectorAll(".tab");
 
   let currentView = "home";
+
+  /* Auf schmalen Schirmen liegt die Bereichsliste als Schublade über dem
+     Inhalt. Auf breiten steht sie fest links – dann ist "open" bedeutungslos,
+     weil das Stylesheet die Schublade dort gar nicht erst einschaltet. */
+  const sidenav = document.getElementById("sidenav");
+  const navScrim = document.getElementById("navScrim");
+  const menuBtn = document.getElementById("menuBtn");
+
+  function setNavOpen(open) {
+    sidenav.classList.toggle("open", open);
+    navScrim.hidden = !open;
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  menuBtn.addEventListener("click", () => setNavOpen(!sidenav.classList.contains("open")));
+  navScrim.addEventListener("click", () => setNavOpen(false));
+
   function showView(name) {
     currentView = name;
     Object.entries(views).forEach(([k, el]) => el.classList.toggle("active", k === name));
@@ -129,6 +145,12 @@
       t.classList.toggle("active", on);
       t.setAttribute("aria-selected", on ? "true" : "false");
     });
+    setNavOpen(false);
+    const chosen = [...tabs].find((t) => t.dataset.view === name);
+    // Nur die Textknoten: das Icon steckt in einem eigenen span.
+    if (chosen) el("topbarSection").textContent = [...chosen.childNodes]
+      .filter((n) => n.nodeType === Node.TEXT_NODE).map((n) => n.textContent).join("").trim();
+
     if (name === "browse") renderBrowse();
     if (name === "stats") { renderStats(); renderSyncStatus(); }
     if (name === "home") renderHome();
@@ -139,6 +161,42 @@
     // Video weiterlaufen zu lassen, während man Vokabeln übt, will niemand.
     if (name !== "lesson") { LESSON.stoppen(); const f = el("listeningFrame"); if (f && f.src) f.src = f.src; }
   }
+  /* Nach einem Neuladen soll der Tab dort weitermachen, wo man war.
+     sessionStorage statt localStorage: ein frisch geöffneter Tab beginnt
+     wie gewohnt auf "Start", nur das Neuladen desselben Tabs stellt wieder her. */
+  const POSITION_KEY = "voco:position";
+  /* Laufende Übungen liegen nur im Speicher und überleben das Neuladen nicht.
+     Statt in eine leere Sitzung zu springen, auf die Übersicht zurückfallen. */
+  const VIEW_FALLBACK = {
+    session: "home", conjsession: "conj", grammarsession: "grammar",
+    packsession: "packs", done: "home",
+  };
+
+  function merkePosition() {
+    try {
+      sessionStorage.setItem(POSITION_KEY, JSON.stringify({
+        view: VIEW_FALLBACK[currentView] || currentView,
+        scrollY: Math.round(window.scrollY),
+      }));
+    } catch (e) { /* privater Modus: dann eben ohne */ }
+  }
+
+  function stellePositionHer() {
+    let saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem(POSITION_KEY) || "null"); }
+    catch (e) { return; }
+    if (!saved || !views[saved.view]) return;
+    if (saved.view !== currentView) showView(saved.view);
+    // Erst nach dem Zeichnen scrollen, sonst ist die Seite noch zu kurz.
+    requestAnimationFrame(() => window.scrollTo(0, saved.scrollY || 0));
+  }
+
+  // Die eigene Wiederherstellung soll die des Browsers nicht doppeln.
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  // pagehide zusätzlich, weil Safari/iOS beforeunload nicht zuverlässig feuert.
+  window.addEventListener("beforeunload", merkePosition);
+  window.addEventListener("pagehide", merkePosition);
+
   /** Läuft gerade eine Übung, die durch den Wechsel verloren ginge? */
   function activeDrill() {
     if (session && session.reviewed >= 0 && currentView === "session") return () => { session = null; };
@@ -1364,6 +1422,9 @@
   };
   /* Nur der Button der gerade sichtbaren Übung darf reagieren. Sonst greift
      Enter auf den zurückgebliebenen Button einer beendeten Übung zu. */
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sidenav.classList.contains("open")) setNavOpen(false);
+  });
   function pressContinue() {
     const btn = el(CONTINUE_BTN[currentView] || "");
     if (!btn || btn.hidden) return false;
@@ -1459,6 +1520,8 @@
       markiereLektion();
     });
     LESSON.setOnSubmitted(markiereLektion);
+
+    stellePositionHer();
   }
 
   boot().catch((e) => {

@@ -56,7 +56,7 @@ const TOOLS = [
     inputSchema: {
       type: "object",
       properties: {
-        kind: { type: "string", enum: ["vocab", "conj", "grammar", "pack"] },
+        kind: { type: "string", enum: ["vocab", "conj", "grammar", "pack", "sentence"] },
         since: { type: "integer", description: "Nur Ereignisse mit seq größer als dieser Wert." },
         limit: { type: "integer", minimum: 1, maximum: 5000, default: 200 },
       },
@@ -201,8 +201,15 @@ const TOOLS = [
     name: "create_lesson",
     description:
       "Legt die Tageslektion an (überschreibt eine vorhandene desselben Tages). Eine Lektion " +
-      "besteht aus bis zu drei Teilen: listening (YouTube-Video mit Verständnisfragen), " +
-      "writing (Schreibauftrag) und speaking (Sprechthema). Mindestens einer ist nötig.\n\n" +
+      "besteht aus bis zu vier Teilen: listening (YouTube-Video mit Verständnisfragen), " +
+      "writing (Schreibauftrag), speaking (Sprechthema) und sentences (Sätze übersetzen). " +
+      "Mindestens einer ist nötig.\n\n" +
+      "Zu sentences: 5–10 deutsche Sätze, die der Lernende ins Spanische überträgt. Bau sie aus " +
+      "Wörtern, die er schon kennt — such sie vorher mit search_vocabulary heraus, dort steht der " +
+      "Lernstand je Wort. Ein Satz je Stolperstelle aus dem Briefing ist mehr wert als zehn " +
+      "beliebige. Die Abgabe kommt über get_pending_feedback zurück; dort steht auch deine " +
+      "gedachte Lösung, damit du siehst, worauf der Satz hinauswollte. Bewerte großzügig: eine " +
+      "andere Wortstellung oder ein Synonym ist kein Fehler, solange der Satz stimmt.\n\n" +
       "WICHTIG zum Video: Die videoId wird beim Anlegen gegen YouTube geprüft. Eine erfundene " +
       "oder nicht einbettbare ID führt zur Ablehnung. Nimm eine ID aus einem echten Suchtreffer, " +
       "nie aus dem Gedächtnis. Titel und Kanal holt der Server selbst.",
@@ -248,6 +255,26 @@ const TOOLS = [
             hints: { type: "array", items: { type: "string" } },
           },
         },
+        sentences: {
+          type: "object",
+          required: ["items"],
+          description: "Sätze zum Übersetzen. Kein Zeichenkettenvergleich – du bewertest sie selbst.",
+          properties: {
+            task: { type: "string", description: "Arbeitsauftrag. Ohne Angabe: „Übersetze die Sätze ins Spanische.“" },
+            items: {
+              type: "array", minItems: 3, maxItems: 12,
+              items: {
+                type: "object",
+                required: ["de", "es"],
+                properties: {
+                  de: { type: "string", description: "Der deutsche Satz, den der Lernende sieht." },
+                  es: { type: "string", description: "Deine gedachte Lösung. Der Lernende sieht sie nie." },
+                  note: { type: "string", description: "Worauf der Satz zielt, z. B. „por vs. para“." },
+                },
+              },
+            },
+          },
+        },
         speaking: {
           type: "object",
           required: ["topic"],
@@ -287,9 +314,10 @@ const TOOLS = [
   {
     name: "get_pending_feedback",
     description:
-      "Abgaben zu Schreiben und Sprechen, die noch keine Rückmeldung haben – samt Aufgabenstellung " +
-      "und dem, was der Lernende geschrieben oder gesagt hat. Beim Sprechen ist es ein Transkript " +
-      "aus der Spracherkennung des Browsers; Erkennungsfehler sind möglich und keine Sprachfehler.",
+      "Abgaben zu Schreiben, Sprechen und Sätzen, die noch keine Rückmeldung haben – samt " +
+      "Aufgabenstellung und dem, was der Lernende geschrieben oder gesagt hat. Beim Sprechen ist es " +
+      "ein Transkript aus der Spracherkennung des Browsers; Erkennungsfehler sind möglich und keine " +
+      "Sprachfehler. Beim Satzteil steht in `vorlage` deine gedachte Lösung je Satz.",
     inputSchema: { type: "object", properties: {} },
     handler: () => lessons.pendingFeedback(),
   },
