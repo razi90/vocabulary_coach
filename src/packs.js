@@ -1,9 +1,9 @@
-/* Übungssätze ("Packs"), die ein Agent schreibt und die App abspielt.
+/* Exercise sets ("packs") that an agent writes and the app plays back.
 
-   Das Format ist die Schnittstelle zwischen Claude und der App und deshalb
-   versioniert. Neue Aufgabentypen kommen in ITEM_TYPES dazu; jeder Typ sagt,
-   wie er geprüft wird. Die Darstellung liegt bewusst in der UI-Schicht
-   (app.js), damit diese Datei ohne DOM testbar bleibt. */
+   The format is the interface between Claude and the app, and therefore
+   versioned. New item types are added to ITEM_TYPES; every type says how it
+   is validated. Rendering deliberately lives in the UI layer (app.js), so
+   this file stays testable without a DOM. */
 const PACKS = (() => {
   const SCHEMA = "vocab-coach/exercise-pack@1";
   const MAX_ITEMS = 100;
@@ -11,8 +11,8 @@ const PACKS = (() => {
   const str = (v) => (typeof v === "string" ? v.trim() : "");
   const strList = (v) => (Array.isArray(v) ? v.map(str).filter(Boolean) : []);
 
-  /* Ein Aufgabentyp beschreibt: wie eine Aufgabe aussehen muss (normalize),
-     ob sie gültig ist (validate) und wann eine Antwort richtig ist (check). */
+  /* An item type describes: what an item has to look like (normalize),
+     whether it is valid (validate) and when an answer is right (check). */
   const ITEM_TYPES = {
     choice: {
       label: "Auswahl",
@@ -32,7 +32,7 @@ const PACKS = (() => {
         if (!it.options.includes(it.answer)) return `answer "${it.answer}" ist keine der options`;
         return null;
       },
-      // Auswahl ist eindeutig: nur exakte Übereinstimmung zählt.
+      // Multiple choice is unambiguous: only an exact match counts.
       check: (it, given) => (given === it.answer ? "exact" : "wrong"),
       accepted: (it) => [it.answer],
     },
@@ -82,10 +82,10 @@ const PACKS = (() => {
   const typeNames = () => Object.keys(ITEM_TYPES);
 
   /**
-   * Rohes JSON in einen geprüften Pack verwandeln.
-   * Gibt { pack, errors } zurück – ein Pack mit einzelnen kaputten Aufgaben
-   * wird trotzdem gespielt, die kaputten Aufgaben fallen heraus. Ein Agent
-   * soll die App nicht lahmlegen können.
+   * Turn raw JSON into a validated pack.
+   * Returns { pack, errors } - a pack with a few broken items is still
+   * played, the broken items drop out. An agent must not be able to bring
+   * the app to a halt.
    */
   function parse(raw, source = "unbekannt") {
     const errors = [];
@@ -135,5 +135,5 @@ const PACKS = (() => {
   return { SCHEMA, ITEM_TYPES, typeNames, parse, checkAnswer, acceptedAnswers, typeLabel };
 })();
 
-/* Auch aus Node nutzbar (Server und MCP), damit Prüfregeln nicht doppelt existieren. */
+/* Usable from Node too (server and MCP), so the rules exist only once. */
 if (typeof module !== "undefined" && module.exports) module.exports = PACKS;

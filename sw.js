@@ -1,6 +1,6 @@
-/* Offline-Betrieb: Die App besteht nur aus statischen Dateien, deshalb reicht
-   ein Cache, der beim Installieren gefüllt und bei jeder Version ersetzt wird.
-   VERSION bei Änderungen an den Dateien hochzählen. */
+/* Offline use: the app is nothing but static files, so a cache that is filled
+   on install and replaced with every version is enough.
+   Bump VERSION whenever the files change. */
 const VERSION = "voco-v4";
 const ASSETS = [
   ".",
@@ -26,23 +26,22 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-// Netz zuerst, damit Änderungen sofort ankommen; offline greift der Cache.
+// Network first, so changes arrive immediately; offline the cache steps in.
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.origin !== self.location.origin) return;
 
-  /* Alles Dynamische geht am Cache vorbei – vor allem /api/stream.
-     Das ist ein endloser Server-Sent-Events-Strom: ihn zu klonen und in den
-     Cache zu schreiben liest eine Antwort, die nie endet. Die Verbindung
-     gehört dann dem Service Worker statt der Seite, überlebt jedes Neuladen
-     und sammelt sich beim Server an, während die Ereignisse im Puffer
-     hängen bleiben. */
+  /* Everything dynamic bypasses the cache - above all /api/stream.
+     That one is an endless server-sent-events stream: cloning it and writing
+     it to the cache reads a response that never ends. The connection then
+     belongs to the service worker instead of the page, survives every reload
+     and piles up on the server while the events sit in the buffer. */
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/mcp")) return;
 
   e.respondWith(
     fetch(e.request)
       .then((res) => {
-        // Nur vollständige, eigene Antworten sind es wert, gespeichert zu werden.
+        // Only complete, same-origin responses are worth storing.
         if (res.ok && res.type === "basic") {
           const copy = res.clone();
           caches.open(VERSION).then((c) => c.put(e.request, copy)).catch(() => {});

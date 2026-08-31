@@ -1,14 +1,15 @@
--- Satztrainer: Deutsch → Spanisch, Sätze aus den Beispielen der Vokabeln.
+-- Sentence trainer: German -> Spanish, sentences from the words' examples.
 --
--- Eigene Ereignisart, damit sich Satzfehler von Vokabelfehlern trennen lassen:
--- "kennt das Wort" und "bekommt den Satz hin" sind zwei verschiedene Dinge.
+-- Its own event kind, so sentence mistakes can be told apart from vocabulary
+-- mistakes: "knows the word" and "gets the sentence right" are two different
+-- things.
 
 ALTER TABLE events DROP CONSTRAINT events_kind_check;
 ALTER TABLE events ADD CONSTRAINT events_kind_check
   CHECK (kind IN ('vocab','conj','grammar','pack','sentence'));
 
--- Welche Sätze sitzen nicht? Mit der Vokabel, an der der Satz hängt, damit
--- ein Agent daraus gezielt Übungen bauen kann.
+-- Which sentences haven't stuck? With the word the sentence hangs off, so an
+-- agent can build targeted exercises from it.
 CREATE VIEW v_sentence_mistakes AS
 SELECT e.payload->>'id'                                   AS word,
        max(e.payload->>'expected')                        AS sentence_es,

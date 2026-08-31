@@ -1,12 +1,12 @@
--- Sätze als vierter Lektionsteil.
+-- Sentences as a fourth part of the lesson.
 --
--- Der Coach baut 5–10 Sätze aus Vokabeln, die der Lernende schon kennt; der
--- Lernende übersetzt sie ins Spanische. Bewertet wird nicht per Zeichenkette –
--- eine andere Wortstellung oder ein Synonym wäre sonst „falsch“ –, sondern vom
--- Coach, zusammen mit dem Rest der Lektion.
+-- The coach builds 5-10 sentences from words the learner already knows; the
+-- learner translates them into Spanish. Grading is not done by string compare
+-- - a different word order or a synonym would otherwise be "wrong" - but by
+-- the coach, together with the rest of the lesson.
 
 ALTER TABLE lessons ADD COLUMN sentences jsonb;
--- { task, items: [{ de, es, note }] }   es = die vom Coach gedachte Lösung
+-- { task, items: [{ de, es, note }] }   es = the solution the coach had in mind
 
 ALTER TABLE lessons DROP CONSTRAINT hat_einen_teil;
 ALTER TABLE lessons ADD CONSTRAINT hat_einen_teil CHECK (
@@ -18,7 +18,7 @@ ALTER TABLE lesson_submissions DROP CONSTRAINT lesson_submissions_part_check;
 ALTER TABLE lesson_submissions ADD CONSTRAINT lesson_submissions_part_check
   CHECK (part IN ('listening','writing','speaking','sentences'));
 
--- Sätze warten wie Schreiben und Sprechen auf eine Rückmeldung.
+-- Sentences wait for feedback just like writing and speaking.
 DROP VIEW v_pending_feedback;
 CREATE VIEW v_pending_feedback AS
 SELECT s.id, s.part, s.submitted_at, s.content,
@@ -29,8 +29,8 @@ SELECT s.id, s.part, s.submitted_at, s.content,
          WHEN 'sentences' THEN l.sentences->>'task'
          ELSE l.listening->>'task'
        END AS aufgabe,
-       -- Beim Satzteil die gedachten Lösungen mitgeben: ohne sie müsste der
-       -- Coach raten, worauf der Satz hinauswollte.
+       -- For the sentence part, include the intended solutions: without them
+       -- the coach would have to guess what the sentence was aiming at.
        CASE WHEN s.part = 'sentences' THEN l.sentences->'items' END AS vorlage
 FROM lesson_submissions s
 JOIN lessons l ON l.id = s.lesson_id

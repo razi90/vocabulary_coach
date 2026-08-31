@@ -1,13 +1,13 @@
-/* Alle Datenbankzugriffe der App an einem Ort.
+/* Every database access of the app, in one place.
 
-   Nach außen sieht es aus wie vorher (Zustand, Karten, Ereignisse, Übungen);
-   darunter liegt jetzt Postgres. Die Ereignistabelle bleibt append-only. */
+   From the outside it looks like before (state, cards, events, exercises);
+   underneath it is Postgres now. The event table stays append-only. */
 
 const db = require("./db.js");
 
 const EPOCH_MS = "(EXTRACT(EPOCH FROM t) * 1000)::bigint";
 
-// ---------- Einstellungen ----------
+// ---------- Settings ----------
 async function getSettings() {
   const { rows } = await db.query("SELECT data FROM settings WHERE only_row");
   return rows[0] ? rows[0].data : {};
@@ -18,7 +18,7 @@ async function putSettings(data) {
      ON CONFLICT (only_row) DO UPDATE SET data = EXCLUDED.data`, [JSON.stringify(data)]);
 }
 
-// ---------- Karten ----------
+// ---------- Cards ----------
 const CARD_COLS = "id, state, stability, difficulty, due, last_review, reps, lapses, step, interval_days";
 
 async function getCards() {
@@ -34,7 +34,7 @@ async function getCards() {
   return out;
 }
 
-/** Nur geänderte Karten; unbekannte Vokabeln werden übersprungen statt zu scheitern. */
+/** Changed cards only; unknown words are skipped instead of failing. */
 async function upsertCards(cards) {
   const list = Object.values(cards).filter((c) => c && c.id);
   if (!list.length) return 0;
@@ -60,7 +60,7 @@ async function upsertCards(cards) {
   });
 }
 
-// ---------- Ereignisse (append-only) ----------
+// ---------- Events (append-only) ----------
 const EVENT_KINDS = new Set(["vocab", "conj", "grammar", "pack", "sentence"]);
 
 async function appendEvents(events) {
@@ -81,7 +81,7 @@ async function appendEvents(events) {
   });
 }
 
-/** Ereignisse in der Form, die die App kennt (t als Epoch-Millisekunden). */
+/** Events in the shape the app knows (t as epoch milliseconds). */
 async function getEvents({ kind, since, limit } = {}) {
   const where = [], params = [];
   if (kind) { params.push(kind); where.push(`kind = $${params.length}`); }
@@ -94,7 +94,7 @@ async function getEvents({ kind, since, limit } = {}) {
   return rows.map((r) => ({ seq: Number(r.seq), t: Number(r.t), kind: r.kind, ok: r.ok, ...r.payload }));
 }
 
-// ---------- Übungssätze ----------
+// ---------- Exercise sets ----------
 function rowToExercise(r) {
   return {
     id: r.id, schema: r.schema_version, title: r.title, description: r.description,
@@ -129,7 +129,7 @@ const setExerciseStatus = (id, status) =>
   db.query("UPDATE exercises SET status = $2 WHERE id = $1", [id, status]);
 const deleteExercise = (id) => db.query("DELETE FROM exercises WHERE id = $1", [id]);
 
-// ---------- Auswertung (die Views sind die einzige Definition) ----------
+// ---------- Analysis (the views are the only definition) ----------
 async function weaknesses({ days = 30, limit = 12 } = {}) {
   const [summary, vocab, conjForms, byTense, byPerson, grammar, packs] = await Promise.all([
     db.query("SELECT * FROM v_summary"),

@@ -1,15 +1,15 @@
-/* Spaced-Repetition-Motor, angelehnt an FSRS.
-   Jede Karte hat Stabilität S (Tage bis Erinnerung auf 90% fällt) und
-   Schwierigkeit D (1-10). Intervall wird aus der Ziel-Retention berechnet,
-   nicht aus festen Multiplikatoren wie bei klassischem SM-2. */
+/* Spaced-repetition engine, modelled on FSRS.
+   Every card has a stability S (days until recall drops to 90%) and a
+   difficulty D (1-10). The interval is computed from the target retention,
+   not from fixed multipliers as in classic SM-2. */
 
 const SRS = (() => {
   const W = {
-    // Anfangsstabilität je Bewertung (Tage)
+    // Initial stability per grade (days)
     initS: { 1: 0.4, 2: 1.2, 3: 3.1, 4: 8.2 },
     initD: { 1: 7.6, 2: 6.3, 3: 5.0, 4: 3.6 },
-    dDecay: 0.9,      // Trägheit der Schwierigkeit
-    sInc: 3.2,        // Grundgewinn bei Erfolg
+    dDecay: 0.9,      // inertia of the difficulty
+    sInc: 3.2,        // base gain on success
     hardPenalty: 0.75,
     easyBonus: 1.35,
     lapseFactor: 1.9,
@@ -17,13 +17,13 @@ const SRS = (() => {
   };
 
   const DAY = 86400000;
-  const LEARN_STEPS = [1, 10];        // Minuten
+  const LEARN_STEPS = [1, 10];        // minutes
   const RELEARN_STEPS = [10];
   const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
 
-  /** Wartezeit eines Lernschritts in Minuten.
-      "Schwer" bleibt auf dem Schritt stehen und nimmt die Mitte zum
-      nächsten Schritt (letzter Schritt: das 1,5-fache) – wie in Anki. */
+  /** Waiting time of a learning step, in minutes.
+      "Hard" stays on the step and takes the midpoint to the next step (on the
+      last step: 1.5x) - the way Anki does it. */
   function stepDelay(steps, idx, grade) {
     const cur = steps[idx];
     if (grade !== 2) return cur;
@@ -31,7 +31,7 @@ const SRS = (() => {
     return next ? (cur + next) / 2 : cur * 1.5;
   }
 
-  /** Erinnerungswahrscheinlichkeit nach t Tagen bei Stabilität s */
+  /** Probability of recall after t days at stability s */
   function retrievability(s, t) {
     if (s <= 0) return 0;
     return Math.pow(1 + t / (9 * s), -1);
@@ -44,7 +44,7 @@ const SRS = (() => {
 
   function nextStability(s, d, r, grade) {
     if (grade === 1) {
-      // Lapse: Stabilität bricht ein, aber nicht auf null
+      // Lapse: stability collapses, but not to zero
       return clamp(W.lapseFactor * Math.pow(d, -0.4) * Math.pow(s, 0.25) *
         Math.exp(0.9 * (1 - r)), 0.2, s);
     }
@@ -54,7 +54,7 @@ const SRS = (() => {
     return clamp(s * gain, 0.2, W.maxInterval);
   }
 
-  /** Intervall in Tagen für gewünschte Retention (z.B. 0.9) */
+  /** Interval in days for the desired retention (e.g. 0.9) */
   function intervalFor(s, desiredRetention) {
     const days = 9 * s * (1 / desiredRetention - 1);
     return clamp(Math.round(days), 1, W.maxInterval);
@@ -68,8 +68,8 @@ const SRS = (() => {
   }
 
   /**
-   * Karte nach Bewertung fortschreiben.
-   * grade: 1 nochmal | 2 schwer | 3 gut | 4 leicht
+   * Advance a card after a grade.
+   * grade: 1 again | 2 hard | 3 good | 4 easy
    */
   function review(card, grade, opts = {}) {
     const now = opts.now ?? Date.now();
@@ -85,7 +85,7 @@ const SRS = (() => {
         c.state = "learning";
         c.step = 0;
       } else {
-        // Folgeschritt: Bewertung zieht Stabilität/Schwierigkeit nach
+        // Next step: the grade pulls stability/difficulty along
         c.stability = Math.max(0.2, (c.stability + W.initS[grade]) / 2);
         c.difficulty = nextDifficulty(c.difficulty, grade);
       }
@@ -93,11 +93,11 @@ const SRS = (() => {
       if (grade === 1) {
         c.step = 0;
       } else if (grade === 4) {
-        c.step = steps.length;           // sofort graduieren
+        c.step = steps.length;           // graduate immediately
       } else if (grade === 2) {
-        // "schwer" bleibt auf dem aktuellen Schritt stehen
+        // "hard" stays on the current step
       } else {
-        c.step += 1;                     // nur "gut" rückt vor
+        c.step += 1;                     // only "good" moves on
       }
 
       if (c.step >= steps.length) {
@@ -114,7 +114,7 @@ const SRS = (() => {
       return c;
     }
 
-    // Wiederholung einer reifen Karte
+    // Review of a mature card
     const elapsedDays = Math.max(0, (now - c.lastReview) / DAY);
     const r = retrievability(c.stability, elapsedDays);
     c.difficulty = nextDifficulty(c.difficulty, grade);
@@ -135,7 +135,7 @@ const SRS = (() => {
     return c;
   }
 
-  /** Vorschau: welches Intervall ergäbe welche Bewertung? (für Buttonbeschriftung) */
+  /** Preview: which grade would yield which interval? (for button labels) */
   function previewIntervals(card, opts = {}) {
     const out = {};
     for (const g of [1, 2, 3, 4]) {
@@ -154,7 +154,7 @@ const SRS = (() => {
     return `${(d / 365).toFixed(1)} Jahre`;
   }
 
-  /** Wie gut sitzt die Karte gerade? 0..1 – steuert die Übungsart */
+  /** How well does the card sit right now? 0..1 - drives the drill type */
   function strength(card, now = Date.now()) {
     if (card.state === "new") return 0;
     if (card.state !== "review") return 0.2;

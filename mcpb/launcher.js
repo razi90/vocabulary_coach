@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-/* Einstiegspunkt der MCPB-Erweiterung.
+/* Entry point of the MCPB extension.
  *
- * Startet keinen eigenen Server, sondern reicht stdio in den laufenden
- * Container durch. Dadurch bleibt das Bündel winzig (kein node_modules, kein
- * pg-Treiber) und es gibt weiterhin nur eine Fassung des Servers.
+ * Starts no server of its own; it pipes stdio into the running container.
+ * That keeps the bundle tiny (no node_modules, no pg driver) and leaves only
+ * one version of the server.
  *
- * Auf stdout gehört ausschließlich das JSON-RPC-Protokoll; alle Hinweise
- * gehen nach stderr.
+ * Only the JSON-RPC protocol belongs on stdout; every notice goes to stderr.
  */
 
 const { spawn, spawnSync } = require("child_process");
@@ -14,8 +13,8 @@ const fs = require("fs");
 
 const CONTAINER = process.env.VOCO_CONTAINER || "vokabeltrainer";
 
-/* Aus einer GUI gestartete Prozesse erben nicht die PATH einer Shell:
-   /usr/local/bin, wo Docker Desktop liegt, fehlt dort. */
+/* Processes started from a GUI do not inherit a shell's PATH:
+   /usr/local/bin, where Docker Desktop lives, is missing there. */
 const CANDIDATES = [
   "/usr/local/bin/docker",
   "/opt/homebrew/bin/docker",
@@ -26,7 +25,7 @@ const CANDIDATES = [
 
 function findDocker() {
   for (const candidate of CANDIDATES) {
-    try { fs.accessSync(candidate, fs.constants.X_OK); return candidate; } catch (e) { /* weiter */ }
+    try { fs.accessSync(candidate, fs.constants.X_OK); return candidate; } catch (e) { /* keep looking */ }
   }
   const which = spawnSync("which", ["docker"], { encoding: "utf8" });
   const found = (which.stdout || "").trim();

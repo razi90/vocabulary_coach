@@ -1,9 +1,9 @@
-/* Generischer Übungsablauf.
+/* Generic drill flow.
 
-   Alle Übungsarten teilen dieselbe Mechanik: eine Warteschlange abarbeiten,
-   richtig/falsch zählen, Falsches später noch einmal einstreuen, Fortschritt
-   anzeigen. Diese Datei kennt kein DOM und keine Aufgabenart – wer eine neue
-   Übung baut, braucht nur noch eine Render-Funktion. */
+   Every kind of drill shares the same mechanics: work through a queue, count
+   right and wrong, sprinkle the wrong ones back in later, show progress. This
+   file knows no DOM and no item type - whoever builds a new drill only needs
+   a render function. */
 const DRILL = (() => {
   function create(items, opts = {}) {
     return {
@@ -20,7 +20,7 @@ const DRILL = (() => {
   const current = (d) => (d && d.items[d.idx]) || null;
   const isDone = (d) => !d || d.idx >= d.items.length;
 
-  /** Antwort verbuchen. Falsches wandert ein paar Positionen weiter nach hinten. */
+  /** Record an answer. Wrong ones move a few positions further back. */
   function record(d, ok) {
     d.reviewed += 1;
     if (ok) d.correct += 1;
@@ -34,7 +34,7 @@ const DRILL = (() => {
 
   const advance = (d) => { d.idx += 1; return d; };
 
-  /** Breite, die nie schrumpft – Nachzügler verlängern die Warteschlange. */
+  /** A width that never shrinks - stragglers lengthen the queue. */
   function progress(d) {
     const pct = d.items.length ? (d.idx / d.items.length) * 100 : 0;
     d.barPct = Math.max(d.barPct, pct);
@@ -44,8 +44,9 @@ const DRILL = (() => {
   const accuracy = (d) => (d.reviewed ? Math.round((d.correct / d.reviewed) * 100) : null);
 
   /**
-   * Auswahl nach Übungsbedarf: Fehler zuerst, dann Ungeübtes, dann lange
-   * nicht Wiederholtes. Der Zufallsanteil verhindert immer dieselbe Reihenfolge.
+   * Selection by need for practice: mistakes first, then unpractised items,
+   * then whatever has not been reviewed in a long time. The random share
+   * keeps the order from always being the same.
    */
   function score(rec, now = Date.now()) {
     if (!rec || !rec.attempts) return 4 + Math.random() * 2;
@@ -55,7 +56,7 @@ const DRILL = (() => {
     return wrong + stale + mastered + Math.random() * 2;
   }
 
-  /** Die n dringendsten Einträge auswählen und für die Anzeige mischen. */
+  /** Pick the n most urgent entries and shuffle them for display. */
   function select(items, keyFn, recordsById, n) {
     const picked = items
       .map((it) => ({ it, s: score(recordsById[keyFn(it)]) }))

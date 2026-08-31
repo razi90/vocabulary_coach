@@ -1,14 +1,14 @@
--- Grundschema.
+-- Base schema.
 --
--- Leitgedanke: `events` ist append-only und die Wahrheit. Alles, was eine
--- Schwäche beschreibt, ist eine View darüber – damit App und Agent nie
--- unterschiedliche Antworten auf „was sitzt nicht?“ geben können.
+-- Guiding idea: `events` is append-only and the truth. Everything that
+-- describes a weakness is a view on top of it - so app and agent can never
+-- give different answers to "what hasn't stuck?".
 
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
--- ---------- Lerninhalte (aus deck.js/grammar.js/conjugate.js gespiegelt) ----------
--- Liegen in der Datenbank, damit ein Agent Schwächen direkt mit Inhalten
--- verbinden kann, ohne die JavaScript-Dateien zu lesen.
+-- ---------- Content (mirrored from deck.js/grammar.js/conjugate.js) ----------
+-- Kept in the database so an agent can connect weaknesses to content
+-- directly, without reading the JavaScript files.
 
 CREATE TABLE vocabulary (
   es          text PRIMARY KEY,
@@ -47,7 +47,7 @@ CREATE TABLE labels (               -- Anzeigenamen für Zeiten, Personen, Kateg
   PRIMARY KEY (kind, key)
 );
 
--- ---------- Lernstand ----------
+-- ---------- Learning state ----------
 
 CREATE TABLE settings (
   only_row boolean PRIMARY KEY DEFAULT true CHECK (only_row),
@@ -69,7 +69,7 @@ CREATE TABLE cards (
 );
 CREATE INDEX cards_due_idx ON cards (due) WHERE state <> 'new';
 
--- Append-only. Nie UPDATE, nie DELETE.
+-- Append-only. Never UPDATE, never DELETE.
 CREATE TABLE events (
   seq     bigserial PRIMARY KEY,
   t       timestamptz NOT NULL DEFAULT now(),
@@ -81,7 +81,7 @@ CREATE INDEX events_kind_t_idx ON events (kind, t DESC);
 CREATE INDEX events_t_idx ON events (t DESC);
 CREATE INDEX events_payload_idx ON events USING gin (payload);
 
--- ---------- Übungssätze, die ein Agent schreibt ----------
+-- ---------- Exercise sets written by an agent ----------
 
 CREATE TABLE exercises (
   id             text PRIMARY KEY,
@@ -92,7 +92,7 @@ CREATE TABLE exercises (
   created_at     timestamptz NOT NULL DEFAULT now(),
   updated_at     timestamptz NOT NULL DEFAULT now(),
   focus          text[] NOT NULL DEFAULT '{}',
-  -- draft: vom Agenten angelegt, aber noch nicht fertig; die App zeigt nur "ready".
+  -- draft: created by the agent but not finished; the app shows only "ready".
   status         text NOT NULL DEFAULT 'ready' CHECK (status IN ('draft','ready','archived')),
   items          jsonb NOT NULL,
   CONSTRAINT items_is_array   CHECK (jsonb_typeof(items) = 'array'),
@@ -100,7 +100,7 @@ CREATE TABLE exercises (
 );
 CREATE INDEX exercises_status_idx ON exercises (status, created_at DESC);
 
--- Die App soll neue Übungen sehen, ohne dass jemand neu lädt.
+-- The app should see new exercises without anyone reloading.
 CREATE OR REPLACE FUNCTION notify_exercises() RETURNS trigger AS $$
 BEGIN
   PERFORM pg_notify('exercises_changed', COALESCE(NEW.id, OLD.id));
@@ -119,10 +119,10 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER exercises_touch BEFORE UPDATE ON exercises
 FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
 
--- ---------- Auswertung: die einzige Definition von „Schwäche“ ----------
+-- ---------- Analysis: the only definition of "weakness" ----------
 
--- Vokabeln, die danebengehen – samt der Vokabel, mit der verwechselt wurde.
--- Die Verwechslung ist der Grund, warum die getippte Antwort protokolliert wird.
+-- Words that go wrong - together with the word they were confused with.
+-- That confusion is the reason the typed answer is logged at all.
 CREATE VIEW v_vocab_mistakes AS
 WITH agg AS (
   SELECT payload->>'id' AS es,
@@ -159,8 +159,8 @@ LEFT JOIN LATERAL (
 ) c ON true
 WHERE a.wrong > 0;
 
--- Achtung: `labels` hat ebenfalls eine Spalte `kind`, deshalb sind alle
--- Verweise auf die Ereignistabelle hier ausdrücklich qualifiziert.
+-- Careful: `labels` also has a `kind` column, which is why every reference
+-- to the event table is qualified explicitly here.
 CREATE VIEW v_conjugation_mistakes AS
 SELECT e.payload->>'verb'            AS verb,
        e.payload->>'tense'           AS tense,

@@ -1,7 +1,7 @@
-/* Werkzeuge und Protokolllogik des MCP-Servers – ohne Transport.
+/* Tools and protocol logic of the MCP server - without the transport.
 
-   Genutzt von mcp/server.js (stdio) und server/mcp-http.js (HTTP). Beide
-   Wege müssen sich exakt gleich verhalten, deshalb gibt es das nur einmal. */
+   Used by mcp/server.js (stdio) and server/mcp-http.js (HTTP). Both routes
+   have to behave exactly alike, which is why this exists only once. */
 
 const db = require("../server/db.js");
 const store = require("../server/store.js");
@@ -14,7 +14,7 @@ const PACKS = require("../src/packs.js");
 const SERVER_INFO = { name: "vokabeltrainer", version: "2.0.0" };
 const FALLBACK_PROTOCOL = "2025-06-18";
 
-// ---------- Werkzeuge ----------
+// ---------- Tools ----------
 const TOOLS = [
   {
     name: "get_briefing",
@@ -157,7 +157,7 @@ const TOOLS = [
         description: args.description || "", createdBy: "Claude",
         createdAt: new Date().toISOString(), focus: args.focus || [], items: args.items,
       };
-      // Dieselbe Prüfung wie im Browser – eine Definition von „gültig“.
+      // The same validation as in the browser - one definition of "valid".
       const { pack, errors } = PACKS.parse(raw, args.id);
       if (!pack) {
         const e = new Error(`Übungssatz abgelehnt:\n- ${errors.join("\n- ")}`);
@@ -196,7 +196,7 @@ const TOOLS = [
     },
   },
 
-  // ---------- Tageslektionen ----------
+  // ---------- Daily lessons ----------
   {
     name: "create_lesson",
     description:
@@ -343,12 +343,12 @@ const TOOLS = [
 const TOOL_BY_NAME = Object.fromEntries(TOOLS.map((t) => [t.name, t]));
 
 
-// ---------- Protokoll ----------
+// ---------- Protocol ----------
 const asText = (value) => (typeof value === "string" ? value : JSON.stringify(value, null, 2));
 
 /**
- * Eine JSON-RPC-Nachricht verarbeiten.
- * Gibt die Antwort zurück oder null, wenn keine erwartet wird (Notification).
+ * Handle one JSON-RPC message.
+ * Returns the response, or null when none is expected (notification).
  */
 async function handleMessage(msg) {
   const { id, method, params } = msg;
@@ -360,7 +360,7 @@ async function handleMessage(msg) {
     switch (method) {
       case "initialize":
         return reply({
-          // Version des Clients spiegeln, damit unterschiedliche Stände zusammenpassen.
+          // Mirror the client's version so differing revisions still match.
           protocolVersion: (params && params.protocolVersion) || FALLBACK_PROTOCOL,
           capabilities: { tools: { listChanged: false } },
           serverInfo: SERVER_INFO,
@@ -388,8 +388,8 @@ async function handleMessage(msg) {
           const value = await tool.handler((params && params.arguments) || {});
           return reply({ content: [{ type: "text", text: asText(value) }] });
         } catch (e) {
-          // Fachliche Fehler gehören ins Ergebnis, damit das Modell sie sieht
-          // und korrigieren kann – nicht in einen Protokollfehler.
+          // Domain errors belong in the result, so the model sees them and
+          // can correct them - not in a protocol error.
           return reply({ content: [{ type: "text", text: e.message }], isError: true });
         }
       }

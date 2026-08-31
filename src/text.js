@@ -1,22 +1,22 @@
-/* Gemeinsame Text- und Antwortlogik. Wird von der App und von den
-   Übungssätzen genutzt, damit "richtig" überall dasselbe bedeutet. */
+/* Shared text and answer logic. Used by the app and by the exercise sets, so
+   that "correct" means the same thing everywhere. */
 const TEXT = (() => {
-  /** Kleinschreibung ohne Akzente – Akzente sind beim Tippen optional. */
+  /** Lower case without accents - accents are optional when typing. */
   function norm(s) {
     return String(s == null ? "" : s).trim().toLowerCase()
       .normalize("NFD").replace(/[̀-ͯ]/g, "")
-      // Satzzeichen am Rand und doppelte Leerzeichen sind nie der Lernstoff.
+      // Edge punctuation and double spaces are never the material.
       .replace(/^[¡¿"'«»(]+|[.,;:!?"'«»)]+$/g, "")
       .replace(/\s+/g, " ")
       .trim();
   }
 
-  /** Pflicht bei jedem innerHTML mit Nutzereingaben oder freiem Text. */
+  /** Mandatory for every innerHTML with user input or free text. */
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (ch) => (
     { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]
   ));
 
-  /** Levenshtein-Distanz, abgebrochen sobald sie das Limit überschreitet. */
+  /** Levenshtein distance, aborted as soon as it exceeds the limit. */
   function editDistance(a, b, limit) {
     if (Math.abs(a.length - b.length) > limit) return limit + 1;
     let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
@@ -33,11 +33,12 @@ const TEXT = (() => {
     return prev[b.length];
   }
 
-  /* Ein Vertipper ist: gleich viele Wörter, höchstens eines weicht ab, und
-     dieses eine nur geringfügig.
+  /* A typo is: the same number of words, at most one of them differing, and
+     that one only slightly.
 
-     Zeichendistanz über den ganzen Satz wäre zu großzügig: "gracias para tu
-     ayuda" liegt nur zwei Zeichen von "gracias por tu ayuda" entfernt, ist
+     Character distance across the whole sentence would be too generous:
+     "gracias para tu ayuda" is only two characters from "gracias por tu ayuda"
+     but is
      aber kein Vertipper, sondern genau der Fehler, der geübt werden soll. */
   function isTypo(a, b) {
     const wa = a.split(/\s+/), wb = b.split(/\s+/);
@@ -45,19 +46,19 @@ const TEXT = (() => {
     let differing = -1;
     for (let i = 0; i < wa.length; i++) {
       if (wa[i] === wb[i]) continue;
-      if (differing >= 0) return false;      // mehr als ein abweichendes Wort
+      if (differing >= 0) return false;      // more than one differing word
       differing = i;
     }
     if (differing < 0) return false;
     const given = wa[differing], target = wb[differing];
-    // Vertauschte Nachbarbuchstaben sind auch bei kurzen Wörtern ein Vertipper
-    // ("pro" statt "por"), eine echte Wortverwechslung dagegen nicht.
+    // Swapped neighbouring letters are a typo even in short words ("pro"
+    // instead of "por"); a genuine word mix-up is not.
     if (isSwap(given, target)) return true;
     const limit = target.length >= 8 ? 2 : target.length >= 4 ? 1 : 0;
     return limit > 0 && editDistance(given, target, limit) <= limit;
   }
 
-  /** Genau zwei benachbarte Zeichen vertauscht? */
+  /** Exactly two adjacent characters swapped? */
   function isSwap(a, b) {
     if (a.length !== b.length) return false;
     const diff = [];
@@ -67,8 +68,8 @@ const TEXT = (() => {
   }
 
   /**
-   * "exact" | "close" | "wrong". Ein Vertipper soll eine Karte nicht
-   * auf "nochmal" zurückwerfen, deshalb die mittlere Stufe.
+   * "exact" | "close" | "wrong". A typo should not throw a card back to
+   * "again", hence the middle level.
    */
   function judge(typed, alternatives) {
     const value = norm(typed);
@@ -82,5 +83,5 @@ const TEXT = (() => {
   return { norm, esc, editDistance, judge, isTypo };
 })();
 
-/* Auch aus Node nutzbar (Server und MCP), damit Prüfregeln nicht doppelt existieren. */
+/* Usable from Node too (server and MCP), so the rules exist only once. */
 if (typeof module !== "undefined" && module.exports) module.exports = TEXT;

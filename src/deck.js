@@ -1,7 +1,8 @@
-/* Startdeck Spanisch -> Deutsch.
-   Jeder Eintrag: es, de (Alternativen mit |), pos, level, topic, ex (Beispielsatz), exDe */
+/* Starter deck Spanish -> German.
+   Each entry: es, de (alternatives with |), pos, level, topic, ex (example
+   sentence), exDe */
 const DECK = [
-  // --- A1: Grundlagen / Personen ---
+  // --- A1: basics / people ---
   { es: "el hombre", de: "der Mann", pos: "noun", level: "A1", topic: "Menschen", ex: "El hombre lee el periódico.", exDe: "Der Mann liest die Zeitung." },
   { es: "la mujer", de: "die Frau", pos: "noun", level: "A1", topic: "Menschen", ex: "La mujer trabaja en un hospital.", exDe: "Die Frau arbeitet in einem Krankenhaus." },
   { es: "el niño", de: "das Kind|der Junge", pos: "noun", level: "A1", topic: "Menschen", ex: "El niño juega en el parque.", exDe: "Das Kind spielt im Park." },
@@ -11,7 +12,7 @@ const DECK = [
   { es: "la hija", de: "die Tochter", pos: "noun", level: "A1", topic: "Menschen", ex: "Su hija estudia medicina.", exDe: "Ihre Tochter studiert Medizin." },
   { es: "el vecino", de: "der Nachbar", pos: "noun", level: "A2", topic: "Menschen", ex: "El vecino siempre saluda por la mañana.", exDe: "Der Nachbar grüßt morgens immer." },
 
-  // --- Alltag / Zuhause ---
+  // --- everyday life / home ---
   { es: "la casa", de: "das Haus", pos: "noun", level: "A1", topic: "Zuhause", ex: "Nuestra casa está cerca de la playa.", exDe: "Unser Haus ist in der Nähe des Strandes." },
   { es: "la puerta", de: "die Tür", pos: "noun", level: "A1", topic: "Zuhause", ex: "Por favor, cierra la puerta.", exDe: "Bitte schließ die Tür." },
   { es: "la ventana", de: "das Fenster", pos: "noun", level: "A1", topic: "Zuhause", ex: "Abro la ventana porque hace calor.", exDe: "Ich öffne das Fenster, weil es heiß ist." },
@@ -21,7 +22,7 @@ const DECK = [
   { es: "la cocina", de: "die Küche", pos: "noun", level: "A1", topic: "Zuhause", ex: "Mi madre está en la cocina.", exDe: "Meine Mutter ist in der Küche." },
   { es: "la llave", de: "der Schlüssel", pos: "noun", level: "A2", topic: "Zuhause", ex: "He perdido las llaves del coche.", exDe: "Ich habe die Autoschlüssel verloren." },
 
-  // --- Essen & Trinken ---
+  // --- food & drink ---
   { es: "el agua", de: "das Wasser", pos: "noun", level: "A1", topic: "Essen", ex: "¿Me trae un vaso de agua, por favor?", exDe: "Bringen Sie mir bitte ein Glas Wasser?" },
   { es: "el pan", de: "das Brot", pos: "noun", level: "A1", topic: "Essen", ex: "Compro pan fresco cada mañana.", exDe: "Ich kaufe jeden Morgen frisches Brot." },
   { es: "la leche", de: "die Milch", pos: "noun", level: "A1", topic: "Essen", ex: "El café con leche está muy caliente.", exDe: "Der Milchkaffee ist sehr heiß." },
@@ -33,7 +34,7 @@ const DECK = [
   { es: "la cuenta", de: "die Rechnung", pos: "noun", level: "A2", topic: "Essen", ex: "La cuenta, por favor.", exDe: "Die Rechnung, bitte." },
   { es: "probar", de: "probieren|kosten", pos: "verb", level: "A2", topic: "Essen", ex: "¿Quieres probar el gazpacho?", exDe: "Willst du den Gazpacho probieren?" },
 
-  // --- Zeit ---
+  // --- time ---
   { es: "el día", de: "der Tag", pos: "noun", level: "A1", topic: "Zeit", ex: "Ha sido un día muy largo.", exDe: "Es war ein sehr langer Tag." },
   { es: "la semana", de: "die Woche", pos: "noun", level: "A1", topic: "Zeit", ex: "La semana que viene tengo vacaciones.", exDe: "Nächste Woche habe ich Urlaub." },
   { es: "el año", de: "das Jahr", pos: "noun", level: "A1", topic: "Zeit", ex: "Vivo aquí desde hace un año.", exDe: "Ich wohne seit einem Jahr hier." },
@@ -45,7 +46,7 @@ const DECK = [
   { es: "a menudo", de: "oft|häufig", pos: "adv", level: "A2", topic: "Zeit", ex: "A menudo salgo a correr por la mañana.", exDe: "Ich gehe oft morgens laufen." },
   { es: "temprano", de: "früh", pos: "adv", level: "A2", topic: "Zeit", ex: "Mañana tengo que levantarme temprano.", exDe: "Morgen muss ich früh aufstehen." },
 
-  // --- Verben A1/A2 ---
+  // --- verbs A1/A2 ---
   { es: "ser", de: "sein", pos: "verb", level: "A1", topic: "Verben", ex: "Soy de Alemania.", exDe: "Ich bin aus Deutschland." },
   { es: "estar", de: "sein|sich befinden", pos: "verb", level: "A1", topic: "Verben", ex: "Estoy en la oficina.", exDe: "Ich bin im Büro." },
   { es: "tener", de: "haben", pos: "verb", level: "A1", topic: "Verben", ex: "Tengo dos hermanas.", exDe: "Ich habe zwei Schwestern." },
@@ -72,7 +73,7 @@ const DECK = [
   { es: "acordarse de", de: "sich erinnern an", pos: "verb", level: "B1", topic: "Verben", ex: "¿Te acuerdas de aquel verano?", exDe: "Erinnerst du dich an jenen Sommer?" },
   { es: "darse cuenta de", de: "bemerken|merken", pos: "verb", level: "B1", topic: "Verben", ex: "Me di cuenta del error demasiado tarde.", exDe: "Ich habe den Fehler zu spät bemerkt." },
 
-  // --- Stadt & Reisen ---
+  // --- city & travel ---
   { es: "la ciudad", de: "die Stadt", pos: "noun", level: "A1", topic: "Stadt", ex: "Sevilla es una ciudad preciosa.", exDe: "Sevilla ist eine wunderschöne Stadt." },
   { es: "la calle", de: "die Straße", pos: "noun", level: "A1", topic: "Stadt", ex: "Vivo en la calle Mayor.", exDe: "Ich wohne in der Calle Mayor." },
   { es: "la tienda", de: "der Laden|das Geschäft", pos: "noun", level: "A1", topic: "Stadt", ex: "La tienda abre a las nueve.", exDe: "Der Laden öffnet um neun." },
@@ -84,7 +85,7 @@ const DECK = [
   { es: "el alojamiento", de: "die Unterkunft", pos: "noun", level: "B1", topic: "Reisen", ex: "El alojamiento incluye el desayuno.", exDe: "Die Unterkunft schließt das Frühstück ein." },
   { es: "el retraso", de: "die Verspätung", pos: "noun", level: "B1", topic: "Reisen", ex: "El vuelo lleva dos horas de retraso.", exDe: "Der Flug hat zwei Stunden Verspätung." },
 
-  // --- Arbeit & Studium ---
+  // --- work & study ---
   { es: "el trabajo", de: "die Arbeit", pos: "noun", level: "A1", topic: "Arbeit", ex: "Tengo mucho trabajo esta semana.", exDe: "Ich habe diese Woche viel Arbeit." },
   { es: "la empresa", de: "das Unternehmen|die Firma", pos: "noun", level: "A2", topic: "Arbeit", ex: "La empresa tiene cien empleados.", exDe: "Das Unternehmen hat hundert Angestellte." },
   { es: "la reunión", de: "die Besprechung|das Treffen", pos: "noun", level: "A2", topic: "Arbeit", ex: "La reunión empieza a las diez.", exDe: "Die Besprechung beginnt um zehn." },
@@ -95,7 +96,7 @@ const DECK = [
   { es: "la ventaja", de: "der Vorteil", pos: "noun", level: "B1", topic: "Arbeit", ex: "La mayor ventaja es la flexibilidad.", exDe: "Der größte Vorteil ist die Flexibilität." },
   { es: "el riesgo", de: "das Risiko", pos: "noun", level: "B1", topic: "Arbeit", ex: "No quiero correr ese riesgo.", exDe: "Ich will dieses Risiko nicht eingehen." },
 
-  // --- Adjektive ---
+  // --- adjectives ---
   { es: "grande", de: "groß", pos: "adj", level: "A1", topic: "Adjektive", ex: "Su piso es muy grande.", exDe: "Seine Wohnung ist sehr groß." },
   { es: "pequeño", de: "klein", pos: "adj", level: "A1", topic: "Adjektive", ex: "Es un pueblo pequeño y tranquilo.", exDe: "Es ist ein kleines, ruhiges Dorf." },
   { es: "nuevo", de: "neu", pos: "adj", level: "A1", topic: "Adjektive", ex: "Tengo un trabajo nuevo.", exDe: "Ich habe eine neue Arbeit." },
@@ -113,7 +114,7 @@ const DECK = [
   { es: "imprescindible", de: "unverzichtbar", pos: "adj", level: "B1", topic: "Adjektive", ex: "Es imprescindible reservar antes.", exDe: "Es ist unverzichtbar, vorher zu reservieren." },
   { es: "disponible", de: "verfügbar", pos: "adj", level: "B1", topic: "Adjektive", ex: "No hay habitaciones disponibles.", exDe: "Es sind keine Zimmer verfügbar." },
 
-  // --- Redemittel / Konnektoren ---
+  // --- phrases / connectors ---
   { es: "por supuesto", de: "selbstverständlich|natürlich", pos: "phrase", level: "A2", topic: "Redemittel", ex: "—¿Me ayudas? —¡Por supuesto!", exDe: "„Hilfst du mir?“ – „Selbstverständlich!“" },
   { es: "sin embargo", de: "jedoch|allerdings", pos: "phrase", level: "B1", topic: "Redemittel", ex: "Es caro; sin embargo, vale la pena.", exDe: "Es ist teuer; allerdings lohnt es sich." },
   { es: "por eso", de: "deshalb|deswegen", pos: "phrase", level: "A2", topic: "Redemittel", ex: "Llovía, por eso no salimos.", exDe: "Es regnete, deshalb sind wir nicht rausgegangen." },
@@ -125,7 +126,7 @@ const DECK = [
   { es: "echar de menos", de: "vermissen", pos: "phrase", level: "B1", topic: "Redemittel", ex: "Echo de menos a mi familia.", exDe: "Ich vermisse meine Familie." },
   { es: "dar igual", de: "egal sein", pos: "phrase", level: "B1", topic: "Redemittel", ex: "Me da igual dónde comemos.", exDe: "Mir ist egal, wo wir essen." },
 
-  // --- Zahlen ---
+  // --- numbers ---
   { es: "cero", de: "null", pos: "num", level: "A1", topic: "Zahlen", ex: "Empezamos desde cero.", exDe: "Wir fangen bei null an." },
   { es: "uno", de: "eins", pos: "num", level: "A1", topic: "Zahlen", ex: "Solo tengo uno.", exDe: "Ich habe nur eins." },
   { es: "dos", de: "zwei", pos: "num", level: "A1", topic: "Zahlen", ex: "Tengo dos gatos.", exDe: "Ich habe zwei Katzen." },
@@ -164,7 +165,7 @@ const DECK = [
   { es: "quinto", de: "fünfte|fünfter", pos: "adj", level: "B1", topic: "Zahlen", ex: "Está en el quinto lugar.", exDe: "Er liegt auf dem fünften Platz." },
   { es: "décimo", de: "zehnte|zehnter", pos: "adj", level: "B1", topic: "Zahlen", ex: "Celebramos el décimo aniversario.", exDe: "Wir feiern das zehnte Jubiläum." },
 
-  // --- Farben ---
+  // --- colours ---
   { es: "rojo", de: "rot", pos: "adj", level: "A1", topic: "Farben", ex: "El coche rojo es nuevo.", exDe: "Das rote Auto ist neu." },
   { es: "azul", de: "blau", pos: "adj", level: "A1", topic: "Farben", ex: "El cielo está muy azul hoy.", exDe: "Der Himmel ist heute sehr blau." },
   { es: "verde", de: "grün", pos: "adj", level: "A1", topic: "Farben", ex: "Me gusta el té verde.", exDe: "Ich mag grünen Tee." },
@@ -178,7 +179,7 @@ const DECK = [
   { es: "morado", de: "violett|lila", pos: "adj", level: "B1", topic: "Farben", ex: "Las flores son moradas.", exDe: "Die Blumen sind violett." },
   { es: "dorado", de: "golden", pos: "adj", level: "B1", topic: "Farben", ex: "Tiene un anillo dorado.", exDe: "Sie hat einen goldenen Ring." },
 
-  // --- Zeit & Kalender ---
+  // --- time & calendar ---
   { es: "el lunes", de: "der Montag", pos: "noun", level: "A1", topic: "Kalender", ex: "El lunes empieza la semana.", exDe: "Am Montag beginnt die Woche." },
   { es: "el martes", de: "der Dienstag", pos: "noun", level: "A1", topic: "Kalender", ex: "Tengo clase el martes.", exDe: "Am Dienstag habe ich Unterricht." },
   { es: "el miércoles", de: "der Mittwoch", pos: "noun", level: "A1", topic: "Kalender", ex: "El miércoles voy al médico.", exDe: "Am Mittwoch gehe ich zum Arzt." },
@@ -220,7 +221,7 @@ const DECK = [
   { es: "pronto", de: "bald", pos: "adv", level: "A2", topic: "Zeit", ex: "Vuelvo pronto.", exDe: "Ich komme bald zurück." },
   { es: "tarde", de: "spät", pos: "adv", level: "A1", topic: "Zeit", ex: "Llegamos tarde a la fiesta.", exDe: "Wir kamen spät zur Party." },
 
-  // --- Pronomen & Fragewörter ---
+  // --- pronouns & question words ---
   { es: "yo", de: "ich", pos: "pron", level: "A1", topic: "Pronomen", ex: "Yo vivo en Berlín.", exDe: "Ich wohne in Berlin." },
   { es: "tú", de: "du", pos: "pron", level: "A1", topic: "Pronomen", ex: "¿Tú de dónde eres?", exDe: "Woher kommst du?" },
   { es: "él", de: "er", pos: "pron", level: "A1", topic: "Pronomen", ex: "Él trabaja en un banco.", exDe: "Er arbeitet in einer Bank." },
@@ -237,7 +238,7 @@ const DECK = [
   { es: "cuál", de: "welcher|welche|welches", pos: "pron", level: "A2", topic: "Fragewörter", ex: "¿Cuál prefieres?", exDe: "Welches bevorzugst du?" },
   { es: "cuánto", de: "wie viel", pos: "pron", level: "A1", topic: "Fragewörter", ex: "¿Cuánto cuesta?", exDe: "Wie viel kostet das?" },
 
-  // --- Präpositionen & Konjunktionen ---
+  // --- prepositions & conjunctions ---
   { es: "en", de: "in|an|auf", pos: "prep", level: "A1", topic: "Präpositionen", ex: "Vivo en Madrid.", exDe: "Ich wohne in Madrid." },
   { es: "con", de: "mit", pos: "prep", level: "A1", topic: "Präpositionen", ex: "Voy con mis amigos.", exDe: "Ich gehe mit meinen Freunden." },
   { es: "sin", de: "ohne", pos: "prep", level: "A1", topic: "Präpositionen", ex: "Café sin azúcar, por favor.", exDe: "Kaffee ohne Zucker, bitte." },
@@ -255,7 +256,7 @@ const DECK = [
   { es: "si", de: "wenn|falls", pos: "conj", level: "A2", topic: "Konjunktionen", ex: "Si llueve, nos quedamos en casa.", exDe: "Wenn es regnet, bleiben wir zu Hause." },
   { es: "mientras que", de: "während|wohingegen", pos: "conj", level: "B1", topic: "Konjunktionen", ex: "Él cocina mientras que yo limpio.", exDe: "Er kocht, während ich putze." },
 
-  // --- Körper & Gesundheit ---
+  // --- body & health ---
   { es: "el cuerpo", de: "der Körper", pos: "noun", level: "A2", topic: "Körper", ex: "El ejercicio es bueno para el cuerpo.", exDe: "Sport ist gut für den Körper." },
   { es: "la cabeza", de: "der Kopf", pos: "noun", level: "A1", topic: "Körper", ex: "Me duele la cabeza.", exDe: "Mir tut der Kopf weh." },
   { es: "la cara", de: "das Gesicht", pos: "noun", level: "A2", topic: "Körper", ex: "Tiene una cara muy simpática.", exDe: "Er hat ein sehr sympathisches Gesicht." },
@@ -291,7 +292,7 @@ const DECK = [
   { es: "curar", de: "heilen", pos: "verb", level: "B1", topic: "Gesundheit", ex: "Este jarabe cura la tos.", exDe: "Dieser Sirup heilt den Husten." },
   { es: "romperse", de: "sich brechen", pos: "verb", level: "B1", topic: "Gesundheit", ex: "Se rompió la pierna esquiando.", exDe: "Er hat sich beim Skifahren das Bein gebrochen." },
 
-  // --- Kleidung ---
+  // --- clothing ---
   { es: "la ropa", de: "die Kleidung", pos: "noun", level: "A1", topic: "Kleidung", ex: "Necesito comprar ropa de invierno.", exDe: "Ich muss Winterkleidung kaufen." },
   { es: "la camisa", de: "das Hemd", pos: "noun", level: "A2", topic: "Kleidung", ex: "Lleva una camisa blanca.", exDe: "Er trägt ein weißes Hemd." },
   { es: "la camiseta", de: "das T-Shirt", pos: "noun", level: "A2", topic: "Kleidung", ex: "Compré una camiseta nueva.", exDe: "Ich habe ein neues T-Shirt gekauft." },
@@ -308,7 +309,7 @@ const DECK = [
   { es: "vestirse", de: "sich anziehen", pos: "verb", level: "A2", topic: "Kleidung", ex: "Me visto rápido por la mañana.", exDe: "Ich ziehe mich morgens schnell an." },
   { es: "quitarse", de: "ausziehen|ablegen", pos: "verb", level: "A2", topic: "Kleidung", ex: "Se quitó los zapatos al entrar.", exDe: "Er zog beim Reingehen die Schuhe aus." },
 
-  // --- Wetter ---
+  // --- weather ---
   { es: "el tiempo", de: "das Wetter", pos: "noun", level: "A1", topic: "Wetter", ex: "¿Qué tiempo hace hoy?", exDe: "Wie ist das Wetter heute?" },
   { es: "el sol", de: "die Sonne", pos: "noun", level: "A1", topic: "Wetter", ex: "Hace mucho sol hoy.", exDe: "Heute scheint viel die Sonne." },
   { es: "la lluvia", de: "der Regen", pos: "noun", level: "A2", topic: "Wetter", ex: "La lluvia no para desde ayer.", exDe: "Der Regen hört seit gestern nicht auf." },
@@ -324,7 +325,7 @@ const DECK = [
   { es: "nublado", de: "bewölkt", pos: "adj", level: "A2", topic: "Wetter", ex: "El cielo está nublado.", exDe: "Der Himmel ist bewölkt." },
   { es: "húmedo", de: "feucht", pos: "adj", level: "B1", topic: "Wetter", ex: "El clima aquí es muy húmedo.", exDe: "Das Klima hier ist sehr feucht." },
 
-  // --- Familie & Menschen erweitert ---
+  // --- family & people, extended ---
   { es: "el padre", de: "der Vater", pos: "noun", level: "A1", topic: "Menschen", ex: "Mi padre trabaja de ingeniero.", exDe: "Mein Vater arbeitet als Ingenieur." },
   { es: "la madre", de: "die Mutter", pos: "noun", level: "A1", topic: "Menschen", ex: "Mi madre cocina muy bien.", exDe: "Meine Mutter kocht sehr gut." },
   { es: "los padres", de: "die Eltern", pos: "noun", level: "A1", topic: "Menschen", ex: "Mis padres viven en el campo.", exDe: "Meine Eltern leben auf dem Land." },
@@ -341,7 +342,7 @@ const DECK = [
   { es: "el bebé", de: "das Baby", pos: "noun", level: "A2", topic: "Menschen", ex: "El bebé duerme toda la noche.", exDe: "Das Baby schläft die ganze Nacht." },
   { es: "el adulto", de: "der Erwachsene", pos: "noun", level: "B1", topic: "Menschen", ex: "El museo es gratis para adultos mayores.", exDe: "Das Museum ist für Senioren kostenlos." },
 
-  // --- Tiere ---
+  // --- animals ---
   { es: "el perro", de: "der Hund", pos: "noun", level: "A1", topic: "Tiere", ex: "El perro duerme en el jardín.", exDe: "Der Hund schläft im Garten." },
   { es: "el gato", de: "die Katze", pos: "noun", level: "A1", topic: "Tiere", ex: "El gato caza ratones.", exDe: "Die Katze jagt Mäuse." },
   { es: "el pájaro", de: "der Vogel", pos: "noun", level: "A2", topic: "Tiere", ex: "Los pájaros cantan por la mañana.", exDe: "Die Vögel singen am Morgen." },
@@ -350,7 +351,7 @@ const DECK = [
   { es: "el pez", de: "der Fisch (lebendig)", pos: "noun", level: "A2", topic: "Tiere", ex: "Hay muchos peces en este río.", exDe: "In diesem Fluss gibt es viele Fische." },
   { es: "el animal", de: "das Tier", pos: "noun", level: "A1", topic: "Tiere", ex: "Es un animal muy tranquilo.", exDe: "Es ist ein sehr ruhiges Tier." },
 
-  // --- Natur ---
+  // --- nature ---
   { es: "el árbol", de: "der Baum", pos: "noun", level: "A1", topic: "Natur", ex: "Hay un árbol grande en el jardín.", exDe: "Im Garten steht ein großer Baum." },
   { es: "la flor", de: "die Blume", pos: "noun", level: "A1", topic: "Natur", ex: "Le regalé unas flores.", exDe: "Ich habe ihr Blumen geschenkt." },
   { es: "el mar", de: "das Meer", pos: "noun", level: "A1", topic: "Natur", ex: "El mar está muy tranquilo hoy.", exDe: "Das Meer ist heute sehr ruhig." },
@@ -363,7 +364,7 @@ const DECK = [
   { es: "la isla", de: "die Insel", pos: "noun", level: "B1", topic: "Natur", ex: "Vamos a pasar el verano en una isla.", exDe: "Wir verbringen den Sommer auf einer Insel." },
   { es: "la piedra", de: "der Stein", pos: "noun", level: "B1", topic: "Natur", ex: "Tropezó con una piedra.", exDe: "Er stolperte über einen Stein." },
 
-  // --- Essen & Küche erweitert ---
+  // --- food & kitchen, extended ---
   { es: "el arroz", de: "der Reis", pos: "noun", level: "A2", topic: "Essen", ex: "El arroz se sirve con pollo.", exDe: "Der Reis wird mit Hähnchen serviert." },
   { es: "la sopa", de: "die Suppe", pos: "noun", level: "A2", topic: "Essen", ex: "La sopa está muy caliente.", exDe: "Die Suppe ist sehr heiß." },
   { es: "la ensalada", de: "der Salat", pos: "noun", level: "A2", topic: "Essen", ex: "Pido una ensalada de tomate.", exDe: "Ich bestelle einen Tomatensalat." },
@@ -407,7 +408,7 @@ const DECK = [
   { es: "pedir", de: "bestellen|bitten", pos: "verb", level: "A2", topic: "Verben", ex: "Voy a pedir la pasta.", exDe: "Ich werde die Pasta bestellen." },
   { es: "reservar", de: "reservieren", pos: "verb", level: "A2", topic: "Verben", ex: "Reservé una mesa para dos.", exDe: "Ich habe einen Tisch für zwei reserviert." },
 
-  // --- Weitere Verben ---
+  // --- more verbs ---
   { es: "poder", de: "können", pos: "verb", level: "A1", topic: "Verben", ex: "¿Puedes ayudarme?", exDe: "Kannst du mir helfen?" },
   { es: "querer", de: "wollen|lieben", pos: "verb", level: "A1", topic: "Verben", ex: "Quiero aprender español.", exDe: "Ich möchte Spanisch lernen." },
   { es: "saber", de: "wissen|können (Fähigkeit)", pos: "verb", level: "A1", topic: "Verben", ex: "No sé la respuesta.", exDe: "Ich weiß die Antwort nicht." },
@@ -477,7 +478,7 @@ const DECK = [
   { es: "conducir", de: "fahren (Auto)|lenken", pos: "verb", level: "A2", topic: "Verben", ex: "No sabe conducir todavía.", exDe: "Er kann noch nicht Auto fahren." },
   { es: "caminar", de: "gehen|spazieren", pos: "verb", level: "A2", topic: "Verben", ex: "Caminamos una hora por el parque.", exDe: "Wir sind eine Stunde durch den Park gelaufen." },
 
-  // --- Berufe ---
+  // --- professions ---
   { es: "el profesor", de: "der Lehrer", pos: "noun", level: "A1", topic: "Berufe", ex: "El profesor explica muy bien.", exDe: "Der Lehrer erklärt sehr gut." },
   { es: "el estudiante", de: "der Student|der Schüler", pos: "noun", level: "A1", topic: "Berufe", ex: "Es estudiante de medicina.", exDe: "Er ist Medizinstudent." },
   { es: "el ingeniero", de: "der Ingenieur", pos: "noun", level: "A2", topic: "Berufe", ex: "Trabaja como ingeniera de software.", exDe: "Sie arbeitet als Softwareingenieurin." },
@@ -494,7 +495,7 @@ const DECK = [
   { es: "el gerente", de: "der Geschäftsführer|der Manager", pos: "noun", level: "B1", topic: "Berufe", ex: "El gerente aprobó el proyecto.", exDe: "Der Geschäftsführer genehmigte das Projekt." },
   { es: "el empleado", de: "der Angestellte", pos: "noun", level: "A2", topic: "Berufe", ex: "Es empleado de una empresa grande.", exDe: "Er ist Angestellter eines großen Unternehmens." },
 
-  // --- Technologie & Medien ---
+  // --- technology & media ---
   { es: "el ordenador", de: "der Computer", pos: "noun", level: "A1", topic: "Technologie", ex: "El ordenador se ha bloqueado.", exDe: "Der Computer ist eingefroren." },
   { es: "el móvil", de: "das Handy", pos: "noun", level: "A1", topic: "Technologie", ex: "Se me ha caído el móvil.", exDe: "Mir ist das Handy runtergefallen." },
   { es: "internet", de: "das Internet", pos: "noun", level: "A1", topic: "Technologie", ex: "No funciona internet.", exDe: "Das Internet funktioniert nicht." },
@@ -511,7 +512,7 @@ const DECK = [
   { es: "buscar en internet", de: "im Internet suchen", pos: "phrase", level: "A2", topic: "Technologie", ex: "Voy a buscarlo en internet.", exDe: "Ich werde das im Internet suchen." },
   { es: "grabar", de: "aufnehmen", pos: "verb", level: "B1", topic: "Technologie", ex: "Grabé la reunión para no olvidarme.", exDe: "Ich habe die Besprechung aufgenommen, um nichts zu vergessen." },
 
-  // --- Einkaufen & Geld ---
+  // --- shopping & money ---
   { es: "el dinero", de: "das Geld", pos: "noun", level: "A1", topic: "Geld", ex: "No tengo dinero suelto.", exDe: "Ich habe kein Kleingeld." },
   { es: "el precio", de: "der Preis", pos: "noun", level: "A2", topic: "Geld", ex: "El precio ha subido mucho.", exDe: "Der Preis ist stark gestiegen." },
   { es: "el descuento", de: "der Rabatt", pos: "noun", level: "A2", topic: "Geld", ex: "Hay un veinte por ciento de descuento.", exDe: "Es gibt zwanzig Prozent Rabatt." },
@@ -529,7 +530,7 @@ const DECK = [
   { es: "la talla", de: "die Größe (Kleidung)", pos: "noun", level: "B1", topic: "Einkaufen", ex: "¿Qué talla usas?", exDe: "Welche Größe trägst du?" },
   { es: "probarse", de: "anprobieren", pos: "verb", level: "B1", topic: "Einkaufen", ex: "Quiero probarme estos pantalones.", exDe: "Ich möchte diese Hose anprobieren." },
 
-  // --- Sport & Freizeit ---
+  // --- sport & leisure ---
   { es: "el deporte", de: "der Sport", pos: "noun", level: "A1", topic: "Sport", ex: "Hago deporte tres veces por semana.", exDe: "Ich mache dreimal die Woche Sport." },
   { es: "el fútbol", de: "der Fußball", pos: "noun", level: "A1", topic: "Sport", ex: "Jugamos al fútbol los domingos.", exDe: "Wir spielen sonntags Fußball." },
   { es: "nadar", de: "schwimmen", pos: "verb", level: "A1", topic: "Sport", ex: "Nado en la piscina todos los días.", exDe: "Ich schwimme jeden Tag im Schwimmbad." },
@@ -548,7 +549,7 @@ const DECK = [
   { es: "dibujar", de: "zeichnen", pos: "verb", level: "A2", topic: "Freizeit", ex: "Dibuja muy bien.", exDe: "Sie zeichnet sehr gut." },
   { es: "descansar en el sofá", de: "sich auf dem Sofa entspannen", pos: "phrase", level: "A2", topic: "Freizeit", ex: "Los domingos descanso en el sofá.", exDe: "Sonntags entspanne ich mich auf dem Sofa." },
 
-  // --- Adjektive erweitert ---
+  // --- adjectives, extended ---
   { es: "alto", de: "groß|hoch (Person)", pos: "adj", level: "A1", topic: "Adjektive", ex: "Es el jugador más alto del equipo.", exDe: "Er ist der größte Spieler im Team." },
   { es: "joven", de: "jung", pos: "adj", level: "A1", topic: "Adjektive", ex: "El nuevo jefe es muy joven.", exDe: "Der neue Chef ist sehr jung." },
   { es: "guapo", de: "hübsch|gutaussehend", pos: "adj", level: "A2", topic: "Adjektive", ex: "Su hermano es muy guapo.", exDe: "Ihr Bruder ist sehr gutaussehend." },
@@ -593,7 +594,7 @@ const DECK = [
   { es: "igual", de: "gleich", pos: "adj", level: "A2", topic: "Adjektive", ex: "Los dos vestidos son casi iguales.", exDe: "Die beiden Kleider sind fast gleich." },
   { es: "propio", de: "eigen", pos: "adj", level: "B1", topic: "Adjektive", ex: "Tiene su propio negocio.", exDe: "Er hat sein eigenes Geschäft." },
 
-  // --- Adverbien & Quantoren ---
+  // --- adverbs & quantifiers ---
   { es: "muy", de: "sehr", pos: "adv", level: "A1", topic: "Adverbien", ex: "Estoy muy cansado.", exDe: "Ich bin sehr müde." },
   { es: "mucho", de: "viel", pos: "adv", level: "A1", topic: "Adverbien", ex: "Trabaja mucho estos días.", exDe: "Er arbeitet dieser Tage viel." },
   { es: "poco", de: "wenig", pos: "adv", level: "A1", topic: "Adverbien", ex: "Duerme muy poco.", exDe: "Er schläft sehr wenig." },
@@ -619,7 +620,7 @@ const DECK = [
   { es: "especialmente", de: "besonders", pos: "adv", level: "B1", topic: "Adverbien", ex: "Me gusta especialmente el otoño.", exDe: "Ich mag besonders den Herbst." },
   { es: "normalmente", de: "normalerweise", pos: "adv", level: "A2", topic: "Adverbien", ex: "Normalmente ceno a las nueve.", exDe: "Normalerweise esse ich um neun zu Abend." },
 
-  // --- Stadt & Haus erweitert ---
+  // --- city & house, extended ---
   { es: "el barrio", de: "das Viertel", pos: "noun", level: "A2", topic: "Stadt", ex: "Vivimos en un barrio tranquilo.", exDe: "Wir wohnen in einem ruhigen Viertel." },
   { es: "el edificio", de: "das Gebäude", pos: "noun", level: "A2", topic: "Stadt", ex: "Ese edificio es del siglo pasado.", exDe: "Dieses Gebäude ist aus dem letzten Jahrhundert." },
   { es: "el parque", de: "der Park", pos: "noun", level: "A1", topic: "Stadt", ex: "Paseamos por el parque los domingos.", exDe: "Sonntags spazieren wir durch den Park." },
@@ -647,7 +648,7 @@ const DECK = [
   { es: "alquilar", de: "mieten|vermieten", pos: "verb", level: "A2", topic: "Zuhause", ex: "Vamos a alquilar un coche.", exDe: "Wir werden ein Auto mieten." },
   { es: "mudarse", de: "umziehen", pos: "verb", level: "B1", topic: "Zuhause", ex: "Nos mudamos el mes que viene.", exDe: "Wir ziehen nächsten Monat um." },
 
-  // --- Redemittel & Konnektoren erweitert ---
+  // --- phrases & connectors, extended ---
   { es: "claro", de: "klar|natürlich", pos: "phrase", level: "A2", topic: "Redemittel", ex: "—¿Vienes? —¡Claro!", exDe: "„Kommst du?“ – „Klar!“" },
   { es: "de acuerdo", de: "einverstanden", pos: "phrase", level: "A2", topic: "Redemittel", ex: "Estoy de acuerdo contigo.", exDe: "Ich bin mit dir einverstanden." },
   { es: "en realidad", de: "eigentlich|tatsächlich", pos: "phrase", level: "B1", topic: "Redemittel", ex: "En realidad no me gusta.", exDe: "Eigentlich gefällt mir das nicht." },

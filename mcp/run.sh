@@ -1,18 +1,18 @@
 #!/bin/sh
-# Startet den MCP-Server im Container und reicht stdio durch.
+# Starts the MCP server in the container and pipes stdio through.
 #
-# Auf stdout gehört ausschließlich das JSON-RPC-Protokoll. Jede andere Ausgabe
-# – auch die von Docker – muss nach stderr, sonst hält der Client sie für
-# Protokoll und bricht ab.
+# Only the JSON-RPC protocol belongs on stdout. Every other output - Docker's
+# included - has to go to stderr, otherwise the client takes it for protocol
+# and gives up.
 set -e
 
-# Muss ganz oben stehen: aus einer GUI gestartete Prozesse erben nicht die PATH
-# der Shell. Dort fehlt /usr/local/bin, wo Docker Desktop liegt – und im
-# Extremfall sogar /usr/bin, weshalb unten kein dirname benutzt wird.
+# Has to come first: processes started from a GUI do not inherit the shell's
+# PATH. It lacks /usr/local/bin, where Docker Desktop lives - and in the worst
+# case even /usr/bin, which is why no dirname is used below.
 PATH="/usr/local/bin:/opt/homebrew/bin:$HOME/.docker/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 export PATH
 
-# ${0%/*} statt dirname: kein externes Programm nötig.
+# ${0%/*} instead of dirname: no external program needed.
 case "$0" in
   */*) cd "${0%/*}/.." ;;
   *)   cd .. 2>/dev/null || true ;;
@@ -44,7 +44,7 @@ fi
 
 running() { [ "$("$DOCKER" inspect -f '{{.State.Running}}' "$1" 2>/dev/null)" = "true" ]; }
 
-# Schnellster Weg: in den laufenden App-Container hinein, kein neuer Container.
+# Fastest route: into the running app container, no new container.
 if running "$APP"; then
   exec "$DOCKER" exec -i "$APP" node /app/mcp/server.js
 fi

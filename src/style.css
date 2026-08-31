@@ -47,9 +47,9 @@
 
 * { box-sizing: border-box; }
 
-/* Muss vor allen Komponenten stehen und sie überstimmen: Regeln wie
-   .btn-secondary { display: block } schlagen sonst das [hidden] des Browsers,
-   und als hidden markierte Elemente blieben sichtbar. */
+/* Has to come before all components and override them: rules such as
+   .btn-secondary { display: block } would otherwise beat the browser's
+   [hidden], and elements marked hidden would stay visible. */
 [hidden] { display: none !important; }
 
 html, body { height: 100%; }
@@ -71,8 +71,8 @@ body {
 }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; flex: 1; min-width: 0; }
 .brand .flag { font-size: 20px; }
-/* Neben der offenen Liste wäre der Bereichsname eine Dopplung – er erscheint
-   erst dort, wo die Liste als Schublade zugeklappt ist (Media-Query unten). */
+/* Next to the open list the section name would be a duplicate - it appears
+   only where the list is collapsed into a drawer (media query below). */
 .topbar-section { display: none; }
 .streak {
   font-size: 14px; font-weight: 700; color: var(--warn);
@@ -80,7 +80,7 @@ body {
   display: flex; align-items: center; gap: 4px; flex-shrink: 0;
 }
 
-/* Burger: drei Balken, die im offenen Zustand zum X werden. */
+/* Burger: three bars that turn into an X when open. */
 .menu-btn {
   display: none; flex-direction: column; justify-content: center; gap: 4px;
   width: 34px; height: 34px; padding: 0 7px; flex-shrink: 0;
@@ -95,7 +95,7 @@ body {
 .menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-/* ---------- Gerüst: Bereichsliste links, Inhalt rechts ---------- */
+/* ---------- Frame: section list on the left, content on the right ---------- */
 .shell { flex: 1; display: flex; align-items: flex-start; min-height: 0; }
 
 .sidenav {
@@ -124,7 +124,7 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
 
 .nav-scrim { display: none; }
 
-/* Schmal: die Liste fährt als Schublade ein. */
+/* Narrow: the list slides in as a drawer. */
 @media (max-width: 860px) {
   .menu-btn { display: flex; }
   .topbar-section {
@@ -198,7 +198,7 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
 
 .hint { text-align: center; color: var(--text-dim); font-size: 13px; margin-top: 10px; }
 
-/* ---------- Fokus & Tastatur ---------- */
+/* ---------- Focus & keyboard ---------- */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -373,7 +373,7 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
 
 .empty-state { text-align: center; color: var(--text-dim); padding: 40px 20px; font-size: 15px; }
 
-/* ---------- Konjugation ---------- */
+/* ---------- Conjugation ---------- */
 .conj-group-label { font-size: 13px; font-weight: 700; color: var(--text-dim); margin: 4px 0 8px; }
 .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
 .chip {
@@ -422,7 +422,7 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
   .de-word { font-size: 21px; }
 }
 
-/* ---------- Übungssätze vom Agenten ---------- */
+/* ---------- Exercise sets from the agent ---------- */
 .boot-error {
   max-width: 640px; margin: 12px auto; padding: 12px 16px;
   background: var(--bad-soft); color: var(--bad); border-radius: 12px;
@@ -452,14 +452,14 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
 .pack-typed[hidden] { display: none; }
 #packGrid[hidden] { display: none; }
 
-/* Neue Übung vom Agenten: Tab markieren, bis er geöffnet wurde. */
+/* New exercise from the agent: mark the tab until it has been opened. */
 .tab.tab-alert { position: relative; }
 .tab.tab-alert::after {
   content: ""; position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
   width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
 }
 
-/* ---------- Tageslektion ---------- */
+/* ---------- Daily lesson ---------- */
 .lesson-head { margin-bottom: 20px; }
 .lesson-date { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-dim); font-weight: 700; }
 .lesson-meta { font-size: 13px; color: var(--text-dim); }
@@ -512,7 +512,7 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
   text-transform: uppercase; letter-spacing: .03em; }
 .lesson-await { font-size: 12.5px; color: var(--text-dim); margin-top: 10px; font-style: italic; }
 
-/* ---------- Lektion: Sätze übersetzen ---------- */
+/* ---------- Lesson: translating sentences ---------- */
 .satzliste { list-style: none; margin: 14px 0 0; padding: 0; }
 .satz + .satz { margin-top: 14px; }
 .satz-de { font-size: 15px; font-weight: 600; margin-bottom: 6px; }

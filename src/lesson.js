@@ -1,9 +1,9 @@
-/* Tageslektion: Hören, Schreiben, Sprechen.
+/* Daily lesson: listening, writing, speaking.
 
-   Die drei Teile funktionieren unterschiedlich: Hören wird sofort ausgewertet
-   (geschlossene Fragen), Schreiben und Sprechen kann die App nicht bewerten –
-   sie werden abgegeben und der Coach meldet später zurück. Das ist bewusst so:
-   eine automatische Bewertung freier Texte wäre geraten, nicht gemessen. */
+   The three parts work differently: listening is graded immediately (closed
+   questions), writing and speaking the app cannot grade - they are submitted
+   and the coach responds later. That is deliberate: automatically grading
+   free text would be guesswork, not measurement. */
 const LESSON = (() => {
   const el = (id) => document.getElementById(id);
   const esc = TEXT.esc;
@@ -37,7 +37,7 @@ const LESSON = (() => {
     renderSpeaking(lesson.speaking, abgaben.speaking);
   }
 
-  /** Rückmeldung des Coaches – oder der Hinweis, dass sie noch aussteht. */
+  /** The coach's feedback - or the note that it is still pending. */
   function renderFeedback(boxId, abgabe) {
     const box = el(boxId);
     if (!abgabe) { box.hidden = true; return; }
@@ -51,13 +51,13 @@ const LESSON = (() => {
     }
   }
 
-  // ---------- Hören ----------
+  // ---------- Listening ----------
   function renderListening(teil, abgabe) {
     el("partListening").hidden = !teil;
     if (!teil) return;
     el("doneListening").hidden = !abgabe;
     el("listeningTask").textContent = teil.task;
-    // nocookie-Variante: kein Tracking, solange nicht abgespielt wird.
+    // nocookie variant: no tracking as long as nothing is played.
     el("listeningFrame").src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(teil.videoId)}`;
     el("listeningCaption").textContent = `${teil.videoTitle} — ${teil.channel}`;
 
@@ -103,7 +103,7 @@ const LESSON = (() => {
         ok: gewaehlt.get(i) === f.answer,
       }));
       const correct = antworten.filter((a) => a.ok).length;
-      // Auflösung zeigen, bevor der Teil einklappt.
+      // Show the solution before the part collapses.
       box.querySelectorAll(".lesson-question").forEach((wrap, i) => {
         wrap.querySelectorAll(".mc-option").forEach((o) => {
           o.classList.add("disabled");
@@ -118,7 +118,7 @@ const LESSON = (() => {
     };
   }
 
-  // ---------- Schreiben ----------
+  // ---------- Writing ----------
   function renderWriting(teil, abgabe) {
     el("partWriting").hidden = !teil;
     if (!teil) return;
@@ -161,7 +161,7 @@ const LESSON = (() => {
     };
   }
 
-  /** Zielwörter abhaken, sobald sie im Text auftauchen. */
+  /** Tick off target words as soon as they appear in the text. */
   function markiereZiele(box, text) {
     const norm = TEXT.norm(text);
     box.querySelectorAll(".target-word").forEach((chip) => {
@@ -169,10 +169,10 @@ const LESSON = (() => {
     });
   }
 
-  // ---------- Sätze übersetzen ----------
-  /* Bewertet wird hier nichts: ob "Cierra la puerta, por favor" so gut ist wie
-     "Por favor, cierra la puerta", entscheidet der Coach, nicht ein
-     Zeichenkettenvergleich. Die App sammelt nur ein und gibt ab. */
+  // ---------- Translating sentences ----------
+  /* Nothing is graded here: whether "Cierra la puerta, por favor" is as good
+     as "Por favor, cierra la puerta" is the coach's call, not a string
+     comparison's. The app only collects and submits. */
   function renderSentences(teil, abgabe) {
     el("partSentences").hidden = !teil;
     if (!teil) return;
@@ -209,12 +209,12 @@ const LESSON = (() => {
       const n = felder.filter((f) => f.value.trim()).length;
       el("sentencesCount").textContent = n;
       el("sentencesCount").parentElement.classList.toggle("reached", n === felder.length);
-      // Alles oder nichts: eine halbe Abgabe kann der Coach schlecht bewerten.
+      // All or nothing: the coach can hardly grade half a submission.
       submit.disabled = n < felder.length;
     };
     felder.forEach((f, i) => {
       f.oninput = pruefe;
-      // Enter springt zum nächsten Satz statt das Formular abzuschicken.
+      // Enter jumps to the next sentence instead of submitting the form.
       f.onkeydown = (e) => {
         if (e.key !== "Enter") return;
         e.preventDefault();
@@ -234,7 +234,7 @@ const LESSON = (() => {
     };
   }
 
-  // ---------- Sprechen ----------
+  // ---------- Speaking ----------
   let erkennung = null;
   let sekunden = 0;
   let uhr = null;
@@ -339,7 +339,7 @@ const LESSON = (() => {
     start.classList.remove("recording");
   }
 
-  // ---------- Abgabe ----------
+  // ---------- Submission ----------
   async function abgeben(part, content) {
     try {
       await fetch(`/api/lesson/${lesson.id}/submit`, {

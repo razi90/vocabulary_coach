@@ -1,11 +1,11 @@
-/* MCP über HTTP ("Streamable HTTP").
+/* MCP over HTTP ("Streamable HTTP").
 
-   Damit bekommt der Server eine URL und ist für Clients erreichbar, die keinen
-   lokalen Prozess starten können. Werkzeuge und Protokoll sind dieselben wie
-   bei stdio – hier liegt nur der Transport.
+   This gives the server a URL and makes it reachable for clients that cannot
+   start a local process. Tools and protocol are the same as over stdio - only
+   the transport lives here.
 
-   Der Server ist zustandslos: jede Anfrage steht für sich. Eine Sitzungs-ID
-   wird zurückgegeben, weil Clients sie erwarten, aber nicht ausgewertet. */
+   The server is stateless: every request stands on its own. A session ID is
+   returned because clients expect one, but it is never evaluated. */
 
 const crypto = require("crypto");
 const { handleMessage } = require("../mcp/protocol.js");
@@ -13,7 +13,7 @@ const { handleMessage } = require("../mcp/protocol.js");
 const MAX_BODY = 4 * 1024 * 1024;
 const PROTOCOL_HEADER = "mcp-protocol-version";
 
-/* Ohne Token ist jeder, der den Port erreicht, berechtigt, in die Datenbank zu
+/* Without a token, anyone who can reach the port is allowed to write to the
    schreiben. Auf 127.0.0.1 vertretbar – sobald der Port nach außen geht, nicht
    mehr. Deshalb: MCP_TOKEN setzen. */
 const TOKEN = process.env.MCP_TOKEN || "";
@@ -66,8 +66,8 @@ const json = (res, code, body, extra = {}) => {
 async function handle(req, res) {
   if (!authorized(req)) return unauthorized(res);
 
-  // Clients prüfen die Erreichbarkeit teils per GET; wir bieten keinen
-  // servergetriebenen Kanal an und sagen das ehrlich.
+  // Some clients probe reachability with GET; we offer no server-driven
+  // channel and say so honestly.
   if (req.method === "GET") {
     return json(res, 405, { jsonrpc: "2.0", id: null,
       error: { code: -32000, message: "Nur POST; dieser Server sendet nicht von sich aus." } },
@@ -95,14 +95,14 @@ async function handle(req, res) {
   }
 
   const headers = {};
-  // Bei initialize eine Sitzungs-ID mitgeben; Clients erwarten sie teils.
+  // Hand out a session ID on initialize; some clients expect one.
   if (messages.some((m) => m && m.method === "initialize")) {
     headers["Mcp-Session-Id"] = crypto.randomUUID();
   }
   const version = req.headers[PROTOCOL_HEADER];
   if (version) headers["MCP-Protocol-Version"] = version;
 
-  // Nur Notifications: nichts zu antworten.
+  // Notifications only: nothing to answer.
   if (!responses.length) {
     res.writeHead(202, { "Content-Length": 0, ...headers });
     return res.end();

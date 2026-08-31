@@ -7,7 +7,7 @@ ENV NODE_ENV=production \
 
 WORKDIR /app
 
-# Nur eine Abhängigkeit (pg); eigene Ebene, damit sie im Cache bleibt.
+# Only one dependency (pg); its own layer so it stays in the cache.
 COPY package.json package-lock.json* ./
 RUN npm install --omit=dev --no-audit --no-fund
 

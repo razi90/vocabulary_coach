@@ -1,86 +1,108 @@
-# Español — Vokabeltrainer
+# Español — Vocabulary Coach
 
-Spanisch lernen mit Karteikarten, Konjugations- und Grammatikübungen. Der
-Lernstand liegt in Postgres. Ein Agent liest ihn über einen MCP-Server aus,
-erkennt Schwächen und legt passende Übungen an, die sofort in der App auftauchen.
+Learn Spanish with flashcards, conjugation drills and grammar exercises. The
+learning state lives in Postgres. An agent reads it through an MCP server,
+spots weaknesses and creates matching exercises that show up in the app
+immediately.
 
-## Starten
+The app itself speaks German — it is built for a German-speaking learner of
+Spanish. Code, comments and documentation are English.
+
+## Getting started
 
 ```bash
 docker compose up -d
 ```
 
-`http://localhost:8080` öffnen. Beim ersten Start legt der Server das Schema an
-und spiegelt die Lerninhalte (608 Vokabeln, 44 Verben, 58 Grammatikaufgaben) in
-die Datenbank.
+Open `http://localhost:8080`. On first start the server creates the schema and
+mirrors the learning content (608 words, 44 verbs, 58 grammar items) into the
+database.
 
-Nützliche Befehle:
+Useful commands:
 
 ```bash
-docker compose up -d --build    # nach Codeänderungen
-docker compose logs -f app      # mitlesen
-docker compose down             # anhalten (Daten bleiben im Volume)
-docker compose down -v          # anhalten und Lernstand löschen
+docker compose up -d --build    # after code changes
+docker compose logs -f app      # follow the log
+docker compose down             # stop (data stays in the volume)
+docker compose down -v          # stop and wipe the learning state
 ```
 
-`docker compose start` funktioniert nur, wenn die Container schon existieren —
-nach einem `down` immer `up -d` nehmen.
+`docker compose start` only works if the containers already exist — after a
+`down`, always use `up -d`.
 
-## MCP-Server für den Agenten
+## Configuration
 
-### Variante A: Cowork / Claude Desktop (.mcpb-Erweiterung)
+All settings are optional; without a `.env` the stack runs locally on the
+defaults from [docker-compose.yml](docker-compose.yml).
 
-Cowork erreicht lokale MCP-Server über die Desktop-App. Dafür liegt ein fertiges
-Bündel bereit: **`vokabeltrainer.mcpb`** im Projektverzeichnis.
+```bash
+cp .env.example .env
+```
 
-Installieren: Claude öffnen → Einstellungen → Extensions → Advanced settings →
-*Install Extension…* → `vokabeltrainer.mcpb` auswählen.
+| Variable | Meaning |
+| --- | --- |
+| `POSTGRES_PASSWORD` | Database password, defaults to `voco`. Postgres publishes no port and is reachable only inside the Docker network. |
+| `MCP_TOKEN` | Bearer token for the `/mcp` endpoint. Empty means no token — only defensible while it listens on `127.0.0.1`. |
+| `MCP_PORT` | Second listener serving `/mcp` exclusively. If set, the server refuses to start without an `MCP_TOKEN`. |
 
-Das Bündel enthält keinen eigenen Server, sondern reicht stdio in den laufenden
-Container durch (2 KB, kein `node_modules`). Es sucht Docker selbst an den
-üblichen Orten — aus einer GUI gestartete Prozesse erben `/usr/local/bin` nicht —
-und startet den Container, falls er gestoppt ist. Fehlt Docker ganz, kommt eine
-verständliche Meldung statt eines stillen Fehlschlags.
+## MCP server for the agent
 
-Voraussetzung: einmal `docker compose up -d`, damit der Container existiert.
+### Option A: Cowork / Claude Desktop (.mcpb extension)
 
-Nach Änderungen am Server neu packen:
+Cowork reaches local MCP servers through the desktop app. Build the bundle
+once:
 
 ```bash
 npx @anthropic-ai/mcpb pack mcpb vokabeltrainer.mcpb
 ```
 
-Das Bündel ist unsigniert; für eine lokal installierte Erweiterung ist das
-normal. Signieren ginge mit `npx @anthropic-ai/mcpb sign --self-signed`.
+Install it: open Claude → Settings → Extensions → Advanced settings →
+*Install Extension…* → pick `vokabeltrainer.mcpb`. Repack after changes to the
+server.
 
-### Variante B: Claude Code (stdio)
+The bundle contains no server of its own; it pipes stdio into the running
+container (2 KB, no `node_modules`). It looks for Docker in the usual places on
+its own — processes started from a GUI do not inherit `/usr/local/bin` — and
+starts the container if it is stopped. If Docker is missing entirely, you get a
+readable message instead of a silent failure.
 
-Der MCP-Server läuft **im Container**, im selben Docker-Netz wie die Datenbank.
-Auf dem Host braucht es weder Node noch `npm install`, und der Postgres-Port
-bleibt geschlossen.
+Prerequisite: `docker compose up -d` once, so the container exists.
+
+The bundle is unsigned, which is normal for a locally installed extension.
+Signing would be `npx @anthropic-ai/mcpb sign --self-signed`.
+
+### Option B: Claude Code (stdio)
+
+The MCP server runs **inside the container**, on the same Docker network as the
+database. The host needs neither Node nor `npm install`, and the Postgres port
+stays closed.
 
 ```json
 {
   "mcpServers": {
     "vokabeltrainer": {
-      "command": "/Users/andreasrazmyslov/workspace/vocabulary_coach/mcp/run.sh"
+      "command": "./mcp/run.sh"
     }
   }
 }
 ```
 
-[mcp/run.sh](mcp/run.sh) wählt den Weg selbst:
+That is what [.mcp.json](.mcp.json) in this repo does; a client that resolves
+the command relative to its own working directory needs the absolute path to
+`mcp/run.sh` instead.
 
-- läuft der App-Container, geht es per `docker exec` hinein — kein neuer Container;
-- sonst startet es einen eigenen, und fährt bei Bedarf die Datenbank hoch.
+[mcp/run.sh](mcp/run.sh) picks the route itself:
 
-Beides funktioniert unabhängig vom Arbeitsverzeichnis des Clients. Die App muss
-dafür nicht offen sein.
+- if the app container is running, it goes in via `docker exec` — no new container;
+- otherwise it starts one of its own, bringing up the database if needed.
 
-### Variante C: über HTTP (für Clients, die nur eine URL akzeptieren)
+Either way it works regardless of the client's working directory. The app does
+not have to be open.
 
-Derselbe Server, dieselben Werkzeuge — nur ein anderer Transport. Er hängt am
-laufenden App-Container, es ist also nichts zusätzlich zu starten:
+### Option C: over HTTP (for clients that only accept a URL)
+
+Same server, same tools — only a different transport. It hangs off the running
+app container, so there is nothing extra to start:
 
 ```
 http://localhost:8080/mcp
@@ -92,7 +114,7 @@ In Claude Code:
 claude mcp add --transport http vokabeltrainer http://localhost:8080/mcp
 ```
 
-In einer Konfigurationsdatei:
+In a config file:
 
 ```json
 {
@@ -105,104 +127,105 @@ In einer Konfigurationsdatei:
 }
 ```
 
-Für einen Client, der HTTPS verlangt und nicht auf diesem Rechner läuft, gibt es
-einen optionalen Tunnel:
+For a client that demands HTTPS and does not run on this machine, there is an
+optional tunnel:
 
 ```bash
 echo "MCP_TOKEN=$(openssl rand -hex 24)" >> .env
 echo "MCP_PORT=8081" >> .env
-docker compose --profile tunnel up -d       # cloudflared, öffentliche HTTPS-URL
+docker compose --profile tunnel up -d       # cloudflared, public HTTPS URL
 docker compose logs tunnel | grep trycloudflare
 ```
 
-`MCP_PORT` startet einen zweiten Listener, der **ausschließlich** `/mcp` bedient —
-die App und `/api` bleiben lokal. Nur dieser Port wird getunnelt. Ohne gesetztes
-`MCP_TOKEN` verweigert der Server den Start, weil ein öffentlicher Endpunkt ohne
-Token einem offenen Schreibzugriff auf die Datenbank gleichkäme.
+`MCP_PORT` starts a second listener that serves **only** `/mcp` — the app and
+`/api` stay local. Only that port is tunnelled. Without an `MCP_TOKEN` the
+server refuses to start, because a public endpoint without a token amounts to
+open write access to the database.
 
-**Mit Token** (nötig, sobald der Port nicht mehr nur auf localhost liegt):
+**With a token** (required as soon as the port is no longer localhost-only):
 
 ```bash
 echo "MCP_TOKEN=$(openssl rand -hex 24)" > .env
 docker compose up -d app
 ```
 
-Dann im Client `--header "Authorization: Bearer <token>"` mitgeben. Ohne
-gesetztes `MCP_TOKEN` ist der Endpunkt offen — das ist nur vertretbar, solange
-er ausschließlich auf `127.0.0.1` hört.
+Then pass `--header "Authorization: Bearer <token>"` in the client. Without
+`MCP_TOKEN` the endpoint is open — only defensible as long as it listens on
+`127.0.0.1` exclusively.
 
-### Werkzeuge
+### Tools
 
-| Werkzeug | Zweck |
+| Tool | Purpose |
 | --- | --- |
-| `get_briefing` | Lernstand als Markdown samt konkretem Auftrag. Der Einstieg. |
-| `get_weaknesses` | Dasselbe strukturiert: Kennzahlen, Vokabelfehler mit Verwechslungen, Konjugation nach Form/Zeit/Person, Grammatik nach Kategorie. |
-| `query_events` | Rohes Antwortprotokoll, inklusive der tatsächlichen Eingaben. |
-| `search_vocabulary` | Wortschatz nach Thema, Niveau, Wortart durchsuchen — mit Lernstand je Wort. |
-| `list_exercises` | Vorhandene Übungssätze und ihre Ergebnisse. |
-| `create_exercise` | Übungssatz anlegen. Erscheint sofort in der App. |
-| `set_exercise_status` | `ready` (sichtbar), `draft` (verborgen), `archived`. |
-| `delete_exercise` | Entfernen; protokollierte Antworten bleiben. |
+| `get_briefing` | Learning state as Markdown, with a concrete assignment. The entry point. |
+| `get_weaknesses` | The same analysis structured: metrics, vocabulary mistakes with confusions, conjugation by form/tense/person, grammar by category. |
+| `query_events` | Raw answer log, including what was actually typed. |
+| `search_vocabulary` | Search the vocabulary by topic, level, part of speech — with per-word learning state. |
+| `list_exercises` | Existing exercise sets and their results. |
+| `create_exercise` | Create an exercise set. Appears in the app immediately. |
+| `set_exercise_status` | `ready` (visible), `draft` (hidden), `archived`. |
+| `delete_exercise` | Remove it; logged answers remain. |
 
-Aufgabentypen: `choice` (Auswahl), `cloze` (Lückentext mit `___`), `translate`.
-Bei `cloze` und `translate` werden Akzente ignoriert und ein Tippfehler als
-„fast richtig“ gewertet — eine Wortverwechslung dagegen nicht, sonst würde die
-Übung genau den Fehler durchgehen lassen, den sie prüft. In `explanation` gehört
-das Warum, nicht die Lösung.
+Item types: `choice`, `cloze` (gap text with `___`), `translate`. For `cloze`
+and `translate`, accents are ignored and a typo counts as "almost right" — a
+mixed-up word does not, otherwise the exercise would wave through the very
+mistake it tests. `explanation` is for the why, not the solution.
 
-Ungültige Aufgaben werden abgelehnt und der Grund zurückgemeldet; die Prüfung ist
-dieselbe wie in der App ([src/packs.js](src/packs.js)).
+Invalid items are rejected with a reason; the validation is the same one the
+app uses ([src/packs.js](src/packs.js)).
 
-## Tageslektion
+## Daily lesson
 
-Der Coach legt über `create_lesson` eine Lektion für den Tag an: ein
-YouTube-Video mit Verständnisfragen, einen Schreibauftrag und ein Sprechthema.
-Sie erscheint im Tab „Lektion“, ohne dass etwas neu geladen werden muss.
+Via `create_lesson` the coach sets up a lesson for the day: a YouTube video
+with comprehension questions, a writing assignment and a speaking topic. It
+appears in the "Lektion" tab without a reload.
 
-Hören wird sofort ausgewertet. Schreiben und Sprechen kann die App nicht
-bewerten — die Abgabe wird gespeichert, der Coach holt sie sich mit
-`get_pending_feedback` und antwortet über `give_feedback`. Die Rückmeldung
-erscheint dann unter der Aufgabe.
+Listening is graded immediately. Writing and speaking the app cannot judge —
+the submission is stored, the coach picks it up with `get_pending_feedback` and
+answers through `give_feedback`. The response then shows up under the task.
 
-Beim Sprechen nutzt die App die Spracherkennung des Browsers (Spanisch). Ohne
-Mikrofonfreigabe oder wenn der Browser sie sperrt, lässt sich der Text auch
-eintippen.
+For speaking the app uses the browser's speech recognition (Spanish). Without
+microphone permission, or if the browser blocks it, the text can be typed
+instead.
 
-Jede YouTube-ID wird beim Anlegen gegen YouTube geprüft — eine erfundene ID
-wird abgelehnt, statt später als toter Rahmen in der App zu landen.
+Every YouTube ID is verified against YouTube on creation — a made-up ID is
+rejected rather than ending up as a dead frame in the app.
 
-## Direkt in der Datenbank nachsehen
+## Looking into the database
 
 ```bash
 docker compose exec db psql -U voco -d voco
 
-\dv                              -- alle Auswertungs-Views
+\dv                              -- all analysis views
 SELECT * FROM v_summary;
 SELECT * FROM v_vocab_mistakes ORDER BY wrong DESC LIMIT 10;
 SELECT * FROM v_grammar_accuracy ORDER BY accuracy;
 ```
 
-## Sicherheit
+## Security
 
-Der Dienst hat **keine Anmeldung**. Deshalb sind sowohl App (8080) als auch
-Postgres (5432) nur auf `127.0.0.1` veröffentlicht.
+The service has **no authentication**. This is a single-user tool meant to run
+on your own machine: the app is published on `127.0.0.1:8080` only, and
+Postgres publishes no port at all — it is reachable inside the Docker network
+only. For `psql`: `docker compose exec db psql -U voco -d voco`.
 
-Postgres veröffentlicht überhaupt keinen Port mehr — es ist nur im Docker-Netz
-erreichbar. Für `psql`: `docker compose exec db psql -U voco -d voco`.
+To reach it from a phone on the same Wi-Fi, change `"127.0.0.1:8080:8080"` to
+`"8080:8080"` for the `app` service in [docker-compose.yml](docker-compose.yml).
+Everyone on that network can then read and change the learning state.
 
-Für den Zugriff vom Handy im selben WLAN in [docker-compose.yml](docker-compose.yml)
-beim Dienst `app` `"127.0.0.1:8080:8080"` zu `"8080:8080"` ändern. Dann kann jeder
-im Netz den Lernstand lesen und ändern.
+Set a password with `POSTGRES_PASSWORD=… docker compose up -d` or via `.env`.
 
-Passwort setzen: `POSTGRES_PASSWORD=… docker compose up -d` oder eine `.env`.
-
-## Sichern
+## Backup
 
 ```bash
-docker compose exec -T db pg_dump -U voco voco > sicherung.sql
-docker compose exec -T db psql -U voco -d voco < sicherung.sql   # zurückspielen
+docker compose exec -T db pg_dump -U voco voco > backup.sql
+docker compose exec -T db psql -U voco -d voco < backup.sql   # restore
 ```
 
-## Aufbau
+## Architecture
 
-Siehe [ARCHITEKTUR.md](ARCHITEKTUR.md).
+See [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
