@@ -1,7 +1,7 @@
-/* HTTP-Server: liefert die App aus und stellt die Datenbank-API bereit.
+/* HTTP server: serves the app and exposes the database API.
 
-   Die Wahrheit liegt in Postgres. Der Browser spricht nur mit dieser API,
-   ein Agent spricht über den MCP-Server mit derselben Datenbank. */
+   The truth lives in Postgres. The browser talks to this API only; an agent
+   talks to the same database through the MCP server. */
 
 const http = require("http");
 const fs = require("fs");
@@ -20,13 +20,13 @@ const PACKS = require("../src/packs.js");
 const PORT = Number(process.env.PORT || 8080);
 const HOST = process.env.HOST || "0.0.0.0";
 const APP_DIR = process.env.APP_DIR || path.join(__dirname, "..");
-/* Getrennter Port, der ausschließlich /mcp bedient. Nur dieser wird nach außen
-   getunnelt – die App und /api bleiben lokal. Ohne den zweiten Listener würde
-   ein Tunnel die komplette, ungeschützte API mit veröffentlichen. */
+/* Separate port serving /mcp exclusively. Only this one gets tunnelled to the
+   outside - the app and /api stay local. Without the second listener a tunnel
+   would publish the entire unprotected API along with it. */
 const MCP_PORT = Number(process.env.MCP_PORT || 0);
 const MAX_BODY = 32 * 1024 * 1024;
 
-// ---------- HTTP-Hilfen ----------
+// ---------- HTTP helpers ----------
 const send = (res, code, body, type = "application/json; charset=utf-8") => {
   const payload = type.startsWith("application/json") ? JSON.stringify(body) : body;
   res.writeHead(code, {
@@ -77,13 +77,13 @@ async function serveStatic(res, root, relPath) {
   fs.createReadStream(target).pipe(res);
 }
 
-// ---------- Live-Benachrichtigung über neue Übungen ----------
-/* Postgres meldet Änderungen an `exercises` per NOTIFY; wir reichen das als
-   Server-Sent-Event an alle offenen Tabs weiter. Damit erscheint eine Übung,
-   die ein Agent anlegt, ohne Zutun in der App. */
+// ---------- Live notification about new exercises ----------
+/* Postgres reports changes to `exercises` via NOTIFY; we forward that as a
+   server-sent event to every open tab. An exercise an agent creates thus
+   appears in the app without anyone doing anything. */
 const sseClients = new Set();
-// Diese Verbindung bleibt dauerhaft belegt; ohne sie beim Beenden freizugeben
-// wartet pool.end() ewig und der Container braucht den vollen Timeout.
+// This connection stays occupied for good; without releasing it on shutdown
+// pool.end() waits forever and the container burns the full timeout.
 let notifyClient = null;
 
 async function startNotifyBridge() {
@@ -122,19 +122,19 @@ function handleEvents(req, res) {
   });
 }
 
-// ---------- Live-Reload im Entwicklungsbetrieb ----------
-/* Ändert sich eine Datei im Arbeitsbaum, lädt der Browser von selbst neu.
-   Läuft nur außerhalb von NODE_ENV=production.
+// ---------- Live reload in development ----------
+/* When a file in the working tree changes, the browser reloads by itself.
+   Runs only outside NODE_ENV=production.
 
-   Bewusst Abfragen statt fs.watch: über den Docker-Mount unter macOS verliert
-   der rekursive Watcher eine Datei, sobald ein Editor sie durch "temp
-   schreiben + umbenennen" ersetzt. Die erste Änderung kommt an, jede weitere
-   nicht mehr – bis der Prozess neu startet. Ein paar Dutzend stat() alle
-   500 ms kosten nichts und funktionieren zuverlässig. */
+   Deliberately polling instead of fs.watch: across the Docker mount on macOS
+   the recursive watcher loses a file as soon as an editor replaces it by
+   writing a temp file and renaming it. The first change arrives, no further
+   one does - until the process restarts. A few dozen stat() calls every
+   500 ms cost nothing and work reliably. */
 const RELOAD_EXT = new Set([".html", ".js", ".css", ".webmanifest"]);
 const RELOAD_SKIP = new Set(["node_modules", "fortschritt", "beispiele"]);
 const RELOAD_INTERVAL = 500;
-// Änderungen hier betreffen den laufenden Prozess, nicht nur die Seite.
+// Changes here affect the running process, not just the page.
 const SERVER_DIRS = ["server/", "mcp/"];
 
 async function collectStamps(dir, root, out) {
@@ -168,8 +168,8 @@ function startReloadWatcher() {
       const touched = [...changed, ...removed];
       if (!touched.length) return;
 
-      // Serverdateien: der Prozess muss neu starten. Docker fährt ihn wegen
-      // "restart: unless-stopped" von selbst wieder hoch.
+      // Server files: the process has to restart. Docker brings it back up
+      // by itself thanks to "restart: unless-stopped".
       if (touched.some((f) => SERVER_DIRS.some((d) => f.startsWith(d)))) {
         console.log(`${touched.join(", ")} geändert – Server startet neu`);
         return shutdown("Dateiänderung");
@@ -237,7 +237,7 @@ async function handleApi(req, res, url) {
     return send(res, 200, { packs: await store.getExercises({ status: "ready" }), errors: [] });
   }
 
-  /* Import aus der App: dieselbe Prüfung wie beim Agenten. */
+  /* Import from the app: the same validation as for the agent. */
   if (req.method === "POST" && route === "packs") {
     const body = await readBody(req);
     const { pack, errors } = PACKS.parse(body && (body.raw || body), "Import");
@@ -251,7 +251,7 @@ async function handleApi(req, res, url) {
     return send(res, 200, { ok: true });
   }
 
-  // ---------- Lektionen ----------
+  // ---------- Lessons ----------
   if (req.method === "GET" && route === "lesson") {
     const lesson = await lessons.getLesson(q.get("day"));
     return send(res, 200, lesson || null);
@@ -286,7 +286,7 @@ const server = http.createServer(async (req, res) => {
   try { url = new URL(req.url, `http://${req.headers.host || "localhost"}`); }
   catch (e) { return send(res, 400, { error: "ungültige URL" }); }
   try {
-    // MCP über HTTP – dieselben Werkzeuge wie über stdio.
+    // MCP over HTTP - the same tools as over stdio.
     if (url.pathname === "/mcp" || url.pathname === "/mcp/") return await mcpHttp.handle(req, res);
     if (url.pathname.startsWith("/api/")) return await handleApi(req, res, url);
     if (req.method !== "GET" && req.method !== "HEAD") return send(res, 405, { error: "nur GET" });
@@ -297,10 +297,10 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-// ---------- Start und sauberes Beenden ----------
-/* Als PID 1 im Container ignoriert Node Signale ohne eigenen Handler –
-   ohne das hier dauert jedes `docker compose stop` zehn Sekunden und endet
-   mit SIGKILL. */
+// ---------- Startup and clean shutdown ----------
+/* As PID 1 in the container, Node ignores signals without a handler of its
+   own - without this, every `docker compose stop` takes ten seconds and ends
+   in SIGKILL. */
 let shuttingDown = false;
 function shutdown(signal) {
   if (shuttingDown) return;
@@ -312,7 +312,7 @@ function shutdown(signal) {
     await db.close().catch(() => {});
     process.exit(0);
   });
-  // Offene Keep-alive-Verbindungen würden server.close() sonst hinhalten.
+  // Open keep-alive connections would otherwise stall server.close().
   if (server.closeAllConnections) server.closeAllConnections();
   if (mcpOnlyServer) {
     mcpOnlyServer.close();
@@ -323,8 +323,8 @@ function shutdown(signal) {
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
-/* Nur MCP, sonst nichts. Alles andere bekommt 404, damit ein Tunnel auf diesen
-   Port keine weitere Angriffsfläche öffnet. */
+/* MCP and nothing else. Everything else gets a 404, so a tunnel to this port
+   opens no further attack surface. */
 const mcpOnlyServer = MCP_PORT ? http.createServer(async (req, res) => {
   let url;
   try { url = new URL(req.url, `http://${req.headers.host || "localhost"}`); }
@@ -337,8 +337,8 @@ const mcpOnlyServer = MCP_PORT ? http.createServer(async (req, res) => {
 }) : null;
 
 (async () => {
-  // Ein öffentlich erreichbarer Endpunkt ohne Token wäre ein offenes
-  // Schreibrecht auf die Datenbank. Lieber gar nicht starten.
+  // A publicly reachable endpoint without a token would be open write access
+  // to the database. Better not to start at all.
   if (MCP_PORT && !mcpHttp.requiresToken()) {
     console.error("MCP_PORT ist gesetzt, aber MCP_TOKEN fehlt. Ein öffentlicher " +
                   "Endpunkt ohne Token käme einem offenen Schreibzugriff gleich. Abbruch.");

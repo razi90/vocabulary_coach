@@ -1,7 +1,7 @@
-/* Formatiert die Auswertung als Text für einen Agenten.
+/* Formats the analysis as text for an agent.
 
-   Die Zahlen kommen aus den SQL-Views – hier wird nichts mehr berechnet,
-   nur formuliert. Damit können App, HTTP-API und MCP nicht auseinanderlaufen. */
+   The numbers come from the SQL views - nothing is computed here, only
+   phrased. That way app, HTTP API and MCP cannot drift apart. */
 
 function pluralTage(n) { return n === 1 ? "Tag" : "Tage"; }
 
@@ -65,7 +65,7 @@ function toMarkdown(w, { schema, itemTypes }) {
   return L.join("\n");
 }
 
-/** Konkrete Aufträge – zwei Schwerpunkte sind brauchbarer als eine Mängelliste. */
+/** Concrete assignments - two focal points beat a list of shortcomings. */
 function jobs(w) {
   const out = [];
   const weakGrammar = w.grammar.filter((g) => g.accuracy != null && g.accuracy < 80).slice(0, 2);

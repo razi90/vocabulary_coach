@@ -1,10 +1,10 @@
-/* Tageslektionen: Hören, Schreiben, Sprechen.
+/* Daily lessons: listening, writing, speaking.
 
-   Der heikle Teil ist das Video. Ein Agent kann eine YouTube-ID erfinden, ohne
-   es zu merken – im Browser bliebe dann ein toter Rahmen stehen. Deshalb wird
-   jede ID beim Anlegen gegen die oEmbed-Schnittstelle geprüft und die Lektion
-   sonst abgelehnt. Titel und Kanal kommen aus derselben Antwort, damit später
-   nachvollziehbar bleibt, worauf sich die Aufgabe bezog. */
+   The delicate part is the video. An agent can invent a YouTube ID without
+   noticing - the browser would then be left with a dead frame. So every ID is
+   checked against the oEmbed endpoint on creation and the lesson rejected
+   otherwise. Title and channel come from the same response, so it stays
+   traceable later what the task referred to. */
 
 const db = require("./db.js");
 
@@ -15,7 +15,7 @@ class LessonError extends Error {
   constructor(message) { super(message); this.isUserError = true; }
 }
 
-/** Video-ID aus allen üblichen YouTube-Adressen ziehen. */
+/** Pull the video ID out of any of the usual YouTube URLs. */
 function extractVideoId(input) {
   const value = str(input);
   if (!value) return null;
@@ -33,7 +33,7 @@ function extractVideoId(input) {
   return null;
 }
 
-/** Existiert das Video wirklich? Gibt Titel und Kanal zurück. */
+/** Does the video actually exist? Returns title and channel. */
 async function verifyVideo(videoId) {
   const url = `https://www.youtube.com/oembed?url=${
     encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}&format=json`;

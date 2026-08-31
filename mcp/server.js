@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-/* MCP-Server über stdio.
+/* MCP server over stdio.
 
-   Nur der Transport; Werkzeuge und Protokoll stehen in mcp/protocol.js und
-   werden mit der HTTP-Variante geteilt. */
+   The transport only; tools and protocol live in mcp/protocol.js and are
+   shared with the HTTP variant. */
 
 const db = require("../server/db.js");
 const { handleMessage, TOOLS } = require("./protocol.js");
@@ -38,7 +38,7 @@ process.on("SIGINT", shutdown);
 
 (async () => {
   await db.waitForDatabase();
-  // stderr, damit stdout dem Protokoll gehört.
+  // stderr, so stdout belongs to the protocol.
   console.error("MCP-Server (stdio) bereit, Werkzeuge:", TOOLS.map((t) => t.name).join(", "));
 })().catch((e) => {
   console.error("MCP-Start fehlgeschlagen:", e.message);

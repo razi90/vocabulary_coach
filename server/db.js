@@ -1,9 +1,8 @@
-/* Datenbankzugang: Verbindung, Migrationen, Inhalte spiegeln.
+/* Database access: connection, migrations, mirroring the content.
 
-   Die Lerninhalte (Deck, Verben, Grammatikaufgaben) leben weiterhin in den
-   JS-Dateien – sie sind Quelltext, nicht Nutzerdaten. Beim Start werden sie in
-   die Datenbank gespiegelt, damit ein Agent Schwächen ohne Umweg mit Inhalten
-   verbinden kann. */
+   The learning content (deck, verbs, grammar items) still lives in the JS
+   files - it is source, not user data. At startup it is mirrored into the
+   database so an agent can connect weaknesses to content directly. */
 
 const fs = require("fs/promises");
 const path = require("path");
@@ -47,7 +46,7 @@ async function withTransaction(fn) {
   }
 }
 
-/** Wartet, bis Postgres Verbindungen annimmt – der Container braucht einen Moment. */
+/** Waits until Postgres accepts connections - the container needs a moment. */
 async function waitForDatabase(attempts = 40) {
   for (let i = 1; i <= attempts; i++) {
     try { await query("SELECT 1"); return; }
@@ -66,7 +65,7 @@ async function migrate() {
   for (const file of files) {
     if (done.has(file)) continue;
     const sql = await fs.readFile(path.join(MIGRATIONS_DIR, file), "utf8");
-    // Jede Migration in einer Transaktion: entweder ganz oder gar nicht.
+    // Each migration in one transaction: all of it or none of it.
     await withTransaction(async (c) => {
       await c.query(sql);
       await c.query("INSERT INTO _migrations (name) VALUES ($1)", [file]);
@@ -75,7 +74,7 @@ async function migrate() {
   }
 }
 
-/** Die Inhaltsmodule in einer Sandbox auswerten – sie sind reine Daten. */
+/** Evaluate the content modules in a sandbox - they are pure data. */
 async function loadContentModules() {
   const files = ["text.js", "deck.js", "conjugate.js", "grammar.js", "packs.js"];
   const context = vm.createContext({ console, module: undefined });
@@ -104,7 +103,7 @@ async function syncContent() {
         [d.es, d.de, d.de.split("|")[0], d.pos, d.level, d.topic, d.ex || null, d.exDe || null]
       );
     }
-    // Unregelmäßige Verben tragen keine Gruppe – sie steckt in der Endung.
+    // Irregular verbs carry no group - it is implied by the ending.
     const verbGroup = (v) => v.group ||
       v.infinitive.slice(-2).normalize("NFD").replace(/[\u0300-\u036f]/g, "");   // oír -> ir
     for (const v of CONJUGATE.ALL_VERBS) {

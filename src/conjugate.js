@@ -1,5 +1,5 @@
-/* Konjugationsmotor: regelmäßige Verben werden per Regel gebildet,
-   unregelmäßige Verben sind vollständig ausgeschrieben. */
+/* Conjugation engine: regular verbs are built by rule, irregular verbs are
+   written out in full. */
 const CONJUGATE = (() => {
   const TENSES = ["presente", "indefinido", "imperfecto", "futuro", "condicional", "subjuntivo"];
   const TENSE_LABELS = {
@@ -69,7 +69,7 @@ const CONJUGATE = (() => {
     return out;
   }
 
-  // --- Unregelmäßige Verben: vollständig ausgeschrieben ---
+  // --- Irregular verbs: written out in full ---
   const IRREGULAR_VERBS = {
     ser: { de: "sein",
       presente: ["soy", "eres", "es", "somos", "sois", "son"],

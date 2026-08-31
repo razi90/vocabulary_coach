@@ -2,7 +2,7 @@
   "mcpServers": {
     "vokabeltrainer": {
       "type": "stdio",
-      "command": "/Users/andreasrazmyslov/workspace/vocabulary_coach/mcp/run.sh",
+      "command": "./mcp/run.sh",
       "args": [],
       "env": {}
     }

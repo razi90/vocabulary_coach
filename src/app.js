@@ -1,17 +1,17 @@
-/* Vokabeltrainer – App-Logik */
+/* Vocabulary trainer - app logic */
 (function () {
   "use strict";
 
   const STORAGE_KEY = "voco.es.v1";
   const DAY = SRS.DAY;
-  // Lokales Datum, nicht UTC: toISOString() würde den Tageswechsel in
-  // Mitteleuropa auf 01:00/02:00 Ortszeit legen und Serie sowie Tagesziel verschieben.
+  // Local date, not UTC: toISOString() would put the day boundary at
+  // 01:00/02:00 local time in Central Europe and shift streak and daily goal.
   const todayKey = (t = Date.now()) => {
     const d = new Date(t);
     const pad = (n) => String(n).padStart(2, "0");
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   };
-  /** Tage zwischen zwei Tagesschlüsseln, unabhängig von Sommer-/Winterzeit. */
+  /** Days between two day keys, independent of daylight saving time. */
   function daysBetween(fromKey, toKey) {
     const [ay, am, ad] = fromKey.split("-").map(Number);
     const [by, bm, bd] = toKey.split("-").map(Number);
@@ -21,10 +21,10 @@
   const esc = TEXT.esc;
   const norm = TEXT.norm;
 
-  // ---------- Zustand ----------
-  /* Die Wahrheit liegt in IndexedDB (siehe store.js). Hier stehen nur die
-     Arbeitskopien: `state` für Einstellungen und Aggregate, `cards` für den
-     Lernstand je Vokabel. Die Historie steht ausschließlich im Ereignislog. */
+  // ---------- State ----------
+  /* The truth lives behind store.js. Only the working copies are here:
+     `state` for settings and aggregates, `cards` for the learning state per
+     word. The history lives exclusively in the event log. */
   let state = null;
   let cards = {};
   let events = [];
@@ -55,7 +55,7 @@
     if (document.visibilityState === "hidden") flushSave();
   });
 
-  /** Jede Antwort wird als Ereignis protokolliert – das ist die Historie. */
+  /** Every answer is logged as an event - that is the history. */
   async function logEvent(event) {
     const stored = { t: Date.now(), ...event };
     events.push(stored);
@@ -79,7 +79,7 @@
   function allFreshCards() {
     return DECK.filter((d) => !cards[d.es] || cards[d.es].state === "new");
   }
-  // Tageslimit für neue Karten entspricht dem Tagesziel, kann aber per Klick aufgehoben werden.
+  // The daily limit for new cards equals the daily goal, but a click lifts it.
   function cardsNewAvailable() {
     const fresh = allFreshCards();
     if (state.newCapOverrideDay === todayKey()) return fresh;
@@ -122,9 +122,9 @@
 
   let currentView = "home";
 
-  /* Auf schmalen Schirmen liegt die Bereichsliste als Schublade über dem
-     Inhalt. Auf breiten steht sie fest links – dann ist "open" bedeutungslos,
-     weil das Stylesheet die Schublade dort gar nicht erst einschaltet. */
+  /* On narrow screens the section list sits over the content as a drawer.
+     On wide ones it is fixed on the left - "open" is meaningless there,
+     because the stylesheet never turns the drawer on in the first place. */
   const sidenav = document.getElementById("sidenav");
   const navScrim = document.getElementById("navScrim");
   const menuBtn = document.getElementById("menuBtn");
@@ -147,7 +147,7 @@
     });
     setNavOpen(false);
     const chosen = [...tabs].find((t) => t.dataset.view === name);
-    // Nur die Textknoten: das Icon steckt in einem eigenen span.
+    // Text nodes only: the icon sits in a span of its own.
     if (chosen) el("topbarSection").textContent = [...chosen.childNodes]
       .filter((n) => n.nodeType === Node.TEXT_NODE).map((n) => n.textContent).join("").trim();
 
@@ -158,15 +158,15 @@
     if (name === "grammar") renderGrammarOverview();
     if (name === "packs") { el("tab-packs").classList.remove("tab-alert"); renderPacks(); }
     if (name === "lesson") { el("tab-lesson").classList.remove("tab-alert"); LESSON.render(); }
-    // Video weiterlaufen zu lassen, während man Vokabeln übt, will niemand.
+    // Nobody wants the video to keep playing while they drill vocabulary.
     if (name !== "lesson") { LESSON.stoppen(); const f = el("listeningFrame"); if (f && f.src) f.src = f.src; }
   }
-  /* Nach einem Neuladen soll der Tab dort weitermachen, wo man war.
-     sessionStorage statt localStorage: ein frisch geöffneter Tab beginnt
-     wie gewohnt auf "Start", nur das Neuladen desselben Tabs stellt wieder her. */
+  /* After a reload the tab should carry on where you were.
+     sessionStorage rather than localStorage: a freshly opened tab starts on
+     "Start" as usual, only reloading the same tab restores. */
   const POSITION_KEY = "voco:position";
-  /* Laufende Übungen liegen nur im Speicher und überleben das Neuladen nicht.
-     Statt in eine leere Sitzung zu springen, auf die Übersicht zurückfallen. */
+  /* Running drills live in memory only and do not survive a reload. Instead
+     of jumping into an empty session, fall back to the overview. */
   const VIEW_FALLBACK = {
     session: "home", conjsession: "conj", grammarsession: "grammar",
     packsession: "packs", done: "home",
@@ -187,17 +187,17 @@
     catch (e) { return; }
     if (!saved || !views[saved.view]) return;
     if (saved.view !== currentView) showView(saved.view);
-    // Erst nach dem Zeichnen scrollen, sonst ist die Seite noch zu kurz.
+    // Scroll only after painting, otherwise the page is still too short.
     requestAnimationFrame(() => window.scrollTo(0, saved.scrollY || 0));
   }
 
-  // Die eigene Wiederherstellung soll die des Browsers nicht doppeln.
+  // Our own restoration should not duplicate the browser's.
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-  // pagehide zusätzlich, weil Safari/iOS beforeunload nicht zuverlässig feuert.
+  // pagehide as well, because Safari/iOS does not fire beforeunload reliably.
   window.addEventListener("beforeunload", merkePosition);
   window.addEventListener("pagehide", merkePosition);
 
-  /** Läuft gerade eine Übung, die durch den Wechsel verloren ginge? */
+  /** Is a drill running that the switch would throw away? */
   function activeDrill() {
     if (session && session.reviewed >= 0 && currentView === "session") return () => { session = null; };
     if (conjSession && currentView === "conjsession") return () => { conjSession = null; };
@@ -284,18 +284,18 @@
   function buildSessionQueue() {
     const due = cardsDueNow();
     const fresh = cardsNewAvailable();
-    // Fällige zuerst, dann neue eingestreut; Reihenfolge gemischt für Abwechslung
+    // Due first, then new ones mixed in; order shuffled for variety
     const items = shuffle([...due]).concat(shuffle([...fresh]));
     return items.slice(0, 60).map((d) => ({ deck: d, mode: pickMode(d) }));
   }
 
   function pickMode(deckItem) {
     const c = cards[deckItem.es];
-    if (!c || c.state === "new") return "flip";           // Neues immer erst als Karteikarte
+    if (!c || c.state === "new") return "flip";           // new material always as a flashcard first
     const strength = SRS.strength(c);
     if (strength < 0.35) return Math.random() < 0.5 ? "flip" : "mc";
     if (strength < 0.7) return Math.random() < 0.5 ? "mc" : "type";
-    return "type";                                          // gut gefestigt -> aktiver Abruf
+    return "type";                                          // well consolidated -> active recall
   }
 
   function shuffle(arr) {
@@ -320,7 +320,7 @@
   let doneReturnView = "home";
   el("doneContinueBtn").addEventListener("click", () => showView(doneReturnView));
 
-  /** Balkenbreite, die nie kleiner wird – Nachzügler verlängern die Queue. */
+  /** A bar width that never shrinks - stragglers lengthen the queue. */
   function progressWidth(sess) {
     const pct = sess.queue.length ? (sess.idx / sess.queue.length) * 100 : 0;
     sess.barPct = Math.max(sess.barPct || 0, pct);
@@ -345,22 +345,22 @@
     else renderType(d);
   }
 
-  // --- Karteikarte ---
+  // --- Flashcard ---
   const flashcardEl = el("flashcard");
   const flashcardInner = el("flashcardInner");
   let flipped = false;
 
   function renderFlip(d) {
-    // Transition kurz abschalten, damit das Zurückklappen der vorigen Karte
-    // nicht animiert wird und dabei die neue Antwort schon durchscheint.
+    // Briefly disable the transition, so flipping the previous card back is
+    // not animated and does not show the new answer through it.
     flashcardInner.style.transition = "none";
     flipped = false;
     flashcardEl.classList.remove("flipped");
 
     const dir = state.direction;
     el("flipPos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
-    // Sprache je Seite auszeichnen, damit Screenreader spanische Wörter
-    // nicht mit deutscher Aussprache vorlesen.
+    // Mark the language per side, so screen readers do not read Spanish
+    // words with German pronunciation.
     const promptLang = dir === "es-de" ? "es" : "de";
     const answerLang = dir === "es-de" ? "de" : "es";
     el("flipFront").lang = promptLang;
@@ -371,7 +371,7 @@
     el("flipExDe").textContent = d.exDe || "";
     el("gradeRow").classList.add("hidden-until-flip");
 
-    void flashcardInner.offsetWidth; // Reflow erzwingen, bevor die Transition wieder aktiviert wird
+    void flashcardInner.offsetWidth; // force a reflow before re-enabling the transition
     flashcardInner.style.transition = "";
 
     const c = ensureCard(d.es);
@@ -396,16 +396,16 @@
     });
   });
 
-  // --- Multiple Choice ---
+  // --- Multiple choice ---
   function renderMC(d) {
     const dir = state.direction;
     el("mcPos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
     el("mcPrompt").lang = dir === "es-de" ? "es" : "de";
     el("mcPrompt").textContent = promptWord(d, dir);
     const correct = answerPrimary(d, dir);
-    // Ablenker dürfen weder mit der Antwort noch mit einem gleichwertigen
-    // Synonym übereinstimmen – sonst stünden zwei richtige Optionen zur Wahl
-    // und die Deduplizierung ließe am Ende nur drei Felder übrig.
+    // Distractors must match neither the answer nor an equivalent synonym -
+    // otherwise two correct options would be on offer and the deduplication
+    // would leave only three fields in the end.
     const accepted = new Set(answerAlternatives(d, dir));
     const collect = (candidates, into) => {
       for (const x of shuffle([...candidates])) {
@@ -447,7 +447,7 @@
     });
   }
 
-  // --- Tippen ---
+  // --- Typing ---
   function renderType(d) {
     const dir = state.direction;
     el("typePos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
@@ -479,16 +479,16 @@
       const continueBtn = el("sessionContinueBtn");
       continueBtn.hidden = false;
       continueBtn.focus();
-      // Ein Tippfehler zählt als "schwer", nicht als vergessen.
+      // A typo counts as "hard", not as forgotten.
       const grade = verdict === "exact" ? 3 : verdict === "close" ? 2 : 1;
       continueBtn.onclick = () => gradeCurrent(grade, ok);
     };
     el("typeCheckBtn").onclick = check;
     input.onkeydown = (e) => {
       if (e.key !== "Enter") return;
-      // Nicht weiterreichen: der globale Enter-Handler würde sonst denselben
-      // Tastendruck nutzen, um sofort "Weiter" zu drücken – die Rückmeldung
-      // wäre nie zu sehen.
+      // Do not pass it on: the global Enter handler would otherwise use the
+      // same keypress to hit "next" right away - the feedback would never be
+      // seen.
       e.preventDefault();
       e.stopPropagation();
       check();
@@ -503,15 +503,15 @@
   }
   function germanPrimary(de) { return de.split("|")[0]; }
 
-  // ---------- Übungsrichtung ----------
+  // ---------- Drill direction ----------
   function promptWord(d, dir) { return dir === "es-de" ? d.es : germanPrimary(d.de); }
   function answerPrimary(d, dir) { return dir === "es-de" ? germanPrimary(d.de) : d.es; }
   function promptFlag(dir) { return dir === "es-de" ? "🇪🇸" : "🇩🇪"; }
 
-  /* Mehrere spanische Wörter teilen sich dieselbe deutsche Hauptbedeutung
-     ("gehen" -> ir/andar/caminar). In Richtung DE->ES sind deshalb alle
-     Wörter derselben Gruppe richtig, sonst würde eine korrekte Antwort als
-     Fehler gewertet und die Karte zurückgestuft. */
+  /* Several Spanish words share the same primary German meaning
+     ("gehen" -> ir/andar/caminar). Going DE->ES, every word of the same group
+     is therefore correct; otherwise a correct answer would count as a mistake
+     and demote the card. */
   let synonymIndex = null;
   function germanGroup(d) {
     if (!synonymIndex) {
@@ -532,7 +532,7 @@
 
   const judgeAnswer = (typed, alternatives) => TEXT.judge(typed, alternatives);
 
-  let lastTyped = null;   // letzte Eingabe, fürs Protokoll
+  let lastTyped = null;   // last input, for the log
 
   function gradeCurrent(grade, correct) {
     const item = currentItem();
@@ -552,7 +552,7 @@
     lastTyped = null;
     save(item.deck.es);
 
-    // "Nochmal" -> Karte später in derselben Sitzung erneut einstreuen
+    // "Again" -> mix the card back in later in the same session
     if (grade === 1 && !item.requeued) {
       const reinsertAt = Math.min(session.queue.length, session.idx + 3 + Math.floor(Math.random() * 3));
       session.queue.splice(reinsertAt, 0, { deck: item.deck, mode: "flip", requeued: true });
@@ -577,7 +577,7 @@
     showView("done");
   }
 
-  // ---------- Konjugation ----------
+  // ---------- Conjugation ----------
   let conjSelectedTenses = new Set();
   let conjVerbSet = "irregular";
   let conjSession = null; // { queue: [{infinitive, tense, person}], idx, reviewed, correct }
@@ -664,12 +664,12 @@
   });
 
   /**
-   * Priorität einer Übungseinheit. Fehler wiegen am schwersten, danach kommt
-   * Ungeübtes, danach lange nicht Wiederholtes. Der Zufallsanteil sorgt dafür,
-   * dass nicht jede Sitzung mit derselben Liste beginnt.
+   * Priority of a drill unit. Mistakes weigh heaviest, then unpractised
+   * material, then whatever has not been reviewed in a long time. The random
+   * share keeps every session from starting with the same list.
    */
   function practiceScore(rec) {
-    if (!rec || !rec.attempts) return 4 + Math.random() * 2;      // noch nie geübt
+    if (!rec || !rec.attempts) return 4 + Math.random() * 2;      // never practised
     const wrongWeight = rec.wrongCount * 2 + (rec.lastResult === "wrong" ? 3 : 0);
     const staleness = Math.min(3, (Date.now() - rec.lastAt) / (7 * DAY));
     const mastered = rec.wrongCount === 0 ? -2 : 0;
@@ -778,7 +778,7 @@
   el("conjInput").addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
     e.preventDefault();
-    e.stopPropagation();   // siehe renderType: sonst prüft und blättert derselbe Enter
+    e.stopPropagation();   // see renderType: otherwise one Enter both checks and advances
     if (!el("conjCheckBtn").disabled && !el("conjCheckBtn").hidden) checkConjAnswer();
   });
 
@@ -796,7 +796,7 @@
     showView("done");
   }
 
-  // ---------- Grammatik ----------
+  // ---------- Grammar ----------
   let grammarSelectedCategories = new Set();
   let grammarSession = null; // { queue: [item...], idx, reviewed, correct }
 
@@ -923,10 +923,10 @@
     showView("done");
   }
 
-  // ---------- Übungssätze abspielen ----------
-  /* Der einzige Ablauf, der schon auf der generischen DRILL-Mechanik läuft.
-     Ein neuer Aufgabentyp braucht hier nur einen weiteren Renderer und in
-     packs.js eine Prüffunktion. */
+  // ---------- Playing exercise sets ----------
+  /* The only flow that already runs on the generic DRILL mechanics. A new
+     item type needs just one more renderer here and a check function in
+     packs.js. */
   let packSession = null;
   let packLoadErrors = [];
 
@@ -979,7 +979,7 @@
       input.onkeydown = (e) => {
         if (e.key !== "Enter") return;
         e.preventDefault();
-        e.stopPropagation();   // sonst prüft und blättert derselbe Enter
+        e.stopPropagation();   // otherwise one Enter both checks and advances
         if (!input.disabled) check();
       };
     },
@@ -1219,7 +1219,7 @@
     el("statStreak").textContent = state.streak;
     el("statMature").textContent = matureCount();
 
-    // Balkendiagramm letzte 14 Tage
+    // Bar chart of the last 14 days
     const last14 = last30.slice(-14);
     const max = Math.max(1, ...last14.map((k) => (state.log[k] ? state.log[k].reviewed : 0)));
     el("barChart").innerHTML = last14.map((k) => {
@@ -1229,7 +1229,7 @@
       return `<div class="bar-col"><div class="bar-fill" style="height:${h}%"></div><div class="bar-day">${label}</div></div>`;
     }).join("");
 
-    // Reifegrad
+    // Maturity
     const buckets = { neu: 0, lernend: 0, jung: 0, reif: 0 };
     Object.values(cards).forEach((c) => {
       if (c.state === "new") buckets.neu++;
@@ -1279,8 +1279,8 @@
     el("conjStatsEmpty").style.display = hasData ? "none" : "block";
     if (!hasData) return;
 
-    // Einträge zu Verben/Zeiten, die es nicht mehr gibt, überspringen –
-    // sonst reißt ein einzelner veralteter Schlüssel die ganze Statistik ab.
+    // Skip entries for verbs/tenses that no longer exist - otherwise a
+    // single stale key tears down the whole statistic.
     const mistakes = Object.entries(state.conjCards)
       .filter(([, c]) => c.wrongCount > 0)
       .sort((a, b) => b[1].wrongCount - a[1].wrongCount)
@@ -1309,7 +1309,7 @@
       return `<div class="conj-log-row">${icon}<span class="conj-log-main">${detail}</span><span class="conj-log-time">${timeAgo(r.t)}</span></div>`;
     }).join("");
   }
-  /** "Yo ___ profesor." + "soy" -> escapter Text mit hervorgehobener Lösung. */
+  /** "Yo ___ profesor." + "soy" -> escaped text with the solution highlighted. */
   function fillGap(prompt, answer) {
     const [before, ...rest] = String(prompt).split("___");
     if (!rest.length) return esc(prompt);
@@ -1344,7 +1344,7 @@
     el("grammarMistakesList").innerHTML = mistakes.length
       ? mistakes.map(([id, c]) => {
           const item = GRAMMAR.findItem(id);
-          if (!item) return "";   // Aufgabe wurde entfernt
+          if (!item) return "";   // the item was removed
           return `<div class="conj-log-row">
             <span class="conj-log-icon wrong">✗</span>
             <span class="conj-log-main" lang="es">${fillGap(item.prompt, item.answer)} <span class="conj-log-dim" lang="de">(${GRAMMAR.CATEGORY_LABELS[item.category]})</span></span>
@@ -1378,9 +1378,9 @@
     URL.revokeObjectURL(url);
   });
 
-  /* Browser ohne Ordner-Auswahl (Brave, Firefox, Safari) brauchen trotzdem einen
-     Weg, den Bericht zu Claude zu bekommen. Drei einzelne Downloads statt eines
-     Archivs – das spart eine Bibliothek, der Browser fragt einmal nach. */
+  /* Browsers without a folder picker (Brave, Firefox, Safari) still need a
+     way to get the report to Claude. Three separate downloads instead of an
+     archive - that saves a library, and the browser asks once. */
   function download(name, contents, type) {
     const url = URL.createObjectURL(new Blob([contents], { type }));
     const a = document.createElement("a");
@@ -1402,9 +1402,9 @@
     }
   });
 
-  /* Bericht und Auswertung entstehen jetzt serverseitig aus SQL-Views –
-     die App muss nach einer Sitzung nichts mehr hochladen. */
-  async function syncFolder() { /* nichts zu tun */ }
+  /* Report and analysis are produced server-side from SQL views now - the
+     app no longer has to upload anything after a session. */
+  async function syncFolder() { /* nothing to do */ }
 
   function renderSyncStatus() {
     const status = el("syncStatus");
@@ -1413,15 +1413,15 @@
       "liegen in Postgres; ein Agent liest sie über den MCP-Server und legt dort auch neue Übungen an.";
   }
 
-  // ---------- Tastatur ----------
+  // ---------- Keyboard ----------
   const CONTINUE_BTN = {
     session: "sessionContinueBtn",
     conjsession: "conjContinueBtn",
     grammarsession: "grammarContinueBtn",
     packsession: "packContinueBtn",
   };
-  /* Nur der Button der gerade sichtbaren Übung darf reagieren. Sonst greift
-     Enter auf den zurückgebliebenen Button einer beendeten Übung zu. */
+  /* Only the button of the currently visible drill may react. Otherwise
+     Enter reaches the leftover button of a finished drill. */
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && sidenav.classList.contains("open")) setNavOpen(false);
   });
@@ -1438,14 +1438,14 @@
   }
 
   document.addEventListener("keydown", (e) => {
-    // Eingabefelder bearbeiten ihre Tasten selbst.
+    // Input fields handle their own keys.
     const tag = e.target.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
 
-    // Enter bedient den sichtbaren "Weiter"-Button. Der Fall, dass derselbe
-    // Tastendruck erst eine Antwort prüft, ist in renderType/conjInput
-    // abgefangen – dort stoppt das Feld die Weitergabe.
+    // Enter operates the visible "next" button. The case where the same
+    // keypress first checks an answer is handled in renderType/conjInput -
+    // the field stops propagation there.
     if (e.key === "Enter" && pressContinue()) { e.preventDefault(); return; }
 
     const inFlip = currentView === "session" && session && currentItem().mode === "flip";
@@ -1473,14 +1473,14 @@
     }
   });
 
-  /** Auf der Startseite anzeigen, ob für heute eine Lektion bereitliegt. */
+  /** Show on the start page whether a lesson is ready for today. */
   function markiereLektion() {
     const hinweis = el("lessonHint");
     if (!hinweis) return;
     hinweis.hidden = !LESSON.hatLektion();
   }
 
-  // ---------- Übungssätze vom Agenten ----------
+  // ---------- Exercise sets from the agent ----------
   async function loadPacksFromFolder() {
     packs = await STORE.allPacks();
     packLoadErrors = [];
@@ -1488,7 +1488,7 @@
     return { count: packs.length, errors: [] };
   }
 
-  // ---------- Start ----------
+  // ---------- Startup ----------
   async function boot() {
     await STORE.init();
     state = await STORE.loadState();
@@ -1507,7 +1507,7 @@
     await LESSON.load();
     markiereLektion();
 
-    // Legt ein Agent eine Übung oder Lektion an, taucht sie ohne Zutun auf.
+    // When an agent creates an exercise or lesson, it shows up on its own.
     STORE.onExercisesChanged(async () => {
       packs = await STORE.allPacks();
       if (currentView === "packs") renderPacks();

@@ -1,9 +1,9 @@
-/* Persistenz der App.
+/* Persistence of the app.
 
-   Die Wahrheit liegt in Postgres hinter der HTTP-API; dieses Modul ist nur der
-   Zugang dazu. IndexedDB und localStorage sind bewusst weg – zwei Quellen der
-   Wahrheit ohne Konfliktauflösung waren die schlechtere Variante, und ohne
-   laufenden Server soll die App gar nicht erst so tun, als funktioniere sie. */
+   The truth lives in Postgres behind the HTTP API; this module is only the
+   way in. IndexedDB and localStorage are deliberately gone - two sources of
+   truth without conflict resolution was the worse option, and without a
+   running server the app should not pretend to work at all. */
 const STORE = (() => {
   let snapshot = null;
   let ready = false;
@@ -30,9 +30,9 @@ const STORE = (() => {
 
   const isReady = () => ready;
 
-  /* Ein frischer Datensatz ist {} – ohne diese Grundform greifen Zähler wie
-     state.log[heute] ins Leere. Die Form gehört der App, deshalb steht sie hier
-     und nicht in der Datenbank. */
+  /* A fresh record is {} - without this base shape, counters such as
+     state.log[today] reach into nothing. The shape belongs to the app, which
+     is why it sits here and not in the database. */
   function defaultState() {
     return {
       dailyGoal: 20,
@@ -73,9 +73,9 @@ const STORE = (() => {
   const weaknesses = () => call("GET", "weaknesses");
   const briefing = () => call("GET", "briefing");
 
-  /* Der Server meldet über Server-Sent-Events, wenn ein Agent eine Übung
-     angelegt hat. Ohne das bräuchte es wieder einen „Neu laden“-Knopf. */
-  /* Eine Verbindung für alle Ereignisarten; Zuhörer melden sich je Name an. */
+  /* The server reports via server-sent events when an agent has created an
+     exercise. Without it we would be back to a "reload" button. */
+  /* One connection for all event kinds; listeners subscribe by name. */
   const listeners = { exercises: [], lessons: [] };
   let source = null;
   function ensureStream() {
@@ -84,8 +84,8 @@ const STORE = (() => {
       source = new EventSource("/api/stream");
       Object.keys(listeners).forEach((name) =>
         source.addEventListener(name, () => listeners[name].forEach((fn) => fn())));
-      // Nur im Entwicklungsbetrieb: der Server meldet geänderte Dateien.
-      // Im Produktionsbetrieb wird dieses Ereignis nie gesendet.
+      // Development only: the server reports changed files. In production
+      // this event is never sent.
       source.addEventListener("reload", () => location.reload());
       source.onerror = () => { source.close(); source = null; setTimeout(() => { if (!source) connect(); }, 3000); };
     };

@@ -2,5 +2,5 @@
 fortschritt/
 node_modules/
 .env
-# gebautes Bündel – wird aus mcpb/ erzeugt
+# built bundle - produced from mcpb/
 vokabeltrainer.mcpb

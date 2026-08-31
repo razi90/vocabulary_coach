@@ -2,7 +2,8 @@
   "name": "vokabeltrainer",
   "version": "2.0.0",
   "private": true,
-  "description": "Spanisch-Vokabeltrainer mit Postgres-Backend und MCP-Zugang für Agenten",
+  "license": "MIT",
+  "description": "Spanish vocabulary trainer with a Postgres backend and MCP access for agents",
   "type": "commonjs",
   "scripts": {
     "start": "node server/server.js",

@@ -6,8 +6,8 @@ services:
       POSTGRES_USER: voco
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-voco}
       POSTGRES_DB: voco
-    # Kein veröffentlichter Port: die Datenbank ist nur im Docker-Netz
-    # erreichbar. Für psql: docker compose exec db psql -U voco -d voco
+    # No published port: the database is reachable only inside the Docker
+    # network. For psql: docker compose exec db psql -U voco -d voco
     volumes:
       - voco-db:/var/lib/postgresql/data
     healthcheck:
@@ -21,29 +21,29 @@ services:
     build: .
     container_name: vokabeltrainer
     environment:
-      # Schaltet den Live-Reload-Watcher frei (siehe server/server.js).
+      # Enables the live-reload watcher (see server/server.js).
       NODE_ENV: development
       PGHOST: db
       PGUSER: voco
       PGPASSWORD: ${POSTGRES_PASSWORD:-voco}
       PGDATABASE: voco
-      # Leer = kein Token. Sobald der Port nicht mehr nur auf localhost liegt,
-      # unbedingt setzen: sonst darf jeder Erreichbare Übungen schreiben.
+      # Empty = no token. As soon as the port is no longer localhost-only,
+      # set it: otherwise anyone who can reach it may write exercises.
       MCP_TOKEN: ${MCP_TOKEN:-}
-      # Zweiter Port, der ausschließlich /mcp bedient. Nur er wird getunnelt.
+      # Second port serving /mcp exclusively. Only that one gets tunnelled.
       MCP_PORT: ${MCP_PORT:-}
-    # Der Arbeitsbaum liegt als Mount im Container, nicht nur als Kopie im
-    # Image: Änderungen sind sofort da, kein Rebuild.
-    # Bewusst das ganze Verzeichnis und keine einzelnen Dateien – Editoren
-    # speichern über "temp schreiben + umbenennen". Bei einem Mount auf eine
-    # einzelne Datei zeigt der Container danach auf die alte, gelöschte Datei
-    # und sieht keine Änderung mehr. Bei einem Verzeichnis-Mount nicht.
+    # The working tree is mounted into the container, not just copied into
+    # the image: changes are there immediately, no rebuild.
+    # Deliberately the whole directory and not single files - editors save
+    # by writing a temp file and renaming it. With a mount on a single file
+    # the container then points at the old, deleted file and stops seeing
+    # any changes. With a directory mount it does not.
     volumes:
       - ./:/app:ro
-      # Anonymes Volume: hält node_modules aus dem Image frei, sonst würde
-      # der Host-Ordner (macOS) es überdecken.
+      # Anonymous volume: keeps node_modules from the image, which the host
+      # folder (macOS) would otherwise shadow.
       - /app/node_modules
-    # Ohne Anmeldung – deshalb nur localhost. Für Zugriff vom Handy siehe README.
+    # No authentication - hence localhost only. For phone access see README.
     ports:
       - "127.0.0.1:8080:8080"
     depends_on:
@@ -51,9 +51,9 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # Öffentlicher HTTPS-Endpunkt für Clients, die keine localhost-URL annehmen.
-  # Startet nur mit: docker compose --profile tunnel up -d
-  # Zeigt bewusst auf den MCP-only-Port, nicht auf die App.
+  # Public HTTPS endpoint for clients that refuse a localhost URL.
+  # Starts only with: docker compose --profile tunnel up -d
+  # Deliberately points at the MCP-only port, not at the app.
   tunnel:
     image: cloudflare/cloudflared:latest
     container_name: voco-tunnel

@@ -505,7 +505,7 @@
   <script src="src/lesson.js"></script>
   <script src="src/app.js"></script>
   <script>
-    // Offline-Betrieb: nur über http(s) möglich, bei file:// still überspringen.
+    // Offline use: only possible over http(s), silently skipped on file://.
     if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
       window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => { }));
     }

@@ -1,47 +1,52 @@
-# Vokabeltrainer — Anleitung für Agenten
+# Vocabulary Coach — notes for agents
 
-Spanisch-Lern-App. Der Lernstand liegt in Postgres; du erreichst ihn über den
-MCP-Server `vokabeltrainer` (stdio, läuft im Container, siehe `mcp/run.sh`).
+Spanish learning app for a German-speaking learner. The learning state lives in
+Postgres; you reach it through the MCP server `vokabeltrainer` (stdio, runs in
+the container, see `mcp/run.sh`).
 
-## Der Ablauf
+The app's interface and all explanations are German, the exercises themselves
+Spanish. Code, comments and docs are English.
 
-1. **`get_briefing`** — Lernstand und ein konkreter Auftrag. Immer hier anfangen.
-2. Bei Bedarf nachfassen: `get_weaknesses` (strukturiert), `query_events`
-   (Rohdaten inklusive der tatsächlichen Tippfehler), `search_vocabulary`
-   (Wortschatz mit Lernstand je Wort).
-3. **`create_exercise`** — passende Übungen anlegen. Sie erscheinen sofort im
-   Tab „Übungen“ der App; offene Tabs aktualisieren sich von selbst.
-4. `list_exercises` zeigt, was schon existiert und wie es lief. Was gesessen hat,
-   mit `set_exercise_status` auf `archived` setzen, statt es liegen zu lassen.
+## The flow
 
-## Was gute Übungen ausmacht
+1. **`get_briefing`** — learning state plus a concrete assignment. Always start
+   here.
+2. Follow up if needed: `get_weaknesses` (structured), `query_events` (raw data
+   including the actual typos), `search_vocabulary` (vocabulary with per-word
+   learning state).
+3. **`create_exercise`** — create fitting exercises. They show up in the app's
+   "Übungen" tab immediately; open tabs refresh themselves.
+4. `list_exercises` shows what already exists and how it went. Set what has
+   stuck to `archived` with `set_exercise_status` instead of leaving it around.
 
-- **An echten Fehlern ansetzen.** Das Briefing nennt Verwechslungen wie
-  „la puerta → el retraso“. Genau dafür Minimalpaare bauen.
-- **Wortschatz nutzen, den der Lernende kennt.** `search_vocabulary` mit `topic`
-  oder `level` filtern, statt neue Wörter einzuschleppen.
-- **`explanation` ist der Lernwert.** Dort steht das Warum, nicht die Lösung.
-  „Grund/Ursache → por“ ist gut; „Die Antwort ist por“ ist wertlos.
-- **6 bis 12 Aufgaben je Satz.** Mehr wird in einer Sitzung nicht geübt.
-- **Ein Thema je Satz.** „Por vs. para“ ja, „Gemischte Grammatik“ nein.
+## What makes a good exercise
 
-## Aufgabentypen
+- **Start from real mistakes.** The briefing names confusions such as
+  "la puerta → el retraso". Build minimal pairs for exactly those.
+- **Use vocabulary the learner knows.** Filter `search_vocabulary` by `topic`
+  or `level` rather than dragging in new words.
+- **`explanation` is where the learning happens.** It holds the why, not the
+  solution. "Grund/Ursache → por" is good; "The answer is por" is worthless.
+- **6 to 12 items per set.** More does not get practised in one sitting.
+- **One topic per set.** "Por vs. para" yes, "mixed grammar" no.
 
-| Typ | Pflichtfelder | Hinweis |
+## Item types
+
+| Type | Required fields | Note |
 | --- | --- | --- |
-| `choice` | `options` (2–6), `answer` | `answer` muss exakt eine der `options` sein. Nur exakte Treffer zählen. |
-| `cloze` | `prompt` mit `___`, `answer` | Akzente egal, ein Tippfehler gilt als „fast richtig“. |
-| `translate` | `prompt`, `answer` | Zusätzlich `alternatives` angeben, wenn mehrere Formulierungen stimmen. |
+| `choice` | `options` (2–6), `answer` | `answer` must be exactly one of the `options`. Only exact hits count. |
+| `cloze` | `prompt` with `___`, `answer` | Accents don't matter, one typo counts as "almost right". |
+| `translate` | `prompt`, `answer` | Also give `alternatives` when several phrasings are correct. |
 
-Bei `cloze` und `translate` wird eine **Wortverwechslung** nicht verziehen —
-„gracias para tu ayuda“ gilt als falsch, ein Vertipper wie „gracias pro tu
-ayuda“ dagegen als fast richtig. Genau das soll die Übung ja prüfen.
+For `cloze` and `translate` a **mixed-up word** is not forgiven — "gracias para
+tu ayuda" counts as wrong, a typo like "gracias pro tu ayuda" as almost right.
+That is precisely what the exercise is meant to test.
 
-## Wichtig
+## Important
 
-- Nichts direkt in `events` schreiben — das Protokoll gehört der App.
-- `create_exercise` prüft streng und nennt den Grund einer Ablehnung. Fehler
-  lesen und die Aufgabe korrigieren, nicht das Schema umgehen.
-- Läuft der Stack nicht: `docker compose up -d` im Projektverzeichnis.
+- Never write to `events` directly — the log belongs to the app.
+- `create_exercise` validates strictly and names the reason for a rejection.
+  Read the error and fix the item; don't work around the schema.
+- If the stack isn't running: `docker compose up -d` in the project directory.
 
-Aufbau und Datenmodell: [ARCHITEKTUR.md](ARCHITEKTUR.md).
+Structure and data model: [ARCHITECTURE.md](ARCHITECTURE.md).

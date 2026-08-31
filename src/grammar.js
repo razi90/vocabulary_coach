@@ -1,5 +1,5 @@
-/* Grammatikübungen: geschlossene Fragen (Lückentext mit Multiple Choice),
-   damit alles ohne KI-Bewertung eindeutig auswertbar bleibt. */
+/* Grammar drills: closed questions (gap text with multiple choice), so
+   everything stays unambiguously gradable without an AI judging it. */
 const GRAMMAR = (() => {
   const CATEGORY_LABELS = {
     ser_estar: "Ser vs. estar",
@@ -79,7 +79,7 @@ const GRAMMAR = (() => {
     { id: "pp15", category: "por_para", prompt: "Pagué veinte euros ___ el libro.", options: ["por", "para"], answer: "por",
       explanation: "Preis/Gegenwert → por." },
 
-    // --- Artikel & Genus ---
+    // --- articles & gender ---
     { id: "ar1", category: "articles", prompt: "___ problema", options: ["el", "la"], answer: "el",
       explanation: "„Problema“ endet auf -a, ist aber männlich (griechischen Ursprungs, wie viele -ma-Wörter)." },
     { id: "ar2", category: "articles", prompt: "___ día", options: ["el", "la"], answer: "el",
@@ -107,7 +107,7 @@ const GRAMMAR = (() => {
     { id: "ar13", category: "articles", prompt: "___ crisis", options: ["el", "la"], answer: "la",
       explanation: "Wörter auf -is sind meist weiblich: la crisis." },
 
-    // --- Verb + Präposition ---
+    // --- verb + preposition ---
     { id: "vp1", category: "prepositions", prompt: "pensar ___ algo", options: ["en", "de", "con"], answer: "en",
       explanation: "pensar en = an etwas denken." },
     { id: "vp2", category: "prepositions", prompt: "soñar ___ algo", options: ["en", "con", "de"], answer: "con",

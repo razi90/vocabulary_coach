@@ -1,8 +1,8 @@
--- Tageslektionen: Hören, Schreiben, Sprechen.
+-- Daily lessons: listening, writing, speaking.
 --
--- Eine Lektion je Tag. Die drei Teile liegen als jsonb, weil ihr Aufbau sich
--- noch bewegt und jeder Teil anders aussieht – die Prüfung passiert beim
--- Anlegen im MCP-Server, nicht über Spalten.
+-- One lesson per day. The three parts are stored as jsonb because their shape
+-- is still moving and each part looks different - validation happens on
+-- creation in the MCP server, not through columns.
 
 CREATE TABLE lessons (
   id          bigserial PRIMARY KEY,
@@ -26,8 +26,8 @@ CREATE TABLE lessons (
 );
 CREATE INDEX lessons_day_idx ON lessons (day DESC);
 
--- Was der Lernende abgibt. Freier Text kann die App nicht bewerten – deshalb
--- wird er hier abgelegt und der Coach gibt später Rückmeldung.
+-- What the learner submits. The app cannot grade free text - so it is stored
+-- here and the coach gives feedback later.
 CREATE TABLE lesson_submissions (
   id           bigserial PRIMARY KEY,
   lesson_id    bigint NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
@@ -45,7 +45,7 @@ CREATE INDEX lesson_submissions_offen_idx ON lesson_submissions (submitted_at)
 CREATE TRIGGER lessons_touch BEFORE UPDATE ON lessons
 FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
 
--- Wie bei den Übungen: die App soll eine neue Lektion sofort sehen.
+-- As with the exercises: the app should see a new lesson immediately.
 CREATE OR REPLACE FUNCTION notify_lessons() RETURNS trigger AS $$
 BEGIN
   PERFORM pg_notify('lessons_changed', COALESCE(NEW.day, OLD.day)::text);
@@ -57,7 +57,7 @@ CREATE TRIGGER lessons_changed
 AFTER INSERT OR UPDATE OR DELETE ON lessons
 FOR EACH ROW EXECUTE FUNCTION notify_lessons();
 
--- ---------- Sichten ----------
+-- ---------- Views ----------
 
 CREATE VIEW v_lesson_today AS
 SELECT l.*,
@@ -69,7 +69,7 @@ FROM lessons l
 WHERE l.day = (now() AT TIME ZONE 'Europe/Berlin')::date
   AND l.status = 'ready';
 
--- Abgaben, die auf Rückmeldung warten. Der Einstieg für den Coach.
+-- Submissions waiting for feedback. The coach's entry point.
 CREATE VIEW v_pending_feedback AS
 SELECT s.id, s.part, s.submitted_at, s.content,
        l.day, l.title, l.theme, l.level,
