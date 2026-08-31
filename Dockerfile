@@ -17,6 +17,10 @@ COPY server/ ./server/
 COPY mcp/ ./mcp/
 COPY db/ ./db/
 COPY beispiele/ ./beispiele/
+# The scheduled coach runs from this image too - it needs its own code and the
+# instructions it is given (see agent/coach.js).
+COPY agent/ ./agent/
+COPY coach-instructions.md ./
 
 USER node
 EXPOSE 8080
