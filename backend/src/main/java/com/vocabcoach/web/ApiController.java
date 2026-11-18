@@ -2,6 +2,8 @@ package com.vocabcoach.web;
 
 import com.vocabcoach.UserError;
 import com.vocabcoach.auth.CurrentUser;
+import com.vocabcoach.auth.UserAccounts;
+import com.vocabcoach.learning.Learner;
 import com.vocabcoach.learning.Briefing;
 import com.vocabcoach.learning.LearningStore;
 import com.vocabcoach.learning.PackValidator;
@@ -40,22 +42,29 @@ public class ApiController {
   private final LessonService lessons;
   private final PackValidator packs;
   private final LiveUpdates live;
+  private final UserAccounts accounts;
 
-  public ApiController(LearningStore store, LessonService lessons, PackValidator packs, LiveUpdates live) {
+  public ApiController(LearningStore store, LessonService lessons, PackValidator packs, LiveUpdates live,
+                       UserAccounts accounts) {
+    this.accounts = accounts;
     this.store = store;
     this.lessons = lessons;
     this.packs = packs;
     this.live = live;
   }
 
+  private Learner learner() {
+    return accounts.currentLearner();
+  }
+
   @GetMapping(path = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter stream() {
-    return live.open(CurrentUser.id());
+    return live.open(CurrentUser.id());   // per user: changes in either course reach the tab
   }
 
   @GetMapping("/snapshot")
   public Map<String, Object> snapshot() {
-    long user = CurrentUser.id();
+    Learner user = learner();
     Map<String, Object> out = new LinkedHashMap<>();
     out.put("state", store.getSettings(user));
     out.put("cards", store.getCards(user));
@@ -68,19 +77,19 @@ public class ApiController {
   @PutMapping("/state")
   public Map<String, Object> putState(@RequestBody JsonNode body) {
     if (body == null || !body.isObject()) throw new UserError("state erwartet");
-    store.putSettings(CurrentUser.id(), body);
+    store.putSettings(learner(), body);
     return Map.of("ok", true);
   }
 
   @PatchMapping("/cards")
   public Map<String, Object> patchCards(@RequestBody JsonNode body) {
     if (body == null || !body.isObject()) throw new UserError("Karten erwartet");
-    return Map.of("ok", true, "written", store.upsertCards(CurrentUser.id(), body));
+    return Map.of("ok", true, "written", store.upsertCards(learner(), body));
   }
 
   @PostMapping("/events")
   public Map<String, Object> postEvents(@RequestBody JsonNode body) {
-    List<Long> seqs = store.appendEvents(CurrentUser.id(), body);
+    List<Long> seqs = store.appendEvents(learner(), body);
     if (seqs.isEmpty()) throw new UserError("kein gültiges Ereignis");
     return Map.of("seqs", seqs);
   }
@@ -89,24 +98,24 @@ public class ApiController {
   public List<Map<String, Object>> events(@RequestParam(required = false) String kind,
                                           @RequestParam(required = false) Long since,
                                           @RequestParam(required = false) Integer limit) {
-    return store.getEvents(CurrentUser.id(), kind, since, limit);
+    return store.getEvents(learner(), kind, since, limit);
   }
 
   @GetMapping("/packs")
   public Map<String, Object> getPacks() {
-    return Map.of("packs", store.getExercises(CurrentUser.id(), "ready"), "errors", List.of());
+    return Map.of("packs", store.getExercises(learner(), "ready"), "errors", List.of());
   }
 
   /** Import from the app: the same validation as for the coach. */
   @PostMapping("/packs")
   public ResponseEntity<Map<String, Object>> importPack(@RequestBody JsonNode body) {
     JsonNode raw = body != null && body.has("raw") ? body.get("raw") : body;
-    PackValidator.Result r = packs.parse(raw, "Import");
+    Learner user = learner();
+    PackValidator.Result r = packs.parse(raw, "Import", user.courseId());
     if (!r.ok()) {
       return ResponseEntity.badRequest().body(Map.of("error", "Übungssatz ungültig", "errors", r.errors()));
     }
     PackValidator.Pack p = r.pack();
-    long user = CurrentUser.id();
     store.upsertExercise(user, p.id(), PackValidator.SCHEMA, p.title(), p.description(), p.createdBy(), p.focus(),
         "ready", p.items());
     Map<String, Object> saved = store.getExercises(user, "all").stream()
@@ -116,7 +125,7 @@ public class ApiController {
 
   @DeleteMapping("/packs/{id}")
   public Map<String, Object> deletePack(@PathVariable String id) {
-    store.deleteExercise(CurrentUser.id(), id);
+    store.deleteExercise(learner(), id);
     return Map.of("ok", true);
   }
 
@@ -124,7 +133,7 @@ public class ApiController {
 
   @GetMapping("/lesson")
   public ResponseEntity<?> lesson(@RequestParam(required = false) LocalDate day) {
-    var lesson = lessons.getLesson(CurrentUser.id(), day);
+    var lesson = lessons.getLesson(learner(), day);
     // The transcript is the answer key for the listening part - for the coach, not the page.
     lesson.ifPresent(l -> {
       if (l.get("listening") instanceof tools.jackson.databind.node.ObjectNode listening) listening.remove("transcript");
@@ -138,7 +147,7 @@ public class ApiController {
   public Map<String, Object> submit(@PathVariable long id, @RequestBody JsonNode body) {
     String part = body == null ? "" : body.path("part").asString("");
     if (!PARTS.contains(part)) throw new UserError("part muss listening, writing, speaking oder sentences sein");
-    Map<String, Object> row = lessons.submit(CurrentUser.id(), id, part, body.get("content"));
+    Map<String, Object> row = lessons.submit(learner(), id, part, body.get("content"));
     return Map.of("ok", true, "id", row.get("id"), "submittedAt", row.get("submitted_at"));
   }
 
@@ -147,11 +156,11 @@ public class ApiController {
   @GetMapping("/weaknesses")
   public Map<String, Object> weaknesses(@RequestParam(defaultValue = "30") int days,
                                         @RequestParam(defaultValue = "12") int limit) {
-    return store.weaknesses(CurrentUser.id(), Math.max(1, days), Math.max(1, Math.min(limit, 100)));
+    return store.weaknesses(learner(), Math.max(1, days), Math.max(1, Math.min(limit, 100)));
   }
 
   @GetMapping(path = "/briefing", produces = "text/markdown;charset=UTF-8")
   public String briefing(@RequestParam(defaultValue = "30") int days) {
-    return Briefing.toMarkdown(store.weaknesses(CurrentUser.id(), Math.max(1, days), 12));
+    return Briefing.toMarkdown(store.weaknesses(learner(), Math.max(1, days), 12));
   }
 }

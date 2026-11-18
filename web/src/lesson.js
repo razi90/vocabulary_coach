@@ -81,13 +81,13 @@ const LESSON = (() => {
     teil.questions.forEach((frage, i) => {
       const wrap = document.createElement("div");
       wrap.className = "lesson-question";
-      wrap.innerHTML = `<p class="lesson-task" lang="es" style="margin-bottom:8px;">${i + 1}. ${esc(frage.prompt)}</p>`;
+      wrap.innerHTML = `<p class="lesson-task" lang="${COURSE.lang}" style="margin-bottom:8px;">${i + 1}. ${esc(frage.prompt)}</p>`;
       const grid = document.createElement("div");
       grid.className = "mc-grid";
       frage.options.forEach((opt) => {
         const b = document.createElement("button");
         b.className = "mc-option";
-        b.lang = "es";
+        b.lang = COURSE.lang;
         b.textContent = opt;
         b.addEventListener("click", () => {
           grid.querySelectorAll(".mc-option").forEach((o) => o.classList.remove("correct"));
@@ -125,8 +125,8 @@ const LESSON = (() => {
 
   function renderListeningSummary(teil, abgabe, box, submit) {
     const min = teil.minWords || 40;
-    box.innerHTML = `<textarea class="lesson-textarea" id="listeningText" rows="6" lang="es" spellcheck="false"
-        placeholder="Escribe aquí lo que has entendido …"></textarea>
+    box.innerHTML = `<textarea class="lesson-textarea" id="listeningText" rows="6" lang="${COURSE.lang}" spellcheck="false"
+        placeholder="Was hast du verstanden? ${COURSE.inDe} …"></textarea>
       <div class="lesson-counter"><span id="listeningCount">0</span> / ${min} Wörter</div>`;
     const feld = el("listeningText");
     submit.textContent = "Zusammenfassung abgeben";
@@ -226,9 +226,9 @@ const LESSON = (() => {
       <li class="satz">
         <div class="satz-de">${esc(it.de)}</div>
         ${it.note ? `<div class="satz-note">${esc(it.note)}</div>` : ""}
-        <input type="text" class="type-input satz-input" lang="es" data-i="${i}"
+        <input type="text" class="type-input satz-input" lang="${COURSE.lang}" data-i="${i}"
           autocomplete="off" autocapitalize="off" spellcheck="false"
-          placeholder="Auf Spanisch …">
+          placeholder="${COURSE.inDe.charAt(0).toUpperCase() + COURSE.inDe.slice(1)} …">
       </li>`).join("");
 
     const felder = [...liste.querySelectorAll(".satz-input")];
@@ -327,7 +327,7 @@ const LESSON = (() => {
 
   function starten(teil, Erkenner, feld, start, pruefe) {
     erkennung = new Erkenner();
-    erkennung.lang = "es-ES";
+    erkennung.lang = COURSE.speechLang;
     erkennung.continuous = true;
     erkennung.interimResults = true;
     let fest = feld.value ? feld.value + " " : "";

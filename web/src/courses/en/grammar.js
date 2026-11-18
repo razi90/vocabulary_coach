@@ -1,0 +1,150 @@
+/* Grammar drills for German speakers learning English: closed questions
+   (gap text with multiple choice), aimed at the mistakes German speakers
+   typically make. Same interface as courses/es/grammar.js. */
+const GRAMMAR = (() => {
+  const CATEGORY_LABELS = {
+    simple_progressive: "Simple vs. Progressive",
+    perfect_past: "Present Perfect vs. Simple Past",
+    since_for: "since vs. for",
+    some_any: "some vs. any",
+    prepositions: "in / on / at",
+    false_friends: "Falsche Freunde",
+  };
+  const CATEGORY_EXPLANATIONS = {
+    simple_progressive: "Simple für Gewohnheiten und Fakten (always, every day), Progressive für das, was gerade jetzt oder vorübergehend passiert (now, at the moment). Verben wie know, like, want stehen fast nie in der -ing-Form.",
+    perfect_past: "Ein genauer Zeitpunkt in der Vergangenheit (yesterday, last year, ago, in 2019) verlangt das Simple Past. Ohne Zeitpunkt, mit Bezug zur Gegenwart (ever, never, yet, already, since, for) steht das Present Perfect – auch wenn man im Deutschen „habe … gemacht“ sagt.",
+    since_for: "„Seit“ heißt since vor einem Zeitpunkt (since Monday, since 2015) und for vor einem Zeitraum (for two weeks, for ten years). Dazu gehört meist das Present Perfect, nicht das Präsens.",
+    some_any: "some in bejahten Sätzen und in Angeboten/Bitten (Would you like some tea?), any in Fragen und verneinten Sätzen. Mit no statt not any: I have no time.",
+    prepositions: "at für Uhrzeiten und Punkte (at 6 o'clock, at the station), on für Tage und Daten (on Monday, on 3 May), in für Monate, Jahre, Tageszeiten und Räume (in July, in the morning, in the kitchen).",
+    false_friends: "Wörter, die deutsch aussehen, aber etwas anderes bedeuten: become heißt „werden“, nicht „bekommen“; actually heißt „eigentlich/tatsächlich“, nicht „aktuell“.",
+  };
+
+  const ITEMS = [
+    // --- Simple vs. Progressive ---
+    { id: "sp1", category: "simple_progressive", prompt: "Listen! Somebody ___ at the door.", options: ["knocks", "is knocking"], answer: "is knocking",
+      explanation: "„Listen!“ – es passiert genau jetzt → Present Progressive." },
+    { id: "sp2", category: "simple_progressive", prompt: "She ___ to work by bus every day.", options: ["goes", "is going"], answer: "goes",
+      explanation: "Gewohnheit (every day) → Simple Present." },
+    { id: "sp3", category: "simple_progressive", prompt: "I ___ what you mean.", options: ["know", "am knowing"], answer: "know",
+      explanation: "know beschreibt einen Zustand und steht nicht in der -ing-Form." },
+    { id: "sp4", category: "simple_progressive", prompt: "We ___ dinner at the moment, can I call you back?", options: ["have", "are having"], answer: "are having",
+      explanation: "at the moment → Progressive. „have dinner“ ist hier eine Handlung, kein Besitz." },
+    { id: "sp5", category: "simple_progressive", prompt: "Water ___ at 100 degrees.", options: ["boils", "is boiling"], answer: "boils",
+      explanation: "Allgemeine Tatsache → Simple Present." },
+    { id: "sp6", category: "simple_progressive", prompt: "Tom usually works in Munich, but this week he ___ in Berlin.", options: ["works", "is working"], answer: "is working",
+      explanation: "Vorübergehend (this week), im Gegensatz zum Normalfall → Progressive." },
+    { id: "sp7", category: "simple_progressive", prompt: "I ___ this song. Who sings it?", options: ["like", "am liking"], answer: "like",
+      explanation: "like ist ein Zustandsverb – keine -ing-Form." },
+    { id: "sp8", category: "simple_progressive", prompt: "Why ___ you ___ a coat? It's 30 degrees!", options: ["do … wear", "are … wearing"], answer: "are … wearing",
+      explanation: "Es geht um genau jetzt, nicht um eine Gewohnheit → Progressive." },
+    { id: "sp9", category: "simple_progressive", prompt: "The train ___ at 7:15 tomorrow morning.", options: ["leaves", "is leaving"], answer: "leaves",
+      explanation: "Fahrpläne stehen im Simple Present, auch wenn sie in der Zukunft liegen." },
+
+    // --- Present Perfect vs. Simple Past ---
+    { id: "pp1", category: "perfect_past", prompt: "I ___ him yesterday.", options: ["saw", "have seen"], answer: "saw",
+      explanation: "yesterday ist ein genauer Zeitpunkt → Simple Past. Deutsch „Ich habe ihn gestern gesehen“ verleitet zum Present Perfect." },
+    { id: "pp2", category: "perfect_past", prompt: "___ you ever ___ to London?", options: ["Did … go", "Have … been"], answer: "Have … been",
+      explanation: "ever = jemals im Leben, kein Zeitpunkt → Present Perfect." },
+    { id: "pp3", category: "perfect_past", prompt: "We ___ in Spain in 2019.", options: ["were", "have been"], answer: "were",
+      explanation: "in 2019 ist ein abgeschlossener Zeitpunkt → Simple Past." },
+    { id: "pp4", category: "perfect_past", prompt: "I can't find my keys. I think I ___ them.", options: ["lost", "have lost"], answer: "have lost",
+      explanation: "Die Folge ist jetzt sichtbar (die Schlüssel fehlen), kein Zeitpunkt genannt → Present Perfect." },
+    { id: "pp5", category: "perfect_past", prompt: "She ___ the book two weeks ago.", options: ["finished", "has finished"], answer: "finished",
+      explanation: "ago verlangt immer das Simple Past." },
+    { id: "pp6", category: "perfect_past", prompt: "I ___ my homework yet.", options: ["didn't finish", "haven't finished"], answer: "haven't finished",
+      explanation: "yet → Present Perfect." },
+    { id: "pp7", category: "perfect_past", prompt: "When ___ you ___ your job?", options: ["did … start", "have … started"], answer: "did … start",
+      explanation: "Fragen mit when zielen auf einen Zeitpunkt → Simple Past." },
+    { id: "pp8", category: "perfect_past", prompt: "Shakespeare ___ many plays.", options: ["wrote", "has written"], answer: "wrote",
+      explanation: "Shakespeare lebt nicht mehr – abgeschlossener Zeitraum → Simple Past." },
+    { id: "pp9", category: "perfect_past", prompt: "I ___ already ___ lunch, thanks.", options: ["did … eat", "have … eaten"], answer: "have … eaten",
+      explanation: "already → Present Perfect." },
+
+    // --- since vs. for ---
+    { id: "sf1", category: "since_for", prompt: "I have lived here ___ 2015.", options: ["since", "for"], answer: "since",
+      explanation: "2015 ist ein Zeitpunkt → since." },
+    { id: "sf2", category: "since_for", prompt: "We have known each other ___ ten years.", options: ["since", "for"], answer: "for",
+      explanation: "ten years ist ein Zeitraum → for." },
+    { id: "sf3", category: "since_for", prompt: "She has been ill ___ Monday.", options: ["since", "for"], answer: "since",
+      explanation: "Monday ist ein Zeitpunkt (Beginn) → since." },
+    { id: "sf4", category: "since_for", prompt: "I ___ here for three years.", options: ["work", "have worked"], answer: "have worked",
+      explanation: "„Ich arbeite seit drei Jahren hier“ – im Englischen Present Perfect, nicht Präsens." },
+    { id: "sf5", category: "since_for", prompt: "They have been waiting ___ two hours.", options: ["since", "for"], answer: "for",
+      explanation: "two hours ist eine Dauer → for." },
+    { id: "sf6", category: "since_for", prompt: "He hasn't called me ___ last summer.", options: ["since", "for"], answer: "since",
+      explanation: "last summer markiert den Beginn → since." },
+    { id: "sf7", category: "since_for", prompt: "How long ___ you ___ English?", options: ["do … learn", "have … been learning"], answer: "have … been learning",
+      explanation: "„Seit wann lernst du …?“ – Dauer bis jetzt → Present Perfect (Progressive)." },
+    { id: "sf8", category: "since_for", prompt: "I haven't seen her ___ ages.", options: ["since", "for"], answer: "for",
+      explanation: "for ages = seit einer Ewigkeit (Zeitraum)." },
+
+    // --- some vs. any ---
+    { id: "sa1", category: "some_any", prompt: "There isn't ___ milk left.", options: ["some", "any"], answer: "any",
+      explanation: "Verneinter Satz → any." },
+    { id: "sa2", category: "some_any", prompt: "I'd like ___ water, please.", options: ["some", "any"], answer: "some",
+      explanation: "Bejahte Bitte → some." },
+    { id: "sa3", category: "some_any", prompt: "Have you got ___ questions?", options: ["some", "any"], answer: "any",
+      explanation: "Offene Frage → any." },
+    { id: "sa4", category: "some_any", prompt: "Would you like ___ cake?", options: ["some", "any"], answer: "some",
+      explanation: "Angebot, man erwartet ein Ja → some, obwohl es eine Frage ist." },
+    { id: "sa5", category: "some_any", prompt: "We need ___ eggs for the cake.", options: ["some", "any"], answer: "some",
+      explanation: "Bejahter Aussagesatz → some." },
+    { id: "sa6", category: "some_any", prompt: "I have ___ idea where he is.", options: ["no", "any"], answer: "no",
+      explanation: "„Ich habe keine Ahnung“ = I have no idea (oder: I don't have any idea)." },
+    { id: "sa7", category: "some_any", prompt: "Is there ___ here who speaks German?", options: ["someone", "anyone"], answer: "anyone",
+      explanation: "Echte Frage, Antwort offen → anyone." },
+    { id: "sa8", category: "some_any", prompt: "Can I have ___ more coffee?", options: ["some", "any"], answer: "some",
+      explanation: "Bitte → some." },
+
+    // --- in / on / at ---
+    { id: "pr1", category: "prepositions", prompt: "The meeting is ___ Monday.", options: ["in", "on", "at"], answer: "on",
+      explanation: "Wochentage → on." },
+    { id: "pr2", category: "prepositions", prompt: "I'll see you ___ 8 o'clock.", options: ["in", "on", "at"], answer: "at",
+      explanation: "Uhrzeiten → at." },
+    { id: "pr3", category: "prepositions", prompt: "My birthday is ___ July.", options: ["in", "on", "at"], answer: "in",
+      explanation: "Monate → in." },
+    { id: "pr4", category: "prepositions", prompt: "She was born ___ 12 May 1990.", options: ["in", "on", "at"], answer: "on",
+      explanation: "Genaues Datum → on." },
+    { id: "pr5", category: "prepositions", prompt: "I usually read ___ the evening.", options: ["in", "on", "at"], answer: "in",
+      explanation: "in the morning / afternoon / evening – aber: at night." },
+    { id: "pr6", category: "prepositions", prompt: "I never work ___ night.", options: ["in", "on", "at"], answer: "at",
+      explanation: "Feste Wendung: at night." },
+    { id: "pr7", category: "prepositions", prompt: "Wait for me ___ the bus stop.", options: ["in", "on", "at"], answer: "at",
+      explanation: "Ein Punkt/Treffpunkt → at." },
+    { id: "pr8", category: "prepositions", prompt: "The picture is ___ the wall.", options: ["in", "on", "at"], answer: "on",
+      explanation: "Auf einer Fläche → on." },
+    { id: "pr9", category: "prepositions", prompt: "What do you do ___ the weekend?", options: ["in", "on", "at"], answer: "at",
+      explanation: "Britisch: at the weekend (amerikanisch: on the weekend)." },
+
+    // --- False friends ---
+    { id: "ff1", category: "false_friends", prompt: "I'd like to ___ a coffee, please. (bekommen)", options: ["become", "get"], answer: "get",
+      explanation: "become heißt „werden“! „bekommen“ = get oder receive." },
+    { id: "ff2", category: "false_friends", prompt: "She wants to ___ a doctor. (werden)", options: ["become", "get"], answer: "become",
+      explanation: "become = werden." },
+    { id: "ff3", category: "false_friends", prompt: "My ___ is broken, so I can't call you. (Handy)", options: ["handy", "mobile"], answer: "mobile",
+      explanation: "„Handy“ ist Scheinenglisch: mobile (phone), amerikanisch cell phone. handy heißt „praktisch“." },
+    { id: "ff4", category: "false_friends", prompt: "We need the ___ figures for this month. (aktuell)", options: ["actual", "current"], answer: "current",
+      explanation: "actual heißt „tatsächlich, eigentlich“. „aktuell“ = current oder up-to-date." },
+    { id: "ff5", category: "false_friends", prompt: "He's very ___. He always helps people. (sympathisch)", options: ["sympathetic", "nice"], answer: "nice",
+      explanation: "sympathetic heißt „mitfühlend“. „sympathisch“ = nice, likeable." },
+    { id: "ff6", category: "false_friends", prompt: "We could ___ meet next week. (eventuell)", options: ["eventually", "possibly"], answer: "possibly",
+      explanation: "eventually heißt „schließlich, irgendwann“. „eventuell“ = possibly oder maybe." },
+    { id: "ff7", category: "false_friends", prompt: "Please ___ the tickets at the entrance. (kontrollieren)", options: ["control", "check"], answer: "check",
+      explanation: "kontrollieren im Sinne von überprüfen = check." },
+    { id: "ff8", category: "false_friends", prompt: "I ___ my bag on the train. (vergessen/liegen lassen)", options: ["left", "forgot"], answer: "left",
+      explanation: "Mit Ortsangabe: leave something somewhere. forget steht ohne Ort: I forgot my bag." },
+    { id: "ff9", category: "false_friends", prompt: "The ___ of the film was excellent. (Regisseur)", options: ["regisseur", "director"], answer: "director",
+      explanation: "Regisseur = director." },
+  ];
+
+  function itemsForCategory(category) {
+    return ITEMS.filter((it) => it.category === category);
+  }
+  function findItem(id) {
+    return ITEMS.find((it) => it.id === id);
+  }
+
+  const CATEGORIES = Object.keys(CATEGORY_LABELS);
+
+  return { CATEGORIES, CATEGORY_LABELS, CATEGORY_EXPLANATIONS, ITEMS, itemsForCategory, findItem };
+})();

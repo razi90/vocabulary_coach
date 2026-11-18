@@ -2,6 +2,8 @@ package com.vocabcoach.coach;
 
 import com.vocabcoach.UserError;
 import com.vocabcoach.learning.Briefing;
+import com.vocabcoach.learning.Course;
+import com.vocabcoach.learning.Learner;
 import com.vocabcoach.learning.LearningStore;
 import com.vocabcoach.learning.PackValidator;
 import com.vocabcoach.lessons.LessonService;
@@ -35,9 +37,13 @@ public class CoachTools {
    * Who is being coached, by which model (recorded as the author), and the
    * video transcripts read during this run.
    */
-  public record Context(long userId, String model, Map<String, YouTube.Transcript> transcripts) {
-    public Context(long userId, String model) {
-      this(userId, model, new ConcurrentHashMap<>());
+  public record Context(Learner learner, String model, Map<String, YouTube.Transcript> transcripts) {
+    public Context(Learner learner, String model) {
+      this(learner, model, new ConcurrentHashMap<>());
+    }
+
+    String lang() {
+      return learner.courseId();
     }
   }
 
@@ -75,10 +81,14 @@ public class CoachTools {
     }
   }
 
-  /** The tool list in Chat Completions format. Video search only if the server has a key. */
-  public ArrayNode chatTools() {
+  /**
+   * The tool list in Chat Completions format, worded for the course
+   * ({{sprache}} & co. filled in). Video search only if the server has a key.
+   */
+  public ArrayNode chatTools(Course course) {
     ArrayNode out = json.createArrayNode();
-    for (JsonNode d : definitions) {
+    ArrayNode filled = (ArrayNode) json.readTree(course.fill(json.writeValueAsString(definitions)));
+    for (JsonNode d : filled) {
       if ("search_youtube".equals(d.path("name").asString()) && !youtube.searchAvailable()) continue;
       ObjectNode fn = json.createObjectNode();
       fn.put("name", d.path("name").asString());
@@ -125,21 +135,21 @@ public class CoachTools {
 
   private void register() {
     handlers.put("get_briefing", (ctx, a) ->
-        Briefing.toMarkdown(store.weaknesses(ctx.userId(), clamp(a, "days", 30, 1, 3650), 12)));
+        Briefing.toMarkdown(store.weaknesses(ctx.learner(), clamp(a, "days", 30, 1, 3650), 12)));
 
     handlers.put("get_weaknesses", (ctx, a) ->
-        store.weaknesses(ctx.userId(), clamp(a, "days", 30, 1, 3650), clamp(a, "limit", 12, 1, 100)));
+        store.weaknesses(ctx.learner(), clamp(a, "days", 30, 1, 3650), clamp(a, "limit", 12, 1, 100)));
 
-    handlers.put("query_events", (ctx, a) -> store.getEvents(ctx.userId(), text(a, "kind"),
+    handlers.put("query_events", (ctx, a) -> store.getEvents(ctx.learner(), text(a, "kind"),
         a.hasNonNull("since") ? a.get("since").asLong() : null, clamp(a, "limit", 200, 1, 5000)));
 
-    handlers.put("search_vocabulary", (ctx, a) -> store.searchVocabulary(ctx.userId(), text(a, "search"),
+    handlers.put("search_vocabulary", (ctx, a) -> store.searchVocabulary(ctx.learner(), text(a, "search"),
         text(a, "topic"), text(a, "level"), text(a, "pos"), clamp(a, "limit", 50, 1, 500)));
 
     handlers.put("list_exercises", (ctx, a) -> {
       String status = text(a, "status");
-      Map<String, Map<String, Object>> results = store.exerciseResults(ctx.userId());
-      return store.getExercises(ctx.userId(), status == null ? "all" : status).stream().map(e -> {
+      Map<String, Map<String, Object>> results = store.exerciseResults(ctx.learner());
+      return store.getExercises(ctx.learner(), status == null ? "all" : status).stream().map(e -> {
         Map<String, Object> out = new LinkedHashMap<>();
         out.put("id", e.get("id"));
         out.put("title", e.get("title"));
@@ -166,11 +176,11 @@ public class CoachTools {
       raw.set("focus", a.has("focus") ? a.get("focus") : json.createArrayNode());
       raw.set("items", a.get("items"));
       String id = a.path("id").asString("");
-      PackValidator.Result r = packs.parse(raw, id.isEmpty() ? "Übungssatz" : id);
+      PackValidator.Result r = packs.parse(raw, id.isEmpty() ? "Übungssatz" : id, ctx.lang());
       if (!r.ok()) throw new UserError("Übungssatz abgelehnt:\n- " + String.join("\n- ", r.errors()));
       String status = "draft".equals(text(a, "status")) ? "draft" : "ready";
       PackValidator.Pack p = r.pack();
-      store.upsertExercise(ctx.userId(), p.id(), PackValidator.SCHEMA, p.title(), p.description(), p.createdBy(),
+      store.upsertExercise(ctx.learner(), p.id(), PackValidator.SCHEMA, p.title(), p.description(), p.createdBy(),
           p.focus(), status, p.items());
       Map<String, Object> out = new LinkedHashMap<>();
       out.put("ok", true);
@@ -186,18 +196,18 @@ public class CoachTools {
       String id = required(a, "id");
       String status = required(a, "status");
       if (!LearningStore.EXERCISE_STATUSES.contains(status)) throw new UserError("status muss ready, draft oder archived sein.");
-      if (!store.setExerciseStatus(ctx.userId(), id, status)) throw new UserError("Kein Übungssatz mit id \"" + id + "\".");
+      if (!store.setExerciseStatus(ctx.learner(), id, status)) throw new UserError("Kein Übungssatz mit id \"" + id + "\".");
       return Map.of("ok", true, "id", id, "status", status);
     });
 
     handlers.put("delete_exercise", (ctx, a) -> {
       String id = required(a, "id");
-      if (!store.deleteExercise(ctx.userId(), id)) throw new UserError("Kein Übungssatz mit id \"" + id + "\".");
+      if (!store.deleteExercise(ctx.learner(), id)) throw new UserError("Kein Übungssatz mit id \"" + id + "\".");
       return Map.of("ok", true, "id", id);
     });
 
     handlers.put("search_youtube", (ctx, a) -> {
-      List<YouTube.Video> found = youtube.search(required(a, "query"), text(a, "duration"),
+      List<YouTube.Video> found = youtube.search(required(a, "query"), ctx.lang(), text(a, "duration"),
           !a.has("withCaptions") || a.get("withCaptions").asBoolean(true), clamp(a, "maxResults", 6, 1, 10));
       if (found.isEmpty()) {
         return "Keine Treffer. Andere Suchbegriffe versuchen, oder withCaptions=false bzw. eine andere duration.";
@@ -208,8 +218,8 @@ public class CoachTools {
     handlers.put("get_video_transcript", (ctx, a) -> {
       String id = LessonService.extractVideoId(required(a, "videoId"));
       if (id == null) throw new UserError("videoId ist keine gültige YouTube-ID oder -URL.");
-      YouTube.Transcript t = youtube.transcript(id).orElseThrow(() -> new UserError(
-          "Für dieses Video gibt es kein spanisches Transkript (oder YouTube gibt es nicht heraus). "
+      YouTube.Transcript t = youtube.transcript(id, ctx.lang()).orElseThrow(() -> new UserError(
+          "Für dieses Video gibt es kein Transkript in der Lernsprache (oder YouTube gibt es nicht heraus). "
               + "Lege listening ohne questions an: Der Lernende fasst zusammen, was er verstanden hat."));
       ctx.transcripts().put(id, t);
       Map<String, Object> out = new LinkedHashMap<>();
@@ -224,7 +234,7 @@ public class CoachTools {
     });
 
     handlers.put("create_lesson", (ctx, a) -> {
-      Map<String, Object> row = lessons.createLesson(ctx.userId(), a, ctx.model(), ctx.transcripts());
+      Map<String, Object> row = lessons.createLesson(ctx.learner(), a, ctx.model(), ctx.transcripts());
       Map<String, Object> out = new LinkedHashMap<>();
       out.put("ok", true);
       out.put("day", String.valueOf(row.get("day")));
@@ -247,21 +257,21 @@ public class CoachTools {
       } catch (RuntimeException e) {
         throw new UserError("day muss im Format JJJJ-MM-TT stehen.");
       }
-      return lessons.getLesson(ctx.userId(), d)
+      return lessons.getLesson(ctx.learner(), d)
           .<Object>map(l -> l).orElse(Map.of("hinweis", "Für diesen Tag gibt es keine Lektion."));
     });
 
-    handlers.put("list_lessons", (ctx, a) -> lessons.listLessons(ctx.userId(), clamp(a, "limit", 30, 1, 100)));
+    handlers.put("list_lessons", (ctx, a) -> lessons.listLessons(ctx.learner(), clamp(a, "limit", 30, 1, 100)));
 
     handlers.put("get_pending_feedback", (ctx, a) -> {
-      List<Map<String, Object>> pending = lessons.pendingFeedback(ctx.userId());
+      List<Map<String, Object>> pending = lessons.pendingFeedback(ctx.learner());
       return pending.isEmpty() ? "Keine offenen Abgaben." : pending;
     });
 
     handlers.put("give_feedback", (ctx, a) -> {
       if (!a.hasNonNull("submissionId")) throw new UserError("submissionId fehlt.");
       String feedback = required(a, "feedback");
-      Map<String, Object> row = lessons.giveFeedback(ctx.userId(), a.get("submissionId").asLong(), feedback, ctx.model());
+      Map<String, Object> row = lessons.giveFeedback(ctx.learner(), a.get("submissionId").asLong(), feedback, ctx.model());
       return Map.of("ok", true, "id", row.get("id"), "part", row.get("part"));
     });
   }

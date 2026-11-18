@@ -248,6 +248,74 @@ class AppIntegrationTest {
     assertThat(res.body()).contains("noch nicht eingerichtet");
   }
 
+  @Test
+  void eachCourseKeepsItsOwnProgress() throws Exception {
+    Learner a = new Learner().register(unique("courses"));
+    assertThat(a.ok("GET", "/api/auth/me", null).path("course").asString()).isEqualTo("es");
+    a.ok("POST", "/api/events", json.readTree("""
+        {"kind":"vocab","ok":false,"id":"la puerta","typed":"die Verspätung"}"""));
+    a.ok("PUT", "/api/state", json.readTree("{\"streak\":5}"));
+
+    assertThat(a.ok("PUT", "/api/auth/course", json.createObjectNode().put("course", "en"))
+        .path("course").asString()).isEqualTo("en");
+    assertThat(a.ok("GET", "/api/events", null)).isEmpty();
+    assertThat(a.ok("GET", "/api/snapshot", null).path("state")).isEmpty();
+    a.ok("POST", "/api/events", json.readTree("""
+        {"kind":"vocab","ok":false,"id":"to become","typed":"bekommen"}"""));
+    a.ok("PATCH", "/api/cards", json.readTree("{\"to become\":{\"id\":\"to become\",\"state\":\"learning\"}}"));
+    a.ok("PATCH", "/api/cards", json.readTree("{\"la puerta\":{\"id\":\"la puerta\",\"state\":\"learning\"}}"));
+    assertThat(a.ok("GET", "/api/snapshot", null).path("cards").properties()).hasSize(1)
+        .as("a Spanish word is no card in the English course");
+    String english = a.send("GET", "/api/briefing", null).body();
+    assertThat(english).contains("463 Vokabeln").contains("to become").doesNotContain("la puerta");
+
+    a.ok("PUT", "/api/auth/course", json.createObjectNode().put("course", "es"));
+    assertThat(a.ok("GET", "/api/events", null)).hasSize(1);
+    assertThat(a.ok("GET", "/api/snapshot", null).path("state").path("streak").asInt()).isEqualTo(5);
+    assertThat(a.send("GET", "/api/briefing", null).body()).contains("608 Vokabeln").contains("la puerta");
+
+    assertThat(a.send("PUT", "/api/auth/course", json.createObjectNode().put("course", "fr")).statusCode())
+        .isEqualTo(400);
+  }
+
+  @Test
+  void theEnglishCoachGetsEnglishInstructionsAndTools() throws Exception {
+    Learner a = new Learner();
+    a.ok("GET", "/api/auth/config", null);
+    a.ok("POST", "/api/auth/register", json.createObjectNode().put("email", unique("english"))
+        .put("password", "ein-langes-passwort").put("code", "test-code").put("course", "en"));
+    assertThat(a.ok("GET", "/api/auth/me", null).path("course").asString()).isEqualTo("en");
+    a.ok("PUT", "/api/coach/settings", json.createObjectNode()
+        .put("provider", "openrouter").put("model", "test/model").put("apiKey", "sk-or-v1-0123456789abcd"));
+    when(youtube.searchAvailable()).thenReturn(true);
+    List<ArrayNode> calls = new ArrayList<>();
+    List<ArrayNode> toolLists = new ArrayList<>();
+    AtomicInteger round = new AtomicInteger();
+    when(llm.chat(any(), any(), any())).thenAnswer(inv -> {
+      calls.add(((ArrayNode) inv.getArgument(1)).deepCopy());
+      toolLists.add(inv.getArgument(2));
+      if (round.getAndIncrement() == 0) return toolCall("c1", "create_exercise", """
+          {"id":"since-for","title":"since oder for","items":[
+            {"type":"cloze","prompt":"I have lived here ___ 2015.","answer":"since"},
+            {"type":"translate","prompt":"Ich wohne seit zehn Jahren hier.","answer":"I have lived here for ten years."}]}""");
+      return new LlmClient.Reply(json.createObjectNode().put("role", "assistant").put("content", "Fertig."), "stop", 1, 1);
+    });
+    JsonNode run = waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "exercises")).path("id").asLong());
+    assertThat(run.path("status").asString()).as(run.toString()).isEqualTo("done");
+    assertThat(run.path("course").asString()).isEqualTo("en");
+
+    String system = calls.get(0).get(0).path("content").asString();
+    assertThat(system).contains("English coach").contains("false_friends").doesNotContain("ser_estar");
+    assertThat(toolLists.get(0).toString()).contains("englischsprachige").doesNotContain("spanisch");
+
+    JsonNode items = a.ok("GET", "/api/packs", null).path("packs").get(0).path("items");
+    assertThat(items.get(0).path("lang").asString()).isEqualTo("en");
+    assertThat(items.get(1).path("to").asString()).isEqualTo("en");
+    // The Spanish side of the same account has no exercises.
+    a.ok("PUT", "/api/auth/course", json.createObjectNode().put("course", "es"));
+    assertThat(a.ok("GET", "/api/packs", null).path("packs")).isEmpty();
+  }
+
   /** Scripts the model: each element is either a tool call (name, args) or the final text. */
   private void script(String... steps) {
     AtomicInteger round = new AtomicInteger();
@@ -274,7 +342,7 @@ class AppIntegrationTest {
   @Test
   void listeningQuestionsNeedATranscriptFromTheSameRun() throws Exception {
     Learner a = coachedLearner("listen");
-    when(youtube.transcript("abcdefghijk"))
+    when(youtube.transcript("abcdefghijk", "es"))
         .thenReturn(Optional.of(new YouTube.Transcript("es", false, "Ana compra fruta en el mercado.")));
     script("create_lesson", WITH_QUESTIONS,
         "get_video_transcript", "{\"videoId\":\"https://youtu.be/abcdefghijk\"}",
@@ -298,14 +366,14 @@ class AppIntegrationTest {
   @Test
   void withoutTranscriptTheListeningTaskIsOpenAndWaitsForFeedback() throws Exception {
     Learner a = coachedLearner("summary");
-    when(youtube.transcript(anyString())).thenReturn(Optional.empty());
+    when(youtube.transcript(anyString(), anyString())).thenReturn(Optional.empty());
     script("get_video_transcript", "{\"videoId\":\"abcdefghijk\"}",
         "create_lesson", "{\"title\":\"Im Markt\",\"listening\":{\"videoId\":\"abcdefghijk\",\"minWords\":20}}",
         "Offene Höraufgabe angelegt.");
 
     JsonNode run = waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "lesson")).path("id").asLong());
     assertThat(run.path("status").asString()).as(run.toString()).isEqualTo("done");
-    assertThat(run.path("steps").get(0).path("text").asString()).contains("kein spanisches Transkript");
+    assertThat(run.path("steps").get(0).path("text").asString()).contains("kein Transkript");
 
     JsonNode lesson = a.ok("GET", "/api/lesson", null);
     assertThat(lesson.path("listening").path("mode").asString()).isEqualTo("summary");

@@ -32,7 +32,13 @@ public class PackValidator {
     }
   }
 
+  /** Parses with Spanish as the default item language. */
   public Result parse(JsonNode raw, String source) {
+    return parse(raw, source, "es");
+  }
+
+  /** @param lang the course language, default for items' {@code lang} and {@code to} */
+  public Result parse(JsonNode raw, String source, String lang) {
     List<String> errors = new ArrayList<>();
     if (raw == null || !raw.isObject()) return fail(source + ": kein JSON-Objekt");
     String schema = str(raw.get("schema"));
@@ -55,7 +61,7 @@ public class PackValidator {
         errors.add(source + ": Aufgabe " + (i + 1) + " hat unbekannten type \"" + type + "\"");
         continue;
       }
-      Map<String, Object> item = normalize(type, rawItem);
+      Map<String, Object> item = normalize(type, rawItem, lang);
       String problem = validate(type, item);
       if (problem != null) {
         errors.add(source + ": Aufgabe " + (i + 1) + " (" + type + ") – " + problem);
@@ -75,7 +81,7 @@ public class PackValidator {
         createdBy.isEmpty() ? "unbekannt" : createdBy, strList(raw.get("focus")), items), errors);
   }
 
-  private static Map<String, Object> normalize(String type, JsonNode raw) {
+  private static Map<String, Object> normalize(String type, JsonNode raw, String lang) {
     Map<String, Object> it = new LinkedHashMap<>();
     it.put("type", type);
     it.put("prompt", str(raw.get("prompt")));
@@ -84,20 +90,20 @@ public class PackValidator {
         it.put("options", strList(raw.get("options")));
         it.put("answer", str(raw.get("answer")));
         it.put("explanation", str(raw.get("explanation")));
-        it.put("lang", orDefault(str(raw.get("lang")), "es"));
+        it.put("lang", orDefault(str(raw.get("lang")), lang));
       }
       case "cloze" -> {
         it.put("answer", str(raw.get("answer")));
         it.put("alternatives", strList(raw.get("alternatives")));
         it.put("hint", str(raw.get("hint")));
         it.put("explanation", str(raw.get("explanation")));
-        it.put("lang", orDefault(str(raw.get("lang")), "es"));
+        it.put("lang", orDefault(str(raw.get("lang")), lang));
       }
       default -> {
         it.put("answer", str(raw.get("answer")));
         it.put("alternatives", strList(raw.get("alternatives")));
         it.put("from", orDefault(str(raw.get("from")), "de"));
-        it.put("to", orDefault(str(raw.get("to")), "es"));
+        it.put("to", orDefault(str(raw.get("to")), lang));
         it.put("explanation", str(raw.get("explanation")));
       }
     }

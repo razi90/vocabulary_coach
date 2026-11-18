@@ -72,16 +72,16 @@ public class YouTube {
   // ---------- Search (YouTube Data API v3) ----------
 
   /**
-   * Embeddable Spanish videos for a query. A search costs 100 of the 10 000
+   * Embeddable videos in the course language for a query. A search costs 100 of the 10 000
    * free quota units per day, the detail lookup 1.
    */
-  public List<Video> search(String query, String duration, boolean onlyWithCaptions, int max) {
+  public List<Video> search(String query, String language, String duration, boolean onlyWithCaptions, int max) {
     if (!searchAvailable()) {
       throw new UserError("Die Videosuche ist auf diesem Server nicht eingerichtet (YOUTUBE_API_KEY fehlt).");
     }
     if (query == null || query.isBlank()) throw new UserError("query fehlt.");
     String length = duration != null && DURATIONS.contains(duration) ? duration : "medium";
-    String searchUrl = API + "search?part=snippet&type=video&videoEmbeddable=true&relevanceLanguage=es"
+    String searchUrl = API + "search?part=snippet&type=video&videoEmbeddable=true&relevanceLanguage=" + enc(language)
         + "&safeSearch=strict&videoDuration=" + length + (onlyWithCaptions ? "&videoCaption=closedCaption" : "")
         + "&maxResults=" + Math.max(1, Math.min(max, 10)) + "&q=" + enc(query) + "&key=" + enc(apiKey);
     List<String> ids = new ArrayList<>();
@@ -142,11 +142,12 @@ public class YouTube {
 
   // ---------- Subtitles (best effort) ----------
 
-  public Optional<Transcript> transcript(String videoId) {
+  /** Subtitles in {@code language} ("es", "en"); regional variants such as es-ES count too. */
+  public Optional<Transcript> transcript(String videoId, String language) {
     try {
-      HttpResponse<String> page = get("https://www.youtube.com/watch?v=" + enc(videoId) + "&hl=es", "YouTube");
+      HttpResponse<String> page = get("https://www.youtube.com/watch?v=" + enc(videoId) + "&hl=" + enc(language), "YouTube");
       if (page.statusCode() != 200) return Optional.empty();
-      Optional<JsonNode> track = pickTrack(captionTracks(page.body()));
+      Optional<JsonNode> track = pickTrack(captionTracks(page.body()), language);
       if (track.isEmpty()) return Optional.empty();
       String base = track.get().path("baseUrl").asString("");
       if (!base.startsWith("https://www.youtube.com/")) return Optional.empty();
@@ -172,11 +173,11 @@ public class YouTube {
     return json.readTree(html.substring(start, end + 1));
   }
 
-  /** Spanish, written by a person if possible, else YouTube's automatic one. */
-  static Optional<JsonNode> pickTrack(JsonNode tracks) {
+  /** The course language, written by a person if possible, else YouTube's automatic one. */
+  static Optional<JsonNode> pickTrack(JsonNode tracks, String language) {
     JsonNode auto = null;
     for (JsonNode t : tracks) {
-      if (!t.path("languageCode").asString("").startsWith("es")) continue;
+      if (!t.path("languageCode").asString("").startsWith(language)) continue;
       if (!"asr".equals(t.path("kind").asString(""))) return Optional.of(t);
       if (auto == null) auto = t;
     }
@@ -208,7 +209,7 @@ public class YouTube {
 
   private HttpResponse<String> get(String url, String what) {
     HttpRequest req = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(10))
-        .header("Accept-Language", "es-ES,es;q=0.9")
+        .header("Accept-Language", "de-DE,de;q=0.8,en;q=0.6")
         .GET().build();
     try {
       return http.send(req, HttpResponse.BodyHandlers.ofString());

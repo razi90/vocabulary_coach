@@ -3,6 +3,8 @@ package com.vocabcoach.coach;
 import com.vocabcoach.UserError;
 import com.vocabcoach.config.AppProperties;
 import com.vocabcoach.db.Rows;
+import com.vocabcoach.learning.Course;
+import com.vocabcoach.learning.Learner;
 import com.vocabcoach.lessons.LessonService;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +55,8 @@ public class CoachRunner implements ApplicationRunner {
   private final CoachTools tools;
   private final LlmClient llm;
   private final int maxSteps;
-  private final String systemPrompt;
+  /** The coach instructions per course, assembled once at startup. */
+  private final Map<Course, String> systemPrompts = new java.util.EnumMap<>(Course.class);
   private final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
   public CoachRunner(JdbcClient jdbc, Rows rows, JsonMapper json, CoachSettings settings, CoachTools tools,
@@ -65,8 +68,44 @@ public class CoachRunner implements ApplicationRunner {
     this.tools = tools;
     this.llm = llm;
     this.maxSteps = props.coach() == null ? 25 : props.coach().maxSteps();
-    try (InputStream in = new ClassPathResource("coach/system-prompt.md").getInputStream()) {
-      this.systemPrompt = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+    String base = resource("coach/system-prompt.md");
+    for (Course course : Course.values()) {
+      systemPrompts.put(course, systemPrompt(base, resource("coach/course-" + course.id + ".md"), course));
+    }
+  }
+
+  /**
+   * The shared instructions with the course part inserted. The course file
+   * starts with a comment of "key: value" lines that fill the {{key}}
+   * placeholders; a placeholder left over is a bug and stops the startup.
+   */
+  static String systemPrompt(String base, String courseFile, Course course) {
+    Map<String, String> values = new LinkedHashMap<>();
+    String body = courseFile;
+    if (courseFile.startsWith("<!--")) {
+      int end = courseFile.indexOf("-->");
+      for (String line : courseFile.substring(4, end).split("\n")) {
+        int colon = line.indexOf(':');
+        if (colon > 0) {
+          values.put(line.substring(0, colon).trim(), line.substring(colon + 1).trim());
+        }
+      }
+      body = courseFile.substring(end + 3).strip();
+    }
+    String prompt = base.replace("{{course}}", body);
+    for (var e : values.entrySet()) prompt = prompt.replace("{{" + e.getKey() + "}}", e.getValue());
+    prompt = course.fill(prompt);
+    int open = prompt.indexOf("{{");
+    if (open >= 0) {
+      throw new IllegalStateException("Platzhalter ohne Wert im Coach-Prompt (" + course.id + "): "
+          + prompt.substring(open, Math.min(prompt.length(), open + 30)));
+    }
+    return prompt;
+  }
+
+  private static String resource(String path) throws IOException {
+    try (InputStream in = new ClassPathResource(path).getInputStream()) {
+      return new String(in.readAllBytes(), StandardCharsets.UTF_8);
     }
   }
 
@@ -81,7 +120,8 @@ public class CoachRunner implements ApplicationRunner {
 
   // ---------- Starting ----------
 
-  public Map<String, Object> start(long userId, String task, String note) {
+  public Map<String, Object> start(Learner learner, String task, String note) {
+    long userId = learner.userId();
     if (!TASKS.contains(task)) throw new UserError("Unbekannte Aufgabe: " + task);
     String cleanNote = note == null ? "" : note.trim();
     if (cleanNote.length() > 2000) throw new UserError("Der Hinweis ist zu lang (höchstens 2000 Zeichen).");
@@ -90,31 +130,31 @@ public class CoachRunner implements ApplicationRunner {
     CoachSettings.Credentials creds = settings.credentials(userId);
     // Check and insert in one statement: one running job per learner.
     Long id = jdbc.sql("""
-        INSERT INTO coach_runs (user_id, task, note, provider, model)
-        SELECT ?, ?, ?, ?, ?
+        INSERT INTO coach_runs (user_id, course, task, note, provider, model)
+        SELECT ?, ?, ?, ?, ?, ?
         WHERE NOT EXISTS (SELECT 1 FROM coach_runs WHERE user_id = ? AND status = 'running')
         RETURNING id""")
-        .params(userId, task, cleanNote, creds.provider().id, creds.model(), userId)
+        .params(userId, learner.courseId(), task, cleanNote, creds.provider().id, creds.model(), userId)
         .query(Long.class).optional().orElse(null);
     if (id == null) throw new UserError("Der Coach arbeitet schon. Bitte warte, bis der laufende Auftrag fertig ist.");
 
     long runId = id;
-    executor.submit(() -> execute(runId, userId, task, cleanNote, creds));
+    executor.submit(() -> execute(runId, learner, task, cleanNote, creds));
     return find(userId, runId).orElseThrow();
   }
 
   // ---------- The loop ----------
 
-  void execute(long runId, long userId, String task, String note, CoachSettings.Credentials creds) {
+  void execute(long runId, Learner learner, String task, String note, CoachSettings.Credentials creds) {
     Instant deadline = Instant.now().plus(MAX_RUN_TIME);
     List<Map<String, Object>> steps = new ArrayList<>();
     int promptTokens = 0;
     int completionTokens = 0;
-    CoachTools.Context ctx = new CoachTools.Context(userId, creds.model());
+    CoachTools.Context ctx = new CoachTools.Context(learner, creds.model());
     ArrayNode messages = json.createArrayNode();
-    messages.addObject().put("role", "system").put("content", systemPrompt);
+    messages.addObject().put("role", "system").put("content", systemPrompts.get(learner.course()));
     messages.addObject().put("role", "user").put("content", taskMessage(task, note));
-    ArrayNode toolDefs = tools.chatTools();
+    ArrayNode toolDefs = tools.chatTools(learner.course());
 
     try {
       for (int round = 1; ; round++) {
@@ -200,9 +240,10 @@ public class CoachRunner implements ApplicationRunner {
 
   // ---------- Reading ----------
 
-  public List<Map<String, Object>> list(long userId, int limit) {
-    return rows.normalize(jdbc.sql("SELECT * FROM coach_runs WHERE user_id = ? ORDER BY started_at DESC LIMIT ?")
-        .params(userId, limit).query().listOfRows());
+  /** The learner's runs in their current course. */
+  public List<Map<String, Object>> list(Learner learner, int limit) {
+    return rows.normalize(jdbc.sql("SELECT * FROM coach_runs WHERE user_id = ? AND course = ? ORDER BY started_at DESC LIMIT ?")
+        .params(learner.userId(), learner.courseId(), limit).query().listOfRows());
   }
 
   public java.util.Optional<Map<String, Object>> find(long userId, long id) {

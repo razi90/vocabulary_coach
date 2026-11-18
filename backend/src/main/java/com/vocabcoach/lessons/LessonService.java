@@ -2,6 +2,8 @@ package com.vocabcoach.lessons;
 
 import com.vocabcoach.UserError;
 import com.vocabcoach.db.Rows;
+import com.vocabcoach.learning.Course;
+import com.vocabcoach.learning.Learner;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -60,7 +62,7 @@ public class LessonService {
    * @param transcripts subtitles the coach has read in this run, by video id.
    *     Comprehension questions are accepted only for a video in here.
    */
-  public Map<String, Object> createLesson(long userId, JsonNode input, String createdBy,
+  public Map<String, Object> createLesson(Learner learner, JsonNode input, String createdBy,
                                           Map<String, YouTube.Transcript> transcripts) {
     String dayText = str(input.get("day"));
     LocalDate day;
@@ -72,10 +74,10 @@ public class LessonService {
     String title = str(input.get("title"));
     if (title.isEmpty()) throw new UserError("title fehlt.");
 
-    Map<String, Object> listening = normalizeListening(input.get("listening"), transcripts);
+    Map<String, Object> listening = normalizeListening(input.get("listening"), transcripts, learner.course());
     Map<String, Object> writing = normalizeWriting(input.get("writing"));
     Map<String, Object> speaking = normalizeSpeaking(input.get("speaking"));
-    Map<String, Object> sentences = normalizeSentences(input.get("sentences"));
+    Map<String, Object> sentences = normalizeSentences(input.get("sentences"), learner.course());
     if (listening == null && writing == null && speaking == null && sentences == null) {
       throw new UserError("Eine Lektion braucht mindestens einen Teil (listening, writing, speaking oder sentences).");
     }
@@ -83,16 +85,16 @@ public class LessonService {
     String status = str(input.get("status"));
 
     return rows.normalize(jdbc.sql("""
-        INSERT INTO lessons (user_id, day, title, theme, level, created_by, status,
+        INSERT INTO lessons (user_id, course, day, title, theme, level, created_by, status,
                              listening, writing, speaking, sentences)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)
-        ON CONFLICT (user_id, day) DO UPDATE SET
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+        ON CONFLICT (user_id, course, day) DO UPDATE SET
           title = EXCLUDED.title, theme = EXCLUDED.theme, level = EXCLUDED.level,
           created_by = EXCLUDED.created_by, status = EXCLUDED.status,
           listening = EXCLUDED.listening, writing = EXCLUDED.writing,
           speaking = EXCLUDED.speaking, sentences = EXCLUDED.sentences
         RETURNING *""")
-        .params(userId, day, title, str(input.get("theme")), level.isEmpty() ? "A2" : level, createdBy,
+        .params(learner.userId(), learner.courseId(), day, title, str(input.get("theme")), level.isEmpty() ? "A2" : level, createdBy,
             status.isEmpty() ? "ready" : status, jsonbOrNull(listening), jsonbOrNull(writing),
             jsonbOrNull(speaking), jsonbOrNull(sentences))
         .query().singleRow());
@@ -105,7 +107,8 @@ public class LessonService {
    * one, the learner summarizes what they understood and the coach gives
    * feedback later, as for writing.
    */
-  private Map<String, Object> normalizeListening(JsonNode raw, Map<String, YouTube.Transcript> transcripts) {
+  private Map<String, Object> normalizeListening(JsonNode raw, Map<String, YouTube.Transcript> transcripts,
+                                                 Course course) {
     if (raw == null || raw.isNull()) return null;
     String videoId = extractVideoId(str(raw.get("videoId")).isEmpty() ? str(raw.get("url")) : str(raw.get("videoId")));
     if (videoId == null) throw new UserError("listening braucht eine YouTube-URL oder eine 11-stellige videoId.");
@@ -150,7 +153,7 @@ public class LessonService {
       if (minWords < 10 || minWords > 300) throw new UserError("listening.minWords muss zwischen 10 und 300 liegen.");
       out.put("mode", "summary");
       out.put("task", task.isEmpty()
-          ? "Sieh das Video und schreib auf Spanisch, was du verstanden hast: worum es geht, wer spricht, "
+          ? "Sieh das Video und schreib " + course.inDe + ", was du verstanden hast: worum es geht, wer spricht, "
               + "was gesagt wird."
           : task);
       out.put("minWords", minWords);
@@ -195,7 +198,8 @@ public class LessonService {
     return out;
   }
 
-  private static Map<String, Object> normalizeSentences(JsonNode raw) {
+  /** Each sentence: German prompt and the intended solution (answer; "es" from older lessons). */
+  private static Map<String, Object> normalizeSentences(JsonNode raw, Course course) {
     if (raw == null || raw.isNull()) return null;
     JsonNode items = raw.get("items");
     int n = items != null && items.isArray() ? items.size() : 0;
@@ -204,18 +208,18 @@ public class LessonService {
     for (int i = 0; i < n; i++) {
       JsonNode it = items.get(i);
       String de = str(it.get("de"));
-      String es = str(it.get("es"));
+      String answer = str(it.get("answer")).isEmpty() ? str(it.get("es")) : str(it.get("answer"));
       if (de.isEmpty()) throw new UserError("sentences.items[" + i + "].de fehlt (der deutsche Satz).");
-      if (es.isEmpty()) throw new UserError("sentences.items[" + i + "].es fehlt (die gedachte Lösung).");
+      if (answer.isEmpty()) throw new UserError("sentences.items[" + i + "].answer fehlt (die gedachte Lösung).");
       Map<String, Object> s = new LinkedHashMap<>();
       s.put("de", de);
-      s.put("es", es);
+      s.put("answer", answer);
       s.put("note", str(it.get("note")));
       clean.add(s);
     }
     Map<String, Object> out = new LinkedHashMap<>();
     String task = str(raw.get("task"));
-    out.put("task", task.isEmpty() ? "Übersetze die Sätze ins Spanische." : task);
+    out.put("task", task.isEmpty() ? "Übersetze die Sätze " + course.intoDe + "." : task);
     out.put("items", clean);
     return out;
   }
@@ -235,43 +239,44 @@ public class LessonService {
 
   // ---------- Reading and submitting ----------
 
-  public Optional<Map<String, Object>> getLesson(long userId, LocalDate day) {
+  public Optional<Map<String, Object>> getLesson(Learner learner, LocalDate day) {
     return jdbc.sql("""
         SELECT l.*, (SELECT jsonb_object_agg(s.part, jsonb_build_object(
             'submittedAt', s.submitted_at, 'content', s.content,
             'feedback', s.feedback, 'feedbackAt', s.feedback_at))
           FROM lesson_submissions s WHERE s.lesson_id = l.id) AS submissions
-        FROM lessons l WHERE l.user_id = ? AND l.day = ?""")
-        .params(userId, day == null ? today() : day).query().listOfRows().stream()
+        FROM lessons l WHERE l.user_id = ? AND l.course = ? AND l.day = ?""")
+        .params(learner.userId(), learner.courseId(), day == null ? today() : day).query().listOfRows().stream()
         .findFirst().map(rows::normalize);
   }
 
-  public List<Map<String, Object>> listLessons(long userId, int limit) {
-    return rows.normalize(jdbc.sql("SELECT * FROM v_lesson_history WHERE user_id = ? LIMIT ?")
-        .params(userId, limit).query().listOfRows());
+  public List<Map<String, Object>> listLessons(Learner learner, int limit) {
+    return rows.normalize(jdbc.sql("SELECT * FROM v_lesson_history WHERE user_id = ? AND course = ? LIMIT ?")
+        .params(learner.userId(), learner.courseId(), limit).query().listOfRows());
   }
 
-  public List<Map<String, Object>> pendingFeedback(long userId) {
-    return rows.normalize(jdbc.sql("SELECT * FROM v_pending_feedback WHERE user_id = ?")
-        .param(userId).query().listOfRows());
+  public List<Map<String, Object>> pendingFeedback(Learner learner) {
+    return rows.normalize(jdbc.sql("SELECT * FROM v_pending_feedback WHERE user_id = ? AND course = ?")
+        .params(learner.userId(), learner.courseId()).query().listOfRows());
   }
 
-  public Map<String, Object> submit(long userId, long lessonId, String part, JsonNode content) {
+  public Map<String, Object> submit(Learner learner, long lessonId, String part, JsonNode content) {
     Optional<Map<String, Object>> row = jdbc.sql("""
         INSERT INTO lesson_submissions (lesson_id, part, content)
-        SELECT id, ?, ? FROM lessons WHERE id = ? AND user_id = ?
+        SELECT id, ?, ? FROM lessons WHERE id = ? AND user_id = ? AND course = ?
         RETURNING id, submitted_at""")
-        .params(part, rows.jsonb(content == null ? json.createObjectNode() : content), lessonId, userId)
+        .params(part, rows.jsonb(content == null ? json.createObjectNode() : content), lessonId,
+            learner.userId(), learner.courseId())
         .query().listOfRows().stream().findFirst().map(rows::normalize);
     return row.orElseThrow(() -> new UserError("Keine Lektion mit id " + lessonId + "."));
   }
 
-  public Map<String, Object> giveFeedback(long userId, long submissionId, String feedback, String by) {
+  public Map<String, Object> giveFeedback(Learner learner, long submissionId, String feedback, String by) {
     return jdbc.sql("""
         UPDATE lesson_submissions s SET feedback = ?, feedback_by = ?, feedback_at = now()
-        FROM lessons l WHERE s.id = ? AND l.id = s.lesson_id AND l.user_id = ?
+        FROM lessons l WHERE s.id = ? AND l.id = s.lesson_id AND l.user_id = ? AND l.course = ?
         RETURNING s.id, s.part""")
-        .params(feedback, by, submissionId, userId).query().listOfRows().stream().findFirst()
+        .params(feedback, by, submissionId, learner.userId(), learner.courseId()).query().listOfRows().stream().findFirst()
         .map(rows::normalize)
         .orElseThrow(() -> new UserError("Keine Abgabe mit id " + submissionId + "."));
   }

@@ -16,7 +16,7 @@ import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Every SQL access to a learner's state, in one place. Every method takes the
- * learner's id; there is no query without it.
+ * learner (user and course); there is no query without both.
  *
  * <p>The event table stays append-only: this class inserts into it and
  * reads from it, nothing else.
@@ -37,26 +37,26 @@ public class LearningStore {
 
   // ---------- Settings (the app's own state blob) ----------
 
-  public Object getSettings(long userId) {
-    return jdbc.sql("SELECT data FROM settings WHERE user_id = ?").param(userId)
+  public Object getSettings(Learner l) {
+    return jdbc.sql("SELECT data FROM settings WHERE user_id = ? AND course = ?").params(l.userId(), l.courseId())
         .query((rs, i) -> rows.value(rs.getObject(1))).optional()
         .orElseGet(LinkedHashMap::new);
   }
 
-  public void putSettings(long userId, JsonNode data) {
+  public void putSettings(Learner l, JsonNode data) {
     jdbc.sql("""
-        INSERT INTO settings (user_id, data) VALUES (?, ?)
-        ON CONFLICT (user_id) DO UPDATE SET data = EXCLUDED.data""")
-        .params(userId, rows.jsonb(data)).update();
+        INSERT INTO settings (user_id, course, data) VALUES (?, ?, ?)
+        ON CONFLICT (user_id, course) DO UPDATE SET data = EXCLUDED.data""")
+        .params(l.userId(), l.courseId(), rows.jsonb(data)).update();
   }
 
   // ---------- Cards (scheduler state per word) ----------
 
-  public Map<String, Map<String, Object>> getCards(long userId) {
+  public Map<String, Map<String, Object>> getCards(Learner l) {
     Map<String, Map<String, Object>> out = new LinkedHashMap<>();
     jdbc.sql("""
         SELECT id, state, stability, difficulty, due, last_review, reps, lapses, step, interval_days
-        FROM cards WHERE user_id = ?""").param(userId).query(rs -> {
+        FROM cards WHERE user_id = ? AND course = ?""").params(l.userId(), l.courseId()).query(rs -> {
           Map<String, Object> c = new LinkedHashMap<>();
           c.put("id", rs.getString("id"));
           c.put("state", rs.getString("state"));
@@ -75,26 +75,26 @@ public class LearningStore {
 
   /** Changed cards only; unknown words are skipped instead of failing. */
   @Transactional
-  public int upsertCards(long userId, JsonNode cards) {
+  public int upsertCards(Learner l, JsonNode cards) {
     int written = 0;
     for (JsonNode card : cards) {
       String id = card.path("id").asString("");
       if (id.isEmpty()) continue;
       written += jdbc.sql("""
-          INSERT INTO cards (user_id, id, state, stability, difficulty, due, last_review, reps, lapses,
+          INSERT INTO cards (user_id, course, id, state, stability, difficulty, due, last_review, reps, lapses,
                              step, interval_days)
-          SELECT ?,?,?,?,?,?,?,?,?,?,?
-          WHERE EXISTS (SELECT 1 FROM vocabulary WHERE es = ?)
-          ON CONFLICT (user_id, id) DO UPDATE SET
+          SELECT ?,?,?,?,?,?,?,?,?,?,?,?
+          WHERE EXISTS (SELECT 1 FROM vocabulary WHERE course = ? AND term = ?)
+          ON CONFLICT (user_id, course, id) DO UPDATE SET
             state = EXCLUDED.state, stability = EXCLUDED.stability, difficulty = EXCLUDED.difficulty,
             due = EXCLUDED.due, last_review = EXCLUDED.last_review, reps = EXCLUDED.reps,
             lapses = EXCLUDED.lapses, step = EXCLUDED.step, interval_days = EXCLUDED.interval_days,
             updated_at = now()""")
-          .params(userId, id, card.path("state").asString("new"),
+          .params(l.userId(), l.courseId(), id, card.path("state").asString("new"),
               card.path("stability").asDouble(0), card.path("difficulty").asDouble(5),
               Math.round(card.path("due").asDouble(0)), Math.round(card.path("lastReview").asDouble(0)),
               card.path("reps").asInt(0), card.path("lapses").asInt(0), card.path("step").asInt(0),
-              (int) Math.round(card.path("interval").asDouble(0)), id)
+              (int) Math.round(card.path("interval").asDouble(0)), l.courseId(), id)
           .update();
     }
     return written;
@@ -103,7 +103,7 @@ public class LearningStore {
   // ---------- Events (append-only) ----------
 
   @Transactional
-  public List<Long> appendEvents(long userId, JsonNode body) {
+  public List<Long> appendEvents(Learner l, JsonNode body) {
     List<JsonNode> list = new ArrayList<>();
     if (body != null && body.isArray()) body.forEach(list::add);
     else if (body != null && body.isObject()) list.add(body);
@@ -116,21 +116,22 @@ public class LearningStore {
       payload.remove(List.of("kind", "ok", "t", "seq"));
       Timestamp t = e.hasNonNull("t") ? Timestamp.from(Instant.ofEpochMilli(e.get("t").asLong())) : null;
       seqs.add(jdbc.sql("""
-          INSERT INTO events (user_id, t, kind, ok, payload)
-          VALUES (?, COALESCE(?, now()), ?, ?, ?) RETURNING seq""")
-          .params(userId, t, kind, e.path("ok").asBoolean(false), rows.jsonb(payload))
+          INSERT INTO events (user_id, course, t, kind, ok, payload)
+          VALUES (?, ?, COALESCE(?, now()), ?, ?, ?) RETURNING seq""")
+          .params(l.userId(), l.courseId(), t, kind, e.path("ok").asBoolean(false), rows.jsonb(payload))
           .query(Long.class).single());
     }
     return seqs;
   }
 
   /** Events in the shape the app knows: t as epoch milliseconds, payload flattened. */
-  public List<Map<String, Object>> getEvents(long userId, String kind, Long since, Integer limit) {
+  public List<Map<String, Object>> getEvents(Learner l, String kind, Long since, Integer limit) {
     StringBuilder sql = new StringBuilder("""
         SELECT seq, (EXTRACT(EPOCH FROM t) * 1000)::bigint AS t, kind, ok, payload
-        FROM events WHERE user_id = :user""");
+        FROM events WHERE user_id = :user AND course = :course""");
     Map<String, Object> params = new LinkedHashMap<>();
-    params.put("user", userId);
+    params.put("user", l.userId());
+    params.put("course", l.courseId());
     if (kind != null && !kind.isBlank()) { sql.append(" AND kind = :kind"); params.put("kind", kind); }
     if (since != null) { sql.append(" AND seq > :since"); params.put("since", since); }
     sql.append(" ORDER BY seq LIMIT :limit");
@@ -151,11 +152,11 @@ public class LearningStore {
 
   // ---------- Exercise sets ----------
 
-  public List<Map<String, Object>> getExercises(long userId, String status) {
+  public List<Map<String, Object>> getExercises(Learner l, String status) {
     boolean all = "all".equals(status);
-    return jdbc.sql("SELECT * FROM exercises WHERE user_id = :user"
+    return jdbc.sql("SELECT * FROM exercises WHERE user_id = :user AND course = :course"
             + (all ? "" : " AND status = :status") + " ORDER BY created_at DESC")
-        .param("user", userId).param("status", all ? null : status)
+        .param("user", l.userId()).param("course", l.courseId()).param("status", all ? null : status)
         .query((rs, i) -> {
           Map<String, Object> x = new LinkedHashMap<>();
           Instant created = rs.getTimestamp("created_at").toInstant();
@@ -174,78 +175,89 @@ public class LearningStore {
         }).list();
   }
 
-  public void upsertExercise(long userId, String id, String schema, String title, String description,
+  public void upsertExercise(Learner l, String id, String schema, String title, String description,
                              String createdBy, List<String> focus, String status, Object items) {
     jdbc.sql("""
-        INSERT INTO exercises (user_id, id, schema_version, title, description, created_by, focus, status, items)
-        VALUES (?,?,?,?,?,?,?,?,?)
-        ON CONFLICT (user_id, id) DO UPDATE SET
+        INSERT INTO exercises (user_id, course, id, schema_version, title, description, created_by, focus, status, items)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+        ON CONFLICT (user_id, course, id) DO UPDATE SET
           schema_version = EXCLUDED.schema_version, title = EXCLUDED.title,
           description = EXCLUDED.description, created_by = EXCLUDED.created_by,
           focus = EXCLUDED.focus, status = EXCLUDED.status, items = EXCLUDED.items""")
-        .params(userId, id, schema, title, description, createdBy, focus.toArray(String[]::new), status,
+        .params(l.userId(), l.courseId(), id, schema, title, description, createdBy, focus.toArray(String[]::new), status,
             rows.jsonb(items))
         .update();
   }
 
-  public boolean setExerciseStatus(long userId, String id, String status) {
-    return jdbc.sql("UPDATE exercises SET status = ? WHERE user_id = ? AND id = ?")
-        .params(status, userId, id).update() > 0;
+  public boolean setExerciseStatus(Learner l, String id, String status) {
+    return jdbc.sql("UPDATE exercises SET status = ? WHERE user_id = ? AND course = ? AND id = ?")
+        .params(status, l.userId(), l.courseId(), id).update() > 0;
   }
 
-  public boolean deleteExercise(long userId, String id) {
-    return jdbc.sql("DELETE FROM exercises WHERE user_id = ? AND id = ?").params(userId, id).update() > 0;
+  public boolean deleteExercise(Learner l, String id) {
+    return jdbc.sql("DELETE FROM exercises WHERE user_id = ? AND course = ? AND id = ?")
+        .params(l.userId(), l.courseId(), id).update() > 0;
   }
 
-  public Map<String, Map<String, Object>> exerciseResults(long userId) {
+  public Map<String, Map<String, Object>> exerciseResults(Learner l) {
     Map<String, Map<String, Object>> out = new LinkedHashMap<>();
-    view("SELECT * FROM v_exercise_results WHERE user_id = ?", userId)
+    view("SELECT * FROM v_exercise_results WHERE user_id = ? AND course = ?", l.userId(), l.courseId())
         .forEach(r -> out.put((String) r.get("id"), r));
     return out;
   }
 
   // ---------- Vocabulary with the learner's state per word ----------
 
-  public List<Map<String, Object>> searchVocabulary(long userId, String search, String topic, String level,
+  public List<Map<String, Object>> searchVocabulary(Learner l, String search, String topic, String level,
                                                     String pos, int limit) {
     StringBuilder sql = new StringBuilder("""
-        SELECT v.es, v.de_primary, v.de, v.pos, v.level, v.topic, v.example_es, v.example_de,
+        SELECT v.term, v.de_primary, v.de, v.pos, v.level, v.topic, v.example_term, v.example_de,
                c.state, c.stability, c.lapses
-        FROM vocabulary v LEFT JOIN cards c ON c.id = v.es AND c.user_id = :user WHERE true""");
+        FROM vocabulary v
+        LEFT JOIN cards c ON c.user_id = :user AND c.course = v.course AND c.id = v.term
+        WHERE v.course = :course""");
     Map<String, Object> params = new LinkedHashMap<>();
-    params.put("user", userId);
-    if (notBlank(search)) { sql.append(" AND (v.es ILIKE :search OR v.de ILIKE :search)"); params.put("search", "%" + search + "%"); }
+    params.put("user", l.userId());
+    params.put("course", l.courseId());
+    if (notBlank(search)) { sql.append(" AND (v.term ILIKE :search OR v.de ILIKE :search)"); params.put("search", "%" + search + "%"); }
     if (notBlank(topic)) { sql.append(" AND v.topic = :topic"); params.put("topic", topic); }
     if (notBlank(level)) { sql.append(" AND v.level = :level"); params.put("level", level); }
     if (notBlank(pos)) { sql.append(" AND v.pos = :pos"); params.put("pos", pos); }
-    sql.append(" ORDER BY v.es LIMIT :limit");
+    sql.append(" ORDER BY v.term LIMIT :limit");
     params.put("limit", limit);
     return rows.normalize(jdbc.sql(sql.toString()).params(params).query().listOfRows());
   }
 
   // ---------- Analysis (the views are the only definition) ----------
 
-  public Map<String, Object> weaknesses(long userId, int days, int limit) {
+  public Map<String, Object> weaknesses(Learner l, int days, int limit) {
+    long userId = l.userId();
+    String course = l.courseId();
     Map<String, Object> w = new LinkedHashMap<>();
     w.put("generatedAt", Instant.now().toString());
     w.put("windowDays", days);
-    w.put("summary", view("SELECT * FROM v_summary WHERE user_id = ?", userId).stream().findFirst()
+    w.put("summary", view("SELECT * FROM v_summary WHERE user_id = ? AND course = ?", userId, course).stream().findFirst()
         .orElseGet(LinkedHashMap::new));
     w.put("vocab", view("""
         SELECT * FROM v_vocab_mistakes
-        WHERE user_id = ? AND last_wrong_at > now() - make_interval(days => ?)
-        ORDER BY wrong DESC, attempts DESC LIMIT ?""", userId, days, limit));
+        WHERE user_id = ? AND course = ? AND last_wrong_at > now() - make_interval(days => ?)
+        ORDER BY wrong DESC, attempts DESC LIMIT ?""", userId, course, days, limit));
     Map<String, Object> conj = new LinkedHashMap<>();
     conj.put("forms", view("""
         SELECT * FROM v_conjugation_mistakes
-        WHERE user_id = ? AND last_at > now() - make_interval(days => ?)
-        ORDER BY wrong DESC LIMIT ?""", userId, days, limit));
-    conj.put("byTense", view("SELECT * FROM v_conjugation_by_tense WHERE user_id = ? ORDER BY accuracy", userId));
-    conj.put("byPerson", view("SELECT * FROM v_conjugation_by_person WHERE user_id = ? ORDER BY accuracy", userId));
+        WHERE user_id = ? AND course = ? AND last_at > now() - make_interval(days => ?)
+        ORDER BY wrong DESC LIMIT ?""", userId, course, days, limit));
+    conj.put("byTense", view("SELECT * FROM v_conjugation_by_tense WHERE user_id = ? AND course = ? ORDER BY accuracy",
+        userId, course));
+    conj.put("byPerson", view("SELECT * FROM v_conjugation_by_person WHERE user_id = ? AND course = ? ORDER BY accuracy",
+        userId, course));
     w.put("conjugation", conj);
-    w.put("grammar", view("SELECT * FROM v_grammar_accuracy WHERE user_id = ? ORDER BY accuracy", userId));
-    w.put("sentences", view("SELECT * FROM v_sentence_mistakes WHERE user_id = ? LIMIT ?", userId, limit));
-    w.put("exercises", view("SELECT * FROM v_exercise_results WHERE user_id = ? ORDER BY created_at DESC", userId));
+    w.put("grammar", view("SELECT * FROM v_grammar_accuracy WHERE user_id = ? AND course = ? ORDER BY accuracy",
+        userId, course));
+    w.put("sentences", view("SELECT * FROM v_sentence_mistakes WHERE user_id = ? AND course = ? LIMIT ?",
+        userId, course, limit));
+    w.put("exercises", view("SELECT * FROM v_exercise_results WHERE user_id = ? AND course = ? ORDER BY created_at DESC",
+        userId, course));
     return w;
   }
 

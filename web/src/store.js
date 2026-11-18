@@ -69,7 +69,7 @@ const STORE = (() => {
       grammarLog: {},
       packCards: {},
       packLog: {},
-      conjTenses: ["presente", "indefinido"],
+      conjTenses: [...COURSE.defaultTenses],
       conjVerbSet: "irregular",
       grammarCategories: null,
     };

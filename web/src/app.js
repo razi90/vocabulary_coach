@@ -2,8 +2,7 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "voco.es.v1";
-  const DAY = SRS.DAY;
+    const DAY = SRS.DAY;
   // Local date, not UTC: toISOString() would put the day boundary at
   // 01:00/02:00 local time in Central Europe and shift streak and daily goal.
   const todayKey = (t = Date.now()) => {
@@ -72,12 +71,12 @@
 
   function cardsDueNow(now = Date.now()) {
     return DECK.filter((d) => {
-      const c = cards[d.es];
+      const c = cards[d.term];
       return c && c.state !== "new" && c.due <= now;
     });
   }
   function allFreshCards() {
-    return DECK.filter((d) => !cards[d.es] || cards[d.es].state === "new");
+    return DECK.filter((d) => !cards[d.term] || cards[d.term].state === "new");
   }
   // The daily limit for new cards equals the daily goal, but a click lifts it.
   function cardsNewAvailable() {
@@ -291,7 +290,7 @@
   }
 
   function pickMode(deckItem) {
-    const c = cards[deckItem.es];
+    const c = cards[deckItem.term];
     if (!c || c.state === "new") return "flip";           // new material always as a flashcard first
     const strength = SRS.strength(c);
     if (strength < 0.35) return Math.random() < 0.5 ? "flip" : "mc";
@@ -362,8 +361,8 @@
     el("flipPos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
     // Mark the language per side, so screen readers do not read Spanish
     // words with German pronunciation.
-    const promptLang = dir === "es-de" ? "es" : "de";
-    const answerLang = dir === "es-de" ? "de" : "es";
+    const promptLang = dir === "es-de" ? COURSE.lang : "de";
+    const answerLang = dir === "es-de" ? "de" : COURSE.lang;
     el("flipFront").lang = promptLang;
     el("flipBack").lang = answerLang;
     el("flipFront").textContent = promptWord(d, dir);
@@ -375,7 +374,7 @@
     void flashcardInner.offsetWidth; // force a reflow before re-enabling the transition
     flashcardInner.style.transition = "";
 
-    const c = ensureCard(d.es);
+    const c = ensureCard(d.term);
     const preview = SRS.previewIntervals(c, { desiredRetention: 0.9, now: Date.now() });
     el("iv1").textContent = preview[1];
     el("iv2").textContent = preview[2];
@@ -401,7 +400,7 @@
   function renderMC(d) {
     const dir = state.direction;
     el("mcPos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
-    el("mcPrompt").lang = dir === "es-de" ? "es" : "de";
+    el("mcPrompt").lang = dir === "es-de" ? COURSE.lang : "de";
     el("mcPrompt").textContent = promptWord(d, dir);
     const correct = answerPrimary(d, dir);
     // Distractors must match neither the answer nor an equivalent synonym -
@@ -417,8 +416,8 @@
       }
       return into;
     };
-    let options = collect(DECK.filter((x) => x.es !== d.es && x.pos === d.pos), []);
-    if (options.length < 3) collect(DECK.filter((x) => x.es !== d.es), options);
+    let options = collect(DECK.filter((x) => x.term !== d.term && x.pos === d.pos), []);
+    if (options.length < 3) collect(DECK.filter((x) => x.term !== d.term), options);
     options.push(correct);
     options = shuffle(options);
 
@@ -430,7 +429,7 @@
       b.dataset.answer = opt;
       b.innerHTML = `<span class="mc-key">${i + 1}</span>`;
       b.append(document.createTextNode(opt));
-      if (dir === "de-es") b.lang = "es";
+      if (dir === "de-es") b.lang = COURSE.lang;
       b.addEventListener("click", () => {
         lastTyped = opt;
         const ok = accepted.has(norm(opt));
@@ -452,14 +451,14 @@
   function renderType(d) {
     const dir = state.direction;
     el("typePos").textContent = `${promptFlag(dir)} ${posLabel(d.pos)}`;
-    el("typePrompt").lang = dir === "es-de" ? "es" : "de";
+    el("typePrompt").lang = dir === "es-de" ? COURSE.lang : "de";
     el("typePrompt").textContent = promptWord(d, dir);
     const input = el("typeInput");
     input.value = "";
     input.className = "type-input";
     input.disabled = false;
-    input.placeholder = dir === "es-de" ? "Deutsche Übersetzung eintippen …" : "Übersetzung auf Spanisch eintippen …";
-    input.lang = dir === "es-de" ? "de" : "es";
+    input.placeholder = dir === "es-de" ? "Deutsche Übersetzung eintippen …" : `Übersetzung ${COURSE.inDe} eintippen …`;
+    input.lang = dir === "es-de" ? "de" : COURSE.lang;
     el("typeFeedback").textContent = "";
     el("typeFeedback").className = "type-feedback";
     setTimeout(() => input.focus(), 50);
@@ -505,11 +504,11 @@
   function germanPrimary(de) { return de.split("|")[0]; }
 
   // ---------- Drill direction ----------
-  function promptWord(d, dir) { return dir === "es-de" ? d.es : germanPrimary(d.de); }
-  function answerPrimary(d, dir) { return dir === "es-de" ? germanPrimary(d.de) : d.es; }
-  function promptFlag(dir) { return dir === "es-de" ? "🇪🇸" : "🇩🇪"; }
+  function promptWord(d, dir) { return dir === "es-de" ? d.term : germanPrimary(d.de); }
+  function answerPrimary(d, dir) { return dir === "es-de" ? germanPrimary(d.de) : d.term; }
+  function promptFlag(dir) { return dir === "es-de" ? COURSE.flag : "🇩🇪"; }
 
-  /* Several Spanish words share the same primary German meaning
+  /* Several course words share the same primary German meaning
      ("gehen" -> ir/andar/caminar). Going DE->ES, every word of the same group
      is therefore correct; otherwise a correct answer would count as a mistake
      and demote the card. */
@@ -528,7 +527,7 @@
   function answerAlternatives(d, dir) {
     return dir === "es-de"
       ? d.de.split("|").map(norm)
-      : germanGroup(d).map((x) => norm(x.es));
+      : germanGroup(d).map((x) => norm(x.term));
   }
 
   const judgeAnswer = (typed, alternatives) => TEXT.judge(typed, alternatives);
@@ -537,21 +536,21 @@
 
   function gradeCurrent(grade, correct) {
     const item = currentItem();
-    const c = ensureCard(item.deck.es);
+    const c = ensureCard(item.deck.term);
     if (c.state === "new") {
       const k = todayKey();
       state.newIntroducedOn[k] = (state.newIntroducedOn[k] || 0) + 1;
     }
-    cards[item.deck.es] = SRS.review(c, grade, { desiredRetention: 0.9, mode: item.mode });
+    cards[item.deck.term] = SRS.review(c, grade, { desiredRetention: 0.9, mode: item.mode });
     session.reviewed += 1;
     if (correct) session.correct += 1;
     logReview(correct);
     logEvent({
-      kind: "vocab", id: item.deck.es, dir: state.direction, mode: item.mode,
+      kind: "vocab", id: item.deck.term, dir: state.direction, mode: item.mode,
       grade, ok: correct, typed: lastTyped, expected: answerPrimary(item.deck, state.direction),
     });
     lastTyped = null;
-    save(item.deck.es);
+    save(item.deck.term);
 
     // "Again" -> mix the card back in later in the same session
     if (grade === 1 && !item.requeued) {
@@ -757,11 +756,13 @@
     const forms = CONJUGATE.getForms(verb);
     const correctForm = forms[item.tense][item.person];
     const input = el("conjInput");
-    const ok = norm(input.value) === norm(correctForm);
+    // A course may accept more than one spelling (English: "have gone" / "'ve gone").
+    const accepted = CONJUGATE.alternatives ? CONJUGATE.alternatives(correctForm) : [correctForm];
+    const ok = accepted.some((form) => norm(input.value) === norm(form));
     input.className = "type-input " + (ok ? "correct" : "wrong");
     const fb = el("conjFeedback");
     fb.className = "type-feedback " + (ok ? "correct" : "wrong");
-    fb.textContent = ok ? "¡Correcto!" : `Richtig wäre: ${correctForm}`;
+    fb.textContent = ok ? COURSE.praise : `Richtig wäre: ${correctForm}`;
     input.disabled = true;
     el("conjCheckBtn").disabled = true;
     el("conjCheckBtn").hidden = true;
@@ -940,7 +941,7 @@
         const b = document.createElement("button");
         b.className = "mc-option";
         b.dataset.answer = opt;
-        b.lang = item.lang || "es";
+        b.lang = item.lang || COURSE.lang;
         b.innerHTML = `<span class="mc-key">${i + 1}</span>`;
         b.append(document.createTextNode(opt));
         b.addEventListener("click", () => {
@@ -962,7 +963,7 @@
       input.value = "";
       input.className = "type-input";
       input.disabled = false;
-      input.lang = item.type === "translate" ? (item.to || "es") : (item.lang || "es");
+      input.lang = item.type === "translate" ? (item.to || COURSE.lang) : (item.lang || COURSE.lang);
       input.placeholder = item.hint ? `Tipp: ${item.hint}` : "Antwort eintippen …";
       el("packCheckBtn").disabled = false;
       el("packCheckBtn").hidden = false;
@@ -1004,7 +1005,7 @@
     el("packProgressBar").style.width = DRILL.progress(packSession);
     el("packTypeLabel").textContent = PACKS.typeLabel(item.type);
     el("packPrompt").textContent = item.prompt;
-    el("packPrompt").lang = item.type === "translate" ? (item.from || "de") : (item.lang || "es");
+    el("packPrompt").lang = item.type === "translate" ? (item.from || "de") : (item.lang || COURSE.lang);
     el("packFeedback").textContent = "";
     el("packFeedback").className = "type-feedback";
     el("packExplanation").textContent = "";
@@ -1186,7 +1187,7 @@
     const filtered = DECK.filter((d) => {
       if (topic && d.topic !== topic) return false;
       if (level && d.level !== level) return false;
-      if (q && !(d.es.toLowerCase().includes(q) || d.de.toLowerCase().includes(q))) return false;
+      if (q && !(d.term.toLowerCase().includes(q) || d.de.toLowerCase().includes(q))) return false;
       return true;
     });
     if (!filtered.length) {
@@ -1194,10 +1195,10 @@
       return;
     }
     list.innerHTML = filtered.map((d) => {
-      const c = cards[d.es];
+      const c = cards[d.term];
       return `<div class="browse-item">
         <span class="bi-state">${stateEmoji(c)}</span>
-        <div class="bi-main"><div class="bi-es" lang="es">${esc(d.es)}</div><div class="bi-de">${esc(d.de.replace(/\|/g, ", "))}</div></div>
+        <div class="bi-main"><div class="bi-es" lang="${COURSE.lang}">${esc(d.term)}</div><div class="bi-de">${esc(d.de.replace(/\|/g, ", "))}</div></div>
         <span class="bi-level">${esc(d.level)}</span>
       </div>`;
     }).join("");
@@ -1295,7 +1296,7 @@
     el("conjMistakesList").innerHTML = mistakes.length
       ? mistakes.map((m) => `<div class="conj-log-row">
             <span class="conj-log-icon wrong">✗</span>
-            <span class="conj-log-main"><strong lang="es">${esc(m.form)}</strong> <span class="conj-log-dim">(${esc(m.infinitive)}, ${CONJUGATE.TENSE_LABELS[m.tense]}, ${personShort(m.person)})</span></span>
+            <span class="conj-log-main"><strong lang="${COURSE.lang}">${esc(m.form)}</strong> <span class="conj-log-dim">(${esc(m.infinitive)}, ${CONJUGATE.TENSE_LABELS[m.tense]}, ${personShort(m.person)})</span></span>
             <span class="conj-log-count">${m.wrongCount}×</span>
           </div>`).join("")
       : `<div class="conj-log-empty">Bisher keine wiederholten Fehler — gut gemacht!</div>`;
@@ -1304,15 +1305,22 @@
       const icon = r.ok ? `<span class="conj-log-icon correct">✓</span>` : `<span class="conj-log-icon wrong">✗</span>`;
       const meta = `${esc(r.verb)}, ${CONJUGATE.TENSE_LABELS[r.tense] || "?"}, ${personShort(r.person)}`;
       const detail = r.ok
-        ? `<strong lang="es">${esc(r.expected)}</strong> <span class="conj-log-dim">(${meta})</span>`
-        : `<strong lang="es">${esc(r.expected)}</strong> <span class="conj-log-dim">(${meta}) — du: „${esc(r.typed || "–")}“</span>`;
+        ? `<strong lang="${COURSE.lang}">${esc(r.expected)}</strong> <span class="conj-log-dim">(${meta})</span>`
+        : `<strong lang="${COURSE.lang}">${esc(r.expected)}</strong> <span class="conj-log-dim">(${meta}) — du: „${esc(r.typed || "–")}“</span>`;
       return `<div class="conj-log-row">${icon}<span class="conj-log-main">${detail}</span><span class="conj-log-time">${timeAgo(r.t)}</span></div>`;
     }).join("");
   }
   /** "Yo ___ profesor." + "soy" -> escaped text with the solution highlighted. */
+  /* Puts the answer into the gap. An answer like "are … wearing" fills two
+     gaps ("Why ___ you ___ a coat?") one part each. */
   function fillGap(prompt, answer) {
-    const [before, ...rest] = String(prompt).split("___");
-    if (!rest.length) return esc(prompt);
+    const pieces = String(prompt).split("___");
+    if (pieces.length === 1) return esc(prompt);
+    const parts = String(answer).split(" … ");
+    if (parts.length === pieces.length - 1) {
+      return pieces.map((p, i) => esc(p) + (i < parts.length ? `<strong>${esc(parts[i])}</strong>` : "")).join("");
+    }
+    const [before, ...rest] = pieces;
     return `${esc(before)}<strong>${esc(answer)}</strong>${esc(rest.join("___"))}`;
   }
 
@@ -1347,7 +1355,7 @@
           if (!item) return "";   // the item was removed
           return `<div class="conj-log-row">
             <span class="conj-log-icon wrong">✗</span>
-            <span class="conj-log-main" lang="es">${fillGap(item.prompt, item.answer)} <span class="conj-log-dim" lang="de">(${GRAMMAR.CATEGORY_LABELS[item.category]})</span></span>
+            <span class="conj-log-main" lang="${COURSE.lang}">${fillGap(item.prompt, item.answer)} <span class="conj-log-dim" lang="de">(${GRAMMAR.CATEGORY_LABELS[item.category]})</span></span>
             <span class="conj-log-count">${c.wrongCount}×</span>
           </div>`;
         }).join("")

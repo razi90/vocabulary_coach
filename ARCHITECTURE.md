@@ -18,35 +18,48 @@ coach. Only port 8080 is published, by default on `127.0.0.1`.
 | Path | Responsibility |
 | --- | --- |
 | `web/` | Frontend: plain HTML/JS/CSS, served as static files. |
+| `web/src/boot.js` | Asks the server for the learner's course, loads that course's content, then the app. |
+| `web/src/courses/<course>/` | Course content as source: `course.js` (metadata), `deck.js`, `conjugate.js`, `grammar.js`. Same interface in every course. |
 | `web/src/text.js` | Normalization and answer grading (browser only). |
 | `web/src/packs.js` | Exercise-set schema, validation and checking in the browser. |
 | `web/src/store.js` | Browser access to the API: CSRF header, 401 → login, live updates. |
 | `web/src/coach.js` | Coach tab: settings, orders, run history, account. |
 | `web/src/auth.js` | Login and registration page. |
-| `web/src/deck.js` `conjugate.js` `grammar.js` | Learning content as source. |
 | `tools/export-content.js` | Turns the content into `content.json` for the backend. |
 | `backend/.../db/migration/` | Flyway migrations: schema and analysis views. |
 | `backend/.../content/ContentSync` | Mirrors the content into the database at startup. |
-| `backend/.../learning/LearningStore` | Every SQL access to a learner's state, always by user id. |
+| `backend/.../learning/Course`, `Learner` | The courses and their wording; a learner = user + course. |
+| `backend/.../learning/LearningStore` | Every SQL access to a learner's state, always by user and course. |
 | `backend/.../learning/PackValidator` | Exercise-set validation; same rules as `web/src/packs.js`. |
 | `backend/.../learning/Briefing` | Phrases the analysis as Markdown. Computes nothing. |
 | `backend/.../lessons/LessonService` | Daily lessons, submissions, feedback. |
 | `backend/.../lessons/YouTube` | Video search (Data API), existence check (oEmbed), subtitles (watch page, best effort). |
 | `backend/.../auth/` | Accounts, Spring Security setup, login throttle, first-account bootstrap. |
 | `backend/.../coach/` | Providers, LLM client, key encryption, tools, the run loop. |
+| `backend/.../resources/coach/` | `system-prompt.md` (shared), `course-<id>.md` (per course), `tools.json`. |
 | `backend/.../web/ApiController` | The app's HTTP API. |
 | `backend/.../web/LiveUpdates` | LISTEN on Postgres, push server-sent events per learner. |
 
-## Learners
+## Learners and courses
 
-Every table a learner writes to carries `user_id`: `settings`, `cards`,
+A learner is a user in one course (`Learner(userId, course)`). Every table a
+learner writes to carries `user_id` and `course`: `settings`, `cards`,
 `events`, `exercises`, `lessons` (submissions hang off their lesson),
-`coach_settings`, `coach_runs`. Content tables (`vocabulary`, `verbs`,
-`grammar_items`, `labels`) are shared.
+`coach_runs`. Content tables (`vocabulary`, `verbs`, `grammar_items`,
+`labels`) are keyed by course. `users.course` is the course the learner is in
+right now; switching changes only that column.
 
-The principal's name in the session is the numeric user id. `CurrentUser.id()`
-is the only way controllers get it, and every `LearningStore` method takes it
-as its first argument. There is no query without it.
+The principal's name in the session is the numeric user id.
+`UserAccounts.currentLearner()` adds the current course; every
+`LearningStore` and `LessonService` method takes the learner as its first
+argument. There is no learner query without both.
+
+In the frontend, `COURSE` (from `courses/<id>/course.js`) carries everything
+language-specific: `lang` attributes, flag, name, speech recognition, default
+tenses. Static text in `index.html` uses `data-course-lang`,
+`data-course-text` and `data-course-placeholder`, filled by `boot.js`. The
+direction codes `es-de`/`de-es` in the stored state mean "course language →
+German" and back, in every course.
 
 ## Why events
 
@@ -68,6 +81,10 @@ defined.
 `CoachRunner` starts a run on a virtual thread and returns at once. The loop:
 
 1. Send the system prompt, the order and the tool definitions to the model.
+   Both are worded for the learner's course: `system-prompt.md` gets the
+   course part (`course-<id>.md`) and its `{{placeholders}}` filled, the tool
+   texts get `{{sprache}}` & co. from `Course`. A placeholder left over stops
+   the startup.
 2. If the reply contains tool calls, run each through `CoachTools`, append the
    results (errors prefixed with `FEHLER:`), store the step, repeat.
 3. A reply without tool calls is the summary; the run is done.
@@ -92,6 +109,11 @@ owner's id. `LiveUpdates` holds one connection that LISTENs and forwards each
 notification as a server-sent event to that learner's open tabs only.
 
 ## Extending
+
+**New course:** a folder `web/src/courses/<id>/` with the four files (same
+interfaces as the others), the id in `boot.js`, `sw.js` and
+`tools/export-content.js`, an entry in `Course`, a `course-<id>.md`, and a
+migration adding the row to `courses`.
 
 **New item type:** add it to `ITEM_TYPES` in `web/src/packs.js` (`normalize`,
 `validate`, `check`), to `PackValidator` (same rules, plus a test), a renderer

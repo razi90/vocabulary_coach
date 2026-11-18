@@ -1,6 +1,8 @@
 package com.vocabcoach.auth;
 
 import com.vocabcoach.UserError;
+import com.vocabcoach.learning.Course;
+import com.vocabcoach.learning.Learner;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -28,7 +30,7 @@ public class UserAccounts implements UserDetailsService {
   public static final int MIN_PASSWORD = 10;
   private static final Pattern EMAIL = Pattern.compile("^[^\\s@]+@[^\\s@]+$");
 
-  public record Account(long id, String email, String displayName, boolean admin) {}
+  public record Account(long id, String email, String displayName, boolean admin, String course) {}
 
   private final JdbcClient jdbc;
   private final PasswordEncoder encoder;
@@ -58,28 +60,40 @@ public class UserAccounts implements UserDetailsService {
   }
 
   public Optional<Account> find(long id) {
-    return jdbc.sql("SELECT id, email, display_name, is_admin FROM users WHERE id = ?").param(id)
-        .query((rs, i) -> new Account(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getBoolean(4)))
+    return jdbc.sql("SELECT id, email, display_name, is_admin, course FROM users WHERE id = ?").param(id)
+        .query((rs, i) -> new Account(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getBoolean(4), rs.getString(5)))
         .optional();
   }
 
   public List<Account> list() {
-    return jdbc.sql("SELECT id, email, display_name, is_admin FROM users ORDER BY id")
-        .query((rs, i) -> new Account(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getBoolean(4)))
+    return jdbc.sql("SELECT id, email, display_name, is_admin, course FROM users ORDER BY id")
+        .query((rs, i) -> new Account(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getBoolean(4), rs.getString(5)))
         .list();
   }
 
-  public long register(String email, String password, String displayName) {
+  public long register(String email, String password, String displayName, Course course) {
     String clean = validEmail(email);
     validPassword(password);
     try {
       return jdbc.sql("""
-          INSERT INTO users (email, password_hash, display_name) VALUES (?, ?, ?) RETURNING id""")
-          .params(clean, encoder.encode(password), displayName == null ? "" : displayName.trim())
+          INSERT INTO users (email, password_hash, display_name, course) VALUES (?, ?, ?, ?) RETURNING id""")
+          .params(clean, encoder.encode(password), displayName == null ? "" : displayName.trim(), course.id)
           .query(Long.class).single();
     } catch (DuplicateKeyException e) {
       throw new UserError("Für diese E-Mail-Adresse gibt es schon ein Konto.");
     }
+  }
+
+  /** Which course the learner is in. Their progress in the other course stays as it is. */
+  public void setCourse(long id, Course course) {
+    jdbc.sql("UPDATE users SET course = ? WHERE id = ?").params(course.id, id).update();
+  }
+
+  /** The logged-in user in their current course. */
+  public Learner currentLearner() {
+    long id = CurrentUser.id();
+    String course = jdbc.sql("SELECT course FROM users WHERE id = ?").param(id).query(String.class).single();
+    return new Learner(id, Course.byId(course).orElse(Course.ES));
   }
 
   public void changePassword(long id, String current, String next) {

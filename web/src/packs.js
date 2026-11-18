@@ -9,6 +9,8 @@ const PACKS = (() => {
   const SCHEMA = "vocab-coach/exercise-pack@1";
   const MAX_ITEMS = 100;
 
+  // The course language is the default for item text (see courses/*/course.js).
+  const courseLang = () => (typeof COURSE !== "undefined" ? COURSE.lang : "es");
   const str = (v) => (typeof v === "string" ? v.trim() : "");
   const strList = (v) => (Array.isArray(v) ? v.map(str).filter(Boolean) : []);
 
@@ -23,7 +25,7 @@ const PACKS = (() => {
         options: strList(raw.options),
         answer: str(raw.answer),
         explanation: str(raw.explanation),
-        lang: str(raw.lang) || "es",
+        lang: str(raw.lang) || courseLang(),
       }),
       validate: (it) => {
         if (!it.prompt) return "prompt fehlt";
@@ -47,7 +49,7 @@ const PACKS = (() => {
         alternatives: strList(raw.alternatives),
         hint: str(raw.hint),
         explanation: str(raw.explanation),
-        lang: str(raw.lang) || "es",
+        lang: str(raw.lang) || courseLang(),
       }),
       validate: (it) => {
         if (!it.prompt) return "prompt fehlt";
@@ -67,7 +69,7 @@ const PACKS = (() => {
         answer: str(raw.answer),
         alternatives: strList(raw.alternatives),
         from: str(raw.from) || "de",
-        to: str(raw.to) || "es",
+        to: str(raw.to) || courseLang(),
         explanation: str(raw.explanation),
       }),
       validate: (it) => {

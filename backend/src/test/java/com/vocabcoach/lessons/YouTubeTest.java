@@ -44,7 +44,7 @@ class YouTubeTest {
         + ",\"audioTracks\":[]}}};</script>";
     var tracks = youtube.captionTracks(html);
     assertThat(tracks).hasSize(3);
-    var picked = YouTube.pickTrack(tracks).orElseThrow();
+    var picked = YouTube.pickTrack(tracks, "es").orElseThrow();
     assertThat(picked.path("languageCode").asString()).isEqualTo("es-ES");
     assertThat(picked.path("baseUrl").asString()).isEqualTo("https://www.youtube.com/api/timedtext?v=x&lang=es-ES");
   }
@@ -52,8 +52,10 @@ class YouTubeTest {
   @Test
   void automaticSpanishIsTheFallbackAndNoSpanishMeansNothing() {
     var onlyAuto = json.readTree("[{\"languageCode\":\"en\"},{\"languageCode\":\"es\",\"kind\":\"asr\"}]");
-    assertThat(YouTube.pickTrack(onlyAuto).orElseThrow().path("kind").asString()).isEqualTo("asr");
-    assertThat(YouTube.pickTrack(json.readTree("[{\"languageCode\":\"en\"}]"))).isEmpty();
+    assertThat(YouTube.pickTrack(onlyAuto, "es").orElseThrow().path("kind").asString()).isEqualTo("asr");
+    assertThat(YouTube.pickTrack(json.readTree("[{\"languageCode\":\"en\"}]"), "es")).isEmpty();
+    // The English course picks English subtitles from the same list.
+    assertThat(YouTube.pickTrack(onlyAuto, "en").orElseThrow().path("languageCode").asString()).isEqualTo("en");
     assertThat(youtube.captionTracks("<html>keine Untertitel</html>")).isEmpty();
   }
 

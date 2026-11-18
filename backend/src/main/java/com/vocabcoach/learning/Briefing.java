@@ -43,10 +43,10 @@ public final class Briefing {
       out.add("## Hartnäckige Vokabeln");
       out.add("");
       for (Map<String, Object> v : vocab) {
-        String line = "**" + v.get("es") + "** (" + v.get("de_primary") + ", " + v.get("topic") + ") — "
+        String line = "**" + v.get("term") + "** (" + v.get("de_primary") + ", " + v.get("topic") + ") — "
             + v.get("wrong") + "× falsch bei " + v.get("attempts") + " Versuchen";
-        if (v.get("confused_with_es") != null) {
-          line += ", zuletzt „" + v.get("last_typed") + "“ → verwechselt mit " + v.get("confused_with_es")
+        if (v.get("confused_with") != null) {
+          line += ", zuletzt „" + v.get("last_typed") + "“ → verwechselt mit " + v.get("confused_with")
               + " (" + v.get("confused_with_de") + ")";
         } else if (v.get("last_typed") != null) {
           line += ", zuletzt „" + v.get("last_typed") + "“";
@@ -131,8 +131,8 @@ public final class Briefing {
     }
 
     List<String> confused = ((List<Map<String, Object>>) w.get("vocab")).stream()
-        .filter(v -> v.get("confused_with_es") != null).limit(5)
-        .map(v -> v.get("es") + " vs. " + v.get("confused_with_es")).toList();
+        .filter(v -> v.get("confused_with") != null).limit(5)
+        .map(v -> v.get("term") + " vs. " + v.get("confused_with")).toList();
     if (!confused.isEmpty()) out.add("Minimalpaare zu den verwechselten Vokabeln: " + String.join("; ", confused));
 
     if (out.isEmpty()) out.add("Keine auffälligen Schwächen — gemischte Wiederholung zu den zuletzt gelernten Themen.");

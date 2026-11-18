@@ -2,6 +2,7 @@ package com.vocabcoach.coach;
 
 import com.vocabcoach.UserError;
 import com.vocabcoach.auth.CurrentUser;
+import com.vocabcoach.auth.UserAccounts;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,8 +33,11 @@ public class CoachController {
   private final CoachRunner runner;
   private final LlmClient llm;
   private final KeyCipher cipher;
+  private final UserAccounts accounts;
 
-  public CoachController(CoachSettings settings, CoachRunner runner, LlmClient llm, KeyCipher cipher) {
+  public CoachController(CoachSettings settings, CoachRunner runner, LlmClient llm, KeyCipher cipher,
+                         UserAccounts accounts) {
+    this.accounts = accounts;
     this.settings = settings;
     this.runner = runner;
     this.llm = llm;
@@ -87,12 +91,12 @@ public class CoachController {
   @PostMapping("/runs")
   @ResponseStatus(HttpStatus.ACCEPTED)
   public Map<String, Object> start(@RequestBody RunRequest r) {
-    return runner.start(CurrentUser.id(), r.task() == null ? "" : r.task(), r.note());
+    return runner.start(accounts.currentLearner(), r.task() == null ? "" : r.task(), r.note());
   }
 
   @GetMapping("/runs")
   public List<Map<String, Object>> runs(@RequestParam(defaultValue = "10") int limit) {
-    return runner.list(CurrentUser.id(), Math.max(1, Math.min(limit, 50)));
+    return runner.list(accounts.currentLearner(), Math.max(1, Math.min(limit, 50)));
   }
 
   @GetMapping("/runs/{id}")

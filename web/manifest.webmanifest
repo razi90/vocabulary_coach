@@ -1,7 +1,7 @@
 {
-  "name": "Español – Vokabeltrainer",
-  "short_name": "Español",
-  "description": "Spanisch lernen mit Karteikarten, Konjugations- und Grammatikübungen.",
+  "name": "Vokabeltrainer – Spanisch & Englisch",
+  "short_name": "Vokabeln",
+  "description": "Spanisch und Englisch lernen mit Karteikarten, Konjugations- und Grammatikübungen.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

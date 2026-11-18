@@ -2,6 +2,7 @@ package com.vocabcoach.auth;
 
 import com.vocabcoach.UserError;
 import com.vocabcoach.config.AppProperties;
+import com.vocabcoach.learning.Course;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.security.MessageDigest;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,7 +28,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-  public record Registration(String email, String password, String displayName, String code) {}
+  public record Registration(String email, String password, String displayName, String code, String course) {}
+
+  public record CourseChange(String course) {}
 
   public record PasswordChange(String current, String next) {}
 
@@ -43,7 +47,8 @@ public class AuthController {
   /** What the login page needs to know before anyone is logged in. */
   @GetMapping("/config")
   public Map<String, Object> config() {
-    return Map.of("registrationOpen", props.registrationOpen(), "minPassword", UserAccounts.MIN_PASSWORD);
+    return Map.of("registrationOpen", props.registrationOpen(), "minPassword", UserAccounts.MIN_PASSWORD,
+        "courses", java.util.Arrays.stream(Course.values()).map(c -> Map.of("id", c.id, "name", c.nameDe)).toList());
   }
 
   @PostMapping("/register")
@@ -55,7 +60,9 @@ public class AuthController {
     if (!constantTimeEquals(props.registrationCode(), r.code())) {
       throw new UserError("Der Einladungscode stimmt nicht.");
     }
-    long id = accounts.register(r.email(), r.password(), r.displayName());
+    Course course = Course.byId(r.course() == null ? "es" : r.course())
+        .orElseThrow(() -> new UserError("Unbekannter Kurs."));
+    long id = accounts.register(r.email(), r.password(), r.displayName(), course);
 
     // Log the new learner in right away.
     UserDetails user = accounts.loadUserByUsername(r.email());
@@ -71,6 +78,14 @@ public class AuthController {
   public UserAccounts.Account me() {
     return accounts.find(CurrentUser.id())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+  }
+
+  /** Switch course. Progress is kept per course, so switching back loses nothing. */
+  @PutMapping("/course")
+  public UserAccounts.Account changeCourse(@RequestBody CourseChange c) {
+    Course course = Course.byId(c.course()).orElseThrow(() -> new UserError("Unbekannter Kurs."));
+    accounts.setCourse(CurrentUser.id(), course);
+    return me();
   }
 
   @PostMapping("/password")

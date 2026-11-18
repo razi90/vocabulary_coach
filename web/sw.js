@@ -1,18 +1,22 @@
 /* Offline use: the app is nothing but static files, so a cache that is filled
    on install and replaced with every version is enough.
    Bump VERSION whenever the files change. */
-const VERSION = "voco-v6";
+const VERSION = "voco-v7";
 const ASSETS = [
   ".",
   "index.html",
   "manifest.webmanifest",
   "src/style.css",
-  "src/deck.js",
+  "src/text.js",
+  "src/store.js",
+  "src/boot.js",
   "src/srs.js",
-  "src/conjugate.js",
-  "src/grammar.js",
+  "src/packs.js",
+  "src/drill.js",
+  "src/lesson.js",
   "src/coach.js",
   "src/app.js",
+  ...["es", "en"].flatMap((c) => ["course", "deck", "conjugate", "grammar"].map((f) => `src/courses/${c}/${f}.js`)),
 ];
 
 self.addEventListener("install", (e) => {

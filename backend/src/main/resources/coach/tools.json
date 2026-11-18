@@ -74,7 +74,7 @@
       "properties": {
         "search": {
           "type": "string",
-          "description": "Teilstring in spanischer oder deutscher Form."
+          "description": "Teilstring in der Lernsprache ({{sprache}}) oder auf Deutsch."
         },
         "topic": {
           "type": "string"
@@ -250,7 +250,7 @@
   },
   {
     "name": "search_youtube",
-    "description": "Sucht spanischsprachige YouTube-Videos für den Hörteil der Tageslektion. Liefert nur Videos, die sich einbetten lassen, mit Titel, Kanal, Dauer und ob Untertitel vorhanden sind. Suchbegriffe auf Spanisch und konkret, passend zu Thema und Niveau, z. B. „pedir comida en un restaurante español A2“ oder „español fácil rutina diaria“. Wähle ein Video mit Untertiteln und hol dann mit get_video_transcript, was darin gesagt wird.",
+    "description": "Sucht {{sprachig}} YouTube-Videos für den Hörteil der Tageslektion. Liefert nur Videos, die sich einbetten lassen, mit Titel, Kanal, Dauer und ob Untertitel vorhanden sind. Suchbegriffe {{aufSprache}} und konkret, passend zu Thema und Niveau, z. B. „{{beispielsuche}}“. Wähle ein Video mit Untertiteln und hol dann mit get_video_transcript, was darin gesagt wird.",
     "parameters": {
       "type": "object",
       "required": [
@@ -259,7 +259,7 @@
       "properties": {
         "query": {
           "type": "string",
-          "description": "Suchbegriffe, am besten auf Spanisch."
+          "description": "Suchbegriffe, am besten {{aufSprache}}."
         },
         "duration": {
           "type": "string",
@@ -287,7 +287,7 @@
   },
   {
     "name": "get_video_transcript",
-    "description": "Holt die spanischen Untertitel eines YouTube-Videos als Text. Nur damit weißt du, was im Video gesagt wird – Verständnisfragen im Hörteil sind nur für Videos erlaubt, deren Transkript du in diesem Lauf geholt hast. Schlägt es fehl, gibt es kein Transkript: dann listening ohne questions anlegen (offene Aufgabe), oder ein anderes Video suchen.",
+    "description": "Holt die Untertitel ({{sprache}}) eines YouTube-Videos als Text. Nur damit weißt du, was im Video gesagt wird – Verständnisfragen im Hörteil sind nur für Videos erlaubt, deren Transkript du in diesem Lauf geholt hast. Schlägt es fehl, gibt es kein Transkript: dann listening ohne questions anlegen (offene Aufgabe), oder ein anderes Video suchen.",
     "parameters": {
       "type": "object",
       "required": [
@@ -303,7 +303,7 @@
   },
   {
     "name": "create_lesson",
-    "description": "Legt die Tageslektion an (überschreibt eine vorhandene desselben Tages). Eine Lektion besteht aus bis zu vier Teilen: listening (YouTube-Video mit Verständnisfragen), writing (Schreibauftrag), speaking (Sprechthema) und sentences (Sätze übersetzen). Mindestens einer ist nötig.\n\nZu sentences: 5–10 deutsche Sätze, die der Lernende ins Spanische überträgt. Bau sie aus Wörtern, die er schon kennt — such sie vorher mit search_vocabulary heraus, dort steht der Lernstand je Wort. Ein Satz je Stolperstelle aus dem Briefing ist mehr wert als zehn beliebige. Die Abgabe kommt über get_pending_feedback zurück; dort steht auch deine gedachte Lösung, damit du siehst, worauf der Satz hinauswollte. Bewerte großzügig: eine andere Wortstellung oder ein Synonym ist kein Fehler, solange der Satz stimmt.\n\nZum Hörteil (listening): Das Video kommt aus search_youtube oder aus einer URL, die der Lernende dir gegeben hat – nie aus dem Gedächtnis; die ID wird beim Anlegen gegen YouTube geprüft. Zwei Varianten:\n1. Mit questions (Auswahlfragen, sofort bewertet) – nur wenn du vorher get_video_transcript für dieses Video aufgerufen hast. Frag nach dem, was tatsächlich gesagt wird, nicht nach Allgemeinwissen.\n2. Ohne questions – der Lernende schreibt auf Spanisch, was er verstanden hat (task, minWords), und du gibst später über give_feedback Rückmeldung. Das ist der Weg, wenn es kein Transkript gibt.\nTitel und Kanal holt der Server selbst.",
+    "description": "Legt die Tageslektion an (überschreibt eine vorhandene desselben Tages). Eine Lektion besteht aus bis zu vier Teilen: listening (YouTube-Video mit Verständnisfragen), writing (Schreibauftrag), speaking (Sprechthema) und sentences (Sätze übersetzen). Mindestens einer ist nötig.\n\nZu sentences: 5–10 deutsche Sätze, die der Lernende {{insSprache}} überträgt. Bau sie aus Wörtern, die er schon kennt — such sie vorher mit search_vocabulary heraus, dort steht der Lernstand je Wort. Ein Satz je Stolperstelle aus dem Briefing ist mehr wert als zehn beliebige. Die Abgabe kommt über get_pending_feedback zurück; dort steht auch deine gedachte Lösung, damit du siehst, worauf der Satz hinauswollte. Bewerte großzügig: eine andere Wortstellung oder ein Synonym ist kein Fehler, solange der Satz stimmt.\n\nZum Hörteil (listening): Das Video kommt aus search_youtube oder aus einer URL, die der Lernende dir gegeben hat – nie aus dem Gedächtnis; die ID wird beim Anlegen gegen YouTube geprüft. Zwei Varianten:\n1. Mit questions (Auswahlfragen, sofort bewertet) – nur wenn du vorher get_video_transcript für dieses Video aufgerufen hast. Frag nach dem, was tatsächlich gesagt wird, nicht nach Allgemeinwissen.\n2. Ohne questions – der Lernende schreibt {{aufSprache}}, was er verstanden hat (task, minWords), und du gibst später über give_feedback Rückmeldung. Das ist der Weg, wenn es kein Transkript gibt.\nTitel und Kanal holt der Server selbst.",
     "parameters": {
       "type": "object",
       "required": [
@@ -407,7 +407,7 @@
               "items": {
                 "type": "string"
               },
-              "description": "Spanische Wörter/Wendungen, die vorkommen sollen."
+              "description": "Wörter/Wendungen {{aufSprache}}, die vorkommen sollen."
             },
             "minWords": {
               "type": "integer",
@@ -432,7 +432,7 @@
           "properties": {
             "task": {
               "type": "string",
-              "description": "Arbeitsauftrag. Ohne Angabe: „Übersetze die Sätze ins Spanische.“"
+              "description": "Arbeitsauftrag. Ohne Angabe: „Übersetze die Sätze {{insSprache}}.“"
             },
             "items": {
               "type": "array",
@@ -442,16 +442,16 @@
                 "type": "object",
                 "required": [
                   "de",
-                  "es"
+                  "answer"
                 ],
                 "properties": {
                   "de": {
                     "type": "string",
                     "description": "Der deutsche Satz, den der Lernende sieht."
                   },
-                  "es": {
+                  "answer": {
                     "type": "string",
-                    "description": "Deine gedachte Lösung. Der Lernende sieht sie nie."
+                    "description": "Deine gedachte Lösung {{aufSprache}}. Der Lernende sieht sie nie."
                   },
                   "note": {
                     "type": "string",

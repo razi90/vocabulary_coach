@@ -1,12 +1,24 @@
-# Español — Vocabulary Coach
+# Vocabulary Coach — Spanish & English
 
-Learn Spanish with flashcards, conjugation drills, grammar exercises and a
-daily lesson. A built-in coach reads each learner's mistakes and writes
+Learn Spanish or English with flashcards, conjugation drills, grammar
+exercises and a daily lesson. A built-in coach reads each learner's mistakes and writes
 matching exercises, lessons and feedback, using a language model through the
 learner's own OpenRouter or OpenCode Zen API key.
 
-The app speaks German — it is built for German-speaking learners of Spanish.
-Code, comments and documentation are English.
+The app speaks German — it is built for German-speaking learners. Code,
+comments and documentation are English.
+
+## Courses
+
+| Course | Content |
+| --- | --- |
+| 🇪🇸 Spanish | 608 words, 44 verbs in 6 tenses, 58 grammar items (ser/estar, por/para, articles, prepositions) |
+| 🇬🇧 English | 463 words incl. 20 false friends, 44 verbs in 6 tenses, 52 grammar items aimed at German speakers (Present Perfect vs. Simple Past, since/for, Simple vs. Progressive, some/any, in/on/at, false friends) |
+
+Learners pick a course when they register and can switch any time in the Coach
+tab. Progress is kept per course: cards, answers, exercises, lessons and coach
+runs of the other course stay as they are. The coach, the video search and the
+subtitles follow the current course.
 
 - **Backend:** Spring Boot 4 (Java 21), Spring Security, JDBC, Flyway, Postgres 17
 - **Frontend:** plain HTML/JS in [web/](web/), no build step
@@ -22,7 +34,7 @@ docker compose up -d
 
 Open `http://localhost:8080` and log in with `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
 On first start the server creates the schema and mirrors the learning content
-(608 words, 44 verbs, 58 grammar items) into the database.
+of both courses into the database.
 
 Then open the **Coach** tab, pick a provider and model, paste an API key, and
 give the coach an order.
@@ -144,8 +156,9 @@ ADMIN_EMAIL=me@example.com ADMIN_PASSWORD=change-me-please \
 
 The backend serves `../web/` as static files, so frontend edits show up on reload.
 
-**Learning content** (`web/src/deck.js`, `conjugate.js`, `grammar.js`) is the
-source; the browser loads it directly. The backend reads a JSON export of it.
+**Learning content** (`web/src/courses/<course>/deck.js`, `conjugate.js`,
+`grammar.js`, plus `course.js` with the course's metadata) is the source; the
+browser loads it directly. The backend reads a JSON export of it.
 After editing the content, regenerate the export (the Docker build does this
 by itself):
 
@@ -172,8 +185,8 @@ docker compose exec db psql -U voco -d voco
 
 \dv                                           -- all analysis views
 SELECT id, email FROM users;
-SELECT * FROM v_summary WHERE user_id = 1;
-SELECT * FROM v_vocab_mistakes WHERE user_id = 1 ORDER BY wrong DESC LIMIT 10;
+SELECT * FROM v_summary WHERE user_id = 1;                    -- one row per course
+SELECT * FROM v_vocab_mistakes WHERE user_id = 1 AND course = 'en' ORDER BY wrong DESC LIMIT 10;
 SELECT task, status, model, error FROM coach_runs ORDER BY started_at DESC LIMIT 5;
 ```
 
