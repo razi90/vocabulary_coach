@@ -13,7 +13,7 @@ comments and documentation are English.
 | Course | Content |
 | --- | --- |
 | 🇪🇸 Spanish | 608 words, 44 verbs in 6 tenses, 58 grammar items (ser/estar, por/para, articles, prepositions) |
-| 🇬🇧 English | 779 words incl. 36 false friends, 44 verbs in 6 tenses, 52 grammar items aimed at German speakers (Present Perfect vs. Simple Past, since/for, Simple vs. Progressive, some/any, in/on/at, false friends) |
+| 🇬🇧 English | 779 words incl. 36 false friends, 44 verbs in 6 tenses, 73 grammar items aimed at German speakers (Present Perfect vs. Simple Past, since/for, Simple vs. Progressive, some/any, in/on/at, false friends, -ing vs. to-infinitive, if-clauses) |
 
 Learners pick a course when they register and can switch any time in the Coach
 tab. Progress is kept per course: cards, answers, exercises, lessons and coach

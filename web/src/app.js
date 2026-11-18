@@ -1505,6 +1505,12 @@
     packs = await STORE.allPacks();
 
     if (!state.grammarCategories) state.grammarCategories = [...GRAMMAR.CATEGORIES];
+    // Categories added to the course since the learner's last visit start selected;
+    // ones they switched off themselves stay off.
+    const knownCategories = state.grammarKnownCategories || state.grammarCategories;
+    GRAMMAR.CATEGORIES.filter((c) => !knownCategories.includes(c) && !state.grammarCategories.includes(c))
+      .forEach((c) => state.grammarCategories.push(c));
+    state.grammarKnownCategories = [...GRAMMAR.CATEGORIES];
     conjSelectedTenses = new Set(state.conjTenses);
     conjVerbSet = state.conjVerbSet;
     grammarSelectedCategories = new Set(state.grammarCategories);

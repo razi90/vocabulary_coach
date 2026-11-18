@@ -9,6 +9,8 @@ const GRAMMAR = (() => {
     some_any: "some vs. any",
     prepositions: "in / on / at",
     false_friends: "Falsche Freunde",
+    gerund_infinitive: "-ing oder to + Grundform",
+    conditionals: "if-Sätze",
   };
   const CATEGORY_EXPLANATIONS = {
     simple_progressive: "Simple für Gewohnheiten und Fakten (always, every day), Progressive für das, was gerade jetzt oder vorübergehend passiert (now, at the moment). Verben wie know, like, want stehen fast nie in der -ing-Form.",
@@ -17,6 +19,8 @@ const GRAMMAR = (() => {
     some_any: "some in bejahten Sätzen und in Angeboten/Bitten (Would you like some tea?), any in Fragen und verneinten Sätzen. Mit no statt not any: I have no time.",
     prepositions: "at für Uhrzeiten und Punkte (at 6 o'clock, at the station), on für Tage und Daten (on Monday, on 3 May), in für Monate, Jahre, Tageszeiten und Räume (in July, in the morning, in the kitchen).",
     false_friends: "Wörter, die deutsch aussehen, aber etwas anderes bedeuten: become heißt „werden“, nicht „bekommen“; actually heißt „eigentlich/tatsächlich“, nicht „aktuell“.",
+    gerund_infinitive: "Manche Verben verlangen die -ing-Form (enjoy, finish, avoid, mind, suggest, keep), andere to + Grundform (want, decide, hope, plan, agree, refuse). Nach Präpositionen steht immer -ing: interested in learning, look forward to seeing. Bei stop, remember und try ändert sich die Bedeutung.",
+    conditionals: "Typ 1 (real): If + Present, will … – If it rains, we'll stay at home. Typ 2 (unwahrscheinlich/gedacht): If + Past, would … – If I had time, I would help. Typ 3 (Vergangenheit, nicht mehr änderbar): If + Past Perfect, would have … Im if-Teil steht nie will oder would – anders als im Deutschen („wenn ich Zeit hätte“).",
   };
 
   const ITEMS = [
@@ -135,6 +139,52 @@ const GRAMMAR = (() => {
       explanation: "Mit Ortsangabe: leave something somewhere. forget steht ohne Ort: I forgot my bag." },
     { id: "ff9", category: "false_friends", prompt: "The ___ of the film was excellent. (Regisseur)", options: ["regisseur", "director"], answer: "director",
       explanation: "Regisseur = director." },
+
+    // --- -ing oder to + Grundform ---
+    { id: "gi1", category: "gerund_infinitive", prompt: "I enjoy ___ in the sea.", options: ["swimming", "to swim"], answer: "swimming",
+      explanation: "enjoy verlangt die -ing-Form." },
+    { id: "gi2", category: "gerund_infinitive", prompt: "We decided ___ a new car.", options: ["buying", "to buy"], answer: "to buy",
+      explanation: "decide + to + Grundform." },
+    { id: "gi3", category: "gerund_infinitive", prompt: "I'm looking forward to ___ you.", options: ["see", "seeing"], answer: "seeing",
+      explanation: "Hier ist to eine Präposition (look forward to), und nach Präpositionen steht -ing." },
+    { id: "gi4", category: "gerund_infinitive", prompt: "Have you finished ___ the report?", options: ["writing", "to write"], answer: "writing",
+      explanation: "finish verlangt die -ing-Form." },
+    { id: "gi5", category: "gerund_infinitive", prompt: "She hopes ___ a job in London.", options: ["finding", "to find"], answer: "to find",
+      explanation: "hope + to + Grundform." },
+    { id: "gi6", category: "gerund_infinitive", prompt: "Would you mind ___ the window?", options: ["opening", "to open"], answer: "opening",
+      explanation: "mind verlangt die -ing-Form: Would you mind opening …? = Würden Sie bitte … öffnen?" },
+    { id: "gi7", category: "gerund_infinitive", prompt: "He's interested in ___ Spanish.", options: ["learn", "learning"], answer: "learning",
+      explanation: "Nach der Präposition in steht die -ing-Form." },
+    { id: "gi8", category: "gerund_infinitive", prompt: "I stopped ___ two years ago. I don't smoke any more.", options: ["smoking", "to smoke"], answer: "smoking",
+      explanation: "stop + -ing = mit etwas aufhören. stop + to = anhalten, um etwas zu tun (He stopped to smoke = Er hielt an, um zu rauchen)." },
+    { id: "gi9", category: "gerund_infinitive", prompt: "Remember ___ the door when you leave.", options: ["locking", "to lock"], answer: "to lock",
+      explanation: "remember + to = daran denken, etwas zu tun (Zukunft). remember + -ing = sich an etwas Vergangenes erinnern." },
+    { id: "gi10", category: "gerund_infinitive", prompt: "They agreed ___ us at the airport.", options: ["meeting", "to meet"], answer: "to meet",
+      explanation: "agree + to + Grundform." },
+    { id: "gi11", category: "gerund_infinitive", prompt: "___ is good for your health.", options: ["Walking", "To walk"], answer: "Walking",
+      explanation: "Als Subjekt am Satzanfang steht im Englischen meist die -ing-Form – das Deutsche nimmt hier oft den Infinitiv („Spazierengehen ist gesund“)." },
+
+    // --- if-Sätze ---
+    { id: "cd1", category: "conditionals", prompt: "If it ___ tomorrow, we'll stay at home.", options: ["rains", "will rain"], answer: "rains",
+      explanation: "Typ 1: Im if-Teil steht das Simple Present, nie will – auch wenn es um die Zukunft geht." },
+    { id: "cd2", category: "conditionals", prompt: "If you heat ice, it ___.", options: ["melts", "would melt"], answer: "melts",
+      explanation: "Typ 0: allgemeine Tatsache – Present in beiden Teilen." },
+    { id: "cd3", category: "conditionals", prompt: "If I ___ more time, I would learn the piano.", options: ["have", "had", "would have"], answer: "had",
+      explanation: "Typ 2: gedachte Situation → if + Simple Past, im Hauptsatz would. Nicht „if I would have“ (deutsch: „wenn ich … hätte“)." },
+    { id: "cd4", category: "conditionals", prompt: "If I won the lottery, I ___ a house by the sea.", options: ["will buy", "would buy"], answer: "would buy",
+      explanation: "Typ 2: unwahrscheinlich → would im Hauptsatz." },
+    { id: "cd5", category: "conditionals", prompt: "If I ___ you, I would take the job.", options: ["was", "were", "am"], answer: "were",
+      explanation: "Feste Wendung für Ratschläge: If I were you … (were ist hier die korrekte Form, auch bei I)." },
+    { id: "cd6", category: "conditionals", prompt: "If we had left earlier, we ___ the train.", options: ["wouldn't miss", "wouldn't have missed"], answer: "wouldn't have missed",
+      explanation: "Typ 3: Vergangenheit, nicht mehr änderbar → if + Past Perfect, would have + 3. Form." },
+    { id: "cd7", category: "conditionals", prompt: "If she ___ harder, she would have passed the exam.", options: ["studied", "had studied", "would have studied"], answer: "had studied",
+      explanation: "Typ 3: Im if-Teil steht das Past Perfect, nie would have." },
+    { id: "cd8", category: "conditionals", prompt: "I'll call you ___ I arrive.", options: ["if", "when"], answer: "when",
+      explanation: "when = sicher (sobald ich ankomme), if = vielleicht. Im Deutschen ist beides „wenn“." },
+    { id: "cd9", category: "conditionals", prompt: "We won't go out ___ it stops raining.", options: ["if", "unless"], answer: "unless",
+      explanation: "unless = wenn nicht, es sei denn: Wir gehen nicht raus, es sei denn, es hört auf zu regnen." },
+    { id: "cd10", category: "conditionals", prompt: "What ___ you do if you lost your passport?", options: ["will", "would"], answer: "would",
+      explanation: "Typ 2: if + Past (lost) → would im Hauptsatz." },
   ];
 
   function itemsForCategory(category) {

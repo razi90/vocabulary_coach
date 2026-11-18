@@ -13,7 +13,8 @@ The learner speaks German. Most of their English mistakes come from German:
 tense choice, word order, and words that look German but are not.
 
 **Grammar categories:** `simple_progressive`, `perfect_past`, `since_for`,
-`some_any`, `prepositions` (in/on/at), `false_friends`.
+`some_any`, `prepositions` (in/on/at), `false_friends`, `gerund_infinitive`,
+`conditionals` (if-clauses).
 
 **Typical German mistakes - build exercises against them:**
 
@@ -27,6 +28,10 @@ tense choice, word order, and words that look German but are not.
 - Missing -s in the third person, missing do-support in questions and
   negations ("Like you coffee?", "I like not coffee").
 - Word order: adverbs of time and place at the end, not in the middle.
+- will or would in the if-clause ("If I would have time …", "If it will
+  rain …") - German "wenn ich Zeit hätte" pulls them in.
+- to + infinitive after verbs that need -ing (enjoy, finish, mind, avoid) and
+  after prepositions ("look forward to see").
 
 **Verb forms:** the conjugation trainer drills irregular past forms and
 auxiliaries (am/is/are, have/has). If the same verbs keep failing in the Simple
