@@ -21,46 +21,24 @@ services:
     build: .
     container_name: vokabeltrainer
     environment:
-      # Enables the live-reload watcher (see server/server.js).
-      NODE_ENV: development
-      PGHOST: db
+      DATABASE_URL: jdbc:postgresql://db:5432/voco
       PGUSER: voco
       PGPASSWORD: ${POSTGRES_PASSWORD:-voco}
-      PGDATABASE: voco
-      # Empty = no token. As soon as the port is no longer localhost-only,
-      # set it: otherwise anyone who can reach it may write exercises.
-      MCP_TOKEN: ${MCP_TOKEN:-}
-      # Second port serving /mcp exclusively. Only that one gets tunnelled.
-      MCP_PORT: ${MCP_PORT:-}
-    # The working tree is mounted into the container, not just copied into
-    # the image: changes are there immediately, no rebuild.
-    # Deliberately the whole directory and not single files - editors save
-    # by writing a temp file and renaming it. With a mount on a single file
-    # the container then points at the old, deleted file and stops seeing
-    # any changes. With a directory mount it does not.
+      # Encrypts the learners' API keys. Without it the coach cannot store one.
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:?Bitte APP_ENCRYPTION_KEY in .env setzen - openssl rand -base64 32}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      REGISTRATION_CODE: ${REGISTRATION_CODE:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    # The frontend is mounted, not just copied: edits under web/ show up on
+    # the next reload without a rebuild. Directory mount on purpose - editors
+    # replace files by renaming, which a single-file mount would not see.
     volumes:
-      - ./:/app:ro
-      # Anonymous volume: keeps node_modules from the image, which the host
-      # folder (macOS) would otherwise shadow.
-      - /app/node_modules
-    # No authentication - hence localhost only. For phone access see README.
+      - ./web:/app/web:ro
     ports:
-      - "127.0.0.1:8080:8080"
+      - "${APP_BIND:-127.0.0.1}:8080:8080"
     depends_on:
       db:
-        condition: service_healthy
-    restart: unless-stopped
-
-  # Public HTTPS endpoint for clients that refuse a localhost URL.
-  # Starts only with: docker compose --profile tunnel up -d
-  # Deliberately points at the MCP-only port, not at the app.
-  tunnel:
-    image: cloudflare/cloudflared:latest
-    container_name: voco-tunnel
-    profiles: ["tunnel"]
-    command: tunnel --no-autoupdate --url http://app:8081
-    depends_on:
-      app:
         condition: service_healthy
     restart: unless-stopped
 

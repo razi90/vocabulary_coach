@@ -1,0 +1,7087 @@
+{
+ "vocabulary": [
+  {
+   "es": "el hombre",
+   "de": "der Mann",
+   "dePrimary": "der Mann",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "El hombre lee el periódico.",
+   "exampleDe": "Der Mann liest die Zeitung."
+  },
+  {
+   "es": "la mujer",
+   "de": "die Frau",
+   "dePrimary": "die Frau",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "La mujer trabaja en un hospital.",
+   "exampleDe": "Die Frau arbeitet in einem Krankenhaus."
+  },
+  {
+   "es": "el niño",
+   "de": "das Kind|der Junge",
+   "dePrimary": "das Kind",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "El niño juega en el parque.",
+   "exampleDe": "Das Kind spielt im Park."
+  },
+  {
+   "es": "el amigo",
+   "de": "der Freund",
+   "dePrimary": "der Freund",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Mi amigo vive en Madrid.",
+   "exampleDe": "Mein Freund wohnt in Madrid."
+  },
+  {
+   "es": "la familia",
+   "de": "die Familie",
+   "dePrimary": "die Familie",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Toda la familia come junta los domingos.",
+   "exampleDe": "Die ganze Familie isst sonntags zusammen."
+  },
+  {
+   "es": "el hermano",
+   "de": "der Bruder",
+   "dePrimary": "der Bruder",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Mi hermano tiene veinte años.",
+   "exampleDe": "Mein Bruder ist zwanzig Jahre alt."
+  },
+  {
+   "es": "la hija",
+   "de": "die Tochter",
+   "dePrimary": "die Tochter",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Su hija estudia medicina.",
+   "exampleDe": "Ihre Tochter studiert Medizin."
+  },
+  {
+   "es": "el vecino",
+   "de": "der Nachbar",
+   "dePrimary": "der Nachbar",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Menschen",
+   "exampleEs": "El vecino siempre saluda por la mañana.",
+   "exampleDe": "Der Nachbar grüßt morgens immer."
+  },
+  {
+   "es": "la casa",
+   "de": "das Haus",
+   "dePrimary": "das Haus",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zuhause",
+   "exampleEs": "Nuestra casa está cerca de la playa.",
+   "exampleDe": "Unser Haus ist in der Nähe des Strandes."
+  },
+  {
+   "es": "la puerta",
+   "de": "die Tür",
+   "dePrimary": "die Tür",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zuhause",
+   "exampleEs": "Por favor, cierra la puerta.",
+   "exampleDe": "Bitte schließ die Tür."
+  },
+  {
+   "es": "la ventana",
+   "de": "das Fenster",
+   "dePrimary": "das Fenster",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zuhause",
+   "exampleEs": "Abro la ventana porque hace calor.",
+   "exampleDe": "Ich öffne das Fenster, weil es heiß ist."
+  },
+  {
+   "es": "la mesa",
+   "de": "der Tisch",
+   "dePrimary": "der Tisch",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zuhause",
+   "exampleEs": "La comida ya está en la mesa.",
+   "exampleDe": "Das Essen steht schon auf dem Tisch."
+  },
+  {
+   "es": "la silla",
+   "de": "der Stuhl",
+   "dePrimary": "der Stuhl",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zuhause",
+   "exampleEs": "Esta silla es muy cómoda.",
+   "exampleDe": "Dieser Stuhl ist sehr bequem."
+  },
+  {
+   "es": "la cama",
+   "de": "das Bett",
+   "dePrimary": "das Bett",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zuhause",
+   "exampleEs": "Los sábados me quedo en la cama.",
+   "exampleDe": "Samstags bleibe ich im Bett."
+  },
+  {
+   "es": "la cocina",
+   "de": "die Küche",
+   "dePrimary": "die Küche",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zuhause",
+   "exampleEs": "Mi madre está en la cocina.",
+   "exampleDe": "Meine Mutter ist in der Küche."
+  },
+  {
+   "es": "la llave",
+   "de": "der Schlüssel",
+   "dePrimary": "der Schlüssel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "He perdido las llaves del coche.",
+   "exampleDe": "Ich habe die Autoschlüssel verloren."
+  },
+  {
+   "es": "el agua",
+   "de": "das Wasser",
+   "dePrimary": "das Wasser",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "¿Me trae un vaso de agua, por favor?",
+   "exampleDe": "Bringen Sie mir bitte ein Glas Wasser?"
+  },
+  {
+   "es": "el pan",
+   "de": "das Brot",
+   "dePrimary": "das Brot",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Compro pan fresco cada mañana.",
+   "exampleDe": "Ich kaufe jeden Morgen frisches Brot."
+  },
+  {
+   "es": "la leche",
+   "de": "die Milch",
+   "dePrimary": "die Milch",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "El café con leche está muy caliente.",
+   "exampleDe": "Der Milchkaffee ist sehr heiß."
+  },
+  {
+   "es": "la manzana",
+   "de": "der Apfel",
+   "dePrimary": "der Apfel",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Como una manzana después de comer.",
+   "exampleDe": "Ich esse nach dem Essen einen Apfel."
+  },
+  {
+   "es": "el queso",
+   "de": "der Käse",
+   "dePrimary": "der Käse",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Este queso viene de Manchega.",
+   "exampleDe": "Dieser Käse kommt aus der Mancha."
+  },
+  {
+   "es": "la carne",
+   "de": "das Fleisch",
+   "dePrimary": "das Fleisch",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "No como carne los viernes.",
+   "exampleDe": "Freitags esse ich kein Fleisch."
+  },
+  {
+   "es": "el pescado",
+   "de": "der Fisch",
+   "dePrimary": "der Fisch",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "En Galicia el pescado es excelente.",
+   "exampleDe": "In Galicien ist der Fisch ausgezeichnet."
+  },
+  {
+   "es": "el desayuno",
+   "de": "das Frühstück",
+   "dePrimary": "das Frühstück",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "El desayuno se sirve hasta las diez.",
+   "exampleDe": "Das Frühstück wird bis zehn Uhr serviert."
+  },
+  {
+   "es": "la cuenta",
+   "de": "die Rechnung",
+   "dePrimary": "die Rechnung",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "La cuenta, por favor.",
+   "exampleDe": "Die Rechnung, bitte."
+  },
+  {
+   "es": "probar",
+   "de": "probieren|kosten",
+   "dePrimary": "probieren",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "¿Quieres probar el gazpacho?",
+   "exampleDe": "Willst du den Gazpacho probieren?"
+  },
+  {
+   "es": "el día",
+   "de": "der Tag",
+   "dePrimary": "der Tag",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "Ha sido un día muy largo.",
+   "exampleDe": "Es war ein sehr langer Tag."
+  },
+  {
+   "es": "la semana",
+   "de": "die Woche",
+   "dePrimary": "die Woche",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "La semana que viene tengo vacaciones.",
+   "exampleDe": "Nächste Woche habe ich Urlaub."
+  },
+  {
+   "es": "el año",
+   "de": "das Jahr",
+   "dePrimary": "das Jahr",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "Vivo aquí desde hace un año.",
+   "exampleDe": "Ich wohne seit einem Jahr hier."
+  },
+  {
+   "es": "hoy",
+   "de": "heute",
+   "dePrimary": "heute",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "Hoy no tengo tiempo.",
+   "exampleDe": "Heute habe ich keine Zeit."
+  },
+  {
+   "es": "mañana",
+   "de": "morgen|der Morgen",
+   "dePrimary": "morgen",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "Mañana empieza el curso.",
+   "exampleDe": "Morgen beginnt der Kurs."
+  },
+  {
+   "es": "ayer",
+   "de": "gestern",
+   "dePrimary": "gestern",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "Ayer llovió todo el día.",
+   "exampleDe": "Gestern hat es den ganzen Tag geregnet."
+  },
+  {
+   "es": "siempre",
+   "de": "immer",
+   "dePrimary": "immer",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "Siempre llega tarde.",
+   "exampleDe": "Er kommt immer zu spät."
+  },
+  {
+   "es": "nunca",
+   "de": "nie|niemals",
+   "dePrimary": "nie",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "Nunca he estado en Perú.",
+   "exampleDe": "Ich war noch nie in Peru."
+  },
+  {
+   "es": "a menudo",
+   "de": "oft|häufig",
+   "dePrimary": "oft",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Zeit",
+   "exampleEs": "A menudo salgo a correr por la mañana.",
+   "exampleDe": "Ich gehe oft morgens laufen."
+  },
+  {
+   "es": "temprano",
+   "de": "früh",
+   "dePrimary": "früh",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Zeit",
+   "exampleEs": "Mañana tengo que levantarme temprano.",
+   "exampleDe": "Morgen muss ich früh aufstehen."
+  },
+  {
+   "es": "ser",
+   "de": "sein",
+   "dePrimary": "sein",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Soy de Alemania.",
+   "exampleDe": "Ich bin aus Deutschland."
+  },
+  {
+   "es": "estar",
+   "de": "sein|sich befinden",
+   "dePrimary": "sein",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Estoy en la oficina.",
+   "exampleDe": "Ich bin im Büro."
+  },
+  {
+   "es": "tener",
+   "de": "haben",
+   "dePrimary": "haben",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Tengo dos hermanas.",
+   "exampleDe": "Ich habe zwei Schwestern."
+  },
+  {
+   "es": "hacer",
+   "de": "machen|tun",
+   "dePrimary": "machen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "¿Qué haces el fin de semana?",
+   "exampleDe": "Was machst du am Wochenende?"
+  },
+  {
+   "es": "ir",
+   "de": "gehen|fahren",
+   "dePrimary": "gehen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Voy al mercado.",
+   "exampleDe": "Ich gehe zum Markt."
+  },
+  {
+   "es": "hablar",
+   "de": "sprechen|reden",
+   "dePrimary": "sprechen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Hablo un poco de español.",
+   "exampleDe": "Ich spreche ein bisschen Spanisch."
+  },
+  {
+   "es": "comer",
+   "de": "essen",
+   "dePrimary": "essen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Comemos a las dos.",
+   "exampleDe": "Wir essen um zwei."
+  },
+  {
+   "es": "beber",
+   "de": "trinken",
+   "dePrimary": "trinken",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Bebo mucha agua al día.",
+   "exampleDe": "Ich trinke viel Wasser am Tag."
+  },
+  {
+   "es": "vivir",
+   "de": "leben|wohnen",
+   "dePrimary": "leben",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Vivimos en el centro.",
+   "exampleDe": "Wir wohnen im Zentrum."
+  },
+  {
+   "es": "trabajar",
+   "de": "arbeiten",
+   "dePrimary": "arbeiten",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Trabajo desde casa.",
+   "exampleDe": "Ich arbeite von zu Hause."
+  },
+  {
+   "es": "aprender",
+   "de": "lernen",
+   "dePrimary": "lernen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Aprendo español desde enero.",
+   "exampleDe": "Ich lerne seit Januar Spanisch."
+  },
+  {
+   "es": "entender",
+   "de": "verstehen",
+   "dePrimary": "verstehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "No entiendo esta palabra.",
+   "exampleDe": "Ich verstehe dieses Wort nicht."
+  },
+  {
+   "es": "escribir",
+   "de": "schreiben",
+   "dePrimary": "schreiben",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Te escribo un correo esta tarde.",
+   "exampleDe": "Ich schreibe dir heute Nachmittag eine E-Mail."
+  },
+  {
+   "es": "leer",
+   "de": "lesen",
+   "dePrimary": "lesen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Leo una novela española.",
+   "exampleDe": "Ich lese einen spanischen Roman."
+  },
+  {
+   "es": "comprar",
+   "de": "kaufen",
+   "dePrimary": "kaufen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Quiero comprar un billete.",
+   "exampleDe": "Ich möchte eine Fahrkarte kaufen."
+  },
+  {
+   "es": "pagar",
+   "de": "bezahlen|zahlen",
+   "dePrimary": "bezahlen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "¿Puedo pagar con tarjeta?",
+   "exampleDe": "Kann ich mit Karte zahlen?"
+  },
+  {
+   "es": "esperar",
+   "de": "warten|hoffen",
+   "dePrimary": "warten",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Espero el autobús desde hace media hora.",
+   "exampleDe": "Ich warte seit einer halben Stunde auf den Bus."
+  },
+  {
+   "es": "recordar",
+   "de": "sich erinnern|erinnern",
+   "dePrimary": "sich erinnern",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "No recuerdo su nombre.",
+   "exampleDe": "Ich erinnere mich nicht an seinen Namen."
+  },
+  {
+   "es": "olvidar",
+   "de": "vergessen",
+   "dePrimary": "vergessen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "He olvidado el móvil en casa.",
+   "exampleDe": "Ich habe das Handy zu Hause vergessen."
+  },
+  {
+   "es": "intentar",
+   "de": "versuchen",
+   "dePrimary": "versuchen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Voy a intentarlo otra vez.",
+   "exampleDe": "Ich werde es noch einmal versuchen."
+  },
+  {
+   "es": "conseguir",
+   "de": "erreichen|schaffen|bekommen",
+   "dePrimary": "erreichen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Por fin conseguí una entrevista.",
+   "exampleDe": "Endlich habe ich ein Vorstellungsgespräch bekommen."
+  },
+  {
+   "es": "elegir",
+   "de": "wählen|auswählen",
+   "dePrimary": "wählen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Tienes que elegir entre dos opciones.",
+   "exampleDe": "Du musst zwischen zwei Optionen wählen."
+  },
+  {
+   "es": "quedarse",
+   "de": "bleiben",
+   "dePrimary": "bleiben",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Me quedo en casa esta noche.",
+   "exampleDe": "Ich bleibe heute Abend zu Hause."
+  },
+  {
+   "es": "acordarse de",
+   "de": "sich erinnern an",
+   "dePrimary": "sich erinnern an",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "¿Te acuerdas de aquel verano?",
+   "exampleDe": "Erinnerst du dich an jenen Sommer?"
+  },
+  {
+   "es": "darse cuenta de",
+   "de": "bemerken|merken",
+   "dePrimary": "bemerken",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Me di cuenta del error demasiado tarde.",
+   "exampleDe": "Ich habe den Fehler zu spät bemerkt."
+  },
+  {
+   "es": "la ciudad",
+   "de": "die Stadt",
+   "dePrimary": "die Stadt",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Stadt",
+   "exampleEs": "Sevilla es una ciudad preciosa.",
+   "exampleDe": "Sevilla ist eine wunderschöne Stadt."
+  },
+  {
+   "es": "la calle",
+   "de": "die Straße",
+   "dePrimary": "die Straße",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Stadt",
+   "exampleEs": "Vivo en la calle Mayor.",
+   "exampleDe": "Ich wohne in der Calle Mayor."
+  },
+  {
+   "es": "la tienda",
+   "de": "der Laden|das Geschäft",
+   "dePrimary": "der Laden",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Stadt",
+   "exampleEs": "La tienda abre a las nueve.",
+   "exampleDe": "Der Laden öffnet um neun."
+  },
+  {
+   "es": "el coche",
+   "de": "das Auto",
+   "dePrimary": "das Auto",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Reisen",
+   "exampleEs": "Vamos en coche hasta Valencia.",
+   "exampleDe": "Wir fahren mit dem Auto bis Valencia."
+  },
+  {
+   "es": "el tren",
+   "de": "der Zug",
+   "dePrimary": "der Zug",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Reisen",
+   "exampleEs": "El tren sale del andén tres.",
+   "exampleDe": "Der Zug fährt von Gleis drei ab."
+  },
+  {
+   "es": "el avión",
+   "de": "das Flugzeug",
+   "dePrimary": "das Flugzeug",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Reisen",
+   "exampleEs": "El avión aterriza a las siete.",
+   "exampleDe": "Das Flugzeug landet um sieben."
+  },
+  {
+   "es": "el viaje",
+   "de": "die Reise",
+   "dePrimary": "die Reise",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Reisen",
+   "exampleEs": "El viaje dura cinco horas.",
+   "exampleDe": "Die Reise dauert fünf Stunden."
+  },
+  {
+   "es": "el billete",
+   "de": "die Fahrkarte|das Ticket",
+   "dePrimary": "die Fahrkarte",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Reisen",
+   "exampleEs": "He comprado un billete de ida y vuelta.",
+   "exampleDe": "Ich habe eine Hin- und Rückfahrkarte gekauft."
+  },
+  {
+   "es": "el alojamiento",
+   "de": "die Unterkunft",
+   "dePrimary": "die Unterkunft",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Reisen",
+   "exampleEs": "El alojamiento incluye el desayuno.",
+   "exampleDe": "Die Unterkunft schließt das Frühstück ein."
+  },
+  {
+   "es": "el retraso",
+   "de": "die Verspätung",
+   "dePrimary": "die Verspätung",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Reisen",
+   "exampleEs": "El vuelo lleva dos horas de retraso.",
+   "exampleDe": "Der Flug hat zwei Stunden Verspätung."
+  },
+  {
+   "es": "el trabajo",
+   "de": "die Arbeit",
+   "dePrimary": "die Arbeit",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Arbeit",
+   "exampleEs": "Tengo mucho trabajo esta semana.",
+   "exampleDe": "Ich habe diese Woche viel Arbeit."
+  },
+  {
+   "es": "la empresa",
+   "de": "das Unternehmen|die Firma",
+   "dePrimary": "das Unternehmen",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Arbeit",
+   "exampleEs": "La empresa tiene cien empleados.",
+   "exampleDe": "Das Unternehmen hat hundert Angestellte."
+  },
+  {
+   "es": "la reunión",
+   "de": "die Besprechung|das Treffen",
+   "dePrimary": "die Besprechung",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Arbeit",
+   "exampleEs": "La reunión empieza a las diez.",
+   "exampleDe": "Die Besprechung beginnt um zehn."
+  },
+  {
+   "es": "el sueldo",
+   "de": "das Gehalt",
+   "dePrimary": "das Gehalt",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Arbeit",
+   "exampleEs": "El sueldo se paga a fin de mes.",
+   "exampleDe": "Das Gehalt wird am Monatsende gezahlt."
+  },
+  {
+   "es": "el jefe",
+   "de": "der Chef",
+   "dePrimary": "der Chef",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Arbeit",
+   "exampleEs": "Mi jefe está de viaje.",
+   "exampleDe": "Mein Chef ist auf Reisen."
+  },
+  {
+   "es": "la formación",
+   "de": "die Ausbildung",
+   "dePrimary": "die Ausbildung",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Arbeit",
+   "exampleEs": "Necesita una formación específica.",
+   "exampleDe": "Er braucht eine spezielle Ausbildung."
+  },
+  {
+   "es": "el plazo",
+   "de": "die Frist",
+   "dePrimary": "die Frist",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Arbeit",
+   "exampleEs": "El plazo termina el viernes.",
+   "exampleDe": "Die Frist endet am Freitag."
+  },
+  {
+   "es": "la ventaja",
+   "de": "der Vorteil",
+   "dePrimary": "der Vorteil",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Arbeit",
+   "exampleEs": "La mayor ventaja es la flexibilidad.",
+   "exampleDe": "Der größte Vorteil ist die Flexibilität."
+  },
+  {
+   "es": "el riesgo",
+   "de": "das Risiko",
+   "dePrimary": "das Risiko",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Arbeit",
+   "exampleEs": "No quiero correr ese riesgo.",
+   "exampleDe": "Ich will dieses Risiko nicht eingehen."
+  },
+  {
+   "es": "grande",
+   "de": "groß",
+   "dePrimary": "groß",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Su piso es muy grande.",
+   "exampleDe": "Seine Wohnung ist sehr groß."
+  },
+  {
+   "es": "pequeño",
+   "de": "klein",
+   "dePrimary": "klein",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Es un pueblo pequeño y tranquilo.",
+   "exampleDe": "Es ist ein kleines, ruhiges Dorf."
+  },
+  {
+   "es": "nuevo",
+   "de": "neu",
+   "dePrimary": "neu",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Tengo un trabajo nuevo.",
+   "exampleDe": "Ich habe eine neue Arbeit."
+  },
+  {
+   "es": "viejo",
+   "de": "alt",
+   "dePrimary": "alt",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Este coche ya está muy viejo.",
+   "exampleDe": "Dieses Auto ist schon sehr alt."
+  },
+  {
+   "es": "bonito",
+   "de": "schön|hübsch",
+   "dePrimary": "schön",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "¡Qué vestido tan bonito!",
+   "exampleDe": "Was für ein schönes Kleid!"
+  },
+  {
+   "es": "caro",
+   "de": "teuer",
+   "dePrimary": "teuer",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "El hotel es demasiado caro.",
+   "exampleDe": "Das Hotel ist zu teuer."
+  },
+  {
+   "es": "barato",
+   "de": "billig|günstig",
+   "dePrimary": "billig",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Encontré un vuelo muy barato.",
+   "exampleDe": "Ich habe einen sehr günstigen Flug gefunden."
+  },
+  {
+   "es": "difícil",
+   "de": "schwierig|schwer",
+   "dePrimary": "schwierig",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "El examen fue bastante difícil.",
+   "exampleDe": "Die Prüfung war ziemlich schwierig."
+  },
+  {
+   "es": "fácil",
+   "de": "einfach|leicht",
+   "dePrimary": "einfach",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Esta receta es muy fácil.",
+   "exampleDe": "Dieses Rezept ist sehr einfach."
+  },
+  {
+   "es": "cansado",
+   "de": "müde",
+   "dePrimary": "müde",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Estoy cansado después del viaje.",
+   "exampleDe": "Ich bin nach der Reise müde."
+  },
+  {
+   "es": "contento",
+   "de": "zufrieden|froh",
+   "dePrimary": "zufrieden",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Estoy muy contento con el resultado.",
+   "exampleDe": "Ich bin sehr zufrieden mit dem Ergebnis."
+  },
+  {
+   "es": "ocupado",
+   "de": "beschäftigt|besetzt",
+   "dePrimary": "beschäftigt",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Hoy estoy muy ocupada.",
+   "exampleDe": "Heute bin ich sehr beschäftigt."
+  },
+  {
+   "es": "amable",
+   "de": "freundlich|nett",
+   "dePrimary": "freundlich",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "La camarera fue muy amable.",
+   "exampleDe": "Die Kellnerin war sehr freundlich."
+  },
+  {
+   "es": "raro",
+   "de": "seltsam|selten",
+   "dePrimary": "seltsam",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Me parece un poco raro.",
+   "exampleDe": "Das kommt mir etwas seltsam vor."
+  },
+  {
+   "es": "imprescindible",
+   "de": "unverzichtbar",
+   "dePrimary": "unverzichtbar",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Es imprescindible reservar antes.",
+   "exampleDe": "Es ist unverzichtbar, vorher zu reservieren."
+  },
+  {
+   "es": "disponible",
+   "de": "verfügbar",
+   "dePrimary": "verfügbar",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "No hay habitaciones disponibles.",
+   "exampleDe": "Es sind keine Zimmer verfügbar."
+  },
+  {
+   "es": "por supuesto",
+   "de": "selbstverständlich|natürlich",
+   "dePrimary": "selbstverständlich",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "—¿Me ayudas? —¡Por supuesto!",
+   "exampleDe": "„Hilfst du mir?“ – „Selbstverständlich!“"
+  },
+  {
+   "es": "sin embargo",
+   "de": "jedoch|allerdings",
+   "dePrimary": "jedoch",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Es caro; sin embargo, vale la pena.",
+   "exampleDe": "Es ist teuer; allerdings lohnt es sich."
+  },
+  {
+   "es": "por eso",
+   "de": "deshalb|deswegen",
+   "dePrimary": "deshalb",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Llovía, por eso no salimos.",
+   "exampleDe": "Es regnete, deshalb sind wir nicht rausgegangen."
+  },
+  {
+   "es": "en cambio",
+   "de": "hingegen|dagegen",
+   "dePrimary": "hingegen",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Yo prefiero el mar; ella, en cambio, la montaña.",
+   "exampleDe": "Ich mag das Meer lieber; sie hingegen die Berge."
+  },
+  {
+   "es": "a lo mejor",
+   "de": "vielleicht",
+   "dePrimary": "vielleicht",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "A lo mejor vienen más tarde.",
+   "exampleDe": "Vielleicht kommen sie später."
+  },
+  {
+   "es": "de repente",
+   "de": "plötzlich",
+   "dePrimary": "plötzlich",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "De repente se apagó la luz.",
+   "exampleDe": "Plötzlich ging das Licht aus."
+  },
+  {
+   "es": "vale la pena",
+   "de": "es lohnt sich",
+   "dePrimary": "es lohnt sich",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Vale la pena visitar el museo.",
+   "exampleDe": "Es lohnt sich, das Museum zu besuchen."
+  },
+  {
+   "es": "tener ganas de",
+   "de": "Lust haben auf",
+   "dePrimary": "Lust haben auf",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Tengo ganas de ver el mar.",
+   "exampleDe": "Ich habe Lust, das Meer zu sehen."
+  },
+  {
+   "es": "echar de menos",
+   "de": "vermissen",
+   "dePrimary": "vermissen",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Echo de menos a mi familia.",
+   "exampleDe": "Ich vermisse meine Familie."
+  },
+  {
+   "es": "dar igual",
+   "de": "egal sein",
+   "dePrimary": "egal sein",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Me da igual dónde comemos.",
+   "exampleDe": "Mir ist egal, wo wir essen."
+  },
+  {
+   "es": "cero",
+   "de": "null",
+   "dePrimary": "null",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Empezamos desde cero.",
+   "exampleDe": "Wir fangen bei null an."
+  },
+  {
+   "es": "uno",
+   "de": "eins",
+   "dePrimary": "eins",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Solo tengo uno.",
+   "exampleDe": "Ich habe nur eins."
+  },
+  {
+   "es": "dos",
+   "de": "zwei",
+   "dePrimary": "zwei",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Tengo dos gatos.",
+   "exampleDe": "Ich habe zwei Katzen."
+  },
+  {
+   "es": "tres",
+   "de": "drei",
+   "dePrimary": "drei",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Nos vemos a las tres.",
+   "exampleDe": "Wir sehen uns um drei."
+  },
+  {
+   "es": "cuatro",
+   "de": "vier",
+   "dePrimary": "vier",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Hay cuatro sillas.",
+   "exampleDe": "Es gibt vier Stühle."
+  },
+  {
+   "es": "cinco",
+   "de": "fünf",
+   "dePrimary": "fünf",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Faltan cinco minutos.",
+   "exampleDe": "Es fehlen noch fünf Minuten."
+  },
+  {
+   "es": "seis",
+   "de": "sechs",
+   "dePrimary": "sechs",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Son las seis en punto.",
+   "exampleDe": "Es ist genau sechs Uhr."
+  },
+  {
+   "es": "siete",
+   "de": "sieben",
+   "dePrimary": "sieben",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "La tienda abre a las siete.",
+   "exampleDe": "Der Laden öffnet um sieben."
+  },
+  {
+   "es": "ocho",
+   "de": "acht",
+   "dePrimary": "acht",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Trabajo ocho horas al día.",
+   "exampleDe": "Ich arbeite acht Stunden am Tag."
+  },
+  {
+   "es": "nueve",
+   "de": "neun",
+   "dePrimary": "neun",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "El tren llega a las nueve.",
+   "exampleDe": "Der Zug kommt um neun."
+  },
+  {
+   "es": "diez",
+   "de": "zehn",
+   "dePrimary": "zehn",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Cuento hasta diez.",
+   "exampleDe": "Ich zähle bis zehn."
+  },
+  {
+   "es": "once",
+   "de": "elf",
+   "dePrimary": "elf",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "La reunión es a las once.",
+   "exampleDe": "Die Besprechung ist um elf."
+  },
+  {
+   "es": "doce",
+   "de": "zwölf",
+   "dePrimary": "zwölf",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Hay doce meses en un año.",
+   "exampleDe": "Ein Jahr hat zwölf Monate."
+  },
+  {
+   "es": "trece",
+   "de": "dreizehn",
+   "dePrimary": "dreizehn",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Tiene trece años.",
+   "exampleDe": "Er ist dreizehn Jahre alt."
+  },
+  {
+   "es": "catorce",
+   "de": "vierzehn",
+   "dePrimary": "vierzehn",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Vuelvo en catorce días.",
+   "exampleDe": "Ich komme in vierzehn Tagen zurück."
+  },
+  {
+   "es": "quince",
+   "de": "fünfzehn",
+   "dePrimary": "fünfzehn",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Espera quince minutos.",
+   "exampleDe": "Warte fünfzehn Minuten."
+  },
+  {
+   "es": "dieciséis",
+   "de": "sechzehn",
+   "dePrimary": "sechzehn",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Cumple dieciséis años mañana.",
+   "exampleDe": "Er wird morgen sechzehn."
+  },
+  {
+   "es": "diecisiete",
+   "de": "siebzehn",
+   "dePrimary": "siebzehn",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Hay diecisiete alumnos en clase.",
+   "exampleDe": "Es gibt siebzehn Schüler in der Klasse."
+  },
+  {
+   "es": "dieciocho",
+   "de": "achtzehn",
+   "dePrimary": "achtzehn",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "A los dieciocho puedes votar.",
+   "exampleDe": "Mit achtzehn darf man wählen."
+  },
+  {
+   "es": "diecinueve",
+   "de": "neunzehn",
+   "dePrimary": "neunzehn",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Nació en el siglo diecinueve.",
+   "exampleDe": "Er wurde im neunzehnten Jahrhundert geboren."
+  },
+  {
+   "es": "veinte",
+   "de": "zwanzig",
+   "dePrimary": "zwanzig",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "Cuesta veinte euros.",
+   "exampleDe": "Es kostet zwanzig Euro."
+  },
+  {
+   "es": "treinta",
+   "de": "dreißig",
+   "dePrimary": "dreißig",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "El curso dura treinta días.",
+   "exampleDe": "Der Kurs dauert dreißig Tage."
+  },
+  {
+   "es": "cuarenta",
+   "de": "vierzig",
+   "dePrimary": "vierzig",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Trabaja cuarenta horas por semana.",
+   "exampleDe": "Er arbeitet vierzig Stunden pro Woche."
+  },
+  {
+   "es": "cincuenta",
+   "de": "fünfzig",
+   "dePrimary": "fünfzig",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Hay cincuenta personas aquí.",
+   "exampleDe": "Hier sind fünfzig Personen."
+  },
+  {
+   "es": "sesenta",
+   "de": "sechzig",
+   "dePrimary": "sechzig",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Una hora tiene sesenta minutos.",
+   "exampleDe": "Eine Stunde hat sechzig Minuten."
+  },
+  {
+   "es": "setenta",
+   "de": "siebzig",
+   "dePrimary": "siebzig",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Mi abuelo tiene setenta años.",
+   "exampleDe": "Mein Großvater ist siebzig Jahre alt."
+  },
+  {
+   "es": "ochenta",
+   "de": "achtzig",
+   "dePrimary": "achtzig",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "El descuento es del ochenta por ciento.",
+   "exampleDe": "Der Rabatt beträgt achtzig Prozent."
+  },
+  {
+   "es": "noventa",
+   "de": "neunzig",
+   "dePrimary": "neunzig",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Casi noventa personas vinieron.",
+   "exampleDe": "Fast neunzig Personen sind gekommen."
+  },
+  {
+   "es": "cien",
+   "de": "hundert",
+   "dePrimary": "hundert",
+   "pos": "num",
+   "level": "A1",
+   "topic": "Zahlen",
+   "exampleEs": "El billete vale cien euros.",
+   "exampleDe": "Der Schein ist hundert Euro wert."
+  },
+  {
+   "es": "mil",
+   "de": "tausend",
+   "dePrimary": "tausend",
+   "pos": "num",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Cuesta mil euros.",
+   "exampleDe": "Es kostet tausend Euro."
+  },
+  {
+   "es": "el millón",
+   "de": "die Million",
+   "dePrimary": "die Million",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Zahlen",
+   "exampleEs": "Ganó un millón en la lotería.",
+   "exampleDe": "Er gewann eine Million im Lotto."
+  },
+  {
+   "es": "primero",
+   "de": "erste|erster",
+   "dePrimary": "erste",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Es mi primer día de trabajo.",
+   "exampleDe": "Es ist mein erster Arbeitstag."
+  },
+  {
+   "es": "segundo",
+   "de": "zweite|zweiter",
+   "dePrimary": "zweite",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Vivo en el segundo piso.",
+   "exampleDe": "Ich wohne im zweiten Stock."
+  },
+  {
+   "es": "tercero",
+   "de": "dritte|dritter",
+   "dePrimary": "dritte",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Zahlen",
+   "exampleEs": "Llegó en tercer lugar.",
+   "exampleDe": "Er kam als Dritter an."
+  },
+  {
+   "es": "cuarto",
+   "de": "vierte|vierter",
+   "dePrimary": "vierte",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Zahlen",
+   "exampleEs": "Es la cuarta vez que lo intento.",
+   "exampleDe": "Es ist das vierte Mal, dass ich es versuche."
+  },
+  {
+   "es": "quinto",
+   "de": "fünfte|fünfter",
+   "dePrimary": "fünfte",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Zahlen",
+   "exampleEs": "Está en el quinto lugar.",
+   "exampleDe": "Er liegt auf dem fünften Platz."
+  },
+  {
+   "es": "décimo",
+   "de": "zehnte|zehnter",
+   "dePrimary": "zehnte",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Zahlen",
+   "exampleEs": "Celebramos el décimo aniversario.",
+   "exampleDe": "Wir feiern das zehnte Jubiläum."
+  },
+  {
+   "es": "rojo",
+   "de": "rot",
+   "dePrimary": "rot",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Farben",
+   "exampleEs": "El coche rojo es nuevo.",
+   "exampleDe": "Das rote Auto ist neu."
+  },
+  {
+   "es": "azul",
+   "de": "blau",
+   "dePrimary": "blau",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Farben",
+   "exampleEs": "El cielo está muy azul hoy.",
+   "exampleDe": "Der Himmel ist heute sehr blau."
+  },
+  {
+   "es": "verde",
+   "de": "grün",
+   "dePrimary": "grün",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Farben",
+   "exampleEs": "Me gusta el té verde.",
+   "exampleDe": "Ich mag grünen Tee."
+  },
+  {
+   "es": "amarillo",
+   "de": "gelb",
+   "dePrimary": "gelb",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Farben",
+   "exampleEs": "Lleva una camisa amarilla.",
+   "exampleDe": "Er trägt ein gelbes Hemd."
+  },
+  {
+   "es": "negro",
+   "de": "schwarz",
+   "dePrimary": "schwarz",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Farben",
+   "exampleEs": "El gato negro duerme en el sofá.",
+   "exampleDe": "Die schwarze Katze schläft auf dem Sofa."
+  },
+  {
+   "es": "blanco",
+   "de": "weiß",
+   "dePrimary": "weiß",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Farben",
+   "exampleEs": "La pared es blanca.",
+   "exampleDe": "Die Wand ist weiß."
+  },
+  {
+   "es": "gris",
+   "de": "grau",
+   "dePrimary": "grau",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Farben",
+   "exampleEs": "El cielo está gris hoy.",
+   "exampleDe": "Der Himmel ist heute grau."
+  },
+  {
+   "es": "marrón",
+   "de": "braun",
+   "dePrimary": "braun",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Farben",
+   "exampleEs": "Compré unos zapatos marrones.",
+   "exampleDe": "Ich habe braune Schuhe gekauft."
+  },
+  {
+   "es": "rosa",
+   "de": "rosa|rosarot",
+   "dePrimary": "rosa",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Farben",
+   "exampleEs": "Su habitación es rosa.",
+   "exampleDe": "Ihr Zimmer ist rosa."
+  },
+  {
+   "es": "naranja",
+   "de": "orange",
+   "dePrimary": "orange",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Farben",
+   "exampleEs": "El atardecer es naranja.",
+   "exampleDe": "Der Sonnenuntergang ist orange."
+  },
+  {
+   "es": "morado",
+   "de": "violett|lila",
+   "dePrimary": "violett",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Farben",
+   "exampleEs": "Las flores son moradas.",
+   "exampleDe": "Die Blumen sind violett."
+  },
+  {
+   "es": "dorado",
+   "de": "golden",
+   "dePrimary": "golden",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Farben",
+   "exampleEs": "Tiene un anillo dorado.",
+   "exampleDe": "Sie hat einen goldenen Ring."
+  },
+  {
+   "es": "el lunes",
+   "de": "der Montag",
+   "dePrimary": "der Montag",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "El lunes empieza la semana.",
+   "exampleDe": "Am Montag beginnt die Woche."
+  },
+  {
+   "es": "el martes",
+   "de": "der Dienstag",
+   "dePrimary": "der Dienstag",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Tengo clase el martes.",
+   "exampleDe": "Am Dienstag habe ich Unterricht."
+  },
+  {
+   "es": "el miércoles",
+   "de": "der Mittwoch",
+   "dePrimary": "der Mittwoch",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "El miércoles voy al médico.",
+   "exampleDe": "Am Mittwoch gehe ich zum Arzt."
+  },
+  {
+   "es": "el jueves",
+   "de": "der Donnerstag",
+   "dePrimary": "der Donnerstag",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "El jueves salimos a cenar.",
+   "exampleDe": "Am Donnerstag gehen wir essen."
+  },
+  {
+   "es": "el viernes",
+   "de": "der Freitag",
+   "dePrimary": "der Freitag",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "El viernes empieza el fin de semana.",
+   "exampleDe": "Am Freitag beginnt das Wochenende."
+  },
+  {
+   "es": "el sábado",
+   "de": "der Samstag",
+   "dePrimary": "der Samstag",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "El sábado dormimos hasta tarde.",
+   "exampleDe": "Am Samstag schlafen wir lange."
+  },
+  {
+   "es": "el domingo",
+   "de": "der Sonntag",
+   "dePrimary": "der Sonntag",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "El domingo visitamos a mis padres.",
+   "exampleDe": "Am Sonntag besuchen wir meine Eltern."
+  },
+  {
+   "es": "enero",
+   "de": "Januar",
+   "dePrimary": "Januar",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "En enero hace mucho frío.",
+   "exampleDe": "Im Januar ist es sehr kalt."
+  },
+  {
+   "es": "febrero",
+   "de": "Februar",
+   "dePrimary": "Februar",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Su cumpleaños es en febrero.",
+   "exampleDe": "Sein Geburtstag ist im Februar."
+  },
+  {
+   "es": "marzo",
+   "de": "März",
+   "dePrimary": "März",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "La primavera empieza en marzo.",
+   "exampleDe": "Der Frühling beginnt im März."
+  },
+  {
+   "es": "abril",
+   "de": "April",
+   "dePrimary": "April",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "En abril llueve mucho.",
+   "exampleDe": "Im April regnet es viel."
+  },
+  {
+   "es": "mayo",
+   "de": "Mai",
+   "dePrimary": "Mai",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Nos casamos en mayo.",
+   "exampleDe": "Wir heiraten im Mai."
+  },
+  {
+   "es": "junio",
+   "de": "Juni",
+   "dePrimary": "Juni",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "El curso termina en junio.",
+   "exampleDe": "Der Kurs endet im Juni."
+  },
+  {
+   "es": "julio",
+   "de": "Juli",
+   "dePrimary": "Juli",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "En julio hace mucho calor.",
+   "exampleDe": "Im Juli ist es sehr heiß."
+  },
+  {
+   "es": "agosto",
+   "de": "August",
+   "dePrimary": "August",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Estoy de vacaciones en agosto.",
+   "exampleDe": "Im August habe ich Urlaub."
+  },
+  {
+   "es": "septiembre",
+   "de": "September",
+   "dePrimary": "September",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Las clases empiezan en septiembre.",
+   "exampleDe": "Der Unterricht beginnt im September."
+  },
+  {
+   "es": "octubre",
+   "de": "Oktober",
+   "dePrimary": "Oktober",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "El otoño llega en octubre.",
+   "exampleDe": "Der Herbst kommt im Oktober."
+  },
+  {
+   "es": "noviembre",
+   "de": "November",
+   "dePrimary": "November",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "En noviembre los días son cortos.",
+   "exampleDe": "Im November sind die Tage kurz."
+  },
+  {
+   "es": "diciembre",
+   "de": "Dezember",
+   "dePrimary": "Dezember",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Celebramos la Navidad en diciembre.",
+   "exampleDe": "Wir feiern Weihnachten im Dezember."
+  },
+  {
+   "es": "la primavera",
+   "de": "der Frühling",
+   "dePrimary": "der Frühling",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Me encanta la primavera.",
+   "exampleDe": "Ich liebe den Frühling."
+  },
+  {
+   "es": "el verano",
+   "de": "der Sommer",
+   "dePrimary": "der Sommer",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "En verano vamos a la playa.",
+   "exampleDe": "Im Sommer fahren wir an den Strand."
+  },
+  {
+   "es": "el otoño",
+   "de": "der Herbst",
+   "dePrimary": "der Herbst",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Las hojas caen en otoño.",
+   "exampleDe": "Im Herbst fallen die Blätter."
+  },
+  {
+   "es": "el invierno",
+   "de": "der Winter",
+   "dePrimary": "der Winter",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "En invierno nieva mucho aquí.",
+   "exampleDe": "Im Winter schneit es hier viel."
+  },
+  {
+   "es": "la noche",
+   "de": "die Nacht",
+   "dePrimary": "die Nacht",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Trabajo por la noche.",
+   "exampleDe": "Ich arbeite nachts."
+  },
+  {
+   "es": "el mediodía",
+   "de": "der Mittag",
+   "dePrimary": "der Mittag",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kalender",
+   "exampleEs": "Comemos al mediodía.",
+   "exampleDe": "Wir essen zu Mittag."
+  },
+  {
+   "es": "la medianoche",
+   "de": "die Mitternacht",
+   "dePrimary": "die Mitternacht",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kalender",
+   "exampleEs": "Volvimos a medianoche.",
+   "exampleDe": "Wir kamen um Mitternacht zurück."
+  },
+  {
+   "es": "el fin de semana",
+   "de": "das Wochenende",
+   "dePrimary": "das Wochenende",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "¿Qué haces el fin de semana?",
+   "exampleDe": "Was machst du am Wochenende?"
+  },
+  {
+   "es": "la hora",
+   "de": "die Stunde|die Uhrzeit",
+   "dePrimary": "die Stunde",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "¿Qué hora es?",
+   "exampleDe": "Wie spät ist es?"
+  },
+  {
+   "es": "el minuto",
+   "de": "die Minute",
+   "dePrimary": "die Minute",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kalender",
+   "exampleEs": "Vuelvo en un minuto.",
+   "exampleDe": "Ich bin in einer Minute zurück."
+  },
+  {
+   "es": "el segundo",
+   "de": "die Sekunde",
+   "dePrimary": "die Sekunde",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kalender",
+   "exampleEs": "Espera un segundo, por favor.",
+   "exampleDe": "Warte bitte eine Sekunde."
+  },
+  {
+   "es": "la fecha",
+   "de": "das Datum",
+   "dePrimary": "das Datum",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kalender",
+   "exampleEs": "¿Cuál es la fecha de hoy?",
+   "exampleDe": "Welches Datum haben wir heute?"
+  },
+  {
+   "es": "el reloj",
+   "de": "die Uhr",
+   "dePrimary": "die Uhr",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kalender",
+   "exampleEs": "Mi reloj se ha parado.",
+   "exampleDe": "Meine Uhr ist stehen geblieben."
+  },
+  {
+   "es": "luego",
+   "de": "später|dann",
+   "dePrimary": "später",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Zeit",
+   "exampleEs": "Nos vemos luego.",
+   "exampleDe": "Wir sehen uns später."
+  },
+  {
+   "es": "después",
+   "de": "danach|nachher",
+   "dePrimary": "danach",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Zeit",
+   "exampleEs": "Después vamos al cine.",
+   "exampleDe": "Danach gehen wir ins Kino."
+  },
+  {
+   "es": "todavía",
+   "de": "noch",
+   "dePrimary": "noch",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Zeit",
+   "exampleEs": "Todavía no ha llegado.",
+   "exampleDe": "Er ist noch nicht angekommen."
+  },
+  {
+   "es": "ya",
+   "de": "schon|bereits",
+   "dePrimary": "schon",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Zeit",
+   "exampleEs": "Ya he terminado.",
+   "exampleDe": "Ich bin schon fertig."
+  },
+  {
+   "es": "mientras",
+   "de": "während",
+   "dePrimary": "während",
+   "pos": "adv",
+   "level": "B1",
+   "topic": "Zeit",
+   "exampleEs": "Escucho música mientras trabajo.",
+   "exampleDe": "Ich höre Musik, während ich arbeite."
+  },
+  {
+   "es": "entonces",
+   "de": "dann|also",
+   "dePrimary": "dann",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Zeit",
+   "exampleEs": "Entonces, ¿qué hacemos?",
+   "exampleDe": "Was machen wir also?"
+  },
+  {
+   "es": "pronto",
+   "de": "bald",
+   "dePrimary": "bald",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Zeit",
+   "exampleEs": "Vuelvo pronto.",
+   "exampleDe": "Ich komme bald zurück."
+  },
+  {
+   "es": "tarde",
+   "de": "spät",
+   "dePrimary": "spät",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Zeit",
+   "exampleEs": "Llegamos tarde a la fiesta.",
+   "exampleDe": "Wir kamen spät zur Party."
+  },
+  {
+   "es": "yo",
+   "de": "ich",
+   "dePrimary": "ich",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Pronomen",
+   "exampleEs": "Yo vivo en Berlín.",
+   "exampleDe": "Ich wohne in Berlin."
+  },
+  {
+   "es": "tú",
+   "de": "du",
+   "dePrimary": "du",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Pronomen",
+   "exampleEs": "¿Tú de dónde eres?",
+   "exampleDe": "Woher kommst du?"
+  },
+  {
+   "es": "él",
+   "de": "er",
+   "dePrimary": "er",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Pronomen",
+   "exampleEs": "Él trabaja en un banco.",
+   "exampleDe": "Er arbeitet in einer Bank."
+  },
+  {
+   "es": "ella",
+   "de": "sie (Sg.)",
+   "dePrimary": "sie (Sg.)",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Pronomen",
+   "exampleEs": "Ella estudia arquitectura.",
+   "exampleDe": "Sie studiert Architektur."
+  },
+  {
+   "es": "nosotros",
+   "de": "wir",
+   "dePrimary": "wir",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Pronomen",
+   "exampleEs": "Nosotros vamos al parque.",
+   "exampleDe": "Wir gehen in den Park."
+  },
+  {
+   "es": "ellos",
+   "de": "sie (Pl.)",
+   "dePrimary": "sie (Pl.)",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Pronomen",
+   "exampleEs": "Ellos llegan mañana.",
+   "exampleDe": "Sie kommen morgen an."
+  },
+  {
+   "es": "usted",
+   "de": "Sie (höflich)",
+   "dePrimary": "Sie (höflich)",
+   "pos": "pron",
+   "level": "A2",
+   "topic": "Pronomen",
+   "exampleEs": "¿Cómo está usted?",
+   "exampleDe": "Wie geht es Ihnen?"
+  },
+  {
+   "es": "qué",
+   "de": "was",
+   "dePrimary": "was",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Fragewörter",
+   "exampleEs": "¿Qué quieres comer?",
+   "exampleDe": "Was möchtest du essen?"
+  },
+  {
+   "es": "quién",
+   "de": "wer",
+   "dePrimary": "wer",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Fragewörter",
+   "exampleEs": "¿Quién es esa persona?",
+   "exampleDe": "Wer ist diese Person?"
+  },
+  {
+   "es": "cuándo",
+   "de": "wann",
+   "dePrimary": "wann",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Fragewörter",
+   "exampleEs": "¿Cuándo llegas?",
+   "exampleDe": "Wann kommst du an?"
+  },
+  {
+   "es": "dónde",
+   "de": "wo",
+   "dePrimary": "wo",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Fragewörter",
+   "exampleEs": "¿Dónde vives?",
+   "exampleDe": "Wo wohnst du?"
+  },
+  {
+   "es": "cómo",
+   "de": "wie",
+   "dePrimary": "wie",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Fragewörter",
+   "exampleEs": "¿Cómo te llamas?",
+   "exampleDe": "Wie heißt du?"
+  },
+  {
+   "es": "por qué",
+   "de": "warum",
+   "dePrimary": "warum",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Fragewörter",
+   "exampleEs": "¿Por qué llegas tarde?",
+   "exampleDe": "Warum kommst du zu spät?"
+  },
+  {
+   "es": "cuál",
+   "de": "welcher|welche|welches",
+   "dePrimary": "welcher",
+   "pos": "pron",
+   "level": "A2",
+   "topic": "Fragewörter",
+   "exampleEs": "¿Cuál prefieres?",
+   "exampleDe": "Welches bevorzugst du?"
+  },
+  {
+   "es": "cuánto",
+   "de": "wie viel",
+   "dePrimary": "wie viel",
+   "pos": "pron",
+   "level": "A1",
+   "topic": "Fragewörter",
+   "exampleEs": "¿Cuánto cuesta?",
+   "exampleDe": "Wie viel kostet das?"
+  },
+  {
+   "es": "en",
+   "de": "in|an|auf",
+   "dePrimary": "in",
+   "pos": "prep",
+   "level": "A1",
+   "topic": "Präpositionen",
+   "exampleEs": "Vivo en Madrid.",
+   "exampleDe": "Ich wohne in Madrid."
+  },
+  {
+   "es": "con",
+   "de": "mit",
+   "dePrimary": "mit",
+   "pos": "prep",
+   "level": "A1",
+   "topic": "Präpositionen",
+   "exampleEs": "Voy con mis amigos.",
+   "exampleDe": "Ich gehe mit meinen Freunden."
+  },
+  {
+   "es": "sin",
+   "de": "ohne",
+   "dePrimary": "ohne",
+   "pos": "prep",
+   "level": "A1",
+   "topic": "Präpositionen",
+   "exampleEs": "Café sin azúcar, por favor.",
+   "exampleDe": "Kaffee ohne Zucker, bitte."
+  },
+  {
+   "es": "para",
+   "de": "für|um zu",
+   "dePrimary": "für",
+   "pos": "prep",
+   "level": "A1",
+   "topic": "Präpositionen",
+   "exampleEs": "Este regalo es para ti.",
+   "exampleDe": "Dieses Geschenk ist für dich."
+  },
+  {
+   "es": "sobre",
+   "de": "über|auf",
+   "dePrimary": "über",
+   "pos": "prep",
+   "level": "A2",
+   "topic": "Präpositionen",
+   "exampleEs": "El libro está sobre la mesa.",
+   "exampleDe": "Das Buch liegt auf dem Tisch."
+  },
+  {
+   "es": "bajo",
+   "de": "unter",
+   "dePrimary": "unter",
+   "pos": "prep",
+   "level": "A2",
+   "topic": "Präpositionen",
+   "exampleEs": "El gato duerme bajo la mesa.",
+   "exampleDe": "Die Katze schläft unter dem Tisch."
+  },
+  {
+   "es": "entre",
+   "de": "zwischen",
+   "dePrimary": "zwischen",
+   "pos": "prep",
+   "level": "A2",
+   "topic": "Präpositionen",
+   "exampleEs": "El banco está entre la farmacia y el bar.",
+   "exampleDe": "Die Bank ist zwischen der Apotheke und der Bar."
+  },
+  {
+   "es": "desde",
+   "de": "seit|von … an",
+   "dePrimary": "seit",
+   "pos": "prep",
+   "level": "A2",
+   "topic": "Präpositionen",
+   "exampleEs": "Vivo aquí desde 2019.",
+   "exampleDe": "Ich wohne seit 2019 hier."
+  },
+  {
+   "es": "hasta",
+   "de": "bis",
+   "dePrimary": "bis",
+   "pos": "prep",
+   "level": "A2",
+   "topic": "Präpositionen",
+   "exampleEs": "Trabajo hasta las seis.",
+   "exampleDe": "Ich arbeite bis sechs."
+  },
+  {
+   "es": "durante",
+   "de": "während",
+   "dePrimary": "während",
+   "pos": "prep",
+   "level": "B1",
+   "topic": "Präpositionen",
+   "exampleEs": "No hables durante la película.",
+   "exampleDe": "Sprich nicht während des Films."
+  },
+  {
+   "es": "contra",
+   "de": "gegen",
+   "dePrimary": "gegen",
+   "pos": "prep",
+   "level": "B1",
+   "topic": "Präpositionen",
+   "exampleEs": "Jugamos contra el equipo local.",
+   "exampleDe": "Wir spielen gegen die einheimische Mannschaft."
+  },
+  {
+   "es": "según",
+   "de": "laut|gemäß",
+   "dePrimary": "laut",
+   "pos": "prep",
+   "level": "B1",
+   "topic": "Präpositionen",
+   "exampleEs": "Según el pronóstico, va a llover.",
+   "exampleDe": "Laut Vorhersage wird es regnen."
+  },
+  {
+   "es": "porque",
+   "de": "weil",
+   "dePrimary": "weil",
+   "pos": "conj",
+   "level": "A1",
+   "topic": "Konjunktionen",
+   "exampleEs": "No salgo porque llueve.",
+   "exampleDe": "Ich gehe nicht raus, weil es regnet."
+  },
+  {
+   "es": "aunque",
+   "de": "obwohl",
+   "dePrimary": "obwohl",
+   "pos": "conj",
+   "level": "B1",
+   "topic": "Konjunktionen",
+   "exampleEs": "Salimos aunque hace frío.",
+   "exampleDe": "Wir gehen raus, obwohl es kalt ist."
+  },
+  {
+   "es": "si",
+   "de": "wenn|falls",
+   "dePrimary": "wenn",
+   "pos": "conj",
+   "level": "A2",
+   "topic": "Konjunktionen",
+   "exampleEs": "Si llueve, nos quedamos en casa.",
+   "exampleDe": "Wenn es regnet, bleiben wir zu Hause."
+  },
+  {
+   "es": "mientras que",
+   "de": "während|wohingegen",
+   "dePrimary": "während",
+   "pos": "conj",
+   "level": "B1",
+   "topic": "Konjunktionen",
+   "exampleEs": "Él cocina mientras que yo limpio.",
+   "exampleDe": "Er kocht, während ich putze."
+  },
+  {
+   "es": "el cuerpo",
+   "de": "der Körper",
+   "dePrimary": "der Körper",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "El ejercicio es bueno para el cuerpo.",
+   "exampleDe": "Sport ist gut für den Körper."
+  },
+  {
+   "es": "la cabeza",
+   "de": "der Kopf",
+   "dePrimary": "der Kopf",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Körper",
+   "exampleEs": "Me duele la cabeza.",
+   "exampleDe": "Mir tut der Kopf weh."
+  },
+  {
+   "es": "la cara",
+   "de": "das Gesicht",
+   "dePrimary": "das Gesicht",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Tiene una cara muy simpática.",
+   "exampleDe": "Er hat ein sehr sympathisches Gesicht."
+  },
+  {
+   "es": "el ojo",
+   "de": "das Auge",
+   "dePrimary": "das Auge",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Körper",
+   "exampleEs": "Tiene los ojos verdes.",
+   "exampleDe": "Sie hat grüne Augen."
+  },
+  {
+   "es": "la nariz",
+   "de": "die Nase",
+   "dePrimary": "die Nase",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Le sangra la nariz.",
+   "exampleDe": "Seine Nase blutet."
+  },
+  {
+   "es": "la boca",
+   "de": "der Mund",
+   "dePrimary": "der Mund",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Abre la boca, por favor.",
+   "exampleDe": "Öffne bitte den Mund."
+  },
+  {
+   "es": "la oreja",
+   "de": "das Ohr",
+   "dePrimary": "das Ohr",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Le duele la oreja izquierda.",
+   "exampleDe": "Sein linkes Ohr tut weh."
+  },
+  {
+   "es": "el pelo",
+   "de": "die Haare",
+   "dePrimary": "die Haare",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Körper",
+   "exampleEs": "Tiene el pelo largo.",
+   "exampleDe": "Sie hat lange Haare."
+  },
+  {
+   "es": "el brazo",
+   "de": "der Arm",
+   "dePrimary": "der Arm",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Se rompió el brazo esquiando.",
+   "exampleDe": "Er hat sich beim Skifahren den Arm gebrochen."
+  },
+  {
+   "es": "la mano",
+   "de": "die Hand",
+   "dePrimary": "die Hand",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Körper",
+   "exampleEs": "Dame la mano.",
+   "exampleDe": "Gib mir die Hand."
+  },
+  {
+   "es": "el dedo",
+   "de": "der Finger",
+   "dePrimary": "der Finger",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Me corté el dedo cocinando.",
+   "exampleDe": "Ich habe mir beim Kochen in den Finger geschnitten."
+  },
+  {
+   "es": "la pierna",
+   "de": "das Bein",
+   "dePrimary": "das Bein",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Tiene la pierna hinchada.",
+   "exampleDe": "Sein Bein ist geschwollen."
+  },
+  {
+   "es": "el pie",
+   "de": "der Fuß",
+   "dePrimary": "der Fuß",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Körper",
+   "exampleEs": "Vamos a pie al centro.",
+   "exampleDe": "Wir gehen zu Fuß ins Zentrum."
+  },
+  {
+   "es": "la espalda",
+   "de": "der Rücken",
+   "dePrimary": "der Rücken",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Me duele la espalda de estar sentado.",
+   "exampleDe": "Mein Rücken tut vom Sitzen weh."
+  },
+  {
+   "es": "el estómago",
+   "de": "der Magen",
+   "dePrimary": "der Magen",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Me duele el estómago.",
+   "exampleDe": "Mir tut der Magen weh."
+  },
+  {
+   "es": "el corazón",
+   "de": "das Herz",
+   "dePrimary": "das Herz",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Su corazón late muy rápido.",
+   "exampleDe": "Sein Herz schlägt sehr schnell."
+  },
+  {
+   "es": "el diente",
+   "de": "der Zahn",
+   "dePrimary": "der Zahn",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Körper",
+   "exampleEs": "Tengo que ir al dentista, me duele un diente.",
+   "exampleDe": "Ich muss zum Zahnarzt, mir tut ein Zahn weh."
+  },
+  {
+   "es": "la piel",
+   "de": "die Haut",
+   "dePrimary": "die Haut",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Körper",
+   "exampleEs": "Tiene la piel muy sensible.",
+   "exampleDe": "Ihre Haut ist sehr empfindlich."
+  },
+  {
+   "es": "la salud",
+   "de": "die Gesundheit",
+   "dePrimary": "die Gesundheit",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "La salud es lo más importante.",
+   "exampleDe": "Die Gesundheit ist das Wichtigste."
+  },
+  {
+   "es": "la enfermedad",
+   "de": "die Krankheit",
+   "dePrimary": "die Krankheit",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Gesundheit",
+   "exampleEs": "Se recuperó de la enfermedad.",
+   "exampleDe": "Er hat sich von der Krankheit erholt."
+  },
+  {
+   "es": "el médico",
+   "de": "der Arzt",
+   "dePrimary": "der Arzt",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Gesundheit",
+   "exampleEs": "Tengo cita con el médico.",
+   "exampleDe": "Ich habe einen Termin beim Arzt."
+  },
+  {
+   "es": "el hospital",
+   "de": "das Krankenhaus",
+   "dePrimary": "das Krankenhaus",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "La llevaron al hospital en ambulancia.",
+   "exampleDe": "Sie wurde mit dem Krankenwagen ins Krankenhaus gebracht."
+  },
+  {
+   "es": "la farmacia",
+   "de": "die Apotheke",
+   "dePrimary": "die Apotheke",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "La farmacia está a la vuelta de la esquina.",
+   "exampleDe": "Die Apotheke ist gleich um die Ecke."
+  },
+  {
+   "es": "la medicina",
+   "de": "das Medikament|die Medizin",
+   "dePrimary": "das Medikament",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "Tienes que tomar esta medicina tres veces al día.",
+   "exampleDe": "Du musst dieses Medikament dreimal täglich nehmen."
+  },
+  {
+   "es": "la fiebre",
+   "de": "das Fieber",
+   "dePrimary": "das Fieber",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "Tiene mucha fiebre.",
+   "exampleDe": "Er hat hohes Fieber."
+  },
+  {
+   "es": "la tos",
+   "de": "der Husten",
+   "dePrimary": "der Husten",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Gesundheit",
+   "exampleEs": "Tengo tos desde ayer.",
+   "exampleDe": "Ich habe seit gestern Husten."
+  },
+  {
+   "es": "el dolor",
+   "de": "der Schmerz",
+   "dePrimary": "der Schmerz",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "Siento un dolor fuerte en la espalda.",
+   "exampleDe": "Ich habe starke Schmerzen im Rücken."
+  },
+  {
+   "es": "la receta",
+   "de": "das Rezept",
+   "dePrimary": "das Rezept",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Gesundheit",
+   "exampleEs": "Necesito una receta para este medicamento.",
+   "exampleDe": "Ich brauche ein Rezept für dieses Medikament."
+  },
+  {
+   "es": "grave",
+   "de": "ernst|schwerwiegend",
+   "dePrimary": "ernst",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Gesundheit",
+   "exampleEs": "No es nada grave.",
+   "exampleDe": "Es ist nichts Ernstes."
+  },
+  {
+   "es": "sano",
+   "de": "gesund",
+   "dePrimary": "gesund",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "Come de forma sana.",
+   "exampleDe": "Sie ernährt sich gesund."
+  },
+  {
+   "es": "enfermo",
+   "de": "krank",
+   "dePrimary": "krank",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "Hoy estoy enfermo.",
+   "exampleDe": "Heute bin ich krank."
+  },
+  {
+   "es": "doler",
+   "de": "wehtun|schmerzen",
+   "dePrimary": "wehtun",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Gesundheit",
+   "exampleEs": "Me duele la garganta.",
+   "exampleDe": "Mein Hals tut weh."
+  },
+  {
+   "es": "curar",
+   "de": "heilen",
+   "dePrimary": "heilen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Gesundheit",
+   "exampleEs": "Este jarabe cura la tos.",
+   "exampleDe": "Dieser Sirup heilt den Husten."
+  },
+  {
+   "es": "romperse",
+   "de": "sich brechen",
+   "dePrimary": "sich brechen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Gesundheit",
+   "exampleEs": "Se rompió la pierna esquiando.",
+   "exampleDe": "Er hat sich beim Skifahren das Bein gebrochen."
+  },
+  {
+   "es": "la ropa",
+   "de": "die Kleidung",
+   "dePrimary": "die Kleidung",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kleidung",
+   "exampleEs": "Necesito comprar ropa de invierno.",
+   "exampleDe": "Ich muss Winterkleidung kaufen."
+  },
+  {
+   "es": "la camisa",
+   "de": "das Hemd",
+   "dePrimary": "das Hemd",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Lleva una camisa blanca.",
+   "exampleDe": "Er trägt ein weißes Hemd."
+  },
+  {
+   "es": "la camiseta",
+   "de": "das T-Shirt",
+   "dePrimary": "das T-Shirt",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Compré una camiseta nueva.",
+   "exampleDe": "Ich habe ein neues T-Shirt gekauft."
+  },
+  {
+   "es": "el pantalón",
+   "de": "die Hose",
+   "dePrimary": "die Hose",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Estos pantalones me quedan grandes.",
+   "exampleDe": "Diese Hose ist mir zu groß."
+  },
+  {
+   "es": "el vestido",
+   "de": "das Kleid",
+   "dePrimary": "das Kleid",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Se compró un vestido para la boda.",
+   "exampleDe": "Sie hat sich ein Kleid für die Hochzeit gekauft."
+  },
+  {
+   "es": "la falda",
+   "de": "der Rock",
+   "dePrimary": "der Rock",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Lleva una falda larga.",
+   "exampleDe": "Sie trägt einen langen Rock."
+  },
+  {
+   "es": "los zapatos",
+   "de": "die Schuhe",
+   "dePrimary": "die Schuhe",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Kleidung",
+   "exampleEs": "Necesito zapatos nuevos.",
+   "exampleDe": "Ich brauche neue Schuhe."
+  },
+  {
+   "es": "la chaqueta",
+   "de": "die Jacke",
+   "dePrimary": "die Jacke",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Ponte la chaqueta, hace frío.",
+   "exampleDe": "Zieh die Jacke an, es ist kalt."
+  },
+  {
+   "es": "el abrigo",
+   "de": "der Mantel",
+   "dePrimary": "der Mantel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "En invierno llevo abrigo.",
+   "exampleDe": "Im Winter trage ich einen Mantel."
+  },
+  {
+   "es": "el sombrero",
+   "de": "der Hut",
+   "dePrimary": "der Hut",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Kleidung",
+   "exampleEs": "Lleva un sombrero de paja.",
+   "exampleDe": "Er trägt einen Strohhut."
+  },
+  {
+   "es": "las gafas",
+   "de": "die Brille",
+   "dePrimary": "die Brille",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Necesito gafas para leer.",
+   "exampleDe": "Ich brauche eine Brille zum Lesen."
+  },
+  {
+   "es": "el bolso",
+   "de": "die Tasche|die Handtasche",
+   "dePrimary": "die Tasche",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Dejó el bolso en el coche.",
+   "exampleDe": "Sie hat die Tasche im Auto gelassen."
+  },
+  {
+   "es": "llevar",
+   "de": "tragen",
+   "dePrimary": "tragen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Hoy lleva un vestido rojo.",
+   "exampleDe": "Heute trägt sie ein rotes Kleid."
+  },
+  {
+   "es": "vestirse",
+   "de": "sich anziehen",
+   "dePrimary": "sich anziehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Me visto rápido por la mañana.",
+   "exampleDe": "Ich ziehe mich morgens schnell an."
+  },
+  {
+   "es": "quitarse",
+   "de": "ausziehen|ablegen",
+   "dePrimary": "ausziehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Kleidung",
+   "exampleEs": "Se quitó los zapatos al entrar.",
+   "exampleDe": "Er zog beim Reingehen die Schuhe aus."
+  },
+  {
+   "es": "el tiempo",
+   "de": "das Wetter",
+   "dePrimary": "das Wetter",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Wetter",
+   "exampleEs": "¿Qué tiempo hace hoy?",
+   "exampleDe": "Wie ist das Wetter heute?"
+  },
+  {
+   "es": "el sol",
+   "de": "die Sonne",
+   "dePrimary": "die Sonne",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Wetter",
+   "exampleEs": "Hace mucho sol hoy.",
+   "exampleDe": "Heute scheint viel die Sonne."
+  },
+  {
+   "es": "la lluvia",
+   "de": "der Regen",
+   "dePrimary": "der Regen",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Wetter",
+   "exampleEs": "La lluvia no para desde ayer.",
+   "exampleDe": "Der Regen hört seit gestern nicht auf."
+  },
+  {
+   "es": "la nieve",
+   "de": "der Schnee",
+   "dePrimary": "der Schnee",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Wetter",
+   "exampleEs": "La nieve cubre las montañas.",
+   "exampleDe": "Schnee bedeckt die Berge."
+  },
+  {
+   "es": "el viento",
+   "de": "der Wind",
+   "dePrimary": "der Wind",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Wetter",
+   "exampleEs": "Hace mucho viento en la costa.",
+   "exampleDe": "An der Küste weht viel Wind."
+  },
+  {
+   "es": "la nube",
+   "de": "die Wolke",
+   "dePrimary": "die Wolke",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Wetter",
+   "exampleEs": "El cielo está lleno de nubes.",
+   "exampleDe": "Der Himmel ist voller Wolken."
+  },
+  {
+   "es": "la tormenta",
+   "de": "das Gewitter|der Sturm",
+   "dePrimary": "das Gewitter",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Wetter",
+   "exampleEs": "Se acerca una tormenta.",
+   "exampleDe": "Ein Gewitter zieht auf."
+  },
+  {
+   "es": "el calor",
+   "de": "die Hitze",
+   "dePrimary": "die Hitze",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Wetter",
+   "exampleEs": "No aguanto este calor.",
+   "exampleDe": "Ich halte diese Hitze nicht aus."
+  },
+  {
+   "es": "el frío",
+   "de": "die Kälte",
+   "dePrimary": "die Kälte",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Wetter",
+   "exampleEs": "Tengo mucho frío.",
+   "exampleDe": "Mir ist sehr kalt."
+  },
+  {
+   "es": "llover",
+   "de": "regnen",
+   "dePrimary": "regnen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Wetter",
+   "exampleEs": "Está lloviendo mucho.",
+   "exampleDe": "Es regnet stark."
+  },
+  {
+   "es": "nevar",
+   "de": "schneien",
+   "dePrimary": "schneien",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Wetter",
+   "exampleEs": "Nevó toda la noche.",
+   "exampleDe": "Es hat die ganze Nacht geschneit."
+  },
+  {
+   "es": "soleado",
+   "de": "sonnig",
+   "dePrimary": "sonnig",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Wetter",
+   "exampleEs": "Mañana será un día soleado.",
+   "exampleDe": "Morgen wird ein sonniger Tag."
+  },
+  {
+   "es": "nublado",
+   "de": "bewölkt",
+   "dePrimary": "bewölkt",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Wetter",
+   "exampleEs": "El cielo está nublado.",
+   "exampleDe": "Der Himmel ist bewölkt."
+  },
+  {
+   "es": "húmedo",
+   "de": "feucht",
+   "dePrimary": "feucht",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Wetter",
+   "exampleEs": "El clima aquí es muy húmedo.",
+   "exampleDe": "Das Klima hier ist sehr feucht."
+  },
+  {
+   "es": "el padre",
+   "de": "der Vater",
+   "dePrimary": "der Vater",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Mi padre trabaja de ingeniero.",
+   "exampleDe": "Mein Vater arbeitet als Ingenieur."
+  },
+  {
+   "es": "la madre",
+   "de": "die Mutter",
+   "dePrimary": "die Mutter",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Mi madre cocina muy bien.",
+   "exampleDe": "Meine Mutter kocht sehr gut."
+  },
+  {
+   "es": "los padres",
+   "de": "die Eltern",
+   "dePrimary": "die Eltern",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Mis padres viven en el campo.",
+   "exampleDe": "Meine Eltern leben auf dem Land."
+  },
+  {
+   "es": "el abuelo",
+   "de": "der Großvater",
+   "dePrimary": "der Großvater",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Mi abuelo cuenta muy buenas historias.",
+   "exampleDe": "Mein Großvater erzählt sehr gute Geschichten."
+  },
+  {
+   "es": "la abuela",
+   "de": "die Großmutter",
+   "dePrimary": "die Großmutter",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Mi abuela hace la mejor tarta.",
+   "exampleDe": "Meine Großmutter macht den besten Kuchen."
+  },
+  {
+   "es": "el tío",
+   "de": "der Onkel",
+   "dePrimary": "der Onkel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Menschen",
+   "exampleEs": "Mi tío vive en Argentina.",
+   "exampleDe": "Mein Onkel lebt in Argentinien."
+  },
+  {
+   "es": "la tía",
+   "de": "die Tante",
+   "dePrimary": "die Tante",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Menschen",
+   "exampleEs": "Mi tía nos visita cada verano.",
+   "exampleDe": "Meine Tante besucht uns jeden Sommer."
+  },
+  {
+   "es": "el primo",
+   "de": "der Cousin",
+   "dePrimary": "der Cousin",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Menschen",
+   "exampleEs": "Mi primo estudia en Barcelona.",
+   "exampleDe": "Mein Cousin studiert in Barcelona."
+  },
+  {
+   "es": "el marido",
+   "de": "der Ehemann",
+   "dePrimary": "der Ehemann",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Menschen",
+   "exampleEs": "Su marido trabaja en el extranjero.",
+   "exampleDe": "Ihr Ehemann arbeitet im Ausland."
+  },
+  {
+   "es": "la esposa",
+   "de": "die Ehefrau",
+   "dePrimary": "die Ehefrau",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Menschen",
+   "exampleEs": "Su esposa es profesora.",
+   "exampleDe": "Seine Ehefrau ist Lehrerin."
+  },
+  {
+   "es": "el novio",
+   "de": "der Freund|der Verlobte",
+   "dePrimary": "der Freund",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Menschen",
+   "exampleEs": "Voy a cenar con mi novio.",
+   "exampleDe": "Ich gehe mit meinem Freund essen."
+  },
+  {
+   "es": "la persona",
+   "de": "die Person",
+   "dePrimary": "die Person",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Es una persona muy amable.",
+   "exampleDe": "Er ist eine sehr freundliche Person."
+  },
+  {
+   "es": "la gente",
+   "de": "die Leute",
+   "dePrimary": "die Leute",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Menschen",
+   "exampleEs": "Había mucha gente en la calle.",
+   "exampleDe": "Es waren viele Leute auf der Straße."
+  },
+  {
+   "es": "el bebé",
+   "de": "das Baby",
+   "dePrimary": "das Baby",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Menschen",
+   "exampleEs": "El bebé duerme toda la noche.",
+   "exampleDe": "Das Baby schläft die ganze Nacht."
+  },
+  {
+   "es": "el adulto",
+   "de": "der Erwachsene",
+   "dePrimary": "der Erwachsene",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Menschen",
+   "exampleEs": "El museo es gratis para adultos mayores.",
+   "exampleDe": "Das Museum ist für Senioren kostenlos."
+  },
+  {
+   "es": "el perro",
+   "de": "der Hund",
+   "dePrimary": "der Hund",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Tiere",
+   "exampleEs": "El perro duerme en el jardín.",
+   "exampleDe": "Der Hund schläft im Garten."
+  },
+  {
+   "es": "el gato",
+   "de": "die Katze",
+   "dePrimary": "die Katze",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Tiere",
+   "exampleEs": "El gato caza ratones.",
+   "exampleDe": "Die Katze jagt Mäuse."
+  },
+  {
+   "es": "el pájaro",
+   "de": "der Vogel",
+   "dePrimary": "der Vogel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Tiere",
+   "exampleEs": "Los pájaros cantan por la mañana.",
+   "exampleDe": "Die Vögel singen am Morgen."
+  },
+  {
+   "es": "el caballo",
+   "de": "das Pferd",
+   "dePrimary": "das Pferd",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Tiere",
+   "exampleEs": "Le encanta montar a caballo.",
+   "exampleDe": "Sie reitet sehr gerne."
+  },
+  {
+   "es": "la vaca",
+   "de": "die Kuh",
+   "dePrimary": "die Kuh",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Tiere",
+   "exampleEs": "Las vacas pastan en el campo.",
+   "exampleDe": "Die Kühe weiden auf dem Feld."
+  },
+  {
+   "es": "el pez",
+   "de": "der Fisch (lebendig)",
+   "dePrimary": "der Fisch (lebendig)",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Tiere",
+   "exampleEs": "Hay muchos peces en este río.",
+   "exampleDe": "In diesem Fluss gibt es viele Fische."
+  },
+  {
+   "es": "el animal",
+   "de": "das Tier",
+   "dePrimary": "das Tier",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Tiere",
+   "exampleEs": "Es un animal muy tranquilo.",
+   "exampleDe": "Es ist ein sehr ruhiges Tier."
+  },
+  {
+   "es": "el árbol",
+   "de": "der Baum",
+   "dePrimary": "der Baum",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Natur",
+   "exampleEs": "Hay un árbol grande en el jardín.",
+   "exampleDe": "Im Garten steht ein großer Baum."
+  },
+  {
+   "es": "la flor",
+   "de": "die Blume",
+   "dePrimary": "die Blume",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Natur",
+   "exampleEs": "Le regalé unas flores.",
+   "exampleDe": "Ich habe ihr Blumen geschenkt."
+  },
+  {
+   "es": "el mar",
+   "de": "das Meer",
+   "dePrimary": "das Meer",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Natur",
+   "exampleEs": "El mar está muy tranquilo hoy.",
+   "exampleDe": "Das Meer ist heute sehr ruhig."
+  },
+  {
+   "es": "la montaña",
+   "de": "der Berg",
+   "dePrimary": "der Berg",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Natur",
+   "exampleEs": "Vamos a subir esa montaña.",
+   "exampleDe": "Wir werden auf diesen Berg steigen."
+  },
+  {
+   "es": "el río",
+   "de": "der Fluss",
+   "dePrimary": "der Fluss",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Natur",
+   "exampleEs": "El río pasa por el centro de la ciudad.",
+   "exampleDe": "Der Fluss fließt durch das Stadtzentrum."
+  },
+  {
+   "es": "el bosque",
+   "de": "der Wald",
+   "dePrimary": "der Wald",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Natur",
+   "exampleEs": "Paseamos por el bosque.",
+   "exampleDe": "Wir spazieren durch den Wald."
+  },
+  {
+   "es": "el campo",
+   "de": "das Land|das Feld",
+   "dePrimary": "das Land",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Natur",
+   "exampleEs": "Mis abuelos viven en el campo.",
+   "exampleDe": "Meine Großeltern leben auf dem Land."
+  },
+  {
+   "es": "el cielo",
+   "de": "der Himmel",
+   "dePrimary": "der Himmel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Natur",
+   "exampleEs": "El cielo está despejado.",
+   "exampleDe": "Der Himmel ist klar."
+  },
+  {
+   "es": "la playa",
+   "de": "der Strand",
+   "dePrimary": "der Strand",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Natur",
+   "exampleEs": "Pasamos el día en la playa.",
+   "exampleDe": "Wir haben den Tag am Strand verbracht."
+  },
+  {
+   "es": "la isla",
+   "de": "die Insel",
+   "dePrimary": "die Insel",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Natur",
+   "exampleEs": "Vamos a pasar el verano en una isla.",
+   "exampleDe": "Wir verbringen den Sommer auf einer Insel."
+  },
+  {
+   "es": "la piedra",
+   "de": "der Stein",
+   "dePrimary": "der Stein",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Natur",
+   "exampleEs": "Tropezó con una piedra.",
+   "exampleDe": "Er stolperte über einen Stein."
+  },
+  {
+   "es": "el arroz",
+   "de": "der Reis",
+   "dePrimary": "der Reis",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "El arroz se sirve con pollo.",
+   "exampleDe": "Der Reis wird mit Hähnchen serviert."
+  },
+  {
+   "es": "la sopa",
+   "de": "die Suppe",
+   "dePrimary": "die Suppe",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "La sopa está muy caliente.",
+   "exampleDe": "Die Suppe ist sehr heiß."
+  },
+  {
+   "es": "la ensalada",
+   "de": "der Salat",
+   "dePrimary": "der Salat",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Pido una ensalada de tomate.",
+   "exampleDe": "Ich bestelle einen Tomatensalat."
+  },
+  {
+   "es": "el huevo",
+   "de": "das Ei",
+   "dePrimary": "das Ei",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Desayuno un huevo cada mañana.",
+   "exampleDe": "Ich frühstücke jeden Morgen ein Ei."
+  },
+  {
+   "es": "el azúcar",
+   "de": "der Zucker",
+   "dePrimary": "der Zucker",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "No tomo azúcar en el café.",
+   "exampleDe": "Ich nehme keinen Zucker in den Kaffee."
+  },
+  {
+   "es": "la sal",
+   "de": "das Salz",
+   "dePrimary": "das Salz",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Falta sal en la sopa.",
+   "exampleDe": "Der Suppe fehlt Salz."
+  },
+  {
+   "es": "el aceite",
+   "de": "das Öl",
+   "dePrimary": "das Öl",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Usa aceite de oliva para cocinar.",
+   "exampleDe": "Er benutzt Olivenöl zum Kochen."
+  },
+  {
+   "es": "la fruta",
+   "de": "das Obst",
+   "dePrimary": "das Obst",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Como fruta todos los días.",
+   "exampleDe": "Ich esse jeden Tag Obst."
+  },
+  {
+   "es": "la verdura",
+   "de": "das Gemüse",
+   "dePrimary": "das Gemüse",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Las verduras son importantes para la salud.",
+   "exampleDe": "Gemüse ist wichtig für die Gesundheit."
+  },
+  {
+   "es": "la patata",
+   "de": "die Kartoffel",
+   "dePrimary": "die Kartoffel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Cociné patatas al horno.",
+   "exampleDe": "Ich habe Ofenkartoffeln gemacht."
+  },
+  {
+   "es": "la cebolla",
+   "de": "die Zwiebel",
+   "dePrimary": "die Zwiebel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Corta la cebolla en trozos pequeños.",
+   "exampleDe": "Schneide die Zwiebel in kleine Stücke."
+  },
+  {
+   "es": "el tomate",
+   "de": "die Tomate",
+   "dePrimary": "die Tomate",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "La salsa lleva tomate fresco.",
+   "exampleDe": "Die Soße enthält frische Tomaten."
+  },
+  {
+   "es": "el ajo",
+   "de": "der Knoblauch",
+   "dePrimary": "der Knoblauch",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Essen",
+   "exampleEs": "Añade un diente de ajo.",
+   "exampleDe": "Füg eine Knoblauchzehe hinzu."
+  },
+  {
+   "es": "el limón",
+   "de": "die Zitrone",
+   "dePrimary": "die Zitrone",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Le pongo limón al pescado.",
+   "exampleDe": "Ich gebe Zitrone auf den Fisch."
+  },
+  {
+   "es": "el postre",
+   "de": "die Nachspeise|der Nachtisch",
+   "dePrimary": "die Nachspeise",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "¿Qué hay de postre?",
+   "exampleDe": "Was gibt es als Nachtisch?"
+  },
+  {
+   "es": "el almuerzo",
+   "de": "das Mittagessen",
+   "dePrimary": "das Mittagessen",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "El almuerzo es a la una.",
+   "exampleDe": "Das Mittagessen ist um eins."
+  },
+  {
+   "es": "la cena",
+   "de": "das Abendessen",
+   "dePrimary": "das Abendessen",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "La cena está lista.",
+   "exampleDe": "Das Abendessen ist fertig."
+  },
+  {
+   "es": "el restaurante",
+   "de": "das Restaurant",
+   "dePrimary": "das Restaurant",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Cenamos en un restaurante italiano.",
+   "exampleDe": "Wir haben in einem italienischen Restaurant gegessen."
+  },
+  {
+   "es": "el camarero",
+   "de": "der Kellner",
+   "dePrimary": "der Kellner",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "El camarero nos trajo la carta.",
+   "exampleDe": "Der Kellner brachte uns die Speisekarte."
+  },
+  {
+   "es": "la carta",
+   "de": "die Speisekarte",
+   "dePrimary": "die Speisekarte",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "¿Nos trae la carta, por favor?",
+   "exampleDe": "Bringen Sie uns bitte die Speisekarte?"
+  },
+  {
+   "es": "el plato",
+   "de": "der Teller|das Gericht",
+   "dePrimary": "der Teller",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Este plato lleva mucho ajo.",
+   "exampleDe": "Dieses Gericht enthält viel Knoblauch."
+  },
+  {
+   "es": "el vaso",
+   "de": "das Glas",
+   "dePrimary": "das Glas",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Trae dos vasos de agua.",
+   "exampleDe": "Bring zwei Gläser Wasser."
+  },
+  {
+   "es": "la taza",
+   "de": "die Tasse",
+   "dePrimary": "die Tasse",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Tomo una taza de café por la mañana.",
+   "exampleDe": "Ich trinke morgens eine Tasse Kaffee."
+  },
+  {
+   "es": "el tenedor",
+   "de": "die Gabel",
+   "dePrimary": "die Gabel",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Essen",
+   "exampleEs": "Falta un tenedor en la mesa.",
+   "exampleDe": "Auf dem Tisch fehlt eine Gabel."
+  },
+  {
+   "es": "el cuchillo",
+   "de": "das Messer",
+   "dePrimary": "das Messer",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Essen",
+   "exampleEs": "Necesito un cuchillo para cortar el pan.",
+   "exampleDe": "Ich brauche ein Messer, um das Brot zu schneiden."
+  },
+  {
+   "es": "la cuchara",
+   "de": "der Löffel",
+   "dePrimary": "der Löffel",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Essen",
+   "exampleEs": "Come la sopa con cuchara.",
+   "exampleDe": "Er isst die Suppe mit einem Löffel."
+  },
+  {
+   "es": "el vino",
+   "de": "der Wein",
+   "dePrimary": "der Wein",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Pedimos una botella de vino tinto.",
+   "exampleDe": "Wir haben eine Flasche Rotwein bestellt."
+  },
+  {
+   "es": "la cerveza",
+   "de": "das Bier",
+   "dePrimary": "das Bier",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Tomamos una cerveza en la terraza.",
+   "exampleDe": "Wir tranken ein Bier auf der Terrasse."
+  },
+  {
+   "es": "el zumo",
+   "de": "der Saft",
+   "dePrimary": "der Saft",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Essen",
+   "exampleEs": "Prefiero zumo de naranja natural.",
+   "exampleDe": "Ich bevorzuge frisch gepressten Orangensaft."
+  },
+  {
+   "es": "el café",
+   "de": "der Kaffee",
+   "dePrimary": "der Kaffee",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "¿Quieres un café?",
+   "exampleDe": "Möchtest du einen Kaffee?"
+  },
+  {
+   "es": "el té",
+   "de": "der Tee",
+   "dePrimary": "der Tee",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Essen",
+   "exampleEs": "Por la tarde tomo té.",
+   "exampleDe": "Nachmittags trinke ich Tee."
+  },
+  {
+   "es": "el azúcar moreno",
+   "de": "der braune Zucker",
+   "dePrimary": "der braune Zucker",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Essen",
+   "exampleEs": "Usa azúcar moreno para el postre.",
+   "exampleDe": "Er benutzt braunen Zucker für den Nachtisch."
+  },
+  {
+   "es": "cocinar",
+   "de": "kochen",
+   "dePrimary": "kochen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Me gusta cocinar los domingos.",
+   "exampleDe": "Ich koche gerne sonntags."
+  },
+  {
+   "es": "cortar",
+   "de": "schneiden",
+   "dePrimary": "schneiden",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Corta las verduras en trozos.",
+   "exampleDe": "Schneide das Gemüse in Stücke."
+  },
+  {
+   "es": "freír",
+   "de": "braten|frittieren",
+   "dePrimary": "braten",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Freímos el pescado en aceite.",
+   "exampleDe": "Wir braten den Fisch in Öl."
+  },
+  {
+   "es": "hervir",
+   "de": "kochen (Wasser)",
+   "dePrimary": "kochen (Wasser)",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Hierve el agua antes de añadir la pasta.",
+   "exampleDe": "Koche das Wasser, bevor du die Pasta hinzufügst."
+  },
+  {
+   "es": "añadir",
+   "de": "hinzufügen",
+   "dePrimary": "hinzufügen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Añade un poco de sal.",
+   "exampleDe": "Füge etwas Salz hinzu."
+  },
+  {
+   "es": "mezclar",
+   "de": "mischen",
+   "dePrimary": "mischen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Mezcla los ingredientes bien.",
+   "exampleDe": "Vermische die Zutaten gut."
+  },
+  {
+   "es": "pelar",
+   "de": "schälen",
+   "dePrimary": "schälen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Pela las patatas primero.",
+   "exampleDe": "Schäle zuerst die Kartoffeln."
+  },
+  {
+   "es": "servir",
+   "de": "servieren",
+   "dePrimary": "servieren",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "El desayuno se sirve a las ocho.",
+   "exampleDe": "Das Frühstück wird um acht serviert."
+  },
+  {
+   "es": "pedir",
+   "de": "bestellen|bitten",
+   "dePrimary": "bestellen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Voy a pedir la pasta.",
+   "exampleDe": "Ich werde die Pasta bestellen."
+  },
+  {
+   "es": "reservar",
+   "de": "reservieren",
+   "dePrimary": "reservieren",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Reservé una mesa para dos.",
+   "exampleDe": "Ich habe einen Tisch für zwei reserviert."
+  },
+  {
+   "es": "poder",
+   "de": "können",
+   "dePrimary": "können",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "¿Puedes ayudarme?",
+   "exampleDe": "Kannst du mir helfen?"
+  },
+  {
+   "es": "querer",
+   "de": "wollen|lieben",
+   "dePrimary": "wollen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Quiero aprender español.",
+   "exampleDe": "Ich möchte Spanisch lernen."
+  },
+  {
+   "es": "saber",
+   "de": "wissen|können (Fähigkeit)",
+   "dePrimary": "wissen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "No sé la respuesta.",
+   "exampleDe": "Ich weiß die Antwort nicht."
+  },
+  {
+   "es": "conocer",
+   "de": "kennen",
+   "dePrimary": "kennen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Conozco a tu hermana.",
+   "exampleDe": "Ich kenne deine Schwester."
+  },
+  {
+   "es": "ver",
+   "de": "sehen",
+   "dePrimary": "sehen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Vemos una película esta noche.",
+   "exampleDe": "Wir schauen uns heute Abend einen Film an."
+  },
+  {
+   "es": "dar",
+   "de": "geben",
+   "dePrimary": "geben",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Te doy mi número de teléfono.",
+   "exampleDe": "Ich gebe dir meine Telefonnummer."
+  },
+  {
+   "es": "poner",
+   "de": "legen|stellen|setzen",
+   "dePrimary": "legen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Pon el libro en la mesa.",
+   "exampleDe": "Leg das Buch auf den Tisch."
+  },
+  {
+   "es": "salir",
+   "de": "hinausgehen|ausgehen",
+   "dePrimary": "hinausgehen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Salgo de casa a las ocho.",
+   "exampleDe": "Ich verlasse um acht das Haus."
+  },
+  {
+   "es": "venir",
+   "de": "kommen",
+   "dePrimary": "kommen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "¿Vienes a la fiesta?",
+   "exampleDe": "Kommst du zur Party?"
+  },
+  {
+   "es": "llegar",
+   "de": "ankommen",
+   "dePrimary": "ankommen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "El tren llega a las diez.",
+   "exampleDe": "Der Zug kommt um zehn an."
+  },
+  {
+   "es": "volver",
+   "de": "zurückkommen|zurückkehren",
+   "dePrimary": "zurückkommen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Vuelvo en cinco minutos.",
+   "exampleDe": "Ich bin in fünf Minuten zurück."
+  },
+  {
+   "es": "empezar",
+   "de": "anfangen|beginnen",
+   "dePrimary": "anfangen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "La película empieza a las nueve.",
+   "exampleDe": "Der Film beginnt um neun."
+  },
+  {
+   "es": "terminar",
+   "de": "beenden|enden",
+   "dePrimary": "beenden",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Termino el trabajo a las cinco.",
+   "exampleDe": "Ich beende die Arbeit um fünf."
+  },
+  {
+   "es": "pensar",
+   "de": "denken",
+   "dePrimary": "denken",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Pienso en ti a menudo.",
+   "exampleDe": "Ich denke oft an dich."
+  },
+  {
+   "es": "creer",
+   "de": "glauben",
+   "dePrimary": "glauben",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Creo que tienes razón.",
+   "exampleDe": "Ich glaube, du hast recht."
+  },
+  {
+   "es": "sentir",
+   "de": "fühlen|spüren",
+   "dePrimary": "fühlen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Siento mucho frío.",
+   "exampleDe": "Mir ist sehr kalt."
+  },
+  {
+   "es": "gustar",
+   "de": "gefallen|mögen",
+   "dePrimary": "gefallen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Me gusta mucho esta ciudad.",
+   "exampleDe": "Mir gefällt diese Stadt sehr."
+  },
+  {
+   "es": "encontrar",
+   "de": "finden",
+   "dePrimary": "finden",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "No encuentro las llaves.",
+   "exampleDe": "Ich finde die Schlüssel nicht."
+  },
+  {
+   "es": "buscar",
+   "de": "suchen",
+   "dePrimary": "suchen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Busco trabajo desde hace un mes.",
+   "exampleDe": "Ich suche seit einem Monat Arbeit."
+  },
+  {
+   "es": "abrir",
+   "de": "öffnen",
+   "dePrimary": "öffnen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Abro la tienda a las nueve.",
+   "exampleDe": "Ich öffne den Laden um neun."
+  },
+  {
+   "es": "cerrar",
+   "de": "schließen",
+   "dePrimary": "schließen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Cierra la puerta, por favor.",
+   "exampleDe": "Schließ bitte die Tür."
+  },
+  {
+   "es": "jugar",
+   "de": "spielen",
+   "dePrimary": "spielen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Los niños juegan en el parque.",
+   "exampleDe": "Die Kinder spielen im Park."
+  },
+  {
+   "es": "ganar",
+   "de": "gewinnen|verdienen",
+   "dePrimary": "gewinnen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Ganamos el partido de fútbol.",
+   "exampleDe": "Wir haben das Fußballspiel gewonnen."
+  },
+  {
+   "es": "perder",
+   "de": "verlieren",
+   "dePrimary": "verlieren",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Perdí las llaves otra vez.",
+   "exampleDe": "Ich habe wieder die Schlüssel verloren."
+  },
+  {
+   "es": "correr",
+   "de": "laufen|rennen",
+   "dePrimary": "laufen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Corro todas las mañanas.",
+   "exampleDe": "Ich laufe jeden Morgen."
+  },
+  {
+   "es": "andar",
+   "de": "gehen|laufen",
+   "dePrimary": "gehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Vamos a andar por la playa.",
+   "exampleDe": "Wir gehen am Strand spazieren."
+  },
+  {
+   "es": "subir",
+   "de": "hochgehen|steigen",
+   "dePrimary": "hochgehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Subimos al tercer piso.",
+   "exampleDe": "Wir gehen in den dritten Stock hoch."
+  },
+  {
+   "es": "bajar",
+   "de": "hinuntergehen|sinken",
+   "dePrimary": "hinuntergehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Bajamos las escaleras juntos.",
+   "exampleDe": "Wir gehen zusammen die Treppe runter."
+  },
+  {
+   "es": "entrar",
+   "de": "hineingehen|eintreten",
+   "dePrimary": "hineingehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Entra en la sala, por favor.",
+   "exampleDe": "Bitte komm in den Raum herein."
+  },
+  {
+   "es": "llamar",
+   "de": "anrufen|rufen|nennen",
+   "dePrimary": "anrufen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Te llamo esta tarde.",
+   "exampleDe": "Ich rufe dich heute Nachmittag an."
+  },
+  {
+   "es": "preguntar",
+   "de": "fragen",
+   "dePrimary": "fragen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Voy a preguntar al profesor.",
+   "exampleDe": "Ich werde den Lehrer fragen."
+  },
+  {
+   "es": "contestar",
+   "de": "antworten",
+   "dePrimary": "antworten",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "No contestó a mi mensaje.",
+   "exampleDe": "Er hat nicht auf meine Nachricht geantwortet."
+  },
+  {
+   "es": "explicar",
+   "de": "erklären",
+   "dePrimary": "erklären",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "¿Puedes explicarme esto?",
+   "exampleDe": "Kannst du mir das erklären?"
+  },
+  {
+   "es": "mostrar",
+   "de": "zeigen",
+   "dePrimary": "zeigen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Muéstrame tus fotos.",
+   "exampleDe": "Zeig mir deine Fotos."
+  },
+  {
+   "es": "decidir",
+   "de": "entscheiden",
+   "dePrimary": "entscheiden",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Todavía no he decidido.",
+   "exampleDe": "Ich habe mich noch nicht entschieden."
+  },
+  {
+   "es": "cambiar",
+   "de": "ändern|wechseln",
+   "dePrimary": "ändern",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Quiero cambiar de trabajo.",
+   "exampleDe": "Ich möchte den Job wechseln."
+  },
+  {
+   "es": "necesitar",
+   "de": "brauchen",
+   "dePrimary": "brauchen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Necesito más tiempo.",
+   "exampleDe": "Ich brauche mehr Zeit."
+  },
+  {
+   "es": "usar",
+   "de": "benutzen|verwenden",
+   "dePrimary": "benutzen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Uso el ordenador para trabajar.",
+   "exampleDe": "Ich benutze den Computer zum Arbeiten."
+  },
+  {
+   "es": "dejar",
+   "de": "lassen|verlassen",
+   "dePrimary": "lassen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Dejé el móvil en casa.",
+   "exampleDe": "Ich habe das Handy zu Hause gelassen."
+  },
+  {
+   "es": "seguir",
+   "de": "folgen|weitermachen",
+   "dePrimary": "folgen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Sigue todo recto.",
+   "exampleDe": "Geh immer geradeaus weiter."
+  },
+  {
+   "es": "parecer",
+   "de": "scheinen|erscheinen",
+   "dePrimary": "scheinen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Me parece una buena idea.",
+   "exampleDe": "Das scheint mir eine gute Idee zu sein."
+  },
+  {
+   "es": "ayudar",
+   "de": "helfen",
+   "dePrimary": "helfen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "¿Me puedes ayudar con esto?",
+   "exampleDe": "Kannst du mir dabei helfen?"
+  },
+  {
+   "es": "enseñar",
+   "de": "lehren|zeigen",
+   "dePrimary": "lehren",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Enseña español en un instituto.",
+   "exampleDe": "Sie unterrichtet Spanisch an einer Schule."
+  },
+  {
+   "es": "estudiar",
+   "de": "studieren|lernen",
+   "dePrimary": "studieren",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Estudio informática en la universidad.",
+   "exampleDe": "Ich studiere Informatik an der Universität."
+  },
+  {
+   "es": "dormir",
+   "de": "schlafen",
+   "dePrimary": "schlafen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Duermo ocho horas cada noche.",
+   "exampleDe": "Ich schlafe jede Nacht acht Stunden."
+  },
+  {
+   "es": "despertarse",
+   "de": "aufwachen",
+   "dePrimary": "aufwachen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Me despierto a las siete.",
+   "exampleDe": "Ich wache um sieben Uhr auf."
+  },
+  {
+   "es": "levantarse",
+   "de": "aufstehen",
+   "dePrimary": "aufstehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Me levanto temprano los lunes.",
+   "exampleDe": "Montags stehe ich früh auf."
+  },
+  {
+   "es": "ducharse",
+   "de": "duschen",
+   "dePrimary": "duschen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Me ducho antes de desayunar.",
+   "exampleDe": "Ich dusche vor dem Frühstück."
+  },
+  {
+   "es": "descansar",
+   "de": "sich ausruhen",
+   "dePrimary": "sich ausruhen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Necesito descansar un poco.",
+   "exampleDe": "Ich muss mich etwas ausruhen."
+  },
+  {
+   "es": "limpiar",
+   "de": "putzen|reinigen",
+   "dePrimary": "putzen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Limpio la casa los sábados.",
+   "exampleDe": "Ich putze samstags die Wohnung."
+  },
+  {
+   "es": "lavar",
+   "de": "waschen",
+   "dePrimary": "waschen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Lavo la ropa dos veces por semana.",
+   "exampleDe": "Ich wasche zweimal pro Woche Wäsche."
+  },
+  {
+   "es": "abrazar",
+   "de": "umarmen",
+   "dePrimary": "umarmen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "La abrazó fuerte al despedirse.",
+   "exampleDe": "Er umarmte sie fest zum Abschied."
+  },
+  {
+   "es": "besar",
+   "de": "küssen",
+   "dePrimary": "küssen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Se besaron al reencontrarse.",
+   "exampleDe": "Sie küssten sich beim Wiedersehen."
+  },
+  {
+   "es": "reír",
+   "de": "lachen",
+   "dePrimary": "lachen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Nos reímos mucho con esa película.",
+   "exampleDe": "Wir haben bei diesem Film viel gelacht."
+  },
+  {
+   "es": "llorar",
+   "de": "weinen",
+   "dePrimary": "weinen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "El bebé llora por la noche.",
+   "exampleDe": "Das Baby weint nachts."
+  },
+  {
+   "es": "gritar",
+   "de": "schreien",
+   "dePrimary": "schreien",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "No hace falta gritar.",
+   "exampleDe": "Du musst nicht schreien."
+  },
+  {
+   "es": "sonreír",
+   "de": "lächeln",
+   "dePrimary": "lächeln",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Siempre sonríe al saludar.",
+   "exampleDe": "Er lächelt immer beim Begrüßen."
+  },
+  {
+   "es": "romper",
+   "de": "kaputt machen|zerbrechen",
+   "dePrimary": "kaputt machen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Se me rompió el vaso.",
+   "exampleDe": "Mir ist das Glas kaputtgegangen."
+  },
+  {
+   "es": "construir",
+   "de": "bauen",
+   "dePrimary": "bauen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Van a construir un puente nuevo.",
+   "exampleDe": "Sie werden eine neue Brücke bauen."
+  },
+  {
+   "es": "crear",
+   "de": "erschaffen|erstellen",
+   "dePrimary": "erschaffen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Verben",
+   "exampleEs": "Creó una empresa hace dos años.",
+   "exampleDe": "Er gründete vor zwei Jahren ein Unternehmen."
+  },
+  {
+   "es": "mover",
+   "de": "bewegen|verschieben",
+   "dePrimary": "bewegen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "No pude mover el sofá solo.",
+   "exampleDe": "Ich konnte das Sofa nicht allein verschieben."
+  },
+  {
+   "es": "tocar",
+   "de": "berühren|spielen (Instrument)",
+   "dePrimary": "berühren",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Toca el piano muy bien.",
+   "exampleDe": "Er spielt sehr gut Klavier."
+  },
+  {
+   "es": "cantar",
+   "de": "singen",
+   "dePrimary": "singen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Le encanta cantar en la ducha.",
+   "exampleDe": "Sie singt gerne unter der Dusche."
+  },
+  {
+   "es": "bailar",
+   "de": "tanzen",
+   "dePrimary": "tanzen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Bailamos toda la noche.",
+   "exampleDe": "Wir haben die ganze Nacht getanzt."
+  },
+  {
+   "es": "viajar",
+   "de": "reisen",
+   "dePrimary": "reisen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Verben",
+   "exampleEs": "Me encanta viajar por Sudamérica.",
+   "exampleDe": "Ich reise sehr gerne durch Südamerika."
+  },
+  {
+   "es": "volar",
+   "de": "fliegen",
+   "dePrimary": "fliegen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "El avión vuela a diez mil metros.",
+   "exampleDe": "Das Flugzeug fliegt in zehntausend Metern Höhe."
+  },
+  {
+   "es": "conducir",
+   "de": "fahren (Auto)|lenken",
+   "dePrimary": "fahren (Auto)",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "No sabe conducir todavía.",
+   "exampleDe": "Er kann noch nicht Auto fahren."
+  },
+  {
+   "es": "caminar",
+   "de": "gehen|spazieren",
+   "dePrimary": "gehen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Verben",
+   "exampleEs": "Caminamos una hora por el parque.",
+   "exampleDe": "Wir sind eine Stunde durch den Park gelaufen."
+  },
+  {
+   "es": "el profesor",
+   "de": "der Lehrer",
+   "dePrimary": "der Lehrer",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Berufe",
+   "exampleEs": "El profesor explica muy bien.",
+   "exampleDe": "Der Lehrer erklärt sehr gut."
+  },
+  {
+   "es": "el estudiante",
+   "de": "der Student|der Schüler",
+   "dePrimary": "der Student",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Berufe",
+   "exampleEs": "Es estudiante de medicina.",
+   "exampleDe": "Er ist Medizinstudent."
+  },
+  {
+   "es": "el ingeniero",
+   "de": "der Ingenieur",
+   "dePrimary": "der Ingenieur",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Berufe",
+   "exampleEs": "Trabaja como ingeniera de software.",
+   "exampleDe": "Sie arbeitet als Softwareingenieurin."
+  },
+  {
+   "es": "el abogado",
+   "de": "der Anwalt",
+   "dePrimary": "der Anwalt",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Berufe",
+   "exampleEs": "Necesito hablar con un abogado.",
+   "exampleDe": "Ich muss mit einem Anwalt sprechen."
+  },
+  {
+   "es": "el enfermero",
+   "de": "der Krankenpfleger",
+   "dePrimary": "der Krankenpfleger",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Berufe",
+   "exampleEs": "El enfermero cuida a los pacientes.",
+   "exampleDe": "Der Krankenpfleger kümmert sich um die Patienten."
+  },
+  {
+   "es": "el cocinero",
+   "de": "der Koch",
+   "dePrimary": "der Koch",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Berufe",
+   "exampleEs": "El cocinero preparó un plato delicioso.",
+   "exampleDe": "Der Koch bereitete ein köstliches Gericht zu."
+  },
+  {
+   "es": "el policía",
+   "de": "der Polizist",
+   "dePrimary": "der Polizist",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Berufe",
+   "exampleEs": "Un policía dirige el tráfico.",
+   "exampleDe": "Ein Polizist regelt den Verkehr."
+  },
+  {
+   "es": "el periodista",
+   "de": "der Journalist",
+   "dePrimary": "der Journalist",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Berufe",
+   "exampleEs": "Trabaja como periodista en un diario.",
+   "exampleDe": "Er arbeitet als Journalist bei einer Zeitung."
+  },
+  {
+   "es": "el arquitecto",
+   "de": "der Architekt",
+   "dePrimary": "der Architekt",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Berufe",
+   "exampleEs": "El arquitecto diseñó el nuevo edificio.",
+   "exampleDe": "Der Architekt entwarf das neue Gebäude."
+  },
+  {
+   "es": "el peluquero",
+   "de": "der Friseur",
+   "dePrimary": "der Friseur",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Berufe",
+   "exampleEs": "Tengo cita con el peluquero.",
+   "exampleDe": "Ich habe einen Termin beim Friseur."
+  },
+  {
+   "es": "el vendedor",
+   "de": "der Verkäufer",
+   "dePrimary": "der Verkäufer",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Berufe",
+   "exampleEs": "El vendedor me ayudó a elegir.",
+   "exampleDe": "Der Verkäufer half mir bei der Auswahl."
+  },
+  {
+   "es": "el científico",
+   "de": "der Wissenschaftler",
+   "dePrimary": "der Wissenschaftler",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Berufe",
+   "exampleEs": "Los científicos estudian el cambio climático.",
+   "exampleDe": "Die Wissenschaftler erforschen den Klimawandel."
+  },
+  {
+   "es": "el artista",
+   "de": "der Künstler",
+   "dePrimary": "der Künstler",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Berufe",
+   "exampleEs": "Es un artista muy conocido.",
+   "exampleDe": "Er ist ein sehr bekannter Künstler."
+  },
+  {
+   "es": "el gerente",
+   "de": "der Geschäftsführer|der Manager",
+   "dePrimary": "der Geschäftsführer",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Berufe",
+   "exampleEs": "El gerente aprobó el proyecto.",
+   "exampleDe": "Der Geschäftsführer genehmigte das Projekt."
+  },
+  {
+   "es": "el empleado",
+   "de": "der Angestellte",
+   "dePrimary": "der Angestellte",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Berufe",
+   "exampleEs": "Es empleado de una empresa grande.",
+   "exampleDe": "Er ist Angestellter eines großen Unternehmens."
+  },
+  {
+   "es": "el ordenador",
+   "de": "der Computer",
+   "dePrimary": "der Computer",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Technologie",
+   "exampleEs": "El ordenador se ha bloqueado.",
+   "exampleDe": "Der Computer ist eingefroren."
+  },
+  {
+   "es": "el móvil",
+   "de": "das Handy",
+   "dePrimary": "das Handy",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Technologie",
+   "exampleEs": "Se me ha caído el móvil.",
+   "exampleDe": "Mir ist das Handy runtergefallen."
+  },
+  {
+   "es": "internet",
+   "de": "das Internet",
+   "dePrimary": "das Internet",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Technologie",
+   "exampleEs": "No funciona internet.",
+   "exampleDe": "Das Internet funktioniert nicht."
+  },
+  {
+   "es": "la contraseña",
+   "de": "das Passwort",
+   "dePrimary": "das Passwort",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Technologie",
+   "exampleEs": "He olvidado mi contraseña.",
+   "exampleDe": "Ich habe mein Passwort vergessen."
+  },
+  {
+   "es": "el correo electrónico",
+   "de": "die E-Mail",
+   "dePrimary": "die E-Mail",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Technologie",
+   "exampleEs": "Te envío el correo electrónico ahora mismo.",
+   "exampleDe": "Ich schicke dir die E-Mail sofort."
+  },
+  {
+   "es": "la pantalla",
+   "de": "der Bildschirm",
+   "dePrimary": "der Bildschirm",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Technologie",
+   "exampleEs": "La pantalla está rota.",
+   "exampleDe": "Der Bildschirm ist kaputt."
+  },
+  {
+   "es": "el archivo",
+   "de": "die Datei",
+   "dePrimary": "die Datei",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Technologie",
+   "exampleEs": "No encuentro el archivo.",
+   "exampleDe": "Ich finde die Datei nicht."
+  },
+  {
+   "es": "la aplicación",
+   "de": "die App|die Anwendung",
+   "dePrimary": "die App",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Technologie",
+   "exampleEs": "Descargué una nueva aplicación.",
+   "exampleDe": "Ich habe eine neue App heruntergeladen."
+  },
+  {
+   "es": "la red social",
+   "de": "das soziale Netzwerk",
+   "dePrimary": "das soziale Netzwerk",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Technologie",
+   "exampleEs": "Pasa mucho tiempo en las redes sociales.",
+   "exampleDe": "Er verbringt viel Zeit in sozialen Netzwerken."
+  },
+  {
+   "es": "la cámara",
+   "de": "die Kamera",
+   "dePrimary": "die Kamera",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Technologie",
+   "exampleEs": "Compró una cámara nueva para el viaje.",
+   "exampleDe": "Er kaufte eine neue Kamera für die Reise."
+  },
+  {
+   "es": "la impresora",
+   "de": "der Drucker",
+   "dePrimary": "der Drucker",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Technologie",
+   "exampleEs": "La impresora se ha quedado sin tinta.",
+   "exampleDe": "Dem Drucker ist die Tinte ausgegangen."
+  },
+  {
+   "es": "descargar",
+   "de": "herunterladen",
+   "dePrimary": "herunterladen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Technologie",
+   "exampleEs": "Voy a descargar el documento.",
+   "exampleDe": "Ich werde das Dokument herunterladen."
+  },
+  {
+   "es": "guardar",
+   "de": "speichern",
+   "dePrimary": "speichern",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Technologie",
+   "exampleEs": "Guarda los cambios antes de salir.",
+   "exampleDe": "Speichere die Änderungen, bevor du schließt."
+  },
+  {
+   "es": "buscar en internet",
+   "de": "im Internet suchen",
+   "dePrimary": "im Internet suchen",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Technologie",
+   "exampleEs": "Voy a buscarlo en internet.",
+   "exampleDe": "Ich werde das im Internet suchen."
+  },
+  {
+   "es": "grabar",
+   "de": "aufnehmen",
+   "dePrimary": "aufnehmen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Technologie",
+   "exampleEs": "Grabé la reunión para no olvidarme.",
+   "exampleDe": "Ich habe die Besprechung aufgenommen, um nichts zu vergessen."
+  },
+  {
+   "es": "el dinero",
+   "de": "das Geld",
+   "dePrimary": "das Geld",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Geld",
+   "exampleEs": "No tengo dinero suelto.",
+   "exampleDe": "Ich habe kein Kleingeld."
+  },
+  {
+   "es": "el precio",
+   "de": "der Preis",
+   "dePrimary": "der Preis",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Geld",
+   "exampleEs": "El precio ha subido mucho.",
+   "exampleDe": "Der Preis ist stark gestiegen."
+  },
+  {
+   "es": "el descuento",
+   "de": "der Rabatt",
+   "dePrimary": "der Rabatt",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Geld",
+   "exampleEs": "Hay un veinte por ciento de descuento.",
+   "exampleDe": "Es gibt zwanzig Prozent Rabatt."
+  },
+  {
+   "es": "la tarjeta",
+   "de": "die Karte (Kredit-/Bankkarte)",
+   "dePrimary": "die Karte (Kredit-/Bankkarte)",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Geld",
+   "exampleEs": "Pago con tarjeta, por favor.",
+   "exampleDe": "Ich zahle mit Karte, bitte."
+  },
+  {
+   "es": "el banco",
+   "de": "die Bank",
+   "dePrimary": "die Bank",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Geld",
+   "exampleEs": "Abrí una cuenta en el banco.",
+   "exampleDe": "Ich habe ein Konto bei der Bank eröffnet."
+  },
+  {
+   "es": "la cuenta bancaria",
+   "de": "das Bankkonto",
+   "dePrimary": "das Bankkonto",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Geld",
+   "exampleEs": "Transferí el dinero a mi cuenta bancaria.",
+   "exampleDe": "Ich habe das Geld auf mein Bankkonto überwiesen."
+  },
+  {
+   "es": "gratis",
+   "de": "kostenlos",
+   "dePrimary": "kostenlos",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Geld",
+   "exampleEs": "La entrada es gratis los domingos.",
+   "exampleDe": "Der Eintritt ist sonntags kostenlos."
+  },
+  {
+   "es": "gastar",
+   "de": "ausgeben",
+   "dePrimary": "ausgeben",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Geld",
+   "exampleEs": "Gasté demasiado este mes.",
+   "exampleDe": "Ich habe diesen Monat zu viel ausgegeben."
+  },
+  {
+   "es": "ahorrar",
+   "de": "sparen",
+   "dePrimary": "sparen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Geld",
+   "exampleEs": "Intento ahorrar cada mes.",
+   "exampleDe": "Ich versuche, jeden Monat zu sparen."
+  },
+  {
+   "es": "vender",
+   "de": "verkaufen",
+   "dePrimary": "verkaufen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Geld",
+   "exampleEs": "Vendió su coche viejo.",
+   "exampleDe": "Er hat sein altes Auto verkauft."
+  },
+  {
+   "es": "costar",
+   "de": "kosten",
+   "dePrimary": "kosten",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Geld",
+   "exampleEs": "¿Cuánto cuesta esta camisa?",
+   "exampleDe": "Wie viel kostet dieses Hemd?"
+  },
+  {
+   "es": "el supermercado",
+   "de": "der Supermarkt",
+   "dePrimary": "der Supermarkt",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Einkaufen",
+   "exampleEs": "Voy al supermercado a comprar leche.",
+   "exampleDe": "Ich gehe zum Supermarkt, um Milch zu kaufen."
+  },
+  {
+   "es": "el mercado",
+   "de": "der Markt",
+   "dePrimary": "der Markt",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Einkaufen",
+   "exampleEs": "Compro verdura fresca en el mercado.",
+   "exampleDe": "Ich kaufe frisches Gemüse auf dem Markt."
+  },
+  {
+   "es": "el centro comercial",
+   "de": "das Einkaufszentrum",
+   "dePrimary": "das Einkaufszentrum",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Einkaufen",
+   "exampleEs": "El centro comercial está lleno los sábados.",
+   "exampleDe": "Das Einkaufszentrum ist samstags voll."
+  },
+  {
+   "es": "la talla",
+   "de": "die Größe (Kleidung)",
+   "dePrimary": "die Größe (Kleidung)",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Einkaufen",
+   "exampleEs": "¿Qué talla usas?",
+   "exampleDe": "Welche Größe trägst du?"
+  },
+  {
+   "es": "probarse",
+   "de": "anprobieren",
+   "dePrimary": "anprobieren",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Einkaufen",
+   "exampleEs": "Quiero probarme estos pantalones.",
+   "exampleDe": "Ich möchte diese Hose anprobieren."
+  },
+  {
+   "es": "el deporte",
+   "de": "der Sport",
+   "dePrimary": "der Sport",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Sport",
+   "exampleEs": "Hago deporte tres veces por semana.",
+   "exampleDe": "Ich mache dreimal die Woche Sport."
+  },
+  {
+   "es": "el fútbol",
+   "de": "der Fußball",
+   "dePrimary": "der Fußball",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Sport",
+   "exampleEs": "Jugamos al fútbol los domingos.",
+   "exampleDe": "Wir spielen sonntags Fußball."
+  },
+  {
+   "es": "nadar",
+   "de": "schwimmen",
+   "dePrimary": "schwimmen",
+   "pos": "verb",
+   "level": "A1",
+   "topic": "Sport",
+   "exampleEs": "Nado en la piscina todos los días.",
+   "exampleDe": "Ich schwimme jeden Tag im Schwimmbad."
+  },
+  {
+   "es": "el equipo",
+   "de": "das Team|die Mannschaft",
+   "dePrimary": "das Team",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Sport",
+   "exampleEs": "Nuestro equipo ganó el partido.",
+   "exampleDe": "Unsere Mannschaft hat das Spiel gewonnen."
+  },
+  {
+   "es": "el partido",
+   "de": "das Spiel (Sport)",
+   "dePrimary": "das Spiel (Sport)",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Sport",
+   "exampleEs": "El partido empieza a las ocho.",
+   "exampleDe": "Das Spiel beginnt um acht."
+  },
+  {
+   "es": "entrenar",
+   "de": "trainieren",
+   "dePrimary": "trainieren",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Sport",
+   "exampleEs": "Entrena todos los días después del trabajo.",
+   "exampleDe": "Er trainiert jeden Tag nach der Arbeit."
+  },
+  {
+   "es": "el gimnasio",
+   "de": "das Fitnessstudio",
+   "dePrimary": "das Fitnessstudio",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Sport",
+   "exampleEs": "Voy al gimnasio por la mañana.",
+   "exampleDe": "Ich gehe morgens ins Fitnessstudio."
+  },
+  {
+   "es": "la bicicleta",
+   "de": "das Fahrrad",
+   "dePrimary": "das Fahrrad",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Sport",
+   "exampleEs": "Voy al trabajo en bicicleta.",
+   "exampleDe": "Ich fahre mit dem Fahrrad zur Arbeit."
+  },
+  {
+   "es": "el tiempo libre",
+   "de": "die Freizeit",
+   "dePrimary": "die Freizeit",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Freizeit",
+   "exampleEs": "En mi tiempo libre leo mucho.",
+   "exampleDe": "In meiner Freizeit lese ich viel."
+  },
+  {
+   "es": "la película",
+   "de": "der Film",
+   "dePrimary": "der Film",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Freizeit",
+   "exampleEs": "Vimos una película muy buena.",
+   "exampleDe": "Wir haben einen sehr guten Film gesehen."
+  },
+  {
+   "es": "la música",
+   "de": "die Musik",
+   "dePrimary": "die Musik",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Freizeit",
+   "exampleEs": "Escucho música mientras trabajo.",
+   "exampleDe": "Ich höre Musik, während ich arbeite."
+  },
+  {
+   "es": "el libro",
+   "de": "das Buch",
+   "dePrimary": "das Buch",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Freizeit",
+   "exampleEs": "Estoy leyendo un libro interesante.",
+   "exampleDe": "Ich lese gerade ein interessantes Buch."
+  },
+  {
+   "es": "la fiesta",
+   "de": "die Party|das Fest",
+   "dePrimary": "die Party",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Freizeit",
+   "exampleEs": "La fiesta duró hasta las tres.",
+   "exampleDe": "Die Party dauerte bis drei Uhr."
+  },
+  {
+   "es": "el juego",
+   "de": "das Spiel",
+   "dePrimary": "das Spiel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Freizeit",
+   "exampleEs": "Los niños inventaron un juego nuevo.",
+   "exampleDe": "Die Kinder haben sich ein neues Spiel ausgedacht."
+  },
+  {
+   "es": "pintar",
+   "de": "malen",
+   "dePrimary": "malen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Freizeit",
+   "exampleEs": "Le gusta pintar paisajes.",
+   "exampleDe": "Er malt gerne Landschaften."
+  },
+  {
+   "es": "dibujar",
+   "de": "zeichnen",
+   "dePrimary": "zeichnen",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Freizeit",
+   "exampleEs": "Dibuja muy bien.",
+   "exampleDe": "Sie zeichnet sehr gut."
+  },
+  {
+   "es": "descansar en el sofá",
+   "de": "sich auf dem Sofa entspannen",
+   "dePrimary": "sich auf dem Sofa entspannen",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Freizeit",
+   "exampleEs": "Los domingos descanso en el sofá.",
+   "exampleDe": "Sonntags entspanne ich mich auf dem Sofa."
+  },
+  {
+   "es": "alto",
+   "de": "groß|hoch (Person)",
+   "dePrimary": "groß",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Es el jugador más alto del equipo.",
+   "exampleDe": "Er ist der größte Spieler im Team."
+  },
+  {
+   "es": "joven",
+   "de": "jung",
+   "dePrimary": "jung",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "El nuevo jefe es muy joven.",
+   "exampleDe": "Der neue Chef ist sehr jung."
+  },
+  {
+   "es": "guapo",
+   "de": "hübsch|gutaussehend",
+   "dePrimary": "hübsch",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Su hermano es muy guapo.",
+   "exampleDe": "Ihr Bruder ist sehr gutaussehend."
+  },
+  {
+   "es": "feo",
+   "de": "hässlich",
+   "dePrimary": "hässlich",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Ese edificio es bastante feo.",
+   "exampleDe": "Dieses Gebäude ist ziemlich hässlich."
+  },
+  {
+   "es": "delgado",
+   "de": "schlank|dünn",
+   "dePrimary": "schlank",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Está más delgado que antes.",
+   "exampleDe": "Er ist schlanker als früher."
+  },
+  {
+   "es": "gordo",
+   "de": "dick",
+   "dePrimary": "dick",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "El perro está un poco gordo.",
+   "exampleDe": "Der Hund ist etwas dick."
+  },
+  {
+   "es": "fuerte",
+   "de": "stark|kräftig",
+   "dePrimary": "stark",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Hace falta ser fuerte para este trabajo.",
+   "exampleDe": "Für diese Arbeit muss man stark sein."
+  },
+  {
+   "es": "débil",
+   "de": "schwach",
+   "dePrimary": "schwach",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Se sentía muy débil después de la gripe.",
+   "exampleDe": "Er fühlte sich nach der Grippe sehr schwach."
+  },
+  {
+   "es": "rápido",
+   "de": "schnell",
+   "dePrimary": "schnell",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Es un coche muy rápido.",
+   "exampleDe": "Es ist ein sehr schnelles Auto."
+  },
+  {
+   "es": "lento",
+   "de": "langsam",
+   "dePrimary": "langsam",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "El tren es muy lento hoy.",
+   "exampleDe": "Der Zug ist heute sehr langsam."
+  },
+  {
+   "es": "limpio",
+   "de": "sauber",
+   "dePrimary": "sauber",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "La cocina está muy limpia.",
+   "exampleDe": "Die Küche ist sehr sauber."
+  },
+  {
+   "es": "sucio",
+   "de": "schmutzig",
+   "dePrimary": "schmutzig",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Tienes las manos sucias.",
+   "exampleDe": "Deine Hände sind schmutzig."
+  },
+  {
+   "es": "lleno",
+   "de": "voll",
+   "dePrimary": "voll",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "El autobús estaba completamente lleno.",
+   "exampleDe": "Der Bus war völlig voll."
+  },
+  {
+   "es": "vacío",
+   "de": "leer",
+   "dePrimary": "leer",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "La botella está vacía.",
+   "exampleDe": "Die Flasche ist leer."
+  },
+  {
+   "es": "abierto",
+   "de": "offen|geöffnet",
+   "dePrimary": "offen",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "La tienda está abierta hasta las ocho.",
+   "exampleDe": "Der Laden ist bis acht geöffnet."
+  },
+  {
+   "es": "cerrado",
+   "de": "geschlossen",
+   "dePrimary": "geschlossen",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "El museo está cerrado los lunes.",
+   "exampleDe": "Das Museum ist montags geschlossen."
+  },
+  {
+   "es": "seguro",
+   "de": "sicher",
+   "dePrimary": "sicher",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "No estoy seguro de la respuesta.",
+   "exampleDe": "Ich bin mir bei der Antwort nicht sicher."
+  },
+  {
+   "es": "peligroso",
+   "de": "gefährlich",
+   "dePrimary": "gefährlich",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Nadar aquí es peligroso.",
+   "exampleDe": "Hier zu schwimmen ist gefährlich."
+  },
+  {
+   "es": "libre",
+   "de": "frei",
+   "dePrimary": "frei",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "¿Está libre esta silla?",
+   "exampleDe": "Ist dieser Stuhl frei?"
+  },
+  {
+   "es": "importante",
+   "de": "wichtig",
+   "dePrimary": "wichtig",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Es muy importante llegar a tiempo.",
+   "exampleDe": "Es ist sehr wichtig, pünktlich zu sein."
+  },
+  {
+   "es": "interesante",
+   "de": "interessant",
+   "dePrimary": "interessant",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "El curso es muy interesante.",
+   "exampleDe": "Der Kurs ist sehr interessant."
+  },
+  {
+   "es": "aburrido",
+   "de": "langweilig",
+   "dePrimary": "langweilig",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "La reunión fue bastante aburrida.",
+   "exampleDe": "Die Besprechung war ziemlich langweilig."
+  },
+  {
+   "es": "divertido",
+   "de": "lustig|unterhaltsam",
+   "dePrimary": "lustig",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Fue un fin de semana muy divertido.",
+   "exampleDe": "Es war ein sehr unterhaltsames Wochenende."
+  },
+  {
+   "es": "triste",
+   "de": "traurig",
+   "dePrimary": "traurig",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Está triste porque perdió el partido.",
+   "exampleDe": "Er ist traurig, weil er das Spiel verloren hat."
+  },
+  {
+   "es": "feliz",
+   "de": "glücklich",
+   "dePrimary": "glücklich",
+   "pos": "adj",
+   "level": "A1",
+   "topic": "Adjektive",
+   "exampleEs": "Se ve muy feliz últimamente.",
+   "exampleDe": "Er sieht in letzter Zeit sehr glücklich aus."
+  },
+  {
+   "es": "enfadado",
+   "de": "wütend|verärgert",
+   "dePrimary": "wütend",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Está enfadado conmigo.",
+   "exampleDe": "Er ist wütend auf mich."
+  },
+  {
+   "es": "nervioso",
+   "de": "nervös",
+   "dePrimary": "nervös",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Está nerviosa por el examen.",
+   "exampleDe": "Sie ist wegen der Prüfung nervös."
+  },
+  {
+   "es": "tranquilo",
+   "de": "ruhig",
+   "dePrimary": "ruhig",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Es un barrio muy tranquilo.",
+   "exampleDe": "Es ist ein sehr ruhiges Viertel."
+  },
+  {
+   "es": "sorprendido",
+   "de": "überrascht",
+   "dePrimary": "überrascht",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Me quedé sorprendido con la noticia.",
+   "exampleDe": "Ich war überrascht von der Nachricht."
+  },
+  {
+   "es": "orgulloso",
+   "de": "stolz",
+   "dePrimary": "stolz",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Está muy orgulloso de su hija.",
+   "exampleDe": "Er ist sehr stolz auf seine Tochter."
+  },
+  {
+   "es": "generoso",
+   "de": "großzügig",
+   "dePrimary": "großzügig",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Es una persona muy generosa.",
+   "exampleDe": "Er ist ein sehr großzügiger Mensch."
+  },
+  {
+   "es": "honesto",
+   "de": "ehrlich",
+   "dePrimary": "ehrlich",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Siempre es honesto conmigo.",
+   "exampleDe": "Er ist immer ehrlich zu mir."
+  },
+  {
+   "es": "perezoso",
+   "de": "faul",
+   "dePrimary": "faul",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Es un poco perezoso por las mañanas.",
+   "exampleDe": "Er ist morgens etwas faul."
+  },
+  {
+   "es": "inteligente",
+   "de": "intelligent|klug",
+   "dePrimary": "intelligent",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Es una estudiante muy inteligente.",
+   "exampleDe": "Sie ist eine sehr kluge Studentin."
+  },
+  {
+   "es": "simpático",
+   "de": "sympathisch|nett",
+   "dePrimary": "sympathisch",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Todos mis compañeros son muy simpáticos.",
+   "exampleDe": "Alle meine Kollegen sind sehr nett."
+  },
+  {
+   "es": "tímido",
+   "de": "schüchtern",
+   "dePrimary": "schüchtern",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "De niño era muy tímido.",
+   "exampleDe": "Als Kind war er sehr schüchtern."
+  },
+  {
+   "es": "curioso",
+   "de": "neugierig",
+   "dePrimary": "neugierig",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Los niños son muy curiosos.",
+   "exampleDe": "Kinder sind sehr neugierig."
+  },
+  {
+   "es": "posible",
+   "de": "möglich",
+   "dePrimary": "möglich",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Es posible que llueva mañana.",
+   "exampleDe": "Es ist möglich, dass es morgen regnet."
+  },
+  {
+   "es": "cierto",
+   "de": "sicher|gewiss|richtig",
+   "dePrimary": "sicher",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "No estoy cierto de eso.",
+   "exampleDe": "Ich bin mir da nicht sicher."
+  },
+  {
+   "es": "correcto",
+   "de": "richtig|korrekt",
+   "dePrimary": "richtig",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Tu respuesta es correcta.",
+   "exampleDe": "Deine Antwort ist richtig."
+  },
+  {
+   "es": "diferente",
+   "de": "anders|unterschiedlich",
+   "dePrimary": "anders",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Cada país es diferente.",
+   "exampleDe": "Jedes Land ist anders."
+  },
+  {
+   "es": "igual",
+   "de": "gleich",
+   "dePrimary": "gleich",
+   "pos": "adj",
+   "level": "A2",
+   "topic": "Adjektive",
+   "exampleEs": "Los dos vestidos son casi iguales.",
+   "exampleDe": "Die beiden Kleider sind fast gleich."
+  },
+  {
+   "es": "propio",
+   "de": "eigen",
+   "dePrimary": "eigen",
+   "pos": "adj",
+   "level": "B1",
+   "topic": "Adjektive",
+   "exampleEs": "Tiene su propio negocio.",
+   "exampleDe": "Er hat sein eigenes Geschäft."
+  },
+  {
+   "es": "muy",
+   "de": "sehr",
+   "dePrimary": "sehr",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "Estoy muy cansado.",
+   "exampleDe": "Ich bin sehr müde."
+  },
+  {
+   "es": "mucho",
+   "de": "viel",
+   "dePrimary": "viel",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "Trabaja mucho estos días.",
+   "exampleDe": "Er arbeitet dieser Tage viel."
+  },
+  {
+   "es": "poco",
+   "de": "wenig",
+   "dePrimary": "wenig",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "Duerme muy poco.",
+   "exampleDe": "Er schläft sehr wenig."
+  },
+  {
+   "es": "bastante",
+   "de": "ziemlich|genug",
+   "dePrimary": "ziemlich",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Es bastante difícil.",
+   "exampleDe": "Es ist ziemlich schwierig."
+  },
+  {
+   "es": "demasiado",
+   "de": "zu viel|zu sehr",
+   "dePrimary": "zu viel",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Comiste demasiado.",
+   "exampleDe": "Du hast zu viel gegessen."
+  },
+  {
+   "es": "casi",
+   "de": "fast",
+   "dePrimary": "fast",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Ya casi hemos terminado.",
+   "exampleDe": "Wir sind fast fertig."
+  },
+  {
+   "es": "solo",
+   "de": "nur|allein",
+   "dePrimary": "nur",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "Solo quiero descansar.",
+   "exampleDe": "Ich möchte nur ausruhen."
+  },
+  {
+   "es": "también",
+   "de": "auch",
+   "dePrimary": "auch",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "Yo también quiero ir.",
+   "exampleDe": "Ich möchte auch gehen."
+  },
+  {
+   "es": "tampoco",
+   "de": "auch nicht",
+   "dePrimary": "auch nicht",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Yo tampoco lo sabía.",
+   "exampleDe": "Ich wusste es auch nicht."
+  },
+  {
+   "es": "aquí",
+   "de": "hier",
+   "dePrimary": "hier",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "Vivo aquí desde hace un año.",
+   "exampleDe": "Ich wohne seit einem Jahr hier."
+  },
+  {
+   "es": "allí",
+   "de": "dort",
+   "dePrimary": "dort",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "El libro está allí, en la estantería.",
+   "exampleDe": "Das Buch ist dort im Regal."
+  },
+  {
+   "es": "cerca",
+   "de": "nah|in der Nähe",
+   "dePrimary": "nah",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "El colegio está cerca de casa.",
+   "exampleDe": "Die Schule ist in der Nähe des Hauses."
+  },
+  {
+   "es": "lejos",
+   "de": "weit|weit weg",
+   "dePrimary": "weit",
+   "pos": "adv",
+   "level": "A1",
+   "topic": "Adverbien",
+   "exampleEs": "El aeropuerto está lejos del centro.",
+   "exampleDe": "Der Flughafen ist weit vom Zentrum entfernt."
+  },
+  {
+   "es": "dentro",
+   "de": "innen|drinnen",
+   "dePrimary": "innen",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Prefiero comer dentro.",
+   "exampleDe": "Ich esse lieber drinnen."
+  },
+  {
+   "es": "fuera",
+   "de": "draußen",
+   "dePrimary": "draußen",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Los niños juegan fuera.",
+   "exampleDe": "Die Kinder spielen draußen."
+  },
+  {
+   "es": "arriba",
+   "de": "oben",
+   "dePrimary": "oben",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "El dormitorio está arriba.",
+   "exampleDe": "Das Schlafzimmer ist oben."
+  },
+  {
+   "es": "abajo",
+   "de": "unten",
+   "dePrimary": "unten",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "La cocina está abajo.",
+   "exampleDe": "Die Küche ist unten."
+  },
+  {
+   "es": "despacio",
+   "de": "langsam",
+   "dePrimary": "langsam",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Habla más despacio, por favor.",
+   "exampleDe": "Sprich bitte langsamer."
+  },
+  {
+   "es": "juntos",
+   "de": "zusammen",
+   "dePrimary": "zusammen",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Fuimos juntos al concierto.",
+   "exampleDe": "Wir sind zusammen zum Konzert gegangen."
+  },
+  {
+   "es": "solamente",
+   "de": "nur|ausschließlich",
+   "dePrimary": "nur",
+   "pos": "adv",
+   "level": "B1",
+   "topic": "Adverbien",
+   "exampleEs": "Solamente falta una firma.",
+   "exampleDe": "Es fehlt nur noch eine Unterschrift."
+  },
+  {
+   "es": "realmente",
+   "de": "wirklich",
+   "dePrimary": "wirklich",
+   "pos": "adv",
+   "level": "B1",
+   "topic": "Adverbien",
+   "exampleEs": "No sé realmente qué hacer.",
+   "exampleDe": "Ich weiß wirklich nicht, was ich tun soll."
+  },
+  {
+   "es": "totalmente",
+   "de": "völlig|total",
+   "dePrimary": "völlig",
+   "pos": "adv",
+   "level": "B1",
+   "topic": "Adverbien",
+   "exampleEs": "Estoy totalmente de acuerdo.",
+   "exampleDe": "Ich stimme völlig zu."
+  },
+  {
+   "es": "especialmente",
+   "de": "besonders",
+   "dePrimary": "besonders",
+   "pos": "adv",
+   "level": "B1",
+   "topic": "Adverbien",
+   "exampleEs": "Me gusta especialmente el otoño.",
+   "exampleDe": "Ich mag besonders den Herbst."
+  },
+  {
+   "es": "normalmente",
+   "de": "normalerweise",
+   "dePrimary": "normalerweise",
+   "pos": "adv",
+   "level": "A2",
+   "topic": "Adverbien",
+   "exampleEs": "Normalmente ceno a las nueve.",
+   "exampleDe": "Normalerweise esse ich um neun zu Abend."
+  },
+  {
+   "es": "el barrio",
+   "de": "das Viertel",
+   "dePrimary": "das Viertel",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Stadt",
+   "exampleEs": "Vivimos en un barrio tranquilo.",
+   "exampleDe": "Wir wohnen in einem ruhigen Viertel."
+  },
+  {
+   "es": "el edificio",
+   "de": "das Gebäude",
+   "dePrimary": "das Gebäude",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Stadt",
+   "exampleEs": "Ese edificio es del siglo pasado.",
+   "exampleDe": "Dieses Gebäude ist aus dem letzten Jahrhundert."
+  },
+  {
+   "es": "el parque",
+   "de": "der Park",
+   "dePrimary": "der Park",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Stadt",
+   "exampleEs": "Paseamos por el parque los domingos.",
+   "exampleDe": "Sonntags spazieren wir durch den Park."
+  },
+  {
+   "es": "la plaza",
+   "de": "der Platz",
+   "dePrimary": "der Platz",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Stadt",
+   "exampleEs": "Nos vemos en la plaza mayor.",
+   "exampleDe": "Wir treffen uns auf dem Hauptplatz."
+  },
+  {
+   "es": "el semáforo",
+   "de": "die Ampel",
+   "dePrimary": "die Ampel",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Stadt",
+   "exampleEs": "Cruza cuando el semáforo esté en verde.",
+   "exampleDe": "Überquere, wenn die Ampel grün ist."
+  },
+  {
+   "es": "la acera",
+   "de": "der Gehweg|der Bürgersteig",
+   "dePrimary": "der Gehweg",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Stadt",
+   "exampleEs": "Camina por la acera, no por la calle.",
+   "exampleDe": "Geh auf dem Gehweg, nicht auf der Straße."
+  },
+  {
+   "es": "el ayuntamiento",
+   "de": "das Rathaus",
+   "dePrimary": "das Rathaus",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Stadt",
+   "exampleEs": "El ayuntamiento está en el centro.",
+   "exampleDe": "Das Rathaus liegt im Zentrum."
+  },
+  {
+   "es": "la iglesia",
+   "de": "die Kirche",
+   "dePrimary": "die Kirche",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Stadt",
+   "exampleEs": "La iglesia está al lado del parque.",
+   "exampleDe": "Die Kirche steht neben dem Park."
+  },
+  {
+   "es": "el museo",
+   "de": "das Museum",
+   "dePrimary": "das Museum",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Stadt",
+   "exampleEs": "Visitamos un museo de arte moderno.",
+   "exampleDe": "Wir haben ein Museum für moderne Kunst besucht."
+  },
+  {
+   "es": "el hotel",
+   "de": "das Hotel",
+   "dePrimary": "das Hotel",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Reisen",
+   "exampleEs": "Reservamos un hotel cerca de la playa.",
+   "exampleDe": "Wir haben ein Hotel in Strandnähe gebucht."
+  },
+  {
+   "es": "la estación",
+   "de": "der Bahnhof|die Station",
+   "dePrimary": "der Bahnhof",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Reisen",
+   "exampleEs": "La estación está a diez minutos a pie.",
+   "exampleDe": "Der Bahnhof ist zehn Minuten zu Fuß entfernt."
+  },
+  {
+   "es": "el aeropuerto",
+   "de": "der Flughafen",
+   "dePrimary": "der Flughafen",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Reisen",
+   "exampleEs": "Llegamos al aeropuerto con tiempo.",
+   "exampleDe": "Wir kamen rechtzeitig am Flughafen an."
+  },
+  {
+   "es": "el pasaporte",
+   "de": "der Reisepass",
+   "dePrimary": "der Reisepass",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Reisen",
+   "exampleEs": "No olvides el pasaporte.",
+   "exampleDe": "Vergiss den Reisepass nicht."
+  },
+  {
+   "es": "la maleta",
+   "de": "der Koffer",
+   "dePrimary": "der Koffer",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Reisen",
+   "exampleEs": "Todavía no he hecho la maleta.",
+   "exampleDe": "Ich habe den Koffer noch nicht gepackt."
+  },
+  {
+   "es": "el mapa",
+   "de": "die Karte (Landkarte)",
+   "dePrimary": "die Karte (Landkarte)",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Reisen",
+   "exampleEs": "Miramos el mapa antes de salir.",
+   "exampleDe": "Wir haben vor der Abfahrt auf die Karte geschaut."
+  },
+  {
+   "es": "el sofá",
+   "de": "das Sofa",
+   "dePrimary": "das Sofa",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "Me quedé dormido en el sofá.",
+   "exampleDe": "Ich bin auf dem Sofa eingeschlafen."
+  },
+  {
+   "es": "el armario",
+   "de": "der Schrank",
+   "dePrimary": "der Schrank",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "Guarda la ropa en el armario.",
+   "exampleDe": "Räum die Kleidung in den Schrank."
+  },
+  {
+   "es": "el espejo",
+   "de": "der Spiegel",
+   "dePrimary": "der Spiegel",
+   "pos": "noun",
+   "level": "B1",
+   "topic": "Zuhause",
+   "exampleEs": "Se miró en el espejo antes de salir.",
+   "exampleDe": "Er schaute vor dem Rausgehen in den Spiegel."
+  },
+  {
+   "es": "la lámpara",
+   "de": "die Lampe",
+   "dePrimary": "die Lampe",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "Enciende la lámpara, está oscuro.",
+   "exampleDe": "Schalte die Lampe an, es ist dunkel."
+  },
+  {
+   "es": "el jardín",
+   "de": "der Garten",
+   "dePrimary": "der Garten",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "Los niños juegan en el jardín.",
+   "exampleDe": "Die Kinder spielen im Garten."
+  },
+  {
+   "es": "el baño",
+   "de": "das Badezimmer",
+   "dePrimary": "das Badezimmer",
+   "pos": "noun",
+   "level": "A1",
+   "topic": "Zuhause",
+   "exampleEs": "El baño está al final del pasillo.",
+   "exampleDe": "Das Badezimmer ist am Ende des Flurs."
+  },
+  {
+   "es": "la pared",
+   "de": "die Wand",
+   "dePrimary": "die Wand",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "Colgamos un cuadro en la pared.",
+   "exampleDe": "Wir haben ein Bild an die Wand gehängt."
+  },
+  {
+   "es": "el suelo",
+   "de": "der Boden",
+   "dePrimary": "der Boden",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "Se cayó al suelo.",
+   "exampleDe": "Er ist zu Boden gefallen."
+  },
+  {
+   "es": "el piso",
+   "de": "die Wohnung|das Stockwerk",
+   "dePrimary": "die Wohnung",
+   "pos": "noun",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "Alquilamos un piso en el centro.",
+   "exampleDe": "Wir haben eine Wohnung im Zentrum gemietet."
+  },
+  {
+   "es": "alquilar",
+   "de": "mieten|vermieten",
+   "dePrimary": "mieten",
+   "pos": "verb",
+   "level": "A2",
+   "topic": "Zuhause",
+   "exampleEs": "Vamos a alquilar un coche.",
+   "exampleDe": "Wir werden ein Auto mieten."
+  },
+  {
+   "es": "mudarse",
+   "de": "umziehen",
+   "dePrimary": "umziehen",
+   "pos": "verb",
+   "level": "B1",
+   "topic": "Zuhause",
+   "exampleEs": "Nos mudamos el mes que viene.",
+   "exampleDe": "Wir ziehen nächsten Monat um."
+  },
+  {
+   "es": "claro",
+   "de": "klar|natürlich",
+   "dePrimary": "klar",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "—¿Vienes? —¡Claro!",
+   "exampleDe": "„Kommst du?“ – „Klar!“"
+  },
+  {
+   "es": "de acuerdo",
+   "de": "einverstanden",
+   "dePrimary": "einverstanden",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Estoy de acuerdo contigo.",
+   "exampleDe": "Ich bin mit dir einverstanden."
+  },
+  {
+   "es": "en realidad",
+   "de": "eigentlich|tatsächlich",
+   "dePrimary": "eigentlich",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "En realidad no me gusta.",
+   "exampleDe": "Eigentlich gefällt mir das nicht."
+  },
+  {
+   "es": "es decir",
+   "de": "das heißt",
+   "dePrimary": "das heißt",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Llega mañana, es decir, el martes.",
+   "exampleDe": "Er kommt morgen, das heißt, am Dienstag."
+  },
+  {
+   "es": "por ejemplo",
+   "de": "zum Beispiel",
+   "dePrimary": "zum Beispiel",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Podríamos ir, por ejemplo, al cine.",
+   "exampleDe": "Wir könnten zum Beispiel ins Kino gehen."
+  },
+  {
+   "es": "por lo menos",
+   "de": "wenigstens|zumindest",
+   "dePrimary": "wenigstens",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Al menos llegamos a tiempo.",
+   "exampleDe": "Wenigstens sind wir pünktlich angekommen."
+  },
+  {
+   "es": "de todos modos",
+   "de": "sowieso|auf jeden Fall",
+   "dePrimary": "sowieso",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "De todos modos, gracias por venir.",
+   "exampleDe": "Danke, dass du trotzdem gekommen bist."
+  },
+  {
+   "es": "a veces",
+   "de": "manchmal",
+   "dePrimary": "manchmal",
+   "pos": "phrase",
+   "level": "A1",
+   "topic": "Redemittel",
+   "exampleEs": "A veces trabajo desde casa.",
+   "exampleDe": "Manchmal arbeite ich von zu Hause."
+  },
+  {
+   "es": "de nuevo",
+   "de": "wieder|erneut",
+   "dePrimary": "wieder",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Inténtalo de nuevo.",
+   "exampleDe": "Versuch es noch einmal."
+  },
+  {
+   "es": "cuanto antes",
+   "de": "so schnell wie möglich",
+   "dePrimary": "so schnell wie möglich",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Llámame cuanto antes.",
+   "exampleDe": "Ruf mich so schnell wie möglich an."
+  },
+  {
+   "es": "no pasa nada",
+   "de": "das macht nichts|kein Problem",
+   "dePrimary": "das macht nichts",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "—Lo siento. —No pasa nada.",
+   "exampleDe": "„Es tut mir leid.“ – „Kein Problem.“"
+  },
+  {
+   "es": "no importa",
+   "de": "es macht nichts|egal",
+   "dePrimary": "es macht nichts",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "No importa, lo haremos mañana.",
+   "exampleDe": "Egal, wir machen es morgen."
+  },
+  {
+   "es": "hacer falta",
+   "de": "nötig sein|fehlen",
+   "dePrimary": "nötig sein",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Hace falta más tiempo.",
+   "exampleDe": "Es braucht mehr Zeit."
+  },
+  {
+   "es": "tener razón",
+   "de": "recht haben",
+   "dePrimary": "recht haben",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Creo que tienes razón.",
+   "exampleDe": "Ich glaube, du hast recht."
+  },
+  {
+   "es": "tener prisa",
+   "de": "es eilig haben",
+   "dePrimary": "es eilig haben",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "No puedo hablar ahora, tengo prisa.",
+   "exampleDe": "Ich kann jetzt nicht reden, ich hab's eilig."
+  },
+  {
+   "es": "tener suerte",
+   "de": "Glück haben",
+   "dePrimary": "Glück haben",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Tuvimos mucha suerte con el tiempo.",
+   "exampleDe": "Wir hatten viel Glück mit dem Wetter."
+  },
+  {
+   "es": "tener sueño",
+   "de": "müde sein",
+   "dePrimary": "müde sein",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Tengo mucho sueño hoy.",
+   "exampleDe": "Ich bin heute sehr müde."
+  },
+  {
+   "es": "tener miedo",
+   "de": "Angst haben",
+   "dePrimary": "Angst haben",
+   "pos": "phrase",
+   "level": "A2",
+   "topic": "Redemittel",
+   "exampleEs": "Tiene miedo a las alturas.",
+   "exampleDe": "Er hat Höhenangst."
+  },
+  {
+   "es": "hacer caso",
+   "de": "beachten|zuhören",
+   "dePrimary": "beachten",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "Nadie me hace caso.",
+   "exampleDe": "Niemand hört mir zu."
+  },
+  {
+   "es": "ponerse de acuerdo",
+   "de": "sich einigen",
+   "dePrimary": "sich einigen",
+   "pos": "phrase",
+   "level": "B1",
+   "topic": "Redemittel",
+   "exampleEs": "No conseguimos ponernos de acuerdo.",
+   "exampleDe": "Wir konnten uns nicht einigen."
+  }
+ ],
+ "verbs": [
+  {
+   "infinitive": "ser",
+   "de": "sein",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "estar",
+   "de": "sein (Zustand/Ort)",
+   "irregular": true,
+   "group": "ar"
+  },
+  {
+   "infinitive": "tener",
+   "de": "haben",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "hacer",
+   "de": "machen, tun",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "ir",
+   "de": "gehen, fahren",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "poder",
+   "de": "können",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "querer",
+   "de": "wollen, lieben",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "saber",
+   "de": "wissen",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "decir",
+   "de": "sagen",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "venir",
+   "de": "kommen",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "dar",
+   "de": "geben",
+   "irregular": true,
+   "group": "ar"
+  },
+  {
+   "infinitive": "ver",
+   "de": "sehen",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "poner",
+   "de": "legen, stellen, setzen",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "salir",
+   "de": "hinausgehen, ausgehen",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "traer",
+   "de": "bringen",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "oír",
+   "de": "hören",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "jugar",
+   "de": "spielen",
+   "irregular": true,
+   "group": "ar"
+  },
+  {
+   "infinitive": "pensar",
+   "de": "denken",
+   "irregular": true,
+   "group": "ar"
+  },
+  {
+   "infinitive": "volver",
+   "de": "zurückkommen",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "dormir",
+   "de": "schlafen",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "pedir",
+   "de": "bestellen, bitten",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "sentir",
+   "de": "fühlen, spüren",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "empezar",
+   "de": "anfangen, beginnen",
+   "irregular": true,
+   "group": "ar"
+  },
+  {
+   "infinitive": "contar",
+   "de": "zählen, erzählen",
+   "irregular": true,
+   "group": "ar"
+  },
+  {
+   "infinitive": "seguir",
+   "de": "folgen, weitermachen",
+   "irregular": true,
+   "group": "ir"
+  },
+  {
+   "infinitive": "conocer",
+   "de": "kennen",
+   "irregular": true,
+   "group": "er"
+  },
+  {
+   "infinitive": "hablar",
+   "de": "sprechen",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "trabajar",
+   "de": "arbeiten",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "estudiar",
+   "de": "studieren",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "comprar",
+   "de": "kaufen",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "viajar",
+   "de": "reisen",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "cocinar",
+   "de": "kochen",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "caminar",
+   "de": "gehen, laufen",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "limpiar",
+   "de": "putzen",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "lavar",
+   "de": "waschen",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "escuchar",
+   "de": "zuhören",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "esperar",
+   "de": "warten, hoffen",
+   "irregular": false,
+   "group": "ar"
+  },
+  {
+   "infinitive": "comer",
+   "de": "essen",
+   "irregular": false,
+   "group": "er"
+  },
+  {
+   "infinitive": "aprender",
+   "de": "lernen",
+   "irregular": false,
+   "group": "er"
+  },
+  {
+   "infinitive": "beber",
+   "de": "trinken",
+   "irregular": false,
+   "group": "er"
+  },
+  {
+   "infinitive": "correr",
+   "de": "laufen, rennen",
+   "irregular": false,
+   "group": "er"
+  },
+  {
+   "infinitive": "vivir",
+   "de": "leben, wohnen",
+   "irregular": false,
+   "group": "ir"
+  },
+  {
+   "infinitive": "escribir",
+   "de": "schreiben",
+   "irregular": false,
+   "group": "ir"
+  },
+  {
+   "infinitive": "abrir",
+   "de": "öffnen",
+   "irregular": false,
+   "group": "ir"
+  }
+ ],
+ "grammarItems": [
+  {
+   "id": "se1",
+   "category": "ser_estar",
+   "prompt": "Yo ___ profesor.",
+   "options": [
+    "soy",
+    "estoy"
+   ],
+   "answer": "soy",
+   "explanation": "Beruf = dauerhafte Eigenschaft → ser."
+  },
+  {
+   "id": "se2",
+   "category": "ser_estar",
+   "prompt": "Madrid ___ en España.",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "está",
+   "explanation": "Lage einer Stadt/eines Ortes → estar."
+  },
+  {
+   "id": "se3",
+   "category": "ser_estar",
+   "prompt": "Ella ___ muy inteligente.",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "es",
+   "explanation": "Charaktereigenschaft → ser."
+  },
+  {
+   "id": "se4",
+   "category": "ser_estar",
+   "prompt": "Hoy ___ cansado.",
+   "options": [
+    "soy",
+    "estoy"
+   ],
+   "answer": "estoy",
+   "explanation": "Vorübergehender Zustand (heute) → estar."
+  },
+  {
+   "id": "se5",
+   "category": "ser_estar",
+   "prompt": "¿Cómo ___ tu madre? (Ich möchte wissen, wie sie als Person ist.)",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "es",
+   "explanation": "Frage nach der Persönlichkeit/dem Wesen → ser."
+  },
+  {
+   "id": "se6",
+   "category": "ser_estar",
+   "prompt": "¿Cómo ___ tu madre? (Ich möchte wissen, ob es ihr gesundheitlich gut geht.)",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "está",
+   "explanation": "Frage nach dem aktuellen Befinden → estar."
+  },
+  {
+   "id": "se7",
+   "category": "ser_estar",
+   "prompt": "La puerta ___ abierta.",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "está",
+   "explanation": "Ergebnis einer Handlung/Zustand → estar."
+  },
+  {
+   "id": "se8",
+   "category": "ser_estar",
+   "prompt": "El concierto ___ en el estadio.",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "es",
+   "explanation": "Ausnahme: Der Ort einer Veranstaltung (wo etwas stattfindet) nutzt ser, nicht estar."
+  },
+  {
+   "id": "se9",
+   "category": "ser_estar",
+   "prompt": "Nosotros ___ de Alemania.",
+   "options": [
+    "somos",
+    "estamos"
+   ],
+   "answer": "somos",
+   "explanation": "Herkunft → ser."
+  },
+  {
+   "id": "se10",
+   "category": "ser_estar",
+   "prompt": "Juan ___ aburrido. No tiene nada que hacer.",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "está",
+   "explanation": "„Estar aburrido“ = sich langweilen (Zustand). „Ser aburrido“ würde heißen, er ist eine langweilige Person."
+  },
+  {
+   "id": "se11",
+   "category": "ser_estar",
+   "prompt": "Esta película ___ muy aburrida.",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "es",
+   "explanation": "„Ser aburrido“ hier: Eigenschaft des Films (er ist langweilig)."
+  },
+  {
+   "id": "se12",
+   "category": "ser_estar",
+   "prompt": "___ las tres de la tarde.",
+   "options": [
+    "Son",
+    "Están"
+   ],
+   "answer": "Son",
+   "explanation": "Uhrzeiten werden immer mit ser gebildet."
+  },
+  {
+   "id": "se13",
+   "category": "ser_estar",
+   "prompt": "La comida ya ___ lista.",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "está",
+   "explanation": "„Listo“ mit estar = fertig/bereit (Zustand)."
+  },
+  {
+   "id": "se14",
+   "category": "ser_estar",
+   "prompt": "Él ___ médico.",
+   "options": [
+    "es",
+    "está"
+   ],
+   "answer": "es",
+   "explanation": "Beruf → ser."
+  },
+  {
+   "id": "se15",
+   "category": "ser_estar",
+   "prompt": "Yo ___ muy contento con los resultados.",
+   "options": [
+    "soy",
+    "estoy"
+   ],
+   "answer": "estoy",
+   "explanation": "Emotionaler, vorübergehender Zustand → estar."
+  },
+  {
+   "id": "pp1",
+   "category": "por_para",
+   "prompt": "Este regalo es ___ ti.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "para",
+   "explanation": "Empfänger einer Handlung → para."
+  },
+  {
+   "id": "pp2",
+   "category": "por_para",
+   "prompt": "Trabajo ___ ganar dinero.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "para",
+   "explanation": "Zweck/Ziel einer Handlung → para."
+  },
+  {
+   "id": "pp3",
+   "category": "por_para",
+   "prompt": "Gracias ___ tu ayuda.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "por",
+   "explanation": "Grund/Ursache → por."
+  },
+  {
+   "id": "pp4",
+   "category": "por_para",
+   "prompt": "Pasamos ___ el parque de camino a casa.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "por",
+   "explanation": "Bewegung „durch“ einen Ort → por."
+  },
+  {
+   "id": "pp5",
+   "category": "por_para",
+   "prompt": "Necesito el informe ___ el lunes.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "para",
+   "explanation": "Frist/Deadline → para."
+  },
+  {
+   "id": "pp6",
+   "category": "por_para",
+   "prompt": "Cambié mi coche viejo ___ uno nuevo.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "por",
+   "explanation": "Tausch/Austausch → por."
+  },
+  {
+   "id": "pp7",
+   "category": "por_para",
+   "prompt": "Estudio español ___ viajar a España.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "para",
+   "explanation": "Zweck/Ziel → para."
+  },
+  {
+   "id": "pp8",
+   "category": "por_para",
+   "prompt": "Te llamo ___ preguntarte algo.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "para",
+   "explanation": "Zweck des Anrufs → para."
+  },
+  {
+   "id": "pp9",
+   "category": "por_para",
+   "prompt": "Caminamos ___ la playa durante una hora.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "por",
+   "explanation": "„Entlang/durch“ einen Bereich, unbestimmte Bewegung → por."
+  },
+  {
+   "id": "pp10",
+   "category": "por_para",
+   "prompt": "El tren sale ___ Madrid.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "para",
+   "explanation": "Reiseziel/Richtung → para."
+  },
+  {
+   "id": "pp11",
+   "category": "por_para",
+   "prompt": "___ mí, esta es la mejor opción.",
+   "options": [
+    "Por",
+    "Para"
+   ],
+   "answer": "Para",
+   "explanation": "„Para mí“ = meiner Meinung nach — feste Wendung mit para."
+  },
+  {
+   "id": "pp12",
+   "category": "por_para",
+   "prompt": "Multan a los conductores ___ exceso de velocidad.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "por",
+   "explanation": "Grund einer Strafe/Handlung → por."
+  },
+  {
+   "id": "pp13",
+   "category": "por_para",
+   "prompt": "Compré flores ___ mi madre.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "para",
+   "explanation": "Empfänger → para."
+  },
+  {
+   "id": "pp14",
+   "category": "por_para",
+   "prompt": "Ella trabaja ___ la mañana.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "por",
+   "explanation": "Tageszeitangaben (por la mañana/tarde/noche) nutzen immer por."
+  },
+  {
+   "id": "pp15",
+   "category": "por_para",
+   "prompt": "Pagué veinte euros ___ el libro.",
+   "options": [
+    "por",
+    "para"
+   ],
+   "answer": "por",
+   "explanation": "Preis/Gegenwert → por."
+  },
+  {
+   "id": "ar1",
+   "category": "articles",
+   "prompt": "___ problema",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "el",
+   "explanation": "„Problema“ endet auf -a, ist aber männlich (griechischen Ursprungs, wie viele -ma-Wörter)."
+  },
+  {
+   "id": "ar2",
+   "category": "articles",
+   "prompt": "___ día",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "el",
+   "explanation": "„Día“ endet auf -a, ist aber männlich — eine der bekanntesten Ausnahmen."
+  },
+  {
+   "id": "ar3",
+   "category": "articles",
+   "prompt": "___ mano",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "la",
+   "explanation": "„Mano“ endet auf -o, ist aber weiblich — die bekannteste Gegenausnahme."
+  },
+  {
+   "id": "ar4",
+   "category": "articles",
+   "prompt": "___ mapa",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "el",
+   "explanation": "Ein weiteres -ma-Wort griechischen Ursprungs: männlich trotz -a."
+  },
+  {
+   "id": "ar5",
+   "category": "articles",
+   "prompt": "___ foto",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "la",
+   "explanation": "Kurzform von „fotografía“ — bleibt weiblich, obwohl es auf -o endet."
+  },
+  {
+   "id": "ar6",
+   "category": "articles",
+   "prompt": "___ agua fría",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "el",
+   "explanation": "„Agua“ ist grammatisch weiblich, nutzt aber „el“ wegen des betonten a-Lauts am Wortanfang. Adjektive bleiben trotzdem weiblich: „el agua fría“."
+  },
+  {
+   "id": "ar7",
+   "category": "articles",
+   "prompt": "___ sistema",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "el",
+   "explanation": "Noch ein männliches -ma-Wort: el sistema."
+  },
+  {
+   "id": "ar8",
+   "category": "articles",
+   "prompt": "___ radio (das Medium/der Sender)",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "la",
+   "explanation": "In Spanien weiblich für das Medium; in Teilen Lateinamerikas wird „el radio“ für das Gerät verwendet."
+  },
+  {
+   "id": "ar9",
+   "category": "articles",
+   "prompt": "___ idioma",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "el",
+   "explanation": "Männliches -ma-Wort: el idioma."
+  },
+  {
+   "id": "ar10",
+   "category": "articles",
+   "prompt": "___ clima",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "el",
+   "explanation": "Männliches -ma-Wort: el clima."
+  },
+  {
+   "id": "ar11",
+   "category": "articles",
+   "prompt": "___ moto",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "la",
+   "explanation": "Kurzform von „motocicleta“ — bleibt weiblich."
+  },
+  {
+   "id": "ar12",
+   "category": "articles",
+   "prompt": "___ planeta",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "el",
+   "explanation": "Männliches -ma-Wort: el planeta."
+  },
+  {
+   "id": "ar13",
+   "category": "articles",
+   "prompt": "___ crisis",
+   "options": [
+    "el",
+    "la"
+   ],
+   "answer": "la",
+   "explanation": "Wörter auf -is sind meist weiblich: la crisis."
+  },
+  {
+   "id": "vp1",
+   "category": "prepositions",
+   "prompt": "pensar ___ algo",
+   "options": [
+    "en",
+    "de",
+    "con"
+   ],
+   "answer": "en",
+   "explanation": "pensar en = an etwas denken."
+  },
+  {
+   "id": "vp2",
+   "category": "prepositions",
+   "prompt": "soñar ___ algo",
+   "options": [
+    "en",
+    "con",
+    "de"
+   ],
+   "answer": "con",
+   "explanation": "soñar con = von etwas träumen."
+  },
+  {
+   "id": "vp3",
+   "category": "prepositions",
+   "prompt": "depender ___ algo",
+   "options": [
+    "de",
+    "en",
+    "con"
+   ],
+   "answer": "de",
+   "explanation": "depender de = von etwas abhängen."
+  },
+  {
+   "id": "vp4",
+   "category": "prepositions",
+   "prompt": "consistir ___ algo",
+   "options": [
+    "en",
+    "de",
+    "a"
+   ],
+   "answer": "en",
+   "explanation": "consistir en = in etwas bestehen."
+  },
+  {
+   "id": "vp5",
+   "category": "prepositions",
+   "prompt": "enamorarse ___ alguien",
+   "options": [
+    "con",
+    "de",
+    "en"
+   ],
+   "answer": "de",
+   "explanation": "enamorarse de = sich in jemanden verlieben."
+  },
+  {
+   "id": "vp6",
+   "category": "prepositions",
+   "prompt": "casarse ___ alguien",
+   "options": [
+    "de",
+    "con",
+    "a"
+   ],
+   "answer": "con",
+   "explanation": "casarse con = jemanden heiraten."
+  },
+  {
+   "id": "vp7",
+   "category": "prepositions",
+   "prompt": "preocuparse ___ algo",
+   "options": [
+    "de",
+    "por",
+    "en"
+   ],
+   "answer": "por",
+   "explanation": "preocuparse por = sich um etwas sorgen."
+  },
+  {
+   "id": "vp8",
+   "category": "prepositions",
+   "prompt": "tratarse ___ algo",
+   "options": [
+    "en",
+    "de",
+    "por"
+   ],
+   "answer": "de",
+   "explanation": "tratarse de = sich um etwas handeln."
+  },
+  {
+   "id": "vp9",
+   "category": "prepositions",
+   "prompt": "confiar ___ alguien",
+   "options": [
+    "en",
+    "de",
+    "con"
+   ],
+   "answer": "en",
+   "explanation": "confiar en = jemandem vertrauen."
+  },
+  {
+   "id": "vp10",
+   "category": "prepositions",
+   "prompt": "acordarse ___ algo",
+   "options": [
+    "en",
+    "de",
+    "con"
+   ],
+   "answer": "de",
+   "explanation": "acordarse de = sich an etwas erinnern."
+  },
+  {
+   "id": "vp11",
+   "category": "prepositions",
+   "prompt": "quedar ___ alguien",
+   "options": [
+    "con",
+    "de",
+    "en"
+   ],
+   "answer": "con",
+   "explanation": "quedar con = sich mit jemandem verabreden."
+  },
+  {
+   "id": "vp12",
+   "category": "prepositions",
+   "prompt": "insistir ___ algo",
+   "options": [
+    "en",
+    "de",
+    "a"
+   ],
+   "answer": "en",
+   "explanation": "insistir en = auf etwas bestehen."
+  },
+  {
+   "id": "vp13",
+   "category": "prepositions",
+   "prompt": "alegrarse ___ algo",
+   "options": [
+    "en",
+    "de",
+    "por"
+   ],
+   "answer": "de",
+   "explanation": "alegrarse de = sich über etwas freuen."
+  },
+  {
+   "id": "vp14",
+   "category": "prepositions",
+   "prompt": "asistir ___ algo",
+   "options": [
+    "a",
+    "en",
+    "de"
+   ],
+   "answer": "a",
+   "explanation": "asistir a = an etwas teilnehmen, etwas besuchen."
+  },
+  {
+   "id": "vp15",
+   "category": "prepositions",
+   "prompt": "compararse ___ alguien",
+   "options": [
+    "de",
+    "con",
+    "en"
+   ],
+   "answer": "con",
+   "explanation": "compararse con = sich mit jemandem vergleichen."
+  }
+ ],
+ "labels": [
+  {
+   "kind": "tense",
+   "key": "presente",
+   "label": "Presente"
+  },
+  {
+   "kind": "tense",
+   "key": "indefinido",
+   "label": "Pretérito indefinido"
+  },
+  {
+   "kind": "tense",
+   "key": "imperfecto",
+   "label": "Pretérito imperfecto"
+  },
+  {
+   "kind": "tense",
+   "key": "futuro",
+   "label": "Futuro simple"
+  },
+  {
+   "kind": "tense",
+   "key": "condicional",
+   "label": "Condicional simple"
+  },
+  {
+   "kind": "tense",
+   "key": "subjuntivo",
+   "label": "Presente de subjuntivo"
+  },
+  {
+   "kind": "person",
+   "key": "0",
+   "label": "yo"
+  },
+  {
+   "kind": "person",
+   "key": "1",
+   "label": "tú"
+  },
+  {
+   "kind": "person",
+   "key": "2",
+   "label": "él/ella/usted"
+  },
+  {
+   "kind": "person",
+   "key": "3",
+   "label": "nosotros/as"
+  },
+  {
+   "kind": "person",
+   "key": "4",
+   "label": "vosotros/as"
+  },
+  {
+   "kind": "person",
+   "key": "5",
+   "label": "ellos/ellas/ustedes"
+  },
+  {
+   "kind": "grammar_category",
+   "key": "ser_estar",
+   "label": "Ser vs. estar"
+  },
+  {
+   "kind": "grammar_category",
+   "key": "por_para",
+   "label": "Por vs. para"
+  },
+  {
+   "kind": "grammar_category",
+   "key": "articles",
+   "label": "Artikel & Genus"
+  },
+  {
+   "kind": "grammar_category",
+   "key": "prepositions",
+   "label": "Verb + Präposition"
+  }
+ ]
+}

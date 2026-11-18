@@ -2,5 +2,4 @@
 fortschritt/
 node_modules/
 .env
-# built bundle - produced from mcpb/
-vokabeltrainer.mcpb
+backend/target/

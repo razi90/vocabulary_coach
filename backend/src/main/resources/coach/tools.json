@@ -1,0 +1,492 @@
+[
+  {
+    "name": "get_briefing",
+    "description": "Der Lernstand als Markdown: Kennzahlen, hartnäckige Vokabeln, Konjugations- und Grammatikschwächen sowie ein konkreter Übungsauftrag. Der beste Einstieg.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3650,
+          "default": 30,
+          "description": "Betrachtungszeitraum in Tagen."
+        }
+      }
+    }
+  },
+  {
+    "name": "get_weaknesses",
+    "description": "Dieselbe Auswertung wie get_briefing, aber strukturiert als JSON: Kennzahlen, Vokabelfehler samt Verwechslungen, Konjugation nach Form/Zeit/Person, Grammatik nach Kategorie, Ergebnisse gelieferter Übungssätze.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3650,
+          "default": 30
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 12,
+          "description": "Wie viele Einzelposten je Liste."
+        }
+      }
+    }
+  },
+  {
+    "name": "query_events",
+    "description": "Rohes Antwortprotokoll, append-only. Eine Zeile je Antwort mit Zeitpunkt, Art (vocab/conj/grammar/pack), richtig/falsch und – bei Tippaufgaben – der tatsächlichen Eingabe. Für Auswertungen, die die fertigen Sichten nicht abdecken.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "vocab",
+            "conj",
+            "grammar",
+            "pack",
+            "sentence"
+          ]
+        },
+        "since": {
+          "type": "integer",
+          "description": "Nur Ereignisse mit seq größer als dieser Wert."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000,
+          "default": 200
+        }
+      }
+    }
+  },
+  {
+    "name": "search_vocabulary",
+    "description": "Das Vokabular durchsuchen – nach Text, Thema, Niveau oder Wortart. Nützlich, um Übungen aus Wörtern zu bauen, die der Lernende wirklich kennt.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "search": {
+          "type": "string",
+          "description": "Teilstring in spanischer oder deutscher Form."
+        },
+        "topic": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "A1",
+            "A2",
+            "B1"
+          ]
+        },
+        "pos": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 50
+        }
+      }
+    }
+  },
+  {
+    "name": "list_exercises",
+    "description": "Vorhandene Übungssätze samt Status und bisherigen Ergebnissen.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "draft",
+            "archived",
+            "all"
+          ],
+          "default": "all"
+        }
+      }
+    }
+  },
+  {
+    "name": "create_exercise",
+    "description": "Einen Übungssatz anlegen oder ersetzen. Er erscheint sofort in der App im Tab „Übungen“ (bei status=ready). Aufgabentypen: choice (Auswahl, options + answer), cloze (Lückentext mit ___ und answer), translate (prompt + answer). Bei cloze und translate werden Akzente ignoriert und ein Tippfehler als „fast richtig“ gewertet – eine Wortverwechslung nicht. In `explanation` gehört das Warum, nicht die Lösung.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "items"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stabiler Bezeichner, z. B. por-para-grund-vs-zweck."
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "focus": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Grammatikkategorien oder Themen, z. B. [\"por_para\"]."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "draft"
+          ],
+          "default": "ready"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "prompt"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "choice",
+                  "cloze",
+                  "translate"
+                ]
+              },
+              "prompt": {
+                "type": "string"
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "answer": {
+                "type": "string"
+              },
+              "alternatives": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "explanation": {
+                "type": "string"
+              },
+              "hint": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "set_exercise_status",
+    "description": "Status eines Übungssatzes ändern: ready (sichtbar), draft (verborgen), archived.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "id",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "draft",
+            "archived"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "delete_exercise",
+    "description": "Einen Übungssatz endgültig entfernen. Bereits protokollierte Antworten bleiben erhalten.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  {
+    "name": "create_lesson",
+    "description": "Legt die Tageslektion an (überschreibt eine vorhandene desselben Tages). Eine Lektion besteht aus bis zu vier Teilen: listening (YouTube-Video mit Verständnisfragen), writing (Schreibauftrag), speaking (Sprechthema) und sentences (Sätze übersetzen). Mindestens einer ist nötig.\n\nZu sentences: 5–10 deutsche Sätze, die der Lernende ins Spanische überträgt. Bau sie aus Wörtern, die er schon kennt — such sie vorher mit search_vocabulary heraus, dort steht der Lernstand je Wort. Ein Satz je Stolperstelle aus dem Briefing ist mehr wert als zehn beliebige. Die Abgabe kommt über get_pending_feedback zurück; dort steht auch deine gedachte Lösung, damit du siehst, worauf der Satz hinauswollte. Bewerte großzügig: eine andere Wortstellung oder ein Synonym ist kein Fehler, solange der Satz stimmt.\n\nWICHTIG zum Video: Du kannst nicht im Netz suchen. Lege listening nur an, wenn der Lernende dir eine YouTube-URL gegeben hat – nie mit einer ID aus dem Gedächtnis. Die ID wird beim Anlegen gegen YouTube geprüft; eine erfundene führt zur Ablehnung. Titel und Kanal holt der Server selbst.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "day": {
+          "type": "string",
+          "description": "JJJJ-MM-TT. Ohne Angabe: heute (Europe/Berlin)."
+        },
+        "title": {
+          "type": "string"
+        },
+        "theme": {
+          "type": "string",
+          "description": "Thema, z. B. „Im Restaurant bestellen“."
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "A1",
+            "A2",
+            "B1"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "draft"
+          ],
+          "default": "ready"
+        },
+        "listening": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "YouTube-URL oder 11-stellige videoId."
+            },
+            "videoId": {
+              "type": "string"
+            },
+            "task": {
+              "type": "string",
+              "description": "Was beim Hören zu tun ist."
+            },
+            "questions": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 10,
+              "description": "Verständnisfragen als Auswahl; answer muss exakt eine der options sein.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "prompt",
+                  "options",
+                  "answer"
+                ],
+                "properties": {
+                  "prompt": {
+                    "type": "string"
+                  },
+                  "options": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 2
+                  },
+                  "answer": {
+                    "type": "string"
+                  },
+                  "explanation": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "writing": {
+          "type": "object",
+          "required": [
+            "prompt"
+          ],
+          "properties": {
+            "prompt": {
+              "type": "string",
+              "description": "Der Schreibauftrag, auf Deutsch gestellt."
+            },
+            "targetWords": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Spanische Wörter/Wendungen, die vorkommen sollen."
+            },
+            "minWords": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 500,
+              "default": 50
+            },
+            "hints": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sentences": {
+          "type": "object",
+          "required": [
+            "items"
+          ],
+          "description": "Sätze zum Übersetzen. Kein Zeichenkettenvergleich – du bewertest sie selbst.",
+          "properties": {
+            "task": {
+              "type": "string",
+              "description": "Arbeitsauftrag. Ohne Angabe: „Übersetze die Sätze ins Spanische.“"
+            },
+            "items": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 12,
+              "items": {
+                "type": "object",
+                "required": [
+                  "de",
+                  "es"
+                ],
+                "properties": {
+                  "de": {
+                    "type": "string",
+                    "description": "Der deutsche Satz, den der Lernende sieht."
+                  },
+                  "es": {
+                    "type": "string",
+                    "description": "Deine gedachte Lösung. Der Lernende sieht sie nie."
+                  },
+                  "note": {
+                    "type": "string",
+                    "description": "Worauf der Satz zielt, z. B. „por vs. para“."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "speaking": {
+          "type": "object",
+          "required": [
+            "topic"
+          ],
+          "properties": {
+            "topic": {
+              "type": "string"
+            },
+            "prompts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Leitfragen, die beim Sprechen helfen."
+            },
+            "usefulPhrases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "minSeconds": {
+              "type": "integer",
+              "minimum": 15,
+              "maximum": 600,
+              "default": 60
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "get_lesson",
+    "description": "Eine Lektion samt Abgaben des Lernenden. Ohne day: heute.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "day": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  {
+    "name": "list_lessons",
+    "description": "Bisherige Lektionen mit Übersicht, was abgegeben und was schon rückgemeldet wurde.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 30
+        }
+      }
+    }
+  },
+  {
+    "name": "get_pending_feedback",
+    "description": "Abgaben zu Schreiben, Sprechen und Sätzen, die noch keine Rückmeldung haben – samt Aufgabenstellung und dem, was der Lernende geschrieben oder gesagt hat. Beim Sprechen ist es ein Transkript aus der Spracherkennung des Browsers; Erkennungsfehler sind möglich und keine Sprachfehler. Beim Satzteil steht in `vorlage` deine gedachte Lösung je Satz.",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "give_feedback",
+    "description": "Rückmeldung zu einer Abgabe hinterlegen. Sie erscheint in der App unter der Aufgabe. Auf Deutsch schreiben, konkret auf den Text eingehen, Fehler benennen und verbessert zeigen.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "submissionId",
+        "feedback"
+      ],
+      "properties": {
+        "submissionId": {
+          "type": "integer"
+        },
+        "feedback": {
+          "type": "string"
+        }
+      }
+    }
+  }
+]
