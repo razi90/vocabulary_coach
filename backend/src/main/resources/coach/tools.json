@@ -249,8 +249,61 @@
     }
   },
   {
+    "name": "search_youtube",
+    "description": "Sucht spanischsprachige YouTube-Videos für den Hörteil der Tageslektion. Liefert nur Videos, die sich einbetten lassen, mit Titel, Kanal, Dauer und ob Untertitel vorhanden sind. Suchbegriffe auf Spanisch und konkret, passend zu Thema und Niveau, z. B. „pedir comida en un restaurante español A2“ oder „español fácil rutina diaria“. Wähle ein Video mit Untertiteln und hol dann mit get_video_transcript, was darin gesagt wird.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "query"
+      ],
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Suchbegriffe, am besten auf Spanisch."
+        },
+        "duration": {
+          "type": "string",
+          "enum": [
+            "short",
+            "medium",
+            "long"
+          ],
+          "default": "medium",
+          "description": "short: unter 4 Minuten, medium: 4–20 Minuten, long: länger."
+        },
+        "withCaptions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Nur Videos mit Untertiteln (empfohlen – sonst gibt es kein Transkript)."
+        },
+        "maxResults": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 6
+        }
+      }
+    }
+  },
+  {
+    "name": "get_video_transcript",
+    "description": "Holt die spanischen Untertitel eines YouTube-Videos als Text. Nur damit weißt du, was im Video gesagt wird – Verständnisfragen im Hörteil sind nur für Videos erlaubt, deren Transkript du in diesem Lauf geholt hast. Schlägt es fehl, gibt es kein Transkript: dann listening ohne questions anlegen (offene Aufgabe), oder ein anderes Video suchen.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "videoId"
+      ],
+      "properties": {
+        "videoId": {
+          "type": "string",
+          "description": "11-stellige ID oder YouTube-URL."
+        }
+      }
+    }
+  },
+  {
     "name": "create_lesson",
-    "description": "Legt die Tageslektion an (überschreibt eine vorhandene desselben Tages). Eine Lektion besteht aus bis zu vier Teilen: listening (YouTube-Video mit Verständnisfragen), writing (Schreibauftrag), speaking (Sprechthema) und sentences (Sätze übersetzen). Mindestens einer ist nötig.\n\nZu sentences: 5–10 deutsche Sätze, die der Lernende ins Spanische überträgt. Bau sie aus Wörtern, die er schon kennt — such sie vorher mit search_vocabulary heraus, dort steht der Lernstand je Wort. Ein Satz je Stolperstelle aus dem Briefing ist mehr wert als zehn beliebige. Die Abgabe kommt über get_pending_feedback zurück; dort steht auch deine gedachte Lösung, damit du siehst, worauf der Satz hinauswollte. Bewerte großzügig: eine andere Wortstellung oder ein Synonym ist kein Fehler, solange der Satz stimmt.\n\nWICHTIG zum Video: Du kannst nicht im Netz suchen. Lege listening nur an, wenn der Lernende dir eine YouTube-URL gegeben hat – nie mit einer ID aus dem Gedächtnis. Die ID wird beim Anlegen gegen YouTube geprüft; eine erfundene führt zur Ablehnung. Titel und Kanal holt der Server selbst.",
+    "description": "Legt die Tageslektion an (überschreibt eine vorhandene desselben Tages). Eine Lektion besteht aus bis zu vier Teilen: listening (YouTube-Video mit Verständnisfragen), writing (Schreibauftrag), speaking (Sprechthema) und sentences (Sätze übersetzen). Mindestens einer ist nötig.\n\nZu sentences: 5–10 deutsche Sätze, die der Lernende ins Spanische überträgt. Bau sie aus Wörtern, die er schon kennt — such sie vorher mit search_vocabulary heraus, dort steht der Lernstand je Wort. Ein Satz je Stolperstelle aus dem Briefing ist mehr wert als zehn beliebige. Die Abgabe kommt über get_pending_feedback zurück; dort steht auch deine gedachte Lösung, damit du siehst, worauf der Satz hinauswollte. Bewerte großzügig: eine andere Wortstellung oder ein Synonym ist kein Fehler, solange der Satz stimmt.\n\nZum Hörteil (listening): Das Video kommt aus search_youtube oder aus einer URL, die der Lernende dir gegeben hat – nie aus dem Gedächtnis; die ID wird beim Anlegen gegen YouTube geprüft. Zwei Varianten:\n1. Mit questions (Auswahlfragen, sofort bewertet) – nur wenn du vorher get_video_transcript für dieses Video aufgerufen hast. Frag nach dem, was tatsächlich gesagt wird, nicht nach Allgemeinwissen.\n2. Ohne questions – der Lernende schreibt auf Spanisch, was er verstanden hat (task, minWords), und du gibst später über give_feedback Rückmeldung. Das ist der Weg, wenn es kein Transkript gibt.\nTitel und Kanal holt der Server selbst.",
     "parameters": {
       "type": "object",
       "required": [
@@ -296,13 +349,12 @@
             },
             "task": {
               "type": "string",
-              "description": "Was beim Hören zu tun ist."
+              "description": "Was beim Hören zu tun ist. Bei der offenen Variante: was der Lernende zusammenfassen soll."
             },
             "questions": {
               "type": "array",
-              "minItems": 1,
               "maxItems": 10,
-              "description": "Verständnisfragen als Auswahl; answer muss exakt eine der options sein.",
+              "description": "Verständnisfragen als Auswahl; answer muss exakt eine der options sein. Nur mit Transkript. Weglassen für die offene Variante.",
               "items": {
                 "type": "object",
                 "required": [
@@ -329,8 +381,16 @@
                   }
                 }
               }
+            },
+            "minWords": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 300,
+              "default": 40,
+              "description": "Nur offene Variante: Mindestlänge der Zusammenfassung in Wörtern."
             }
-          }
+          },
+          "description": "Hörteil mit YouTube-Video. Mit questions nur nach get_video_transcript; ohne questions eine offene Zusammenfassungsaufgabe."
         },
         "writing": {
           "type": "object",
@@ -464,7 +524,7 @@
   },
   {
     "name": "get_pending_feedback",
-    "description": "Abgaben zu Schreiben, Sprechen und Sätzen, die noch keine Rückmeldung haben – samt Aufgabenstellung und dem, was der Lernende geschrieben oder gesagt hat. Beim Sprechen ist es ein Transkript aus der Spracherkennung des Browsers; Erkennungsfehler sind möglich und keine Sprachfehler. Beim Satzteil steht in `vorlage` deine gedachte Lösung je Satz.",
+    "description": "Abgaben ohne Rückmeldung – Schreiben, Sprechen, Sätze und offene Höraufgaben – samt Aufgabenstellung und dem, was der Lernende geschrieben oder gesagt hat. Beim Sprechen ist es ein Transkript aus der Spracherkennung des Browsers; Erkennungsfehler sind möglich und keine Sprachfehler. In `vorlage` steht beim Satzteil deine gedachte Lösung je Satz, beim Hören das Transkript des Videos, falls es eins gab – prüf daran, ob der Lernende den Inhalt richtig verstanden hat.",
     "parameters": {
       "type": "object",
       "properties": {}

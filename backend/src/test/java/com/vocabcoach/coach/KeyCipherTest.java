@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class KeyCipherTest {
 
   private static KeyCipher cipher(String key) {
-    return new KeyCipher(new AppProperties(key, null, null, null, null));
+    return new KeyCipher(new AppProperties(key, null, null, null, null, null));
   }
 
   private static final String KEY = Base64.getEncoder().encodeToString(new byte[32]);

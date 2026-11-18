@@ -87,7 +87,8 @@ immediately.
 
 **`create_lesson`** — structure:
 
-- `listening`: a YouTube video plus 1–10 comprehension questions (choice).
+- `listening`: a YouTube video with comprehension questions (choice) or, without
+  a transcript, an open summary task.
 - `writing`: a writing assignment with `targetWords` (Spanish words that should
   appear) and `minWords`. The app ticks the target words off live.
 - `speaking`: a topic with guiding questions and useful phrases.
@@ -96,22 +97,41 @@ immediately.
 
 ### The video
 
-You cannot search, so add `listening` only when the task message contains a
-YouTube URL from the learner. Never use an ID from memory: the server checks
-every ID against YouTube and rejects the lesson if it does not exist. Without a
-URL, build the lesson from `writing`, `speaking` and `sentences`.
+Find it with **`search_youtube`** (if the tool is offered) or take a URL the
+learner gave in the order. Never use an ID from memory: the server checks every
+ID against YouTube and rejects the lesson if it does not exist.
 
-Phrase comprehension questions so they can only be answered after listening -
-not from general knowledge.
+Look for spoken Spanish that matches the level, 4-15 minutes, with subtitles.
+Search in Spanish with concrete terms; prefer a video whose topic fits the
+lesson.
+
+You cannot watch the video. **`get_video_transcript`** tells you what is said:
+
+- **With a transcript:** write 3-6 comprehension questions (`choice`) about
+  what is actually said in it - not general knowledge. Automatic subtitles can
+  contain errors; ask only about things that are unambiguous.
+- **Without one:** create `listening` without `questions`. The learner writes
+  in Spanish what they understood (`task`, `minWords`), and the submission
+  comes back through `get_pending_feedback` like a writing task. Do not try to
+  guess the content from title and description.
+
+The server refuses questions for a video whose transcript you did not fetch in
+this run.
+
+If `search_youtube` is not offered and the order has no URL, leave out
+`listening` and say in the summary that the learner can paste a YouTube link.
 
 ### Giving feedback
 
-The app cannot grade writing, speaking and sentences. It stores the submission, you
+The app cannot grade writing, speaking, sentences and listening summaries. It stores the submission, you
 respond:
 
 1. **`get_pending_feedback`** — what is open, with task and submission. For
    sentences, `vorlage` holds your intended solutions; a different word order
-   or a synonym is not a mistake as long as the sentence is right.
+   or a synonym is not a mistake as long as the sentence is right. For a
+   listening summary, `vorlage` holds the video's transcript if there was one:
+   say what they understood correctly, what they missed or got wrong, and
+   correct their Spanish. Without a transcript, judge only the Spanish.
 2. **`give_feedback`** — be concrete: name the mistake, show the corrected
    version, add the why. Praise only where it is deserved.
 

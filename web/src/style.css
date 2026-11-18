@@ -194,6 +194,7 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
 }
 .btn-primary:hover { background: var(--accent-2); }
 .btn-primary:active { transform: scale(.97); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 .btn-huge { width: 100%; padding: 18px; font-size: 18px; border-radius: 16px; }
 
 .hint { text-align: center; color: var(--text-dim); font-size: 13px; margin-top: 10px; }

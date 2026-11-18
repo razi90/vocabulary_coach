@@ -11,6 +11,7 @@ public record AppProperties(
     String registrationCode,
     String adminEmail,
     String adminPassword,
+    String youtubeApiKey,
     Coach coach) {
 
   public record Coach(

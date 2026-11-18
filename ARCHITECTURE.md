@@ -30,7 +30,8 @@ coach. Only port 8080 is published, by default on `127.0.0.1`.
 | `backend/.../learning/LearningStore` | Every SQL access to a learner's state, always by user id. |
 | `backend/.../learning/PackValidator` | Exercise-set validation; same rules as `web/src/packs.js`. |
 | `backend/.../learning/Briefing` | Phrases the analysis as Markdown. Computes nothing. |
-| `backend/.../lessons/LessonService` | Daily lessons, submissions, feedback, YouTube check. |
+| `backend/.../lessons/LessonService` | Daily lessons, submissions, feedback. |
+| `backend/.../lessons/YouTube` | Video search (Data API), existence check (oEmbed), subtitles (watch page, best effort). |
 | `backend/.../auth/` | Accounts, Spring Security setup, login throttle, first-account bootstrap. |
 | `backend/.../coach/` | Providers, LLM client, key encryption, tools, the run loop. |
 | `backend/.../web/ApiController` | The app's HTTP API. |
@@ -70,6 +71,11 @@ defined.
 2. If the reply contains tool calls, run each through `CoachTools`, append the
    results (errors prefixed with `FEHLER:`), store the step, repeat.
 3. A reply without tool calls is the summary; the run is done.
+
+Each run remembers which video transcripts it fetched (`CoachTools.Context`).
+`create_lesson` accepts comprehension questions only for those videos; the
+transcript is stored with the lesson as the answer key for feedback on open
+listening tasks and is stripped from what the browser gets.
 
 Limits: `COACH_MAX_STEPS` round trips, ten minutes, one running job per
 learner, tool results capped at 30 000 characters. Runs still marked as

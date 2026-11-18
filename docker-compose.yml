@@ -29,6 +29,7 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
       REGISTRATION_CODE: ${REGISTRATION_CODE:-}
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
     # The frontend is mounted, not just copied: edits under web/ show up on
     # the next reload without a rebuild. Directory mount on purpose - editors

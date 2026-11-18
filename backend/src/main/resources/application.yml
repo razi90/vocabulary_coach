@@ -65,6 +65,9 @@ app:
   # Credentials for the first account (it owns data from before multi-user).
   admin-email: ${ADMIN_EMAIL:}
   admin-password: ${ADMIN_PASSWORD:}
+  # YouTube Data API v3 key: lets the coach search videos for the daily
+  # lesson. Without it, listening tasks need a URL from the learner.
+  youtube-api-key: ${YOUTUBE_API_KEY:}
   coach:
     # Round trips to the model per run. Protects against loops and bills.
     max-steps: ${COACH_MAX_STEPS:25}

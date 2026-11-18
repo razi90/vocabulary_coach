@@ -125,6 +125,10 @@ public class ApiController {
   @GetMapping("/lesson")
   public ResponseEntity<?> lesson(@RequestParam(required = false) LocalDate day) {
     var lesson = lessons.getLesson(CurrentUser.id(), day);
+    // The transcript is the answer key for the listening part - for the coach, not the page.
+    lesson.ifPresent(l -> {
+      if (l.get("listening") instanceof tools.jackson.databind.node.ObjectNode listening) listening.remove("transcript");
+    });
     // The app reads the body as JSON; without a lesson that is a literal null.
     return lesson.<ResponseEntity<?>>map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("null"));

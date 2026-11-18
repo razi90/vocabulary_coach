@@ -1,15 +1,7 @@
 package com.vocabcoach.lessons;
 
 import com.vocabcoach.UserError;
-
 import com.vocabcoach.db.Rows;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -29,8 +21,8 @@ import tools.jackson.databind.json.JsonMapper;
  *
  * <p>The delicate part is the video. A model can invent a YouTube ID without
  * noticing - the browser would be left with a dead frame. So every ID is
- * checked against the oEmbed endpoint on creation and the lesson rejected
- * otherwise. Title and channel come from the same response.
+ * checked against YouTube on creation and the lesson rejected otherwise.
+ * Title and channel come from the same response.
  */
 @Service
 public class LessonService {
@@ -43,16 +35,19 @@ public class LessonService {
       Pattern.compile("youtube\\.com/embed/([A-Za-z0-9_-]{11})"),
       Pattern.compile("youtube\\.com/shorts/([A-Za-z0-9_-]{11})"));
 
+  /** Kept with the lesson so feedback on a summary can be checked against it. */
+  static final int STORED_TRANSCRIPT = 8000;
+
   private final JdbcClient jdbc;
   private final Rows rows;
   private final JsonMapper json;
-  private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(8))
-      .followRedirects(HttpClient.Redirect.NORMAL).proxy(java.net.ProxySelector.getDefault()).build();
+  private final YouTube youtube;
 
-  public LessonService(JdbcClient jdbc, Rows rows, JsonMapper json) {
+  public LessonService(JdbcClient jdbc, Rows rows, JsonMapper json, YouTube youtube) {
     this.jdbc = jdbc;
     this.rows = rows;
     this.json = json;
+    this.youtube = youtube;
   }
 
   public static LocalDate today() {
@@ -61,7 +56,12 @@ public class LessonService {
 
   // ---------- Creating ----------
 
-  public Map<String, Object> createLesson(long userId, JsonNode input, String createdBy) {
+  /**
+   * @param transcripts subtitles the coach has read in this run, by video id.
+   *     Comprehension questions are accepted only for a video in here.
+   */
+  public Map<String, Object> createLesson(long userId, JsonNode input, String createdBy,
+                                          Map<String, YouTube.Transcript> transcripts) {
     String dayText = str(input.get("day"));
     LocalDate day;
     try {
@@ -72,7 +72,7 @@ public class LessonService {
     String title = str(input.get("title"));
     if (title.isEmpty()) throw new UserError("title fehlt.");
 
-    Map<String, Object> listening = normalizeListening(input.get("listening"));
+    Map<String, Object> listening = normalizeListening(input.get("listening"), transcripts);
     Map<String, Object> writing = normalizeWriting(input.get("writing"));
     Map<String, Object> speaking = normalizeSpeaking(input.get("speaking"));
     Map<String, Object> sentences = normalizeSentences(input.get("sentences"));
@@ -98,11 +98,17 @@ public class LessonService {
         .query().singleRow());
   }
 
-  private Map<String, Object> normalizeListening(JsonNode raw) {
+  /**
+   * Two kinds of listening task. With comprehension questions (choice) the
+   * app grades right away - but a model that has not read what is said in
+   * the video would invent them, so questions need a transcript. Without
+   * one, the learner summarizes what they understood and the coach gives
+   * feedback later, as for writing.
+   */
+  private Map<String, Object> normalizeListening(JsonNode raw, Map<String, YouTube.Transcript> transcripts) {
     if (raw == null || raw.isNull()) return null;
     String videoId = extractVideoId(str(raw.get("videoId")).isEmpty() ? str(raw.get("url")) : str(raw.get("videoId")));
     if (videoId == null) throw new UserError("listening braucht eine YouTube-URL oder eine 11-stellige videoId.");
-    Map<String, String> video = verifyVideo(videoId);
 
     List<Map<String, Object>> questions = new ArrayList<>();
     JsonNode rawQuestions = raw.get("questions");
@@ -125,7 +131,13 @@ public class LessonService {
         questions.add(clean);
       }
     }
-    if (questions.isEmpty()) throw new UserError("listening braucht mindestens eine Verständnisfrage.");
+    YouTube.Transcript transcript = transcripts.get(videoId);
+    if (!questions.isEmpty() && transcript == null) {
+      throw new UserError("Verständnisfragen gehen nur mit Transkript: erst get_video_transcript für " + videoId
+          + " aufrufen. Gibt es keins, listening ohne questions anlegen - dann fasst der Lernende zusammen, "
+          + "was er verstanden hat, und du gibst später Rückmeldung.");
+    }
+    Map<String, String> video = youtube.verify(videoId);
 
     Map<String, Object> out = new LinkedHashMap<>();
     out.put("videoId", videoId);
@@ -133,8 +145,25 @@ public class LessonService {
     out.put("channel", video.get("channel"));
     out.put("url", "https://www.youtube.com/watch?v=" + videoId);
     String task = str(raw.get("task"));
-    out.put("task", task.isEmpty() ? "Sieh das Video und beantworte die Fragen." : task);
-    out.put("questions", questions);
+    if (questions.isEmpty()) {
+      int minWords = raw.path("minWords").asInt(0) == 0 ? 40 : raw.path("minWords").asInt();
+      if (minWords < 10 || minWords > 300) throw new UserError("listening.minWords muss zwischen 10 und 300 liegen.");
+      out.put("mode", "summary");
+      out.put("task", task.isEmpty()
+          ? "Sieh das Video und schreib auf Spanisch, was du verstanden hast: worum es geht, wer spricht, "
+              + "was gesagt wird."
+          : task);
+      out.put("minWords", minWords);
+    } else {
+      out.put("mode", "questions");
+      out.put("task", task.isEmpty() ? "Sieh das Video und beantworte die Fragen." : task);
+      out.put("questions", questions);
+    }
+    if (transcript != null) {
+      String text = transcript.text();
+      out.put("transcript", text.length() > STORED_TRANSCRIPT ? text.substring(0, STORED_TRANSCRIPT) + " …" : text);
+      out.put("transcriptAuto", transcript.autoGenerated());
+    }
     return out;
   }
 
@@ -191,7 +220,7 @@ public class LessonService {
     return out;
   }
 
-  // ---------- The video check ----------
+  // ---------- Video URLs ----------
 
   public static String extractVideoId(String input) {
     if (input == null || input.isBlank()) return null;
@@ -202,30 +231,6 @@ public class LessonService {
       if (m.find()) return m.group(1);
     }
     return null;
-  }
-
-  Map<String, String> verifyVideo(String videoId) {
-    String watch = "https://www.youtube.com/watch?v=" + videoId;
-    URI uri = URI.create("https://www.youtube.com/oembed?url=" + URLEncoder.encode(watch, StandardCharsets.UTF_8)
-        + "&format=json");
-    HttpResponse<String> res;
-    try {
-      res = http.send(HttpRequest.newBuilder(uri).timeout(Duration.ofSeconds(8)).GET().build(),
-          HttpResponse.BodyHandlers.ofString());
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new UserError("YouTube-Prüfung abgebrochen.");
-    } catch (Exception e) {
-      throw new UserError("YouTube war nicht erreichbar (" + e.getMessage() + "). Später erneut versuchen.");
-    }
-    int code = res.statusCode();
-    if (code == 400 || code == 401 || code == 403 || code == 404) {
-      throw new UserError("Das Video \"" + videoId + "\" gibt es nicht oder es lässt sich nicht einbetten. "
-          + "Nimm nur eine URL, die der Lernende dir gegeben hat - nie eine aus dem Gedächtnis.");
-    }
-    if (code < 200 || code >= 300) throw new UserError("YouTube antwortete mit " + code + ".");
-    JsonNode data = json.readTree(res.body());
-    return Map.of("title", str(data.get("title")), "channel", str(data.get("author_name")));
   }
 
   // ---------- Reading and submitting ----------

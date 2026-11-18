@@ -46,8 +46,8 @@ const LESSON = (() => {
       box.innerHTML = `<div class="lesson-feedback-head">Rückmeldung deines Coaches</div>${esc(abgabe.feedback)}`;
     } else {
       box.innerHTML = `<div class="lesson-feedback-head">Abgegeben</div>` +
-        `<span class="lesson-await">Warte auf die Rückmeldung deines Coaches. ` +
-        `Frag ihn beim nächsten Mal danach.</span>`;
+        `<span class="lesson-await">Warte auf die Rückmeldung deines Coaches – im Tab „Coach“ ` +
+        `auf „Feedback zu Abgaben“ tippen.</span>`;
     }
   }
 
@@ -63,6 +63,11 @@ const LESSON = (() => {
 
     const box = el("listeningQuestions");
     const submit = el("listeningSubmit");
+    // Without a transcript the coach cannot ask questions: the learner writes
+    // what they understood and gets feedback later, as for writing.
+    if (!(teil.questions || []).length) return renderListeningSummary(teil, abgabe, box, submit);
+    submit.textContent = "Antworten abgeben";
+    submit.disabled = false;
     if (abgabe) {
       const c = abgabe.content || {};
       box.innerHTML = `<div class="lesson-counter reached">${c.correct} von ${c.total} richtig</div>`;
@@ -115,6 +120,39 @@ const LESSON = (() => {
       });
       submit.hidden = true;
       await abgeben("listening", { answers: antworten, correct, total: antworten.length });
+    };
+  }
+
+  function renderListeningSummary(teil, abgabe, box, submit) {
+    const min = teil.minWords || 40;
+    box.innerHTML = `<textarea class="lesson-textarea" id="listeningText" rows="6" lang="es" spellcheck="false"
+        placeholder="Escribe aquí lo que has entendido …"></textarea>
+      <div class="lesson-counter"><span id="listeningCount">0</span> / ${min} Wörter</div>`;
+    const feld = el("listeningText");
+    submit.textContent = "Zusammenfassung abgeben";
+
+    if (abgabe) {
+      feld.value = (abgabe.content || {}).text || "";
+      feld.disabled = true;
+      el("listeningCount").textContent = woerter(feld.value);
+      submit.hidden = true;
+      renderFeedback("listeningFeedback", abgabe);
+      return;
+    }
+
+    submit.hidden = false;
+    const pruefe = () => {
+      const n = woerter(feld.value);
+      el("listeningCount").textContent = n;
+      el("listeningCount").parentElement.classList.toggle("reached", n >= min);
+      submit.disabled = n < min;
+    };
+    feld.oninput = pruefe;
+    pruefe();
+    submit.onclick = async () => {
+      feld.disabled = true;
+      submit.hidden = true;
+      await abgeben("listening", { text: feld.value.trim(), words: woerter(feld.value) });
     };
   }
 

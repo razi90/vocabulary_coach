@@ -2,9 +2,11 @@ package com.vocabcoach;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.vocabcoach.coach.LlmClient;
+import com.vocabcoach.lessons.YouTube;
 import java.net.CookieManager;
 import java.net.HttpCookie;
 import java.net.URI;
@@ -15,6 +17,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
@@ -87,6 +91,9 @@ class AppIntegrationTest {
 
   @MockitoBean
   LlmClient llm;
+
+  @MockitoBean
+  YouTube youtube;
 
   /** A browser: its own cookie jar, sends the CSRF header like web/src/store.js. */
   class Learner {
@@ -239,6 +246,100 @@ class AppIntegrationTest {
     HttpResponse<String> res = a.send("POST", "/api/coach/runs", json.createObjectNode().put("task", "exercises"));
     assertThat(res.statusCode()).isEqualTo(400);
     assertThat(res.body()).contains("noch nicht eingerichtet");
+  }
+
+  /** Scripts the model: each element is either a tool call (name, args) or the final text. */
+  private void script(String... steps) {
+    AtomicInteger round = new AtomicInteger();
+    when(llm.chat(any(), any(), any())).thenAnswer(inv -> {
+      int i = round.getAndIncrement();
+      if (i * 2 + 1 < steps.length) return toolCall("call_" + i, steps[i * 2], steps[i * 2 + 1]);
+      return new LlmClient.Reply(json.createObjectNode().put("role", "assistant")
+          .put("content", steps[steps.length - 1]), "stop", 10, 10);
+    });
+  }
+
+  private Learner coachedLearner(String name) throws Exception {
+    Learner a = new Learner().register(unique(name));
+    a.ok("PUT", "/api/coach/settings", json.createObjectNode()
+        .put("provider", "openrouter").put("model", "test/model").put("apiKey", "sk-or-v1-0123456789abcd"));
+    when(youtube.verify(anyString())).thenReturn(Map.of("title", "En el mercado", "channel", "Español Fácil"));
+    return a;
+  }
+
+  private static final String WITH_QUESTIONS = """
+      {"title":"Im Markt","listening":{"videoId":"abcdefghijk","questions":[
+        {"prompt":"¿Qué compra Ana?","options":["Pan","Fruta"],"answer":"Fruta"}]}}""";
+
+  @Test
+  void listeningQuestionsNeedATranscriptFromTheSameRun() throws Exception {
+    Learner a = coachedLearner("listen");
+    when(youtube.transcript("abcdefghijk"))
+        .thenReturn(Optional.of(new YouTube.Transcript("es", false, "Ana compra fruta en el mercado.")));
+    script("create_lesson", WITH_QUESTIONS,
+        "get_video_transcript", "{\"videoId\":\"https://youtu.be/abcdefghijk\"}",
+        "create_lesson", WITH_QUESTIONS,
+        "Lektion steht.");
+
+    JsonNode run = waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "lesson")).path("id").asLong());
+    assertThat(run.path("status").asString()).as(run.toString()).isEqualTo("done");
+    JsonNode steps = run.path("steps");
+    assertThat(steps.get(0).path("ok").asBoolean()).isFalse();
+    assertThat(steps.get(0).path("text").asString()).contains("get_video_transcript");
+    assertThat(steps.get(1).path("ok").asBoolean()).isTrue();
+    assertThat(steps.get(2).path("ok").asBoolean()).isTrue();
+
+    JsonNode listening = a.ok("GET", "/api/lesson", null).path("listening");
+    assertThat(listening.path("mode").asString()).isEqualTo("questions");
+    assertThat(listening.path("videoTitle").asString()).isEqualTo("En el mercado");
+    assertThat(listening.has("transcript")).as("answer key stays on the server").isFalse();
+  }
+
+  @Test
+  void withoutTranscriptTheListeningTaskIsOpenAndWaitsForFeedback() throws Exception {
+    Learner a = coachedLearner("summary");
+    when(youtube.transcript(anyString())).thenReturn(Optional.empty());
+    script("get_video_transcript", "{\"videoId\":\"abcdefghijk\"}",
+        "create_lesson", "{\"title\":\"Im Markt\",\"listening\":{\"videoId\":\"abcdefghijk\",\"minWords\":20}}",
+        "Offene Höraufgabe angelegt.");
+
+    JsonNode run = waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "lesson")).path("id").asLong());
+    assertThat(run.path("status").asString()).as(run.toString()).isEqualTo("done");
+    assertThat(run.path("steps").get(0).path("text").asString()).contains("kein spanisches Transkript");
+
+    JsonNode lesson = a.ok("GET", "/api/lesson", null);
+    assertThat(lesson.path("listening").path("mode").asString()).isEqualTo("summary");
+    assertThat(lesson.path("listening").path("minWords").asInt()).isEqualTo(20);
+    a.ok("POST", "/api/lesson/" + lesson.path("id").asLong() + "/submit", json.readTree("""
+        {"part":"listening","content":{"text":"Ana va al mercado y compra fruta.","words":7}}"""));
+
+    long userId = a.ok("GET", "/api/auth/me", null).path("id").asLong();
+    List<String> pending = jdbc.sql("SELECT part FROM v_pending_feedback WHERE user_id = ?").param(userId)
+        .query(String.class).list();
+    assertThat(pending).containsExactly("listening");
+  }
+
+  @Test
+  void videoSearchIsOnlyOfferedWithAKey() throws Exception {
+    Learner a = coachedLearner("search");
+    when(youtube.searchAvailable()).thenReturn(false);
+    List<ArrayNode> toolLists = new ArrayList<>();
+    when(llm.chat(any(), any(), any())).thenAnswer(inv -> {
+      toolLists.add(inv.getArgument(2));
+      return new LlmClient.Reply(json.createObjectNode().put("role", "assistant").put("content", "ok"), "stop", 1, 1);
+    });
+    waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "lesson")).path("id").asLong());
+    when(youtube.searchAvailable()).thenReturn(true);
+    waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "lesson")).path("id").asLong());
+
+    assertThat(names(toolLists.get(0))).doesNotContain("search_youtube").contains("get_video_transcript");
+    assertThat(names(toolLists.get(1))).contains("search_youtube");
+  }
+
+  private static List<String> names(ArrayNode tools) {
+    List<String> out = new ArrayList<>();
+    tools.forEach(t -> out.add(t.path("function").path("name").asString()));
+    return out;
   }
 
   private LlmClient.Reply toolCall(String id, String name, String args) {
