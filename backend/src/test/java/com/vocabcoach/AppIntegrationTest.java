@@ -267,7 +267,7 @@ class AppIntegrationTest {
     assertThat(a.ok("GET", "/api/snapshot", null).path("cards").properties()).hasSize(1)
         .as("a Spanish word is no card in the English course");
     String english = a.send("GET", "/api/briefing", null).body();
-    assertThat(english).contains("463 Vokabeln").contains("to become").doesNotContain("la puerta");
+    assertThat(english).contains("779 Vokabeln").contains("to become").doesNotContain("la puerta");
 
     a.ok("PUT", "/api/auth/course", json.createObjectNode().put("course", "es"));
     assertThat(a.ok("GET", "/api/events", null)).hasSize(1);

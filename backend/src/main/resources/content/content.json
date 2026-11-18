@@ -11717,6 +11717,3166 @@
     "topic": "Falsche Freunde",
     "exampleTerm": "The students play basketball in the gymnasium.",
     "exampleDe": "Die Schüler spielen in der Turnhalle Basketball."
+   },
+   {
+    "term": "uncle",
+    "de": "der Onkel",
+    "dePrimary": "der Onkel",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Menschen",
+    "exampleTerm": "My uncle lives in Canada.",
+    "exampleDe": "Mein Onkel lebt in Kanada."
+   },
+   {
+    "term": "aunt",
+    "de": "die Tante",
+    "dePrimary": "die Tante",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Menschen",
+    "exampleTerm": "My aunt has three cats.",
+    "exampleDe": "Meine Tante hat drei Katzen."
+   },
+   {
+    "term": "cousin",
+    "de": "der Cousin|die Cousine",
+    "dePrimary": "der Cousin",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Menschen",
+    "exampleTerm": "I'm visiting my cousin in Leeds.",
+    "exampleDe": "Ich besuche meinen Cousin in Leeds."
+   },
+   {
+    "term": "grandfather",
+    "de": "der Großvater|der Opa",
+    "dePrimary": "der Großvater",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Menschen",
+    "exampleTerm": "My grandfather was a sailor.",
+    "exampleDe": "Mein Opa war Seemann."
+   },
+   {
+    "term": "girlfriend",
+    "de": "die feste Freundin",
+    "dePrimary": "die feste Freundin",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Menschen",
+    "exampleTerm": "He's moving in with his girlfriend.",
+    "exampleDe": "Er zieht mit seiner Freundin zusammen."
+   },
+   {
+    "term": "guest",
+    "de": "der Gast",
+    "dePrimary": "der Gast",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Menschen",
+    "exampleTerm": "We're expecting ten guests.",
+    "exampleDe": "Wir erwarten zehn Gäste."
+   },
+   {
+    "term": "relationship",
+    "de": "die Beziehung",
+    "dePrimary": "die Beziehung",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Menschen",
+    "exampleTerm": "They have a good relationship.",
+    "exampleDe": "Sie haben eine gute Beziehung."
+   },
+   {
+    "term": "to get married",
+    "de": "heiraten",
+    "dePrimary": "heiraten",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Menschen",
+    "exampleTerm": "They got married last summer.",
+    "exampleDe": "Sie haben letzten Sommer geheiratet."
+   },
+   {
+    "term": "to get on with",
+    "de": "sich verstehen mit",
+    "dePrimary": "sich verstehen mit",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Menschen",
+    "exampleTerm": "I get on well with my sister.",
+    "exampleDe": "Ich verstehe mich gut mit meiner Schwester."
+   },
+   {
+    "term": "to grow up",
+    "de": "aufwachsen",
+    "dePrimary": "aufwachsen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Menschen",
+    "exampleTerm": "I grew up in a small village.",
+    "exampleDe": "Ich bin in einem kleinen Dorf aufgewachsen."
+   },
+   {
+    "term": "teenager",
+    "de": "der/die Jugendliche",
+    "dePrimary": "der/die Jugendliche",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Menschen",
+    "exampleTerm": "Teenagers often sleep late.",
+    "exampleDe": "Jugendliche schlafen oft lange."
+   },
+   {
+    "term": "adult",
+    "de": "der/die Erwachsene",
+    "dePrimary": "der/die Erwachsene",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Menschen",
+    "exampleTerm": "Tickets for adults cost ten pounds.",
+    "exampleDe": "Karten für Erwachsene kosten zehn Pfund."
+   },
+   {
+    "term": "bedroom",
+    "de": "das Schlafzimmer",
+    "dePrimary": "das Schlafzimmer",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Zuhause",
+    "exampleTerm": "The flat has two bedrooms.",
+    "exampleDe": "Die Wohnung hat zwei Schlafzimmer."
+   },
+   {
+    "term": "floor",
+    "de": "der Boden|das Stockwerk",
+    "dePrimary": "der Boden",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Zuhause",
+    "exampleTerm": "We live on the third floor.",
+    "exampleDe": "Wir wohnen im dritten Stock."
+   },
+   {
+    "term": "wall",
+    "de": "die Wand",
+    "dePrimary": "die Wand",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Zuhause",
+    "exampleTerm": "We painted the walls white.",
+    "exampleDe": "Wir haben die Wände weiß gestrichen."
+   },
+   {
+    "term": "roof",
+    "de": "das Dach",
+    "dePrimary": "das Dach",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Zuhause",
+    "exampleTerm": "The roof needs repairing.",
+    "exampleDe": "Das Dach muss repariert werden."
+   },
+   {
+    "term": "sofa",
+    "de": "das Sofa",
+    "dePrimary": "das Sofa",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Zuhause",
+    "exampleTerm": "The cat sleeps on the sofa.",
+    "exampleDe": "Die Katze schläft auf dem Sofa."
+   },
+   {
+    "term": "cupboard",
+    "de": "der Schrank (Küche)",
+    "dePrimary": "der Schrank (Küche)",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Zuhause",
+    "exampleTerm": "The cups are in the cupboard.",
+    "exampleDe": "Die Tassen sind im Schrank."
+   },
+   {
+    "term": "wardrobe",
+    "de": "der Kleiderschrank",
+    "dePrimary": "der Kleiderschrank",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Zuhause",
+    "exampleTerm": "Hang your clothes in the wardrobe.",
+    "exampleDe": "Häng deine Kleider in den Kleiderschrank."
+   },
+   {
+    "term": "shelf",
+    "de": "das Regal",
+    "dePrimary": "das Regal",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Zuhause",
+    "exampleTerm": "The books are on the top shelf.",
+    "exampleDe": "Die Bücher stehen im obersten Regal."
+   },
+   {
+    "term": "lamp",
+    "de": "die Lampe",
+    "dePrimary": "die Lampe",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Zuhause",
+    "exampleTerm": "Turn on the lamp, it's dark.",
+    "exampleDe": "Mach die Lampe an, es ist dunkel."
+   },
+   {
+    "term": "oven",
+    "de": "der Backofen",
+    "dePrimary": "der Backofen",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Zuhause",
+    "exampleTerm": "Put the cake in the oven.",
+    "exampleDe": "Stell den Kuchen in den Ofen."
+   },
+   {
+    "term": "landlord",
+    "de": "der Vermieter",
+    "dePrimary": "der Vermieter",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Zuhause",
+    "exampleTerm": "Our landlord fixed the heating.",
+    "exampleDe": "Unser Vermieter hat die Heizung repariert."
+   },
+   {
+    "term": "to move",
+    "de": "umziehen|bewegen",
+    "dePrimary": "umziehen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Zuhause",
+    "exampleTerm": "We're moving to Bristol next month.",
+    "exampleDe": "Wir ziehen nächsten Monat nach Bristol."
+   },
+   {
+    "term": "heating",
+    "de": "die Heizung",
+    "dePrimary": "die Heizung",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Zuhause",
+    "exampleTerm": "Can you turn the heating up?",
+    "exampleDe": "Kannst du die Heizung höher drehen?"
+   },
+   {
+    "term": "rubbish",
+    "de": "der Müll",
+    "dePrimary": "der Müll",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Zuhause",
+    "exampleTerm": "Can you take the rubbish out?",
+    "exampleDe": "Kannst du den Müll rausbringen?"
+   },
+   {
+    "term": "soup",
+    "de": "die Suppe",
+    "dePrimary": "die Suppe",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Essen",
+    "exampleTerm": "The soup of the day is tomato.",
+    "exampleDe": "Die Tagessuppe ist Tomate."
+   },
+   {
+    "term": "butter",
+    "de": "die Butter",
+    "dePrimary": "die Butter",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Essen",
+    "exampleTerm": "Bread and butter, please.",
+    "exampleDe": "Brot und Butter, bitte."
+   },
+   {
+    "term": "pepper",
+    "de": "der Pfeffer|die Paprika",
+    "dePrimary": "der Pfeffer",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "Add some salt and pepper.",
+    "exampleDe": "Gib etwas Salz und Pfeffer dazu."
+   },
+   {
+    "term": "onion",
+    "de": "die Zwiebel",
+    "dePrimary": "die Zwiebel",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "Chop the onions finely.",
+    "exampleDe": "Hack die Zwiebeln fein."
+   },
+   {
+    "term": "beef",
+    "de": "das Rindfleisch",
+    "dePrimary": "das Rindfleisch",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "I don't eat beef.",
+    "exampleDe": "Ich esse kein Rindfleisch."
+   },
+   {
+    "term": "pork",
+    "de": "das Schweinefleisch",
+    "dePrimary": "das Schweinefleisch",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "This sausage is made of pork.",
+    "exampleDe": "Diese Wurst ist aus Schweinefleisch."
+   },
+   {
+    "term": "juice",
+    "de": "der Saft",
+    "dePrimary": "der Saft",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Essen",
+    "exampleTerm": "A glass of orange juice, please.",
+    "exampleDe": "Ein Glas Orangensaft, bitte."
+   },
+   {
+    "term": "sandwich",
+    "de": "das belegte Brot|das Sandwich",
+    "dePrimary": "das belegte Brot",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Essen",
+    "exampleTerm": "I'll just have a sandwich for lunch.",
+    "exampleDe": "Ich esse mittags nur ein belegtes Brot."
+   },
+   {
+    "term": "starter",
+    "de": "die Vorspeise",
+    "dePrimary": "die Vorspeise",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Essen",
+    "exampleTerm": "Would you like a starter?",
+    "exampleDe": "Möchten Sie eine Vorspeise?"
+   },
+   {
+    "term": "dessert",
+    "de": "der Nachtisch",
+    "dePrimary": "der Nachtisch",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "What's for dessert?",
+    "exampleDe": "Was gibt es zum Nachtisch?"
+   },
+   {
+    "term": "tip",
+    "de": "das Trinkgeld|der Tipp",
+    "dePrimary": "das Trinkgeld",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "We left a ten percent tip.",
+    "exampleDe": "Wir haben zehn Prozent Trinkgeld gegeben."
+   },
+   {
+    "term": "to order",
+    "de": "bestellen",
+    "dePrimary": "bestellen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "Are you ready to order?",
+    "exampleDe": "Möchten Sie bestellen?"
+   },
+   {
+    "term": "spicy",
+    "de": "scharf (gewürzt)",
+    "dePrimary": "scharf (gewürzt)",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "Is the curry very spicy?",
+    "exampleDe": "Ist das Curry sehr scharf?"
+   },
+   {
+    "term": "raw",
+    "de": "roh",
+    "dePrimary": "roh",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Essen",
+    "exampleTerm": "Don't eat the chicken raw.",
+    "exampleDe": "Iss das Hähnchen nicht roh."
+   },
+   {
+    "term": "vegetarian",
+    "de": "vegetarisch|der Vegetarier",
+    "dePrimary": "vegetarisch",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "Do you have a vegetarian option?",
+    "exampleDe": "Haben Sie etwas Vegetarisches?"
+   },
+   {
+    "term": "takeaway",
+    "de": "das Essen zum Mitnehmen",
+    "dePrimary": "das Essen zum Mitnehmen",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Essen",
+    "exampleTerm": "Let's get a takeaway tonight.",
+    "exampleDe": "Lass uns heute Abend Essen holen."
+   },
+   {
+    "term": "to taste",
+    "de": "schmecken|probieren",
+    "dePrimary": "schmecken",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Essen",
+    "exampleTerm": "This tastes great!",
+    "exampleDe": "Das schmeckt toll!"
+   },
+   {
+    "term": "flour",
+    "de": "das Mehl",
+    "dePrimary": "das Mehl",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Essen",
+    "exampleTerm": "You need 200 grams of flour.",
+    "exampleDe": "Man braucht 200 Gramm Mehl."
+   },
+   {
+    "term": "afternoon",
+    "de": "der Nachmittag",
+    "dePrimary": "der Nachmittag",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Zeit",
+    "exampleTerm": "See you on Friday afternoon.",
+    "exampleDe": "Bis Freitagnachmittag."
+   },
+   {
+    "term": "month",
+    "de": "der Monat",
+    "dePrimary": "der Monat",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Zeit",
+    "exampleTerm": "I'm going on holiday next month.",
+    "exampleDe": "Nächsten Monat fahre ich in den Urlaub."
+   },
+   {
+    "term": "day off",
+    "de": "der freie Tag",
+    "dePrimary": "der freie Tag",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Zeit",
+    "exampleTerm": "Tomorrow is my day off.",
+    "exampleDe": "Morgen habe ich frei."
+   },
+   {
+    "term": "lately",
+    "de": "in letzter Zeit",
+    "dePrimary": "in letzter Zeit",
+    "pos": "adv",
+    "level": "B1",
+    "topic": "Zeit",
+    "exampleTerm": "I've been very tired lately.",
+    "exampleDe": "In letzter Zeit bin ich sehr müde."
+   },
+   {
+    "term": "recently",
+    "de": "kürzlich|neulich",
+    "dePrimary": "kürzlich",
+    "pos": "adv",
+    "level": "B1",
+    "topic": "Zeit",
+    "exampleTerm": "I recently started a new job.",
+    "exampleDe": "Ich habe kürzlich eine neue Stelle angefangen."
+   },
+   {
+    "term": "in time",
+    "de": "rechtzeitig",
+    "dePrimary": "rechtzeitig",
+    "pos": "phrase",
+    "level": "B1",
+    "topic": "Zeit",
+    "exampleTerm": "We got there just in time.",
+    "exampleDe": "Wir sind gerade noch rechtzeitig angekommen."
+   },
+   {
+    "term": "on time",
+    "de": "pünktlich",
+    "dePrimary": "pünktlich",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Zeit",
+    "exampleTerm": "The train was on time for once.",
+    "exampleDe": "Der Zug war ausnahmsweise pünktlich."
+   },
+   {
+    "term": "the day after tomorrow",
+    "de": "übermorgen",
+    "dePrimary": "übermorgen",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Zeit",
+    "exampleTerm": "We're leaving the day after tomorrow.",
+    "exampleDe": "Wir fahren übermorgen."
+   },
+   {
+    "term": "fortnight",
+    "de": "zwei Wochen|vierzehn Tage",
+    "dePrimary": "zwei Wochen",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Zeit",
+    "exampleTerm": "We're away for a fortnight.",
+    "exampleDe": "Wir sind zwei Wochen weg."
+   },
+   {
+    "term": "spring",
+    "de": "der Frühling",
+    "dePrimary": "der Frühling",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Kalender",
+    "exampleTerm": "The garden looks lovely in spring.",
+    "exampleDe": "Im Frühling sieht der Garten schön aus."
+   },
+   {
+    "term": "summer",
+    "de": "der Sommer",
+    "dePrimary": "der Sommer",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Kalender",
+    "exampleTerm": "We go camping every summer.",
+    "exampleDe": "Wir gehen jeden Sommer zelten."
+   },
+   {
+    "term": "autumn",
+    "de": "der Herbst",
+    "dePrimary": "der Herbst",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Kalender",
+    "exampleTerm": "Autumn is my favourite season.",
+    "exampleDe": "Der Herbst ist meine Lieblingsjahreszeit."
+   },
+   {
+    "term": "winter",
+    "de": "der Winter",
+    "dePrimary": "der Winter",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Kalender",
+    "exampleTerm": "It gets dark early in winter.",
+    "exampleDe": "Im Winter wird es früh dunkel."
+   },
+   {
+    "term": "fourteen",
+    "de": "vierzehn",
+    "dePrimary": "vierzehn",
+    "pos": "num",
+    "level": "A1",
+    "topic": "Zahlen",
+    "exampleTerm": "The course lasts fourteen weeks.",
+    "exampleDe": "Der Kurs dauert vierzehn Wochen."
+   },
+   {
+    "term": "forty",
+    "de": "vierzig",
+    "dePrimary": "vierzig",
+    "pos": "num",
+    "level": "A1",
+    "topic": "Zahlen",
+    "exampleTerm": "He turned forty yesterday.",
+    "exampleDe": "Er ist gestern vierzig geworden."
+   },
+   {
+    "term": "million",
+    "de": "die Million",
+    "dePrimary": "die Million",
+    "pos": "num",
+    "level": "A2",
+    "topic": "Zahlen",
+    "exampleTerm": "London has about nine million people.",
+    "exampleDe": "London hat etwa neun Millionen Einwohner."
+   },
+   {
+    "term": "third",
+    "de": "dritte|dritter|drittes",
+    "dePrimary": "dritte",
+    "pos": "num",
+    "level": "A1",
+    "topic": "Zahlen",
+    "exampleTerm": "It's her third visit to Scotland.",
+    "exampleDe": "Es ist ihr dritter Besuch in Schottland."
+   },
+   {
+    "term": "dozen",
+    "de": "das Dutzend",
+    "dePrimary": "das Dutzend",
+    "pos": "num",
+    "level": "B1",
+    "topic": "Zahlen",
+    "exampleTerm": "A dozen eggs, please.",
+    "exampleDe": "Ein Dutzend Eier, bitte."
+   },
+   {
+    "term": "post office",
+    "de": "die Post (Postamt)",
+    "dePrimary": "die Post (Postamt)",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Stadt",
+    "exampleTerm": "Is there a post office near here?",
+    "exampleDe": "Gibt es hier in der Nähe eine Post?"
+   },
+   {
+    "term": "car park",
+    "de": "der Parkplatz|das Parkhaus",
+    "dePrimary": "der Parkplatz",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Stadt",
+    "exampleTerm": "The car park is full.",
+    "exampleDe": "Der Parkplatz ist voll."
+   },
+   {
+    "term": "pavement",
+    "de": "der Bürgersteig",
+    "dePrimary": "der Bürgersteig",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Stadt",
+    "exampleTerm": "Don't ride your bike on the pavement.",
+    "exampleDe": "Fahr nicht mit dem Rad auf dem Bürgersteig."
+   },
+   {
+    "term": "crossroads",
+    "de": "die Kreuzung",
+    "dePrimary": "die Kreuzung",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Stadt",
+    "exampleTerm": "Turn right at the crossroads.",
+    "exampleDe": "Bieg an der Kreuzung rechts ab."
+   },
+   {
+    "term": "museum",
+    "de": "das Museum",
+    "dePrimary": "das Museum",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Stadt",
+    "exampleTerm": "The museum is free on Sundays.",
+    "exampleDe": "Das Museum ist sonntags kostenlos."
+   },
+   {
+    "term": "neighbourhood",
+    "de": "die Gegend|das Viertel",
+    "dePrimary": "die Gegend",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Stadt",
+    "exampleTerm": "It's a quiet neighbourhood.",
+    "exampleDe": "Es ist eine ruhige Gegend."
+   },
+   {
+    "term": "to get lost",
+    "de": "sich verlaufen|sich verirren",
+    "dePrimary": "sich verlaufen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Stadt",
+    "exampleTerm": "We got lost in the old town.",
+    "exampleDe": "Wir haben uns in der Altstadt verlaufen."
+   },
+   {
+    "term": "straight on",
+    "de": "geradeaus",
+    "dePrimary": "geradeaus",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Stadt",
+    "exampleTerm": "Go straight on for two hundred metres.",
+    "exampleDe": "Geh zweihundert Meter geradeaus."
+   },
+   {
+    "term": "bus stop",
+    "de": "die Bushaltestelle",
+    "dePrimary": "die Bushaltestelle",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Stadt",
+    "exampleTerm": "Wait for me at the bus stop.",
+    "exampleDe": "Warte an der Bushaltestelle auf mich."
+   },
+   {
+    "term": "return ticket",
+    "de": "die Rückfahrkarte",
+    "dePrimary": "die Rückfahrkarte",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Reisen",
+    "exampleTerm": "A return ticket is cheaper.",
+    "exampleDe": "Eine Rückfahrkarte ist günstiger."
+   },
+   {
+    "term": "single ticket",
+    "de": "die einfache Fahrt",
+    "dePrimary": "die einfache Fahrt",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Reisen",
+    "exampleTerm": "A single ticket to York, please.",
+    "exampleDe": "Eine einfache Fahrt nach York, bitte."
+   },
+   {
+    "term": "flight",
+    "de": "der Flug",
+    "dePrimary": "der Flug",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Reisen",
+    "exampleTerm": "The flight takes two hours.",
+    "exampleDe": "Der Flug dauert zwei Stunden."
+   },
+   {
+    "term": "boarding pass",
+    "de": "die Bordkarte",
+    "dePrimary": "die Bordkarte",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Reisen",
+    "exampleTerm": "Have your boarding pass ready.",
+    "exampleDe": "Halten Sie Ihre Bordkarte bereit."
+   },
+   {
+    "term": "to check in",
+    "de": "einchecken",
+    "dePrimary": "einchecken",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Reisen",
+    "exampleTerm": "We can check in from two o'clock.",
+    "exampleDe": "Wir können ab zwei Uhr einchecken."
+   },
+   {
+    "term": "to miss",
+    "de": "verpassen|vermissen",
+    "dePrimary": "verpassen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Reisen",
+    "exampleTerm": "Hurry up or we'll miss the train!",
+    "exampleDe": "Beeil dich, sonst verpassen wir den Zug!"
+   },
+   {
+    "term": "to cancel",
+    "de": "absagen|stornieren",
+    "dePrimary": "absagen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Reisen",
+    "exampleTerm": "Our flight was cancelled.",
+    "exampleDe": "Unser Flug wurde gestrichen."
+   },
+   {
+    "term": "to book",
+    "de": "buchen|reservieren",
+    "dePrimary": "buchen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Reisen",
+    "exampleTerm": "I've booked a table for eight.",
+    "exampleDe": "Ich habe einen Tisch für acht Uhr reserviert."
+   },
+   {
+    "term": "sightseeing",
+    "de": "die Besichtigung",
+    "dePrimary": "die Besichtigung",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Reisen",
+    "exampleTerm": "We did some sightseeing in Rome.",
+    "exampleDe": "Wir haben in Rom Sehenswürdigkeiten besichtigt."
+   },
+   {
+    "term": "guided tour",
+    "de": "die Führung",
+    "dePrimary": "die Führung",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Reisen",
+    "exampleTerm": "There's a guided tour at eleven.",
+    "exampleDe": "Um elf gibt es eine Führung."
+   },
+   {
+    "term": "souvenir",
+    "de": "das Andenken",
+    "dePrimary": "das Andenken",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Reisen",
+    "exampleTerm": "I bought a souvenir for my mum.",
+    "exampleDe": "Ich habe ein Andenken für meine Mama gekauft."
+   },
+   {
+    "term": "border",
+    "de": "die Grenze",
+    "dePrimary": "die Grenze",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Reisen",
+    "exampleTerm": "We crossed the border at night.",
+    "exampleDe": "Wir haben nachts die Grenze überquert."
+   },
+   {
+    "term": "accommodation",
+    "de": "die Unterkunft",
+    "dePrimary": "die Unterkunft",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Reisen",
+    "exampleTerm": "The price includes accommodation.",
+    "exampleDe": "Im Preis ist die Unterkunft enthalten."
+   },
+   {
+    "term": "luggage trolley",
+    "de": "der Gepäckwagen",
+    "dePrimary": "der Gepäckwagen",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Reisen",
+    "exampleTerm": "Take a luggage trolley, the cases are heavy.",
+    "exampleDe": "Nimm einen Gepäckwagen, die Koffer sind schwer."
+   },
+   {
+    "term": "journey",
+    "de": "die Fahrt|die Reise",
+    "dePrimary": "die Fahrt",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Reisen",
+    "exampleTerm": "The journey to Edinburgh takes four hours.",
+    "exampleDe": "Die Fahrt nach Edinburgh dauert vier Stunden."
+   },
+   {
+    "term": "customer",
+    "de": "der Kunde|die Kundin",
+    "dePrimary": "der Kunde",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Arbeit",
+    "exampleTerm": "The customer is always right.",
+    "exampleDe": "Der Kunde ist König."
+   },
+   {
+    "term": "experience",
+    "de": "die Erfahrung",
+    "dePrimary": "die Erfahrung",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "Do you have any experience in sales?",
+    "exampleDe": "Haben Sie Erfahrung im Verkauf?"
+   },
+   {
+    "term": "job interview",
+    "de": "das Vorstellungsgespräch",
+    "dePrimary": "das Vorstellungsgespräch",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "I have a job interview on Monday.",
+    "exampleDe": "Ich habe am Montag ein Vorstellungsgespräch."
+   },
+   {
+    "term": "CV",
+    "de": "der Lebenslauf",
+    "dePrimary": "der Lebenslauf",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "Please send us your CV.",
+    "exampleDe": "Bitte schicken Sie uns Ihren Lebenslauf."
+   },
+   {
+    "term": "full-time",
+    "de": "Vollzeit",
+    "dePrimary": "Vollzeit",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "She works full-time.",
+    "exampleDe": "Sie arbeitet Vollzeit."
+   },
+   {
+    "term": "part-time",
+    "de": "Teilzeit",
+    "dePrimary": "Teilzeit",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "I'm looking for a part-time job.",
+    "exampleDe": "Ich suche einen Teilzeitjob."
+   },
+   {
+    "term": "to apply for",
+    "de": "sich bewerben um",
+    "dePrimary": "sich bewerben um",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "I've applied for three jobs.",
+    "exampleDe": "Ich habe mich auf drei Stellen beworben."
+   },
+   {
+    "term": "to hire",
+    "de": "einstellen|mieten",
+    "dePrimary": "einstellen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "The company is hiring new staff.",
+    "exampleDe": "Die Firma stellt neue Leute ein."
+   },
+   {
+    "term": "to quit",
+    "de": "kündigen|aufhören",
+    "dePrimary": "kündigen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "He quit his job last week.",
+    "exampleDe": "Er hat letzte Woche gekündigt."
+   },
+   {
+    "term": "task",
+    "de": "die Aufgabe",
+    "dePrimary": "die Aufgabe",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Arbeit",
+    "exampleTerm": "My first task is to answer emails.",
+    "exampleDe": "Meine erste Aufgabe ist, E-Mails zu beantworten."
+   },
+   {
+    "term": "report",
+    "de": "der Bericht",
+    "dePrimary": "der Bericht",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Arbeit",
+    "exampleTerm": "I have to finish the report today.",
+    "exampleDe": "Ich muss den Bericht heute fertig machen."
+   },
+   {
+    "term": "staff",
+    "de": "das Personal|die Mitarbeiter",
+    "dePrimary": "das Personal",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "The staff are very helpful.",
+    "exampleDe": "Das Personal ist sehr hilfsbereit."
+   },
+   {
+    "term": "overtime",
+    "de": "die Überstunden",
+    "dePrimary": "die Überstunden",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Arbeit",
+    "exampleTerm": "I worked overtime all week.",
+    "exampleDe": "Ich habe die ganze Woche Überstunden gemacht."
+   },
+   {
+    "term": "to work from home",
+    "de": "von zu Hause arbeiten|im Homeoffice arbeiten",
+    "dePrimary": "von zu Hause arbeiten",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Arbeit",
+    "exampleTerm": "I work from home on Fridays.",
+    "exampleDe": "Freitags arbeite ich von zu Hause."
+   },
+   {
+    "term": "pilot",
+    "de": "der Pilot|die Pilotin",
+    "dePrimary": "der Pilot",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Berufe",
+    "exampleTerm": "My cousin is a pilot.",
+    "exampleDe": "Mein Cousin ist Pilot."
+   },
+   {
+    "term": "police officer",
+    "de": "der Polizist|die Polizistin",
+    "dePrimary": "der Polizist",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Berufe",
+    "exampleTerm": "Ask the police officer for help.",
+    "exampleDe": "Frag den Polizisten um Hilfe."
+   },
+   {
+    "term": "farmer",
+    "de": "der Bauer|die Bäuerin|der Landwirt",
+    "dePrimary": "der Bauer",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Berufe",
+    "exampleTerm": "The farmer sells eggs at the market.",
+    "exampleDe": "Der Bauer verkauft Eier auf dem Markt."
+   },
+   {
+    "term": "hairdresser",
+    "de": "der Friseur|die Friseurin",
+    "dePrimary": "der Friseur",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Berufe",
+    "exampleTerm": "I have an appointment at the hairdresser's.",
+    "exampleDe": "Ich habe einen Termin beim Friseur."
+   },
+   {
+    "term": "accountant",
+    "de": "der Buchhalter|die Buchhalterin",
+    "dePrimary": "der Buchhalter",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Berufe",
+    "exampleTerm": "Our accountant does our taxes.",
+    "exampleDe": "Unser Buchhalter macht unsere Steuern."
+   },
+   {
+    "term": "journalist",
+    "de": "der Journalist|die Journalistin",
+    "dePrimary": "der Journalist",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Berufe",
+    "exampleTerm": "She works as a journalist.",
+    "exampleDe": "Sie arbeitet als Journalistin."
+   },
+   {
+    "term": "dentist",
+    "de": "der Zahnarzt|die Zahnärztin",
+    "dePrimary": "der Zahnarzt",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Berufe",
+    "exampleTerm": "I'm going to the dentist tomorrow.",
+    "exampleDe": "Ich gehe morgen zum Zahnarzt."
+   },
+   {
+    "term": "arm",
+    "de": "der Arm",
+    "dePrimary": "der Arm",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Körper",
+    "exampleTerm": "He broke his arm.",
+    "exampleDe": "Er hat sich den Arm gebrochen."
+   },
+   {
+    "term": "finger",
+    "de": "der Finger",
+    "dePrimary": "der Finger",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Körper",
+    "exampleTerm": "I cut my finger.",
+    "exampleDe": "Ich habe mich in den Finger geschnitten."
+   },
+   {
+    "term": "face",
+    "de": "das Gesicht",
+    "dePrimary": "das Gesicht",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Körper",
+    "exampleTerm": "Wash your face.",
+    "exampleDe": "Wasch dir das Gesicht."
+   },
+   {
+    "term": "neck",
+    "de": "der Hals|der Nacken",
+    "dePrimary": "der Hals",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Körper",
+    "exampleTerm": "My neck is stiff.",
+    "exampleDe": "Mein Nacken ist steif."
+   },
+   {
+    "term": "knee",
+    "de": "das Knie",
+    "dePrimary": "das Knie",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Körper",
+    "exampleTerm": "I hurt my knee playing football.",
+    "exampleDe": "Ich habe mir beim Fußball das Knie verletzt."
+   },
+   {
+    "term": "heart",
+    "de": "das Herz",
+    "dePrimary": "das Herz",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Körper",
+    "exampleTerm": "Exercise is good for your heart.",
+    "exampleDe": "Bewegung ist gut fürs Herz."
+   },
+   {
+    "term": "sore throat",
+    "de": "die Halsschmerzen",
+    "dePrimary": "die Halsschmerzen",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Gesundheit",
+    "exampleTerm": "I've got a sore throat.",
+    "exampleDe": "Ich habe Halsschmerzen."
+   },
+   {
+    "term": "cough",
+    "de": "der Husten",
+    "dePrimary": "der Husten",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Gesundheit",
+    "exampleTerm": "This cough won't go away.",
+    "exampleDe": "Dieser Husten geht nicht weg."
+   },
+   {
+    "term": "prescription",
+    "de": "das Rezept (ärztlich)",
+    "dePrimary": "das Rezept (ärztlich)",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Gesundheit",
+    "exampleTerm": "You need a prescription for this.",
+    "exampleDe": "Dafür brauchen Sie ein Rezept."
+   },
+   {
+    "term": "pain",
+    "de": "der Schmerz",
+    "dePrimary": "der Schmerz",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Gesundheit",
+    "exampleTerm": "I have a pain in my back.",
+    "exampleDe": "Ich habe Schmerzen im Rücken."
+   },
+   {
+    "term": "to recover",
+    "de": "sich erholen|genesen",
+    "dePrimary": "sich erholen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Gesundheit",
+    "exampleTerm": "She's recovering from the flu.",
+    "exampleDe": "Sie erholt sich von der Grippe."
+   },
+   {
+    "term": "flu",
+    "de": "die Grippe",
+    "dePrimary": "die Grippe",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Gesundheit",
+    "exampleTerm": "Half the office has the flu.",
+    "exampleDe": "Das halbe Büro hat die Grippe."
+   },
+   {
+    "term": "to feel sick",
+    "de": "sich übel fühlen",
+    "dePrimary": "sich übel fühlen",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Gesundheit",
+    "exampleTerm": "I feel sick after the boat trip.",
+    "exampleDe": "Mir ist nach der Bootsfahrt übel."
+   },
+   {
+    "term": "emergency",
+    "de": "der Notfall",
+    "dePrimary": "der Notfall",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Gesundheit",
+    "exampleTerm": "In an emergency, call 999.",
+    "exampleDe": "Im Notfall 999 anrufen."
+   },
+   {
+    "term": "ambulance",
+    "de": "der Krankenwagen",
+    "dePrimary": "der Krankenwagen",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Gesundheit",
+    "exampleTerm": "Call an ambulance!",
+    "exampleDe": "Ruf einen Krankenwagen!"
+   },
+   {
+    "term": "T-shirt",
+    "de": "das T-Shirt",
+    "dePrimary": "das T-Shirt",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Kleidung",
+    "exampleTerm": "It's warm enough for a T-shirt.",
+    "exampleDe": "Es ist warm genug für ein T-Shirt."
+   },
+   {
+    "term": "socks",
+    "de": "die Socken",
+    "dePrimary": "die Socken",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Kleidung",
+    "exampleTerm": "I need new socks.",
+    "exampleDe": "Ich brauche neue Socken."
+   },
+   {
+    "term": "boots",
+    "de": "die Stiefel",
+    "dePrimary": "die Stiefel",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Kleidung",
+    "exampleTerm": "Wear boots, it's muddy.",
+    "exampleDe": "Zieh Stiefel an, es ist matschig."
+   },
+   {
+    "term": "scarf",
+    "de": "der Schal",
+    "dePrimary": "der Schal",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Kleidung",
+    "exampleTerm": "Don't forget your scarf.",
+    "exampleDe": "Vergiss deinen Schal nicht."
+   },
+   {
+    "term": "gloves",
+    "de": "die Handschuhe",
+    "dePrimary": "die Handschuhe",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Kleidung",
+    "exampleTerm": "My hands are cold without gloves.",
+    "exampleDe": "Ohne Handschuhe frieren meine Hände."
+   },
+   {
+    "term": "suit",
+    "de": "der Anzug",
+    "dePrimary": "der Anzug",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Kleidung",
+    "exampleTerm": "He wears a suit to work.",
+    "exampleDe": "Er trägt bei der Arbeit einen Anzug."
+   },
+   {
+    "term": "to put on",
+    "de": "anziehen|aufsetzen",
+    "dePrimary": "anziehen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Kleidung",
+    "exampleTerm": "Put your coat on, it's cold.",
+    "exampleDe": "Zieh deinen Mantel an, es ist kalt."
+   },
+   {
+    "term": "to take off",
+    "de": "ausziehen|abheben (Flugzeug)",
+    "dePrimary": "ausziehen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Kleidung",
+    "exampleTerm": "Please take off your shoes.",
+    "exampleDe": "Bitte zieh die Schuhe aus."
+   },
+   {
+    "term": "to fit",
+    "de": "passen (Größe)",
+    "dePrimary": "passen (Größe)",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Kleidung",
+    "exampleTerm": "These jeans don't fit me.",
+    "exampleDe": "Diese Jeans passt mir nicht."
+   },
+   {
+    "term": "to suit",
+    "de": "stehen (Kleidung)",
+    "dePrimary": "stehen (Kleidung)",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Kleidung",
+    "exampleTerm": "That colour really suits you.",
+    "exampleDe": "Die Farbe steht dir wirklich gut."
+   },
+   {
+    "term": "sunny",
+    "de": "sonnig",
+    "dePrimary": "sonnig",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Wetter",
+    "exampleTerm": "It's sunny today.",
+    "exampleDe": "Heute ist es sonnig."
+   },
+   {
+    "term": "foggy",
+    "de": "neblig",
+    "dePrimary": "neblig",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Wetter",
+    "exampleTerm": "It's foggy this morning.",
+    "exampleDe": "Heute Morgen ist es neblig."
+   },
+   {
+    "term": "warm",
+    "de": "warm",
+    "dePrimary": "warm",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Wetter",
+    "exampleTerm": "It's warm for October.",
+    "exampleDe": "Für Oktober ist es warm."
+   },
+   {
+    "term": "umbrella",
+    "de": "der Regenschirm",
+    "dePrimary": "der Regenschirm",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Wetter",
+    "exampleTerm": "Take an umbrella just in case.",
+    "exampleDe": "Nimm sicherheitshalber einen Schirm mit."
+   },
+   {
+    "term": "to freeze",
+    "de": "frieren|gefrieren",
+    "dePrimary": "frieren",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Wetter",
+    "exampleTerm": "I'm freezing!",
+    "exampleDe": "Ich friere!"
+   },
+   {
+    "term": "field",
+    "de": "das Feld|die Wiese",
+    "dePrimary": "das Feld",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Natur",
+    "exampleTerm": "The horses are in the field.",
+    "exampleDe": "Die Pferde sind auf der Wiese."
+   },
+   {
+    "term": "island",
+    "de": "die Insel",
+    "dePrimary": "die Insel",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Natur",
+    "exampleTerm": "We spent a week on an island.",
+    "exampleDe": "Wir haben eine Woche auf einer Insel verbracht."
+   },
+   {
+    "term": "coast",
+    "de": "die Küste",
+    "dePrimary": "die Küste",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Natur",
+    "exampleTerm": "We drove along the coast.",
+    "exampleDe": "Wir sind die Küste entlanggefahren."
+   },
+   {
+    "term": "hill",
+    "de": "der Hügel",
+    "dePrimary": "der Hügel",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Natur",
+    "exampleTerm": "The house is on top of a hill.",
+    "exampleDe": "Das Haus steht oben auf einem Hügel."
+   },
+   {
+    "term": "environment",
+    "de": "die Umwelt",
+    "dePrimary": "die Umwelt",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Natur",
+    "exampleTerm": "We must protect the environment.",
+    "exampleDe": "Wir müssen die Umwelt schützen."
+   },
+   {
+    "term": "sky",
+    "de": "der Himmel",
+    "dePrimary": "der Himmel",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Natur",
+    "exampleTerm": "There isn't a cloud in the sky.",
+    "exampleDe": "Am Himmel ist keine Wolke."
+   },
+   {
+    "term": "mouse",
+    "de": "die Maus",
+    "dePrimary": "die Maus",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Tiere",
+    "exampleTerm": "The cat caught a mouse.",
+    "exampleDe": "Die Katze hat eine Maus gefangen."
+   },
+   {
+    "term": "pig",
+    "de": "das Schwein",
+    "dePrimary": "das Schwein",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Tiere",
+    "exampleTerm": "The farm has pigs and chickens.",
+    "exampleDe": "Auf dem Hof gibt es Schweine und Hühner."
+   },
+   {
+    "term": "duck",
+    "de": "die Ente",
+    "dePrimary": "die Ente",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Tiere",
+    "exampleTerm": "The children are feeding the ducks.",
+    "exampleDe": "Die Kinder füttern die Enten."
+   },
+   {
+    "term": "insect",
+    "de": "das Insekt",
+    "dePrimary": "das Insekt",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Tiere",
+    "exampleTerm": "There are lots of insects in summer.",
+    "exampleDe": "Im Sommer gibt es viele Insekten."
+   },
+   {
+    "term": "to feed",
+    "de": "füttern",
+    "dePrimary": "füttern",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Tiere",
+    "exampleTerm": "Can you feed the cat while I'm away?",
+    "exampleDe": "Kannst du die Katze füttern, wenn ich weg bin?"
+   },
+   {
+    "term": "laptop",
+    "de": "der Laptop",
+    "dePrimary": "der Laptop",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Technologie",
+    "exampleTerm": "I work on my laptop.",
+    "exampleDe": "Ich arbeite an meinem Laptop."
+   },
+   {
+    "term": "website",
+    "de": "die Webseite",
+    "dePrimary": "die Webseite",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Technologie",
+    "exampleTerm": "You can book on our website.",
+    "exampleDe": "Sie können auf unserer Webseite buchen."
+   },
+   {
+    "term": "to upload",
+    "de": "hochladen",
+    "dePrimary": "hochladen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Technologie",
+    "exampleTerm": "I'll upload the photos tonight.",
+    "exampleDe": "Ich lade die Fotos heute Abend hoch."
+   },
+   {
+    "term": "to log in",
+    "de": "sich anmelden|sich einloggen",
+    "dePrimary": "sich anmelden",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Technologie",
+    "exampleTerm": "I can't log in to my account.",
+    "exampleDe": "Ich kann mich nicht in mein Konto einloggen."
+   },
+   {
+    "term": "to charge",
+    "de": "aufladen|berechnen",
+    "dePrimary": "aufladen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Technologie",
+    "exampleTerm": "I need to charge my phone.",
+    "exampleDe": "Ich muss mein Handy aufladen."
+   },
+   {
+    "term": "battery",
+    "de": "der Akku|die Batterie",
+    "dePrimary": "der Akku",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Technologie",
+    "exampleTerm": "The battery is almost empty.",
+    "exampleDe": "Der Akku ist fast leer."
+   },
+   {
+    "term": "text message",
+    "de": "die SMS|die Nachricht",
+    "dePrimary": "die SMS",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Technologie",
+    "exampleTerm": "I sent you a text message.",
+    "exampleDe": "Ich habe dir eine Nachricht geschickt."
+   },
+   {
+    "term": "to update",
+    "de": "aktualisieren",
+    "dePrimary": "aktualisieren",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Technologie",
+    "exampleTerm": "You need to update the app.",
+    "exampleDe": "Du musst die App aktualisieren."
+   },
+   {
+    "term": "coin",
+    "de": "die Münze",
+    "dePrimary": "die Münze",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Geld",
+    "exampleTerm": "I need some coins for the machine.",
+    "exampleDe": "Ich brauche Münzen für den Automaten."
+   },
+   {
+    "term": "cashpoint",
+    "de": "der Geldautomat",
+    "dePrimary": "der Geldautomat",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Geld",
+    "exampleTerm": "Is there a cashpoint nearby?",
+    "exampleDe": "Gibt es hier einen Geldautomaten?"
+   },
+   {
+    "term": "to afford",
+    "de": "sich leisten",
+    "dePrimary": "sich leisten",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Geld",
+    "exampleTerm": "We can't afford a new car.",
+    "exampleDe": "Wir können uns kein neues Auto leisten."
+   },
+   {
+    "term": "to owe",
+    "de": "schulden",
+    "dePrimary": "schulden",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Geld",
+    "exampleTerm": "You owe me five pounds.",
+    "exampleDe": "Du schuldest mir fünf Pfund."
+   },
+   {
+    "term": "tax",
+    "de": "die Steuer",
+    "dePrimary": "die Steuer",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Geld",
+    "exampleTerm": "Prices include tax.",
+    "exampleDe": "Die Preise sind inklusive Steuer."
+   },
+   {
+    "term": "to cost",
+    "de": "kosten",
+    "dePrimary": "kosten",
+    "pos": "verb",
+    "level": "A1",
+    "topic": "Einkaufen",
+    "exampleTerm": "How much does it cost?",
+    "exampleDe": "Wie viel kostet das?"
+   },
+   {
+    "term": "discount",
+    "de": "der Rabatt",
+    "dePrimary": "der Rabatt",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Einkaufen",
+    "exampleTerm": "Students get a ten percent discount.",
+    "exampleDe": "Studenten bekommen zehn Prozent Rabatt."
+   },
+   {
+    "term": "to return",
+    "de": "zurückgeben|zurückkehren",
+    "dePrimary": "zurückgeben",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Einkaufen",
+    "exampleTerm": "I'd like to return these shoes.",
+    "exampleDe": "Ich möchte diese Schuhe zurückgeben."
+   },
+   {
+    "term": "refund",
+    "de": "die Rückerstattung",
+    "dePrimary": "die Rückerstattung",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Einkaufen",
+    "exampleTerm": "Can I get a refund?",
+    "exampleDe": "Kann ich mein Geld zurückbekommen?"
+   },
+   {
+    "term": "checkout",
+    "de": "die Kasse",
+    "dePrimary": "die Kasse",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Einkaufen",
+    "exampleTerm": "Please pay at the checkout.",
+    "exampleDe": "Bitte an der Kasse bezahlen."
+   },
+   {
+    "term": "bag",
+    "de": "die Tasche|die Tüte",
+    "dePrimary": "die Tasche",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Einkaufen",
+    "exampleTerm": "Do you need a bag?",
+    "exampleDe": "Brauchen Sie eine Tüte?"
+   },
+   {
+    "term": "bakery",
+    "de": "die Bäckerei",
+    "dePrimary": "die Bäckerei",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Einkaufen",
+    "exampleTerm": "The bakery opens at seven.",
+    "exampleDe": "Die Bäckerei öffnet um sieben."
+   },
+   {
+    "term": "butcher's",
+    "de": "die Metzgerei|die Fleischerei",
+    "dePrimary": "die Metzgerei",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Einkaufen",
+    "exampleTerm": "Get some sausages at the butcher's.",
+    "exampleDe": "Hol ein paar Würstchen in der Metzgerei."
+   },
+   {
+    "term": "to go for a walk",
+    "de": "spazieren gehen",
+    "dePrimary": "spazieren gehen",
+    "pos": "phrase",
+    "level": "A1",
+    "topic": "Freizeit",
+    "exampleTerm": "Let's go for a walk after lunch.",
+    "exampleDe": "Lass uns nach dem Mittagessen spazieren gehen."
+   },
+   {
+    "term": "to relax",
+    "de": "sich entspannen",
+    "dePrimary": "sich entspannen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Freizeit",
+    "exampleTerm": "I relax by reading.",
+    "exampleDe": "Ich entspanne mich beim Lesen."
+   },
+   {
+    "term": "to paint",
+    "de": "malen|streichen",
+    "dePrimary": "malen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Freizeit",
+    "exampleTerm": "She paints in her free time.",
+    "exampleDe": "In ihrer Freizeit malt sie."
+   },
+   {
+    "term": "exhibition",
+    "de": "die Ausstellung",
+    "dePrimary": "die Ausstellung",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Freizeit",
+    "exampleTerm": "There's a new exhibition at the museum.",
+    "exampleDe": "Im Museum gibt es eine neue Ausstellung."
+   },
+   {
+    "term": "theatre",
+    "de": "das Theater",
+    "dePrimary": "das Theater",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Freizeit",
+    "exampleTerm": "We're going to the theatre on Saturday.",
+    "exampleDe": "Wir gehen am Samstag ins Theater."
+   },
+   {
+    "term": "camping",
+    "de": "das Zelten|das Camping",
+    "dePrimary": "das Zelten",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Freizeit",
+    "exampleTerm": "We go camping every summer.",
+    "exampleDe": "Wir gehen jeden Sommer zelten."
+   },
+   {
+    "term": "board game",
+    "de": "das Brettspiel",
+    "dePrimary": "das Brettspiel",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Freizeit",
+    "exampleTerm": "We play board games at Christmas.",
+    "exampleDe": "An Weihnachten spielen wir Brettspiele."
+   },
+   {
+    "term": "to invite",
+    "de": "einladen",
+    "dePrimary": "einladen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Freizeit",
+    "exampleTerm": "Thanks for inviting me.",
+    "exampleDe": "Danke für die Einladung."
+   },
+   {
+    "term": "tennis",
+    "de": "das Tennis",
+    "dePrimary": "das Tennis",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Sport",
+    "exampleTerm": "Do you play tennis?",
+    "exampleDe": "Spielst du Tennis?"
+   },
+   {
+    "term": "to cycle",
+    "de": "Rad fahren",
+    "dePrimary": "Rad fahren",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Sport",
+    "exampleTerm": "I cycle to work.",
+    "exampleDe": "Ich fahre mit dem Rad zur Arbeit."
+   },
+   {
+    "term": "to lose a match",
+    "de": "ein Spiel verlieren",
+    "dePrimary": "ein Spiel verlieren",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Sport",
+    "exampleTerm": "We lost the match 3–0.",
+    "exampleDe": "Wir haben das Spiel 3:0 verloren."
+   },
+   {
+    "term": "referee",
+    "de": "der Schiedsrichter",
+    "dePrimary": "der Schiedsrichter",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Sport",
+    "exampleTerm": "The referee gave a penalty.",
+    "exampleDe": "Der Schiedsrichter gab einen Elfmeter."
+   },
+   {
+    "term": "to train",
+    "de": "trainieren",
+    "dePrimary": "trainieren",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Sport",
+    "exampleTerm": "The team trains twice a week.",
+    "exampleDe": "Die Mannschaft trainiert zweimal pro Woche."
+   },
+   {
+    "term": "to score",
+    "de": "ein Tor schießen|punkten",
+    "dePrimary": "ein Tor schießen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Sport",
+    "exampleTerm": "He scored two goals.",
+    "exampleDe": "Er hat zwei Tore geschossen."
+   },
+   {
+    "term": "to show",
+    "de": "zeigen",
+    "dePrimary": "zeigen",
+    "pos": "verb",
+    "level": "A1",
+    "topic": "Verben",
+    "exampleTerm": "Can you show me the way?",
+    "exampleDe": "Kannst du mir den Weg zeigen?"
+   },
+   {
+    "term": "to keep",
+    "de": "behalten|aufbewahren",
+    "dePrimary": "behalten",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Keep the receipt.",
+    "exampleDe": "Behalte den Kassenbon."
+   },
+   {
+    "term": "to let",
+    "de": "lassen",
+    "dePrimary": "lassen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Let me help you.",
+    "exampleDe": "Lass mich dir helfen."
+   },
+   {
+    "term": "to carry",
+    "de": "tragen (Last)",
+    "dePrimary": "tragen (Last)",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Can you carry this bag?",
+    "exampleDe": "Kannst du diese Tasche tragen?"
+   },
+   {
+    "term": "to change",
+    "de": "ändern|wechseln|umsteigen",
+    "dePrimary": "ändern",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "You have to change trains in Crewe.",
+    "exampleDe": "Sie müssen in Crewe umsteigen."
+   },
+   {
+    "term": "to choose",
+    "de": "wählen|aussuchen",
+    "dePrimary": "wählen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Choose one card.",
+    "exampleDe": "Such dir eine Karte aus."
+   },
+   {
+    "term": "to build",
+    "de": "bauen",
+    "dePrimary": "bauen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "They're building a new school.",
+    "exampleDe": "Sie bauen eine neue Schule."
+   },
+   {
+    "term": "to break",
+    "de": "brechen|kaputt machen",
+    "dePrimary": "brechen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Be careful, don't break it.",
+    "exampleDe": "Vorsicht, mach es nicht kaputt."
+   },
+   {
+    "term": "to fall",
+    "de": "fallen|hinfallen",
+    "dePrimary": "fallen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "She fell and hurt her knee.",
+    "exampleDe": "Sie ist hingefallen und hat sich das Knie verletzt."
+   },
+   {
+    "term": "to throw",
+    "de": "werfen",
+    "dePrimary": "werfen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Throw me the ball.",
+    "exampleDe": "Wirf mir den Ball zu."
+   },
+   {
+    "term": "to catch",
+    "de": "fangen|erwischen",
+    "dePrimary": "fangen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "We caught the last bus.",
+    "exampleDe": "Wir haben den letzten Bus erwischt."
+   },
+   {
+    "term": "to sell",
+    "de": "verkaufen",
+    "dePrimary": "verkaufen",
+    "pos": "verb",
+    "level": "A1",
+    "topic": "Verben",
+    "exampleTerm": "They sold their house.",
+    "exampleDe": "Sie haben ihr Haus verkauft."
+   },
+   {
+    "term": "to hope",
+    "de": "hoffen",
+    "dePrimary": "hoffen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "I hope you feel better soon.",
+    "exampleDe": "Ich hoffe, es geht dir bald besser."
+   },
+   {
+    "term": "to believe",
+    "de": "glauben",
+    "dePrimary": "glauben",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "I can't believe it!",
+    "exampleDe": "Ich kann es nicht glauben!"
+   },
+   {
+    "term": "to mean",
+    "de": "bedeuten|meinen",
+    "dePrimary": "bedeuten",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "What does this word mean?",
+    "exampleDe": "Was bedeutet dieses Wort?"
+   },
+   {
+    "term": "to use",
+    "de": "benutzen|verwenden",
+    "dePrimary": "benutzen",
+    "pos": "verb",
+    "level": "A1",
+    "topic": "Verben",
+    "exampleTerm": "Can I use your phone?",
+    "exampleDe": "Darf ich dein Telefon benutzen?"
+   },
+   {
+    "term": "to happen to",
+    "de": "zufällig etwas tun",
+    "dePrimary": "zufällig etwas tun",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "Do you happen to know her number?",
+    "exampleDe": "Weißt du zufällig ihre Nummer?"
+   },
+   {
+    "term": "to prefer",
+    "de": "bevorzugen|lieber mögen",
+    "dePrimary": "bevorzugen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "I prefer tea to coffee.",
+    "exampleDe": "Ich trinke lieber Tee als Kaffee."
+   },
+   {
+    "term": "to suggest",
+    "de": "vorschlagen",
+    "dePrimary": "vorschlagen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "I suggest we take a taxi.",
+    "exampleDe": "Ich schlage vor, dass wir ein Taxi nehmen."
+   },
+   {
+    "term": "to promise",
+    "de": "versprechen",
+    "dePrimary": "versprechen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "I promise I'll be on time.",
+    "exampleDe": "Ich verspreche, pünktlich zu sein."
+   },
+   {
+    "term": "to complain",
+    "de": "sich beschweren",
+    "dePrimary": "sich beschweren",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "He always complains about the weather.",
+    "exampleDe": "Er beschwert sich immer über das Wetter."
+   },
+   {
+    "term": "to apologise",
+    "de": "sich entschuldigen",
+    "dePrimary": "sich entschuldigen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "You should apologise to her.",
+    "exampleDe": "Du solltest dich bei ihr entschuldigen."
+   },
+   {
+    "term": "to mind",
+    "de": "etwas dagegen haben",
+    "dePrimary": "etwas dagegen haben",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "Do you mind if I open the window?",
+    "exampleDe": "Stört es dich, wenn ich das Fenster öffne?"
+   },
+   {
+    "term": "to fix",
+    "de": "reparieren|festlegen",
+    "dePrimary": "reparieren",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Can you fix my bike?",
+    "exampleDe": "Kannst du mein Fahrrad reparieren?"
+   },
+   {
+    "term": "to fill in",
+    "de": "ausfüllen",
+    "dePrimary": "ausfüllen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Please fill in this form.",
+    "exampleDe": "Bitte füllen Sie dieses Formular aus."
+   },
+   {
+    "term": "to pick up",
+    "de": "abholen|aufheben",
+    "dePrimary": "abholen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "I'll pick you up at the station.",
+    "exampleDe": "Ich hole dich am Bahnhof ab."
+   },
+   {
+    "term": "to turn on",
+    "de": "einschalten",
+    "dePrimary": "einschalten",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "Turn on the radio.",
+    "exampleDe": "Schalt das Radio ein."
+   },
+   {
+    "term": "to find out",
+    "de": "herausfinden",
+    "dePrimary": "herausfinden",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "I'll find out when the shop opens.",
+    "exampleDe": "Ich finde heraus, wann der Laden öffnet."
+   },
+   {
+    "term": "to look after",
+    "de": "sich kümmern um|aufpassen auf",
+    "dePrimary": "sich kümmern um",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "Can you look after the kids tonight?",
+    "exampleDe": "Kannst du heute Abend auf die Kinder aufpassen?"
+   },
+   {
+    "term": "to run out of",
+    "de": "ausgehen (Vorrat)",
+    "dePrimary": "ausgehen (Vorrat)",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "We've run out of milk.",
+    "exampleDe": "Uns ist die Milch ausgegangen."
+   },
+   {
+    "term": "to set off",
+    "de": "aufbrechen|losfahren",
+    "dePrimary": "aufbrechen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "We set off early in the morning.",
+    "exampleDe": "Wir sind früh am Morgen aufgebrochen."
+   },
+   {
+    "term": "to put off",
+    "de": "verschieben",
+    "dePrimary": "verschieben",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "Don't put it off until tomorrow.",
+    "exampleDe": "Verschieb es nicht auf morgen."
+   },
+   {
+    "term": "to come back",
+    "de": "zurückkommen",
+    "dePrimary": "zurückkommen",
+    "pos": "verb",
+    "level": "A1",
+    "topic": "Verben",
+    "exampleTerm": "When are you coming back?",
+    "exampleDe": "Wann kommst du zurück?"
+   },
+   {
+    "term": "to sit down",
+    "de": "sich hinsetzen",
+    "dePrimary": "sich hinsetzen",
+    "pos": "verb",
+    "level": "A1",
+    "topic": "Verben",
+    "exampleTerm": "Please sit down.",
+    "exampleDe": "Bitte setzen Sie sich."
+   },
+   {
+    "term": "to wake up",
+    "de": "aufwachen",
+    "dePrimary": "aufwachen",
+    "pos": "verb",
+    "level": "A1",
+    "topic": "Verben",
+    "exampleTerm": "I woke up at five.",
+    "exampleDe": "Ich bin um fünf aufgewacht."
+   },
+   {
+    "term": "to fall asleep",
+    "de": "einschlafen",
+    "dePrimary": "einschlafen",
+    "pos": "verb",
+    "level": "A2",
+    "topic": "Verben",
+    "exampleTerm": "I fell asleep on the sofa.",
+    "exampleDe": "Ich bin auf dem Sofa eingeschlafen."
+   },
+   {
+    "term": "to calm down",
+    "de": "sich beruhigen",
+    "dePrimary": "sich beruhigen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "Calm down, it's not a problem.",
+    "exampleDe": "Beruhig dich, das ist kein Problem."
+   },
+   {
+    "term": "to get used to",
+    "de": "sich gewöhnen an",
+    "dePrimary": "sich gewöhnen an",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "I'm getting used to driving on the left.",
+    "exampleDe": "Ich gewöhne mich ans Linksfahren."
+   },
+   {
+    "term": "to deal with",
+    "de": "sich befassen mit|umgehen mit",
+    "dePrimary": "sich befassen mit",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "I'll deal with it tomorrow.",
+    "exampleDe": "Ich kümmere mich morgen darum."
+   },
+   {
+    "term": "to rely on",
+    "de": "sich verlassen auf",
+    "dePrimary": "sich verlassen auf",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Verben",
+    "exampleTerm": "You can rely on me.",
+    "exampleDe": "Du kannst dich auf mich verlassen."
+   },
+   {
+    "term": "short",
+    "de": "kurz|klein (Person)",
+    "dePrimary": "kurz",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Adjektive",
+    "exampleTerm": "It's only a short walk.",
+    "exampleDe": "Es ist nur ein kurzer Spaziergang."
+   },
+   {
+    "term": "long",
+    "de": "lang",
+    "dePrimary": "lang",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Adjektive",
+    "exampleTerm": "It was a long day.",
+    "exampleDe": "Es war ein langer Tag."
+   },
+   {
+    "term": "fast",
+    "de": "schnell",
+    "dePrimary": "schnell",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Adjektive",
+    "exampleTerm": "This train is very fast.",
+    "exampleDe": "Dieser Zug ist sehr schnell."
+   },
+   {
+    "term": "slow",
+    "de": "langsam",
+    "dePrimary": "langsam",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Adjektive",
+    "exampleTerm": "The internet is slow today.",
+    "exampleDe": "Das Internet ist heute langsam."
+   },
+   {
+    "term": "heavy",
+    "de": "schwer (Gewicht)",
+    "dePrimary": "schwer (Gewicht)",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "This box is too heavy.",
+    "exampleDe": "Diese Kiste ist zu schwer."
+   },
+   {
+    "term": "light",
+    "de": "leicht (Gewicht)|hell",
+    "dePrimary": "leicht (Gewicht)",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "The bag is quite light.",
+    "exampleDe": "Die Tasche ist ziemlich leicht."
+   },
+   {
+    "term": "dark",
+    "de": "dunkel",
+    "dePrimary": "dunkel",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Adjektive",
+    "exampleTerm": "It's getting dark.",
+    "exampleDe": "Es wird dunkel."
+   },
+   {
+    "term": "strong",
+    "de": "stark",
+    "dePrimary": "stark",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "I like my coffee strong.",
+    "exampleDe": "Ich mag meinen Kaffee stark."
+   },
+   {
+    "term": "weak",
+    "de": "schwach",
+    "dePrimary": "schwach",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "I still feel weak after the flu.",
+    "exampleDe": "Nach der Grippe fühle ich mich noch schwach."
+   },
+   {
+    "term": "rich",
+    "de": "reich",
+    "dePrimary": "reich",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "He became rich very young.",
+    "exampleDe": "Er wurde sehr jung reich."
+   },
+   {
+    "term": "poor",
+    "de": "arm",
+    "dePrimary": "arm",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "Poor you!",
+    "exampleDe": "Du Armer!"
+   },
+   {
+    "term": "funny",
+    "de": "lustig|komisch",
+    "dePrimary": "lustig",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Adjektive",
+    "exampleTerm": "That's a funny story.",
+    "exampleDe": "Das ist eine lustige Geschichte."
+   },
+   {
+    "term": "serious",
+    "de": "ernst|ernsthaft",
+    "dePrimary": "ernst",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "Are you serious?",
+    "exampleDe": "Meinst du das ernst?"
+   },
+   {
+    "term": "friendly",
+    "de": "freundlich",
+    "dePrimary": "freundlich",
+    "pos": "adj",
+    "level": "A1",
+    "topic": "Adjektive",
+    "exampleTerm": "The people here are very friendly.",
+    "exampleDe": "Die Leute hier sind sehr freundlich."
+   },
+   {
+    "term": "rude",
+    "de": "unhöflich|frech",
+    "dePrimary": "unhöflich",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "Don't be rude to the waiter.",
+    "exampleDe": "Sei nicht unhöflich zum Kellner."
+   },
+   {
+    "term": "shy",
+    "de": "schüchtern",
+    "dePrimary": "schüchtern",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "She's a bit shy at first.",
+    "exampleDe": "Am Anfang ist sie etwas schüchtern."
+   },
+   {
+    "term": "nervous",
+    "de": "nervös",
+    "dePrimary": "nervös",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "I'm nervous about the interview.",
+    "exampleDe": "Ich bin nervös wegen des Gesprächs."
+   },
+   {
+    "term": "excited",
+    "de": "aufgeregt|begeistert",
+    "dePrimary": "aufgeregt",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "The kids are excited about Christmas.",
+    "exampleDe": "Die Kinder freuen sich riesig auf Weihnachten."
+   },
+   {
+    "term": "surprised",
+    "de": "überrascht",
+    "dePrimary": "überrascht",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "I was surprised to see him.",
+    "exampleDe": "Ich war überrascht, ihn zu sehen."
+   },
+   {
+    "term": "disappointed",
+    "de": "enttäuscht",
+    "dePrimary": "enttäuscht",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "We were disappointed with the hotel.",
+    "exampleDe": "Wir waren vom Hotel enttäuscht."
+   },
+   {
+    "term": "embarrassed",
+    "de": "verlegen|peinlich berührt",
+    "dePrimary": "verlegen",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "I was so embarrassed!",
+    "exampleDe": "Das war mir so peinlich!"
+   },
+   {
+    "term": "lonely",
+    "de": "einsam",
+    "dePrimary": "einsam",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "He feels lonely in the big city.",
+    "exampleDe": "Er fühlt sich in der großen Stadt einsam."
+   },
+   {
+    "term": "comfortable",
+    "de": "bequem|gemütlich",
+    "dePrimary": "bequem",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "These shoes are really comfortable.",
+    "exampleDe": "Diese Schuhe sind wirklich bequem."
+   },
+   {
+    "term": "useful",
+    "de": "nützlich",
+    "dePrimary": "nützlich",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "Thanks, that's very useful.",
+    "exampleDe": "Danke, das ist sehr nützlich."
+   },
+   {
+    "term": "possible",
+    "de": "möglich",
+    "dePrimary": "möglich",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "Is it possible to pay later?",
+    "exampleDe": "Ist es möglich, später zu zahlen?"
+   },
+   {
+    "term": "necessary",
+    "de": "nötig|notwendig",
+    "dePrimary": "nötig",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "Is that really necessary?",
+    "exampleDe": "Ist das wirklich nötig?"
+   },
+   {
+    "term": "available",
+    "de": "verfügbar|erhältlich",
+    "dePrimary": "verfügbar",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "Is this room available next week?",
+    "exampleDe": "Ist dieses Zimmer nächste Woche frei?"
+   },
+   {
+    "term": "crowded",
+    "de": "überfüllt|voll",
+    "dePrimary": "überfüllt",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "The beach was really crowded.",
+    "exampleDe": "Der Strand war richtig voll."
+   },
+   {
+    "term": "wonderful",
+    "de": "wunderbar",
+    "dePrimary": "wunderbar",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "We had a wonderful time.",
+    "exampleDe": "Wir hatten eine wunderbare Zeit."
+   },
+   {
+    "term": "terrible",
+    "de": "schrecklich|furchtbar",
+    "dePrimary": "schrecklich",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "The weather was terrible.",
+    "exampleDe": "Das Wetter war schrecklich."
+   },
+   {
+    "term": "awful",
+    "de": "furchtbar|scheußlich",
+    "dePrimary": "furchtbar",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Adjektive",
+    "exampleTerm": "I feel awful today.",
+    "exampleDe": "Mir geht es heute furchtbar."
+   },
+   {
+    "term": "strange",
+    "de": "seltsam|merkwürdig",
+    "dePrimary": "seltsam",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "That's strange, the door is open.",
+    "exampleDe": "Seltsam, die Tür ist offen."
+   },
+   {
+    "term": "own",
+    "de": "eigen",
+    "dePrimary": "eigen",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "I'd love my own flat.",
+    "exampleDe": "Ich hätte gern eine eigene Wohnung."
+   },
+   {
+    "term": "whole",
+    "de": "ganz",
+    "dePrimary": "ganz",
+    "pos": "adj",
+    "level": "A2",
+    "topic": "Adjektive",
+    "exampleTerm": "I ate the whole pizza.",
+    "exampleDe": "Ich habe die ganze Pizza gegessen."
+   },
+   {
+    "term": "quite",
+    "de": "ziemlich",
+    "dePrimary": "ziemlich",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Adverbien",
+    "exampleTerm": "The film was quite good.",
+    "exampleDe": "Der Film war ziemlich gut."
+   },
+   {
+    "term": "enough",
+    "de": "genug",
+    "dePrimary": "genug",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Adverbien",
+    "exampleTerm": "Is there enough food for everyone?",
+    "exampleDe": "Gibt es genug Essen für alle?"
+   },
+   {
+    "term": "of course",
+    "de": "natürlich|selbstverständlich",
+    "dePrimary": "natürlich",
+    "pos": "adv",
+    "level": "A1",
+    "topic": "Adverbien",
+    "exampleTerm": "Of course you can come.",
+    "exampleDe": "Natürlich kannst du kommen."
+   },
+   {
+    "term": "probably",
+    "de": "wahrscheinlich",
+    "dePrimary": "wahrscheinlich",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Adverbien",
+    "exampleTerm": "It'll probably rain later.",
+    "exampleDe": "Es regnet wahrscheinlich später."
+   },
+   {
+    "term": "unfortunately",
+    "de": "leider",
+    "dePrimary": "leider",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Adverbien",
+    "exampleTerm": "Unfortunately, the shop was closed.",
+    "exampleDe": "Leider war der Laden zu."
+   },
+   {
+    "term": "especially",
+    "de": "besonders",
+    "dePrimary": "besonders",
+    "pos": "adv",
+    "level": "B1",
+    "topic": "Adverbien",
+    "exampleTerm": "I love Italy, especially the food.",
+    "exampleDe": "Ich liebe Italien, besonders das Essen."
+   },
+   {
+    "term": "suddenly",
+    "de": "plötzlich",
+    "dePrimary": "plötzlich",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Adverbien",
+    "exampleTerm": "Suddenly the lights went out.",
+    "exampleDe": "Plötzlich ging das Licht aus."
+   },
+   {
+    "term": "finally",
+    "de": "endlich|schließlich",
+    "dePrimary": "endlich",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Adverbien",
+    "exampleTerm": "Finally, the weekend!",
+    "exampleDe": "Endlich Wochenende!"
+   },
+   {
+    "term": "anyway",
+    "de": "jedenfalls|trotzdem",
+    "dePrimary": "jedenfalls",
+    "pos": "adv",
+    "level": "B1",
+    "topic": "Adverbien",
+    "exampleTerm": "Anyway, I have to go now.",
+    "exampleDe": "Jedenfalls muss ich jetzt los."
+   },
+   {
+    "term": "instead",
+    "de": "stattdessen",
+    "dePrimary": "stattdessen",
+    "pos": "adv",
+    "level": "B1",
+    "topic": "Adverbien",
+    "exampleTerm": "Let's walk instead.",
+    "exampleDe": "Lass uns stattdessen zu Fuß gehen."
+   },
+   {
+    "term": "upstairs",
+    "de": "oben|nach oben",
+    "dePrimary": "oben",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Adverbien",
+    "exampleTerm": "The toilets are upstairs.",
+    "exampleDe": "Die Toiletten sind oben."
+   },
+   {
+    "term": "downstairs",
+    "de": "unten|nach unten",
+    "dePrimary": "unten",
+    "pos": "adv",
+    "level": "A2",
+    "topic": "Adverbien",
+    "exampleTerm": "Breakfast is served downstairs.",
+    "exampleDe": "Das Frühstück gibt es unten."
+   },
+   {
+    "term": "or",
+    "de": "oder",
+    "dePrimary": "oder",
+    "pos": "conj",
+    "level": "A1",
+    "topic": "Konjunktionen",
+    "exampleTerm": "Tea or coffee?",
+    "exampleDe": "Tee oder Kaffee?"
+   },
+   {
+    "term": "while",
+    "de": "während (Nebensatz)",
+    "dePrimary": "während (Nebensatz)",
+    "pos": "conj",
+    "level": "B1",
+    "topic": "Konjunktionen",
+    "exampleTerm": "He called while I was cooking.",
+    "exampleDe": "Er hat angerufen, während ich gekocht habe."
+   },
+   {
+    "term": "unless",
+    "de": "es sei denn|wenn nicht",
+    "dePrimary": "es sei denn",
+    "pos": "conj",
+    "level": "B1",
+    "topic": "Konjunktionen",
+    "exampleTerm": "I'll come unless it rains.",
+    "exampleDe": "Ich komme, es sei denn, es regnet."
+   },
+   {
+    "term": "as soon as",
+    "de": "sobald",
+    "dePrimary": "sobald",
+    "pos": "conj",
+    "level": "B1",
+    "topic": "Konjunktionen",
+    "exampleTerm": "Call me as soon as you arrive.",
+    "exampleDe": "Ruf mich an, sobald du ankommst."
+   },
+   {
+    "term": "that",
+    "de": "dass|der/die/das (Relativ)",
+    "dePrimary": "dass",
+    "pos": "conj",
+    "level": "A2",
+    "topic": "Konjunktionen",
+    "exampleTerm": "I think that he's right.",
+    "exampleDe": "Ich glaube, dass er recht hat."
+   },
+   {
+    "term": "above",
+    "de": "über|oberhalb",
+    "dePrimary": "über",
+    "pos": "prep",
+    "level": "A2",
+    "topic": "Präpositionen",
+    "exampleTerm": "The flat is above a café.",
+    "exampleDe": "Die Wohnung ist über einem Café."
+   },
+   {
+    "term": "through",
+    "de": "durch",
+    "dePrimary": "durch",
+    "pos": "prep",
+    "level": "A2",
+    "topic": "Präpositionen",
+    "exampleTerm": "We walked through the park.",
+    "exampleDe": "Wir sind durch den Park gegangen."
+   },
+   {
+    "term": "towards",
+    "de": "in Richtung|auf … zu",
+    "dePrimary": "in Richtung",
+    "pos": "prep",
+    "level": "B1",
+    "topic": "Präpositionen",
+    "exampleTerm": "Walk towards the church.",
+    "exampleDe": "Geh in Richtung Kirche."
+   },
+   {
+    "term": "instead of",
+    "de": "statt|anstatt",
+    "dePrimary": "statt",
+    "pos": "prep",
+    "level": "B1",
+    "topic": "Präpositionen",
+    "exampleTerm": "Can I have tea instead of coffee?",
+    "exampleDe": "Kann ich Tee statt Kaffee haben?"
+   },
+   {
+    "term": "according to",
+    "de": "laut|gemäß",
+    "dePrimary": "laut",
+    "pos": "prep",
+    "level": "B1",
+    "topic": "Präpositionen",
+    "exampleTerm": "According to the forecast, it'll be sunny.",
+    "exampleDe": "Laut Vorhersage wird es sonnig."
+   },
+   {
+    "term": "how long",
+    "de": "wie lange",
+    "dePrimary": "wie lange",
+    "pos": "adv",
+    "level": "A1",
+    "topic": "Fragewörter",
+    "exampleTerm": "How long have you lived here?",
+    "exampleDe": "Wie lange wohnst du schon hier?"
+   },
+   {
+    "term": "how often",
+    "de": "wie oft",
+    "dePrimary": "wie oft",
+    "pos": "adv",
+    "level": "A1",
+    "topic": "Fragewörter",
+    "exampleTerm": "How often do you go to the gym?",
+    "exampleDe": "Wie oft gehst du ins Fitnessstudio?"
+   },
+   {
+    "term": "whose",
+    "de": "wessen",
+    "dePrimary": "wessen",
+    "pos": "pron",
+    "level": "A2",
+    "topic": "Fragewörter",
+    "exampleTerm": "Whose bag is this?",
+    "exampleDe": "Wessen Tasche ist das?"
+   },
+   {
+    "term": "could you…?",
+    "de": "könnten Sie …?",
+    "dePrimary": "könnten Sie …?",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Redemittel",
+    "exampleTerm": "Could you repeat that, please?",
+    "exampleDe": "Könnten Sie das bitte wiederholen?"
+   },
+   {
+    "term": "I'd like",
+    "de": "ich hätte gern|ich möchte",
+    "dePrimary": "ich hätte gern",
+    "pos": "phrase",
+    "level": "A1",
+    "topic": "Redemittel",
+    "exampleTerm": "I'd like a coffee, please.",
+    "exampleDe": "Ich hätte gern einen Kaffee."
+   },
+   {
+    "term": "what's the matter?",
+    "de": "was ist los?",
+    "dePrimary": "was ist los?",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Redemittel",
+    "exampleTerm": "You look sad. What's the matter?",
+    "exampleDe": "Du siehst traurig aus. Was ist los?"
+   },
+   {
+    "term": "it doesn't matter",
+    "de": "das macht nichts|das ist egal",
+    "dePrimary": "das macht nichts",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Redemittel",
+    "exampleTerm": "It doesn't matter if you're late.",
+    "exampleDe": "Es macht nichts, wenn du zu spät kommst."
+   },
+   {
+    "term": "no problem",
+    "de": "kein Problem",
+    "dePrimary": "kein Problem",
+    "pos": "phrase",
+    "level": "A1",
+    "topic": "Redemittel",
+    "exampleTerm": "Thanks! – No problem.",
+    "exampleDe": "Danke! – Kein Problem."
+   },
+   {
+    "term": "have a nice day",
+    "de": "schönen Tag noch",
+    "dePrimary": "schönen Tag noch",
+    "pos": "phrase",
+    "level": "A1",
+    "topic": "Redemittel",
+    "exampleTerm": "Thank you, have a nice day!",
+    "exampleDe": "Danke, schönen Tag noch!"
+   },
+   {
+    "term": "nice to meet you",
+    "de": "freut mich",
+    "dePrimary": "freut mich",
+    "pos": "phrase",
+    "level": "A1",
+    "topic": "Redemittel",
+    "exampleTerm": "Hi, I'm Anna. – Nice to meet you.",
+    "exampleDe": "Hallo, ich bin Anna. – Freut mich."
+   },
+   {
+    "term": "what do you do?",
+    "de": "was machst du beruflich?",
+    "dePrimary": "was machst du beruflich?",
+    "pos": "phrase",
+    "level": "A1",
+    "topic": "Redemittel",
+    "exampleTerm": "So, what do you do?",
+    "exampleDe": "Und, was machst du beruflich?"
+   },
+   {
+    "term": "I see",
+    "de": "ach so|verstehe",
+    "dePrimary": "ach so",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Redemittel",
+    "exampleTerm": "The train is cancelled. – I see.",
+    "exampleDe": "Der Zug fällt aus. – Ach so."
+   },
+   {
+    "term": "that sounds good",
+    "de": "das klingt gut",
+    "dePrimary": "das klingt gut",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Redemittel",
+    "exampleTerm": "Pizza tonight? – That sounds good.",
+    "exampleDe": "Heute Abend Pizza? – Klingt gut."
+   },
+   {
+    "term": "I'm not sure",
+    "de": "ich weiß nicht genau|ich bin mir nicht sicher",
+    "dePrimary": "ich weiß nicht genau",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Redemittel",
+    "exampleTerm": "I'm not sure what time it starts.",
+    "exampleDe": "Ich weiß nicht genau, wann es anfängt."
+   },
+   {
+    "term": "by the way",
+    "de": "übrigens",
+    "dePrimary": "übrigens",
+    "pos": "phrase",
+    "level": "B1",
+    "topic": "Redemittel",
+    "exampleTerm": "By the way, Tom says hello.",
+    "exampleDe": "Übrigens, schöne Grüße von Tom."
+   },
+   {
+    "term": "in my opinion",
+    "de": "meiner Meinung nach",
+    "dePrimary": "meiner Meinung nach",
+    "pos": "phrase",
+    "level": "B1",
+    "topic": "Redemittel",
+    "exampleTerm": "In my opinion, it's too expensive.",
+    "exampleDe": "Meiner Meinung nach ist es zu teuer."
+   },
+   {
+    "term": "to make sure",
+    "de": "sichergehen|darauf achten",
+    "dePrimary": "sichergehen",
+    "pos": "phrase",
+    "level": "B1",
+    "topic": "Redemittel",
+    "exampleTerm": "Make sure you lock the door.",
+    "exampleDe": "Achte darauf, die Tür abzuschließen."
+   },
+   {
+    "term": "to have a good time",
+    "de": "Spaß haben|eine schöne Zeit haben",
+    "dePrimary": "Spaß haben",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Redemittel",
+    "exampleTerm": "Have a good time at the party!",
+    "exampleDe": "Viel Spaß auf der Party!"
+   },
+   {
+    "term": "to keep in touch",
+    "de": "in Kontakt bleiben",
+    "dePrimary": "in Kontakt bleiben",
+    "pos": "phrase",
+    "level": "B1",
+    "topic": "Redemittel",
+    "exampleTerm": "Let's keep in touch.",
+    "exampleDe": "Lass uns in Kontakt bleiben."
+   },
+   {
+    "term": "to change your mind",
+    "de": "es sich anders überlegen",
+    "dePrimary": "es sich anders überlegen",
+    "pos": "phrase",
+    "level": "B1",
+    "topic": "Redemittel",
+    "exampleTerm": "I've changed my mind, I'll stay.",
+    "exampleDe": "Ich habe es mir anders überlegt, ich bleibe."
+   },
+   {
+    "term": "it's up to you",
+    "de": "das liegt bei dir|du entscheidest",
+    "dePrimary": "das liegt bei dir",
+    "pos": "phrase",
+    "level": "B1",
+    "topic": "Redemittel",
+    "exampleTerm": "Italian or Indian? – It's up to you.",
+    "exampleDe": "Italienisch oder indisch? – Du entscheidest."
+   },
+   {
+    "term": "brief",
+    "de": "kurz (nicht: der Brief)",
+    "dePrimary": "kurz (nicht: der Brief)",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "Let me give you a brief summary.",
+    "exampleDe": "Ich gebe dir eine kurze Zusammenfassung."
+   },
+   {
+    "term": "letter",
+    "de": "der Brief|der Buchstabe",
+    "dePrimary": "der Brief",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "I got a letter from the bank.",
+    "exampleDe": "Ich habe einen Brief von der Bank bekommen."
+   },
+   {
+    "term": "chips",
+    "de": "die Pommes (BE)",
+    "dePrimary": "die Pommes (BE)",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "Fish and chips, please.",
+    "exampleDe": "Fisch mit Pommes, bitte."
+   },
+   {
+    "term": "crisps",
+    "de": "die Chips (BE)",
+    "dePrimary": "die Chips (BE)",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "A packet of crisps, please.",
+    "exampleDe": "Eine Tüte Chips, bitte."
+   },
+   {
+    "term": "fabric",
+    "de": "der Stoff (nicht: die Fabrik)",
+    "dePrimary": "der Stoff (nicht: die Fabrik)",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "This fabric is very soft.",
+    "exampleDe": "Dieser Stoff ist sehr weich."
+   },
+   {
+    "term": "factory",
+    "de": "die Fabrik",
+    "dePrimary": "die Fabrik",
+    "pos": "noun",
+    "level": "A2",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "He works in a car factory.",
+    "exampleDe": "Er arbeitet in einer Autofabrik."
+   },
+   {
+    "term": "to spare",
+    "de": "erübrigen|übrig haben (nicht: sparen)",
+    "dePrimary": "erübrigen",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "Can you spare five minutes?",
+    "exampleDe": "Hast du fünf Minuten Zeit?"
+   },
+   {
+    "term": "to wonder",
+    "de": "sich fragen (nicht: sich wundern)",
+    "dePrimary": "sich fragen (nicht: sich wundern)",
+    "pos": "verb",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "I wonder where she is.",
+    "exampleDe": "Ich frage mich, wo sie ist."
+   },
+   {
+    "term": "to be surprised",
+    "de": "sich wundern|überrascht sein",
+    "dePrimary": "sich wundern",
+    "pos": "phrase",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "I'm surprised he came.",
+    "exampleDe": "Ich wundere mich, dass er gekommen ist."
+   },
+   {
+    "term": "folder",
+    "de": "die Mappe|der Ordner",
+    "dePrimary": "die Mappe",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "The documents are in the blue folder.",
+    "exampleDe": "Die Unterlagen sind in der blauen Mappe."
+   },
+   {
+    "term": "mean",
+    "de": "gemein|geizig (nicht: meinen)",
+    "dePrimary": "gemein",
+    "pos": "adj",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "Don't be mean to your brother.",
+    "exampleDe": "Sei nicht gemein zu deinem Bruder."
+   },
+   {
+    "term": "to see a doctor",
+    "de": "zum Arzt gehen",
+    "dePrimary": "zum Arzt gehen",
+    "pos": "phrase",
+    "level": "A2",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "You should see a doctor about that.",
+    "exampleDe": "Damit solltest du zum Arzt gehen."
+   },
+   {
+    "term": "public viewing",
+    "de": "die Aufbahrung (nicht: Public Viewing!)",
+    "dePrimary": "die Aufbahrung (nicht: Public Viewing!)",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "In the US, a public viewing is often part of a funeral.",
+    "exampleDe": "In den USA gehört eine Aufbahrung oft zu einer Beerdigung."
+   },
+   {
+    "term": "outdoor screening",
+    "de": "das Public Viewing",
+    "dePrimary": "das Public Viewing",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "We watched the final at an outdoor screening.",
+    "exampleDe": "Wir haben das Finale beim Public Viewing geschaut."
+   },
+   {
+    "term": "old-timer",
+    "de": "der alte Hase (nicht: der Oldtimer)",
+    "dePrimary": "der alte Hase (nicht: der Oldtimer)",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "He's an old-timer in the company.",
+    "exampleDe": "Er ist ein alter Hase in der Firma."
+   },
+   {
+    "term": "vintage car",
+    "de": "der Oldtimer",
+    "dePrimary": "der Oldtimer",
+    "pos": "noun",
+    "level": "B1",
+    "topic": "Falsche Freunde",
+    "exampleTerm": "He drives a vintage car.",
+    "exampleDe": "Er fährt einen Oldtimer."
    }
   ],
   "verbs": [
