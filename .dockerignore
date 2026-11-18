@@ -1,10 +1,11 @@
 .git
 .gitignore
+.env
 fortschritt
 node_modules
+backend/target
 *.md
-!beispiele/*.md
+!backend/src/main/resources/**/*.md
 .DS_Store
 Dockerfile
 docker-compose.yml
-__*.html

@@ -1,0 +1,61 @@
+/* Offline use: the app is nothing but static files, so a cache that is filled
+   on install and replaced with every version is enough.
+   Bump VERSION whenever the files change. */
+const VERSION = "voco-v7";
+const ASSETS = [
+  ".",
+  "index.html",
+  "manifest.webmanifest",
+  "src/style.css",
+  "src/text.js",
+  "src/store.js",
+  "src/boot.js",
+  "src/srs.js",
+  "src/packs.js",
+  "src/drill.js",
+  "src/lesson.js",
+  "src/coach.js",
+  "src/app.js",
+  ...["es", "en"].flatMap((c) => ["course", "deck", "conjugate", "grammar"].map((f) => `src/courses/${c}/${f}.js`)),
+];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
+
+// Network first, so changes arrive immediately; offline the cache steps in.
+self.addEventListener("fetch", (e) => {
+  const url = new URL(e.request.url);
+  if (e.request.method !== "GET" || url.origin !== self.location.origin) return;
+
+  /* Everything dynamic bypasses the cache - above all /api/stream.
+     That one is an endless server-sent-events stream: cloning it and writing
+     it to the cache reads a response that never ends. The connection then
+     belongs to the service worker instead of the page, survives every reload
+     and piles up on the server while the events sit in the buffer. */
+  if (url.pathname.startsWith("/api/")) return;
+  // Login and logout must always reach the server.
+  if (url.pathname === "/login" || url.pathname === "/logout" || url.pathname === "/login.html") return;
+
+  e.respondWith(
+    fetch(e.request)
+      .then((res) => {
+        // Only complete, same-origin responses are worth storing - not the
+        // login page a logged-out request was redirected to.
+        if (res.ok && res.type === "basic" && !res.redirected) {
+          const copy = res.clone();
+          caches.open(VERSION).then((c) => c.put(e.request, copy)).catch(() => {});
+        }
+        return res;
+      })
+      .catch(() => caches.match(e.request).then((hit) => hit || caches.match("index.html")))
+  );
+});

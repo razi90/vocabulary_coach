@@ -1,0 +1,78 @@
+# Configuration. Everything that differs between machines comes from the
+# environment (see docker-compose.yml); the defaults suit a local run.
+server:
+  port: ${PORT:8080}
+  servlet:
+    session:
+      timeout: 30d
+      cookie:
+        name: VOCO_SESSION
+        same-site: lax
+        http-only: true
+        # Set COOKIE_SECURE=true as soon as the app is served over HTTPS.
+        secure: ${COOKIE_SECURE:false}
+  # Behind a reverse proxy (Caddy, nginx, Cloudflare): trust X-Forwarded-*.
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: vocabulary-coach
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:voco}}
+    username: ${PGUSER:voco}
+    password: ${PGPASSWORD:voco}
+    hikari:
+      maximum-pool-size: 10
+  flyway:
+    # A database created by the old Node server already holds V1-V4 but has
+    # no Flyway history. Baselining at 4 applies only what is new.
+    baseline-on-migrate: true
+    baseline-version: 4
+  session:
+    timeout: 30d
+    jdbc:
+      initialize-schema: never   # the tables come from V5__multi_user.sql
+  web:
+    resources:
+      # The frontend: plain static files, no build step.
+      static-locations: ${STATIC_LOCATION:file:../web/}
+      cache:
+        cachecontrol:
+          no-cache: true
+  mvc:
+    async:
+      request-timeout: -1        # server-sent events stay open
+  devtools:
+    restart:
+      additional-exclude: "**/*.md"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  # 32 random bytes, base64 (openssl rand -base64 32). Encrypts the learners'
+  # API keys. Without it the coach cannot store a key.
+  encryption-key: ${APP_ENCRYPTION_KEY:}
+  # Whoever knows this code can create an account. Empty: registration closed.
+  registration-code: ${REGISTRATION_CODE:}
+  # Credentials for the first account (it owns data from before multi-user).
+  admin-email: ${ADMIN_EMAIL:}
+  admin-password: ${ADMIN_PASSWORD:}
+  # YouTube Data API v3 key: lets the coach search videos for the daily
+  # lesson. Without it, listening tasks need a URL from the learner.
+  youtube-api-key: ${YOUTUBE_API_KEY:}
+  coach:
+    # Round trips to the model per run. Protects against loops and bills.
+    max-steps: ${COACH_MAX_STEPS:25}
+    request-timeout: 180s
+
+logging:
+  level:
+    org.springframework.security: INFO
