@@ -127,6 +127,8 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
 /* Narrow: the list slides in as a drawer. */
 @media (max-width: 860px) {
   .menu-btn { display: flex; }
+  /* Above the drawer, so the menu button (an X while open) closes it again. */
+  .topbar { z-index: 45; }
   .topbar-section {
     display: block; font-size: 14px; font-weight: 600; color: var(--text-dim);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -585,3 +587,16 @@ main { padding: 20px 18px 40px; max-width: 640px; margin: 0 auto; }
 }
 .account-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 14px; }
 .account-row .btn-secondary { margin: 0; }
+
+/* ---------- Touch screens ---------- */
+@media (pointer: coarse) {
+  /* iOS zooms the whole page into a form field whose text is under 16px. */
+  .field input, .field select, .field textarea,
+  .browse-toolbar input, .browse-toolbar select,
+  .conj-lookup select, .lesson-textarea { font-size: 16px; }
+  /* Fingers need about 44px. */
+  .menu-btn, .icon-btn { width: 44px; height: 44px; }
+  .menu-btn { padding: 0 11px; }
+  .chip { min-height: 40px; }
+  .auth-switch a { display: inline-block; padding: 10px 4px; }
+}

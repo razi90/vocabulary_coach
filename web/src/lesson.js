@@ -227,7 +227,7 @@ const LESSON = (() => {
         <div class="satz-de">${esc(it.de)}</div>
         ${it.note ? `<div class="satz-note">${esc(it.note)}</div>` : ""}
         <input type="text" class="type-input satz-input" lang="${COURSE.lang}" data-i="${i}"
-          autocomplete="off" autocapitalize="off" spellcheck="false"
+          autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
           placeholder="${COURSE.inDe.charAt(0).toUpperCase() + COURSE.inDe.slice(1)} …">
       </li>`).join("");
 
