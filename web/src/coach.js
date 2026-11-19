@@ -51,7 +51,6 @@ const COACH = (() => {
     renderRuns();
     renderSettings();
     el("accountEmail").textContent = me ? `Angemeldet als ${me.email}` : "";
-    el("courseSelect").value = COURSE.id;
   }
 
   const ready = () => settings && settings.hasKey && settings.model && settings.provider;
@@ -237,17 +236,6 @@ const COACH = (() => {
 
     el("logoutBtn").addEventListener("click", () => STORE.logout());
 
-    // Another course means other content and other progress: start fresh.
-    el("courseSelect").addEventListener("change", async (e) => {
-      try {
-        await STORE.call("PUT", "auth/course", { course: e.target.value });
-        try { sessionStorage.removeItem("voco:position"); } catch (err) { /* egal */ }
-        location.reload();
-      } catch (err) {
-        e.target.value = COURSE.id;
-        alert("Kurswechsel fehlgeschlagen: " + err.message);
-      }
-    });
 
     el("passwordForm").addEventListener("submit", async (e) => {
       e.preventDefault();

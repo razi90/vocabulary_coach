@@ -215,7 +215,40 @@
     return true;
   }
   tabs.forEach((t) => t.addEventListener("click", () => go(t.dataset.view)));
-  el("courseBtn").addEventListener("click", () => go("settings"));
+  el("settingsBtn").addEventListener("click", () => go("settings"));
+
+  /* The course name opens a menu of the courses; picking one switches right
+     away. Another course means other content and other progress, so the app
+     reloads into it. The list comes from the server. */
+  const courseMenu = el("courseMenu");
+  let courseList = null;
+  courseMenu.addEventListener("beforetoggle", async (e) => {
+    if (e.newState !== "open") return;
+    if (!courseList) {
+      try { courseList = (await STORE.call("GET", "auth/config")).courses || []; } catch (err) { courseList = []; }
+    }
+    courseMenu.innerHTML = `<div class="course-menu-label">Kurs</div>` + courseList.map((c) => {
+      const on = c.id === COURSE.id;
+      return `<button class="course-menu-item" role="menuitemradio" aria-checked="${on}" data-course="${esc(c.id)}">
+        <span>${esc(c.name)}</span>${on ? icon("check", "icon sm") : ""}</button>`;
+    }).join("");
+  });
+  courseMenu.addEventListener("click", async (e) => {
+    const item = e.target.closest("[data-course]");
+    if (!item) return;
+    if (item.dataset.course === COURSE.id) { courseMenu.hidePopover(); return; }
+    const abandon = activeDrill();
+    if (abandon && !confirm("Die laufende Übung wird beendet. Fortfahren?")) return;
+    item.disabled = true;
+    try {
+      await STORE.call("PUT", "auth/course", { course: item.dataset.course });
+      try { sessionStorage.removeItem("voco:position"); } catch (err) { /* egal */ }
+      location.reload();
+    } catch (err) {
+      item.disabled = false;
+      alert("Kurswechsel fehlgeschlagen: " + err.message);
+    }
+  });
   // Back links on sub-screens, and links to another section.
   document.addEventListener("click", (e) => {
     const back = e.target.closest("[data-back]");

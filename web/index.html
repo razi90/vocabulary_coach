@@ -50,13 +50,15 @@
   <div id="app">
 
     <header class="topbar">
-      <button class="course-btn" id="courseBtn" aria-label="Kurs und Einstellungen">
+      <button class="course-btn" id="courseBtn" popovertarget="courseMenu" aria-haspopup="menu" aria-label="Kurs wechseln">
         <span class="flag" data-course-text="{flag}"></span>
         <span class="brand-name" data-course-text="{name}"></span>
         <svg class="icon" aria-hidden="true"><use href="#i-chev-down"/></svg>
       </button>
       <div class="topbar-section" id="topbarSection" hidden>Heute</div>
       <div class="streak" id="streakBadge" title="Tage in Folge"><svg class="icon sm" aria-hidden="true"><use href="#i-flame"/></svg><span id="streakCount">0</span></div>
+      <button class="icon-btn topbar-btn" id="settingsBtn" aria-label="Einstellungen"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg></button>
+      <div class="course-menu" id="courseMenu" popover role="menu" aria-label="Kurs wechseln"></div>
     </header>
 
     <div class="shell">
@@ -600,21 +602,9 @@
       <!-- ================= EINSTELLUNGEN ================= -->
       <section id="view-settings" class="view" tabindex="-1">
         <h1 class="page-title">Einstellungen</h1>
-        <p class="page-sub">Kurs, Lernziel, Coach und Konto.</p>
+        <p class="page-sub">Lernziel, Coach und Konto. Den Kurs wechselst du oben über seinen Namen.</p>
 
-        <div class="section-label first">Kurs</div>
-        <div class="panel">
-          <label class="field">
-            
-            <select id="courseSelect">
-              <option value="es">🇪🇸 Spanisch</option>
-              <option value="en">🇬🇧 Englisch</option>
-            </select>
-            <span class="field-help">Dein Fortschritt bleibt je Sprache erhalten – beim Zurückwechseln ist alles wieder da.</span>
-          </label>
-        </div>
-
-        <div class="section-label">Lernen</div>
+<div class="section-label first">Lernen</div>
         <div class="panel">
           <div class="goal-row">
             <label for="dailyGoal">Tagesziel</label>

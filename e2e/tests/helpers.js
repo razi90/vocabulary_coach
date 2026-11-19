@@ -75,13 +75,13 @@ async function appReady(page) {
 }
 
 /* Where each screen is reached from: the four sections directly, trainers
-   and lists through Üben, settings through the course button. */
+   and lists through Üben, settings through the gear in the top bar. */
 const VIA_PRACTICE = new Set(["browse", "conj", "grammar", "packs"]);
 
 /** Opens a screen the way a learner would. */
 async function openTab(page, id) {
   if (id === "settings") {
-    await page.locator("#courseBtn").click();
+    await page.locator("#settingsBtn").click();
   } else if (VIA_PRACTICE.has(id)) {
     await page.locator("#tab-practice").click();
     await page.locator(`#view-practice [data-open="${id}"]`).click();
@@ -94,4 +94,10 @@ async function openTab(page, id) {
   await expect(page.locator(`#view-${id}`)).toBeVisible();
 }
 
-module.exports = { api, signUp, seedTypingDrill, openApp, appReady, openTab, todayKey, PASSWORD };
+/** Switches the course through the menu behind the course name; the app reloads into it. */
+async function switchCourse(page, id) {
+  await page.locator("#courseBtn").click();
+  await page.locator(`#courseMenu [data-course="${id}"]`).click();
+}
+
+module.exports = { switchCourse, api, signUp, seedTypingDrill, openApp, appReady, openTab, todayKey, PASSWORD };

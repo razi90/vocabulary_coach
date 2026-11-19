@@ -26,8 +26,9 @@ features are added.
    Bottom tab bar on phones, left side navigation on desktop.
 3. **Heute** shows everything due today: vocabulary, today's lesson, new
    coach exercise sets, due grammar.
-4. A **settings** page behind the course name: switch course, daily goal,
-   account and password, coach provider/model/key, data export.
+4. A **settings** page behind a gear in the top bar: daily goal, account and
+   password, coach provider/model/key, data export. The course name opens a
+   course menu of its own.
 5. Better **session end** (missed words, a next step) and **Fortschritt**
    (no developer text, no empty boxes).
 6. Four new features:
@@ -150,9 +151,11 @@ ranked in the browser from `cards` and `events` (a tested pure helper), not
 fetched from the server. Export and the "data lives in the database" text
 move to settings.
 
-**Settings** (opened from the course button; a full page on phones, the
-same page on desktop):
-- Kurs: switch (existing behaviour: reloads into the other course)
+**Course and settings are two controls** (changed after the first build:
+one button that looked like a dropdown but opened the settings was confusing).
+The course name in the top bar opens a small menu of the courses; picking one
+switches right away (reloads into it). A gear next to the streak opens the
+settings page:
 - Lernen: daily goal (the direction stays a single value, switched on Heute)
 - Coach: provider, model, API key (existing form and validation)
 - Konto: email, change password, log out

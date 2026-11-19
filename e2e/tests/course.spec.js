@@ -1,5 +1,5 @@
 const { test, expect } = require("@playwright/test");
-const { api, signUp, openApp, appReady, openTab } = require("./helpers");
+const { api, signUp, openApp, appReady, switchCourse } = require("./helpers");
 
 /** The X-Course header of every /api request the page makes. */
 function courseHeaders(page) {
@@ -12,13 +12,35 @@ function courseHeaders(page) {
   return seen;
 }
 
+test("the course name opens a course menu, not the settings @phone", async ({ page, context }) => {
+  await signUp(context, { course: "es" });
+  await openApp(page);
+  await page.locator("#courseBtn").click();
+  const menu = page.locator("#courseMenu");
+  await expect(menu).toBeVisible();
+  await expect(menu.locator(".course-menu-item")).toHaveText(["Spanisch", "Englisch"]);
+  await expect(menu.locator('[data-course="es"]')).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#view-home")).toBeVisible();          // still on Heute
+  await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
+
+  // Picking the current course just closes the menu.
+  await page.locator("#courseBtn").click();
+  await menu.locator('[data-course="es"]').click();
+  await expect(menu).toBeHidden();
+  await expect(page).toHaveTitle("Español – Vokabeltrainer");
+
+  // Settings have their own button.
+  await page.locator("#settingsBtn").click();
+  await expect(page.locator("#view-settings")).toBeVisible();
+});
+
 test("switching the course reloads the app in the other language", async ({ page, context }) => {
   await signUp(context, { course: "es" });
   await openApp(page);
   await expect(page).toHaveTitle("Español – Vokabeltrainer");
 
-  await openTab(page, "settings");
-  await page.locator("#courseSelect").selectOption("en");
+  await switchCourse(page, "en");
   await expect(page).toHaveTitle("English – Vokabeltrainer");
   await appReady(page);
   expect((await api(context, "GET", "auth/me")).course).toBe("en");
@@ -33,8 +55,7 @@ test("a tab left open on the old course keeps writing into its own course", asyn
   const phoneHeaders = courseHeaders(phone);
 
   // Switch on the laptop; the phone still shows Spanish.
-  await openTab(laptop, "settings");
-  await laptop.locator("#courseSelect").selectOption("en");
+  await switchCourse(laptop, "en");
   await expect(laptop).toHaveTitle("English – Vokabeltrainer");
 
   await phone.locator("#startSessionBtn").click();
