@@ -82,7 +82,24 @@ public class LessonService {
       throw new UserError("Eine Lektion braucht mindestens einen Teil (listening, writing, speaking oder sentences).");
     }
     String level = str(input.get("level"));
+    if (!level.isEmpty() && !List.of("A1", "A2", "B1").contains(level)) {
+      throw new UserError("level muss A1, A2 oder B1 sein.");
+    }
     String status = str(input.get("status"));
+    if (!status.isEmpty() && !List.of("ready", "draft").contains(status)) {
+      throw new UserError("status muss ready oder draft sein.");
+    }
+    // Submissions point into the lesson by part and index. Replacing the
+    // content underneath them would pin old answers (and feedback) to new
+    // sentences and questions.
+    boolean answered = jdbc.sql("""
+        SELECT EXISTS (SELECT 1 FROM lessons l JOIN lesson_submissions s ON s.lesson_id = l.id
+                       WHERE l.user_id = ? AND l.course = ? AND l.day = ?)""")
+        .params(learner.userId(), learner.courseId(), day).query(Boolean.class).single();
+    if (answered) {
+      throw new UserError("Für " + day + " hat der Lernende schon Abgaben gemacht - diese Lektion lässt sich nicht "
+          + "mehr ersetzen. Gib zu den Abgaben Feedback oder lege die Lektion für einen anderen Tag an.");
+    }
 
     return rows.normalize(jdbc.sql("""
         INSERT INTO lessons (user_id, course, day, title, theme, level, created_by, status,

@@ -106,10 +106,16 @@ public class LlmClient {
     return parsed;
   }
 
-  /** Models that can call tools, sorted by name. Cached for an hour. */
+  /**
+   * Models that can call tools, sorted by name. Only the list fetched without
+   * a key is cached (an hour, shared by everyone); a list fetched with a
+   * learner's key depends on that key and is never handed to anyone else.
+   */
   public List<Model> models(Provider p, String apiKey) {
-    CachedModels cached = modelCache.get(p);
-    if (cached != null && cached.until().isAfter(Instant.now())) return cached.models();
+    if (apiKey == null) {
+      CachedModels cached = modelCache.get(p);
+      if (cached != null && cached.until().isAfter(Instant.now())) return cached.models();
+    }
 
     HttpRequest.Builder req = HttpRequest.newBuilder(URI.create(p.modelsUrl)).timeout(Duration.ofSeconds(20)).GET();
     if (apiKey != null) req.header("Authorization", "Bearer " + apiKey);
@@ -124,7 +130,7 @@ public class LlmClient {
       models.add(new Model(id, m.path("name").asString(id)));
     }
     models.sort(Comparator.comparing(Model::name, String.CASE_INSENSITIVE_ORDER));
-    modelCache.put(p, new CachedModels(models, Instant.now().plus(Duration.ofHours(1))));
+    if (apiKey == null) modelCache.put(p, new CachedModels(models, Instant.now().plus(Duration.ofHours(1))));
     return models;
   }
 

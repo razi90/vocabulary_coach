@@ -30,7 +30,10 @@ public class CoachSettings {
         .optional();
   }
 
-  /** Saves provider and model; replaces the key only when a new one is given. */
+  /**
+   * Saves provider and model; replaces the key only when a new one is given.
+   * Switching provider without a new key drops the old one.
+   */
   public void save(long userId, Provider provider, String model, String newKey) {
     String cleanModel = model == null ? "" : model.trim();
     if (cleanModel.isEmpty() || cleanModel.length() > 200) throw new UserError("Bitte ein Modell auswählen.");
@@ -48,6 +51,9 @@ public class CoachSettings {
       jdbc.sql("""
           INSERT INTO coach_settings (user_id, provider, model) VALUES (?,?,?)
           ON CONFLICT (user_id) DO UPDATE SET provider = EXCLUDED.provider, model = EXCLUDED.model,
+            -- A key is only good for the provider it was issued by.
+            api_key_enc = CASE WHEN coach_settings.provider = EXCLUDED.provider THEN coach_settings.api_key_enc END,
+            api_key_hint = CASE WHEN coach_settings.provider = EXCLUDED.provider THEN coach_settings.api_key_hint END,
             updated_at = now()""")
           .params(userId, provider.id, cleanModel)
           .update();

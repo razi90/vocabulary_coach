@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
@@ -128,14 +129,20 @@ public class CoachRunner implements ApplicationRunner {
     if ("custom".equals(task) && cleanNote.isEmpty()) throw new UserError("Bitte schreib, was der Coach tun soll.");
 
     CoachSettings.Credentials creds = settings.credentials(userId);
-    // Check and insert in one statement: one running job per learner.
-    Long id = jdbc.sql("""
-        INSERT INTO coach_runs (user_id, course, task, note, provider, model)
-        SELECT ?, ?, ?, ?, ?, ?
-        WHERE NOT EXISTS (SELECT 1 FROM coach_runs WHERE user_id = ? AND status = 'running')
-        RETURNING id""")
-        .params(userId, learner.courseId(), task, cleanNote, creds.provider().id, creds.model(), userId)
-        .query(Long.class).optional().orElse(null);
+    // One running job per learner. The NOT EXISTS catches the usual case; the
+    // partial unique index (V8) catches two starts racing past it.
+    Long id;
+    try {
+      id = jdbc.sql("""
+          INSERT INTO coach_runs (user_id, course, task, note, provider, model)
+          SELECT ?, ?, ?, ?, ?, ?
+          WHERE NOT EXISTS (SELECT 1 FROM coach_runs WHERE user_id = ? AND status = 'running')
+          RETURNING id""")
+          .params(userId, learner.courseId(), task, cleanNote, creds.provider().id, creds.model(), userId)
+          .query(Long.class).optional().orElse(null);
+    } catch (DuplicateKeyException e) {
+      id = null;
+    }
     if (id == null) throw new UserError("Der Coach arbeitet schon. Bitte warte, bis der laufende Auftrag fertig ist.");
 
     long runId = id;

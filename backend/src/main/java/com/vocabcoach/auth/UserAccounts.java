@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Accounts: email and password, nothing else.
@@ -46,7 +48,7 @@ public class UserAccounts implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String email) {
     if (throttle.isLocked(email)) {
-      throw new LockedException("Zu viele Fehlversuche. Bitte in 15 Minuten erneut versuchen.");
+      throw new LockedException(LoginThrottle.LOCKED_MESSAGE);
     }
     record Login(long id, String hash, boolean admin) {}
     Login login = jdbc.sql("""
@@ -89,9 +91,22 @@ public class UserAccounts implements UserDetailsService {
     jdbc.sql("UPDATE users SET course = ? WHERE id = ?").params(course.id, id).update();
   }
 
-  /** The logged-in user in their current course. */
+  /** Header in which the frontend names the course its page was loaded for. */
+  public static final String COURSE_HEADER = "X-Course";
+
+  /**
+   * The logged-in user in the course of this request. A tab names the course
+   * it shows in {@link #COURSE_HEADER}; that wins over users.course, so a tab
+   * left open after switching courses elsewhere still writes into its own
+   * course. Without the header (or with an unknown one) the stored course.
+   */
   public Learner currentLearner() {
     long id = CurrentUser.id();
+    Optional<Course> requested = Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+        .filter(ServletRequestAttributes.class::isInstance)
+        .map(a -> ((ServletRequestAttributes) a).getRequest().getHeader(COURSE_HEADER))
+        .flatMap(Course::byId);
+    if (requested.isPresent()) return new Learner(id, requested.get());
     String course = jdbc.sql("SELECT course FROM users WHERE id = ?").param(id).query(String.class).single();
     return new Learner(id, Course.byId(course).orElse(Course.ES));
   }
@@ -115,6 +130,11 @@ public class UserAccounts implements UserDetailsService {
    * Afterwards the learner changes it in the app like everyone else.
    */
   public boolean claimFirstAccount(String email, String password) {
+    // Already claimed: nothing to validate. ADMIN_* left in the environment
+    // (or later made invalid) must not keep the app from starting.
+    boolean open = jdbc.sql("SELECT EXISTS (SELECT 1 FROM users WHERE id = 1 AND password_hash IS NULL)")
+        .query(Boolean.class).single();
+    if (!open) return false;
     String clean = validEmail(email);
     validPassword(password);
     try {

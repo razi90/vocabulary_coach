@@ -20,20 +20,40 @@ public class LoginThrottle {
 
   static final int MAX_FAILURES = 10;
   static final Duration LOCK = Duration.ofMinutes(15);
+  public static final String LOCKED_MESSAGE = "Zu viele Fehlversuche. Bitte in 15 Minuten erneut versuchen.";
 
-  private record Failures(int count, Instant since) {}
+  /**
+   * Failures counted since {@code since}; once the count reaches the limit,
+   * {@code lockedUntil} is set - the lock runs from that moment, not from
+   * the first failure.
+   */
+  private record Failures(int count, Instant since, Instant lockedUntil) {
+    boolean locked(Instant now) {
+      return lockedUntil != null && lockedUntil.isAfter(now);
+    }
+
+    /** Nothing left to remember: the lock is over, or the counting window passed without one. */
+    boolean stale(Instant now) {
+      return lockedUntil != null ? !lockedUntil.isAfter(now) : !since.plus(LOCK).isAfter(now);
+    }
+  }
 
   private final Map<String, Failures> failures = new ConcurrentHashMap<>();
 
   public boolean isLocked(String email) {
     Failures f = failures.get(key(email));
-    return f != null && f.count() >= MAX_FAILURES && f.since().plus(LOCK).isAfter(Instant.now());
+    return f != null && f.locked(Instant.now());
   }
 
   @EventListener
   public void onFailure(AuthenticationFailureBadCredentialsEvent event) {
-    failures.merge(key(event.getAuthentication().getName()), new Failures(1, Instant.now()),
-        (old, one) -> old.since().plus(LOCK).isBefore(Instant.now()) ? one : new Failures(old.count() + 1, old.since()));
+    Instant now = Instant.now();
+    failures.compute(key(event.getAuthentication().getName()), (k, old) -> {
+      if (old == null || old.stale(now)) return new Failures(1, now, null);
+      if (old.locked(now)) return old;
+      int count = old.count() + 1;
+      return new Failures(count, old.since(), count >= MAX_FAILURES ? now.plus(LOCK) : null);
+    });
   }
 
   public void reset(String email) {
@@ -42,8 +62,8 @@ public class LoginThrottle {
 
   @Scheduled(fixedRate = 600_000)
   void forgetOld() {
-    Instant cutoff = Instant.now().minus(LOCK);
-    failures.values().removeIf(f -> f.since().isBefore(cutoff));
+    Instant now = Instant.now();
+    failures.values().removeIf(f -> f.stale(now));
   }
 
   private static String key(String email) {

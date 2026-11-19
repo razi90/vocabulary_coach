@@ -35,7 +35,8 @@ public final class Briefing {
         + s.get("total_answers") + " Antworten insgesamt");
     out.add(s.get("accuracy_30d") == null
         ? "Noch keine Antworten in den letzten 30 Tagen."
-        : "Genauigkeit der letzten " + w.get("windowDays") + " Tage: **" + s.get("accuracy_30d") + " %**");
+        // Always the 30-day figure (v_summary), whatever window the rest of the briefing uses.
+        : "Genauigkeit der letzten 30 Tage: **" + s.get("accuracy_30d") + " %**");
     out.add("");
 
     List<Map<String, Object>> vocab = (List<Map<String, Object>>) w.get("vocab");

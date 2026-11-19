@@ -15,6 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
@@ -32,6 +35,8 @@ import tools.jackson.databind.node.ObjectNode;
  */
 @Component
 public class CoachTools {
+
+  private static final Logger log = LoggerFactory.getLogger(CoachTools.class);
 
   /**
    * Who is being coached, by which model (recorded as the author), and the
@@ -118,6 +123,14 @@ public class CoachTools {
       return Outcome.ok(value instanceof String s ? s : json.writerWithDefaultPrettyPrinter().writeValueAsString(value));
     } catch (UserError e) {
       return Outcome.error(e.getMessage());
+    } catch (RuntimeException e) {
+      // Anything else (a constraint the validation missed, a bad value type)
+      // still goes back to the model: one bad call must not end the run.
+      log.warn("Werkzeug {} fehlgeschlagen", name, e);
+      String cause = NestedExceptionUtils.getMostSpecificCause(e).getMessage();
+      return Outcome.error("Das Werkzeug ist mit einem Fehler abgebrochen: "
+          + (cause == null ? e.getClass().getSimpleName() : cause.lines().findFirst().orElse(cause))
+          + " - bitte die Argumente prüfen und korrigiert erneut aufrufen.");
     }
   }
 

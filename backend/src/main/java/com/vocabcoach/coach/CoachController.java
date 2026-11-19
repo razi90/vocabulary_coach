@@ -66,8 +66,10 @@ public class CoachController {
     boolean newKey = u.apiKey() != null && !u.apiKey().isBlank();
     if (newKey) {
       llm.checkKey(provider, u.apiKey().trim());
-    } else if (settings.find(userId).map(s -> !s.hasKey()).orElse(true)) {
-      throw new UserError("Bitte einen API-Schlüssel eingeben.");
+    } else {
+      // A stored key belongs to the provider it was entered for; never send it to another one.
+      boolean keyFits = settings.find(userId).map(s -> s.hasKey() && s.provider() == provider).orElse(false);
+      if (!keyFits) throw new UserError("Bitte einen API-Schlüssel für " + provider.label + " eingeben.");
     }
     settings.save(userId, provider, u.model(), newKey ? u.apiKey() : null);
     return getSettings();

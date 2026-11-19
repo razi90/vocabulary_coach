@@ -16,7 +16,10 @@ const STORE = (() => {
   }
 
   async function call(method, route, body) {
-    const headers = {};
+    /* The course this page was loaded for. The server uses it instead of the
+       account's current course, so a tab left open after switching courses
+       elsewhere keeps writing into the course it shows. */
+    const headers = typeof COURSE !== "undefined" ? { "X-Course": COURSE.id } : {};
     if (body !== undefined) headers["Content-Type"] = "application/json";
     if (method !== "GET") headers["X-XSRF-TOKEN"] = csrfToken();
     const res = await fetch(`/api/${route}`, {

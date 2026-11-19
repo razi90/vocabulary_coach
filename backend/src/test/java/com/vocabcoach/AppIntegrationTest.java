@@ -99,12 +99,15 @@ class AppIntegrationTest {
   class Learner {
     final CookieManager cookies = new CookieManager();
     final HttpClient http = HttpClient.newBuilder().cookieHandler(cookies).build();
+    /** The course the "page" was loaded for, sent as X-Course like store.js; null: none. */
+    String course;
 
     HttpResponse<String> send(String method, String path, Object body) throws Exception {
       HttpRequest.Builder b = HttpRequest.newBuilder(URI.create("http://localhost:" + port + path))
           .method(method, body == null ? HttpRequest.BodyPublishers.noBody()
               : HttpRequest.BodyPublishers.ofString(json.writeValueAsString(body)));
       if (body != null) b.header("Content-Type", "application/json");
+      if (course != null) b.header("X-Course", course);
       String token = csrf();
       if (!method.equals("GET") && token != null) b.header("X-XSRF-TOKEN", token);
       return http.send(b.build(), HttpResponse.BodyHandlers.ofString());
@@ -179,6 +182,41 @@ class AppIntegrationTest {
     String briefing = a.send("GET", "/api/briefing", null).body();
     assertThat(briefing).contains("la puerta").contains("verwechselt mit el retraso");
     assertThat(b.send("GET", "/api/briefing", null).body()).doesNotContain("la puerta");
+  }
+
+  @Test
+  void aStaleTabKeepsWritingIntoItsOwnCourse() throws Exception {
+    // One session, two tabs: the course header is what tells them apart.
+    Learner a = new Learner().register(unique("course"));
+    a.ok("PUT", "/api/auth/course", json.createObjectNode().put("course", "en"));   // switched on the laptop
+
+    a.course = "es";                           // the phone still shows Spanish
+    a.ok("POST", "/api/events", json.readTree("""
+        {"kind":"vocab","ok":false,"id":"la puerta","typed":"el retraso"}"""));
+    assertThat(a.ok("GET", "/api/events", null)).hasSize(1);
+
+    a.course = "en";
+    assertThat(a.ok("GET", "/api/events", null)).isEmpty();
+    a.course = null;                           // no header: the account's course, now English
+    assertThat(a.ok("GET", "/api/events", null)).isEmpty();
+  }
+
+  @Test
+  void aStoredKeyIsNeverUsedForAnotherProvider() throws Exception {
+    Learner a = new Learner().register(unique("key"));
+    long userId = a.ok("GET", "/api/auth/me", null).path("id").asLong();
+    a.ok("PUT", "/api/coach/settings", json.createObjectNode()
+        .put("provider", "openrouter").put("model", "test/model").put("apiKey", "sk-or-v1-0123456789abcd"));
+
+    // Same provider, no new key: the key stays.
+    a.ok("PUT", "/api/coach/settings", json.createObjectNode().put("provider", "openrouter").put("model", "other/model"));
+    // Another provider without a key: refused, and the OpenRouter key is untouched.
+    HttpResponse<String> res = a.send("PUT", "/api/coach/settings",
+        json.createObjectNode().put("provider", "opencode_zen").put("model", "test/model"));
+    assertThat(res.statusCode()).as(res.body()).isEqualTo(400);
+    assertThat(jdbc.sql("SELECT provider FROM coach_settings WHERE user_id = ?").param(userId)
+        .query(String.class).single()).isEqualTo("openrouter");
+    assertThat(a.ok("GET", "/api/coach/settings", null).path("hasKey").asBoolean()).isTrue();
   }
 
   @Test

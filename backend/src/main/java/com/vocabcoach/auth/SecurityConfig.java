@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,7 +60,9 @@ public class SecurityConfig {
               json(res, HttpStatus.OK, "{\"ok\":true}");
             })
             .failureHandler((req, res, e) -> json(res, HttpStatus.UNAUTHORIZED,
-                "{\"error\":\"" + (e instanceof LockedException ? e.getMessage()
+                // Ask the throttle, not the exception type: Spring wraps a
+                // LockedException thrown from loadUserByUsername.
+                "{\"error\":\"" + (throttle.isLocked(req.getParameter("email")) ? LoginThrottle.LOCKED_MESSAGE
                     : "E-Mail oder Passwort stimmt nicht.") + "\"}"))
             .permitAll())
         .logout(l -> l
