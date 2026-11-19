@@ -10,16 +10,17 @@ const smallFields = (page) => page.evaluate(() =>
     .filter((e) => e.getBoundingClientRect().width > 0 && parseFloat(getComputedStyle(e).fontSize) < 16)
     .map((e) => e.id || e.name || e.className));
 
-test("the menu opens and closes with its own button @phone", async ({ page, context }) => {
+test("the four sections sit in a tab bar at the bottom @phone", async ({ page, context }) => {
   await signUp(context);
   await openApp(page);
-  const menu = page.locator("#menuBtn");
-  await menu.click();
-  await expect(menu).toHaveAttribute("aria-expanded", "true");
-  await menu.click();                                   // the button stays on top of the drawer
-  await expect(menu).toHaveAttribute("aria-expanded", "false");
-  const box = await menu.boundingBox();
-  expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+  const vh = page.viewportSize().height;
+  for (const id of ["home", "practice", "coach", "stats"]) {
+    const box = await page.locator(`#tab-${id}`).boundingBox();
+    expect(box.y + box.height, `${id} at the bottom`).toBeGreaterThan(vh - 90);
+    expect(Math.min(box.width, box.height), `${id} big enough to tap`).toBeGreaterThanOrEqual(44);
+    await page.locator(`#tab-${id}`).click();
+    await expect(page.locator(`#tab-${id}`)).toHaveAttribute("aria-current", "page");
+  }
 });
 
 test("no screen scrolls sideways and no field makes iOS zoom @phone", async ({ page, context }) => {
@@ -29,7 +30,7 @@ test("no screen scrolls sideways and no field makes iOS zoom @phone", async ({ p
 
   await signUp(context, { course: "en" });
   await openApp(page);
-  for (const tab of ["home", "lesson", "coach", "browse", "conj", "grammar", "packs", "stats"]) {
+  for (const tab of ["home", "practice", "coach", "stats", "settings", "browse", "conj", "grammar", "packs"]) {
     await openTab(page, tab);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, `${tab} scrolls sideways`).toBeLessThanOrEqual(0);

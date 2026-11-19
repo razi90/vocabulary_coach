@@ -391,6 +391,7 @@ const LESSON = (() => {
   return {
     load, render, stoppen,
     hatLektion: () => !!(lesson && lesson.id),
+    current: () => lesson,
     setOnSubmitted: (fn) => { onSubmitted = fn; },
   };
 })();

@@ -35,7 +35,7 @@ test("register in the English course, log out, log back in @phone", async ({ pag
   await expect(page.locator("#bootError")).toBeHidden();
   await appReady(page);
 
-  await openTab(page, "coach");
+  await openTab(page, "settings");
   await expect(page.locator("#accountEmail")).toContainText(email);
   await page.locator("#logoutBtn").click();
   await expect(page).toHaveURL(/login\.html/);

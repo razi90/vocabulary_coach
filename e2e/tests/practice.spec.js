@@ -90,12 +90,11 @@ test("the word list finds a word with its meanings", async ({ page, context }) =
   await expect(row.locator(".bi-de")).toHaveText("schließlich, irgendwann");
 });
 
-test("without a lesson the lesson tab says so", async ({ page, context }) => {
+test("without a lesson Heute lists none and says what else there is", async ({ page, context }) => {
   await signUp(context);
   await openApp(page);
-  await openTab(page, "lesson");
-  await expect(page.locator("#lessonEmpty")).toBeVisible();
-  await expect(page.locator("#lessonBody")).toBeHidden();
+  await expect(page.locator('[data-today="lesson"]')).toHaveCount(0);
+  await expect(page.locator("#todayEmpty")).toBeVisible();
 });
 
 test("coach settings: a key is required, and a stored key does not move to another provider", async ({ page, context }) => {
@@ -103,7 +102,10 @@ test("coach settings: a key is required, and a stored key does not move to anoth
   await page.route("**/api/coach/models**", (r) => r.fulfill({ json: [{ id: "test/model", name: "Test Model" }] }));
   await signUp(context);
   await openApp(page);
+  // Not set up yet: the coach offers to set it up instead of disabled buttons.
   await openTab(page, "coach");
+  await page.locator("#coachSetup").click();
+  await expect(page.locator("#view-settings")).toBeVisible();
 
   await page.locator("#coachProvider").selectOption("openrouter");
   await page.locator("#coachModel").fill("test/model");

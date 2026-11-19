@@ -19,6 +19,7 @@
 
   const esc = TEXT.esc;
   const norm = TEXT.norm;
+  const el = (id) => document.getElementById(id);
 
   // ---------- State ----------
   /* The truth lives behind store.js. Only the working copies are here:
@@ -117,47 +118,44 @@
   // ---------- Navigation ----------
   const views = {};
   document.querySelectorAll(".view").forEach((v) => (views[v.id.replace("view-", "")] = v));
-  const tabs = document.querySelectorAll(".tab");
+  const tabs = document.querySelectorAll(".sidenav .tab");
+
+  /* Four sections. Every other screen belongs to one of them, so its tab
+     stays marked while a trainer or the lesson is open. Settings belong to
+     none: they open from the course button. */
+  const SECTION_OF = {
+    lesson: "home", session: "home", done: "home",
+    browse: "practice", conj: "practice", grammar: "practice", packs: "practice",
+    conjsession: "practice", grammarsession: "practice", packsession: "practice",
+    settings: null,
+  };
+  const SECTION_TITLES = { home: "Heute", practice: "Üben", coach: "Coach", stats: "Fortschritt", settings: "Einstellungen" };
 
   let currentView = "home";
 
-  /* On narrow screens the section list sits over the content as a drawer.
-     On wide ones it is fixed on the left - "open" is meaningless there,
-     because the stylesheet never turns the drawer on in the first place. */
-  const sidenav = document.getElementById("sidenav");
-  const navScrim = document.getElementById("navScrim");
-  const menuBtn = document.getElementById("menuBtn");
-
-  function setNavOpen(open) {
-    sidenav.classList.toggle("open", open);
-    navScrim.hidden = !open;
-    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-  }
-  menuBtn.addEventListener("click", () => setNavOpen(!sidenav.classList.contains("open")));
-  navScrim.addEventListener("click", () => setNavOpen(false));
-
   function showView(name) {
+    const previous = currentView;
     currentView = name;
-    Object.entries(views).forEach(([k, el]) => el.classList.toggle("active", k === name));
+    Object.entries(views).forEach(([k, v]) => v.classList.toggle("active", k === name));
+    const section = name in SECTION_OF ? SECTION_OF[name] : name;
     tabs.forEach((t) => {
-      const on = t.dataset.view === name;
+      const on = t.dataset.view === section;
       t.classList.toggle("active", on);
-      t.setAttribute("aria-selected", on ? "true" : "false");
+      if (on) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current");
     });
-    setNavOpen(false);
-    const chosen = [...tabs].find((t) => t.dataset.view === name);
-    // Text nodes only: the icon sits in a span of its own.
-    if (chosen) el("topbarSection").textContent = [...chosen.childNodes]
-      .filter((n) => n.nodeType === Node.TEXT_NODE).map((n) => n.textContent).join("").trim();
+    el("topbarSection").textContent = SECTION_TITLES[section || name] || "";
+    if (previous !== name) window.scrollTo(0, 0);
 
     if (name === "browse") renderBrowse();
-    if (name === "stats") { renderStats(); renderSyncStatus(); }
-    if (name === "home") renderHome();
+    if (name === "stats") renderStats();
+    if (name === "home") { el("tab-home").classList.remove("tab-alert"); renderHome(); }
+    if (name === "practice") { el("tab-practice").classList.remove("tab-alert"); renderPractice(); }
     if (name === "conj") renderConjOverview();
     if (name === "grammar") renderGrammarOverview();
-    if (name === "packs") { el("tab-packs").classList.remove("tab-alert"); renderPacks(); }
-    if (name === "lesson") { el("tab-lesson").classList.remove("tab-alert"); LESSON.render(); }
+    if (name === "packs") { el("tab-practice").classList.remove("tab-alert"); renderPacks(); }
+    if (name === "lesson") LESSON.render();
     if (name === "coach") { el("tab-coach").classList.remove("tab-alert"); COACH.render(); }
+    if (name === "settings") { COACH.render(); renderSyncStatus(); }
     // Nobody wants the video to keep playing while they drill vocabulary.
     if (name !== "lesson") { LESSON.stoppen(); const f = el("listeningFrame"); if (f && f.src) f.src = f.src; }
   }
@@ -205,37 +203,47 @@
     if (packSession && currentView === "packsession") return () => { packSession = null; };
     return null;
   }
-  tabs.forEach((t) => t.addEventListener("click", () => {
+  /** Switches screens; a running drill is only left after asking. */
+  function go(name) {
     const abandon = activeDrill();
     if (abandon) {
-      if (!confirm("Die laufende Übung wird beendet. Fortfahren?")) return;
+      if (!confirm("Die laufende Übung wird beendet. Fortfahren?")) return false;
       abandon();
     }
-    showView(t.dataset.view);
-  }));
+    showView(name);
+    return true;
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => go(t.dataset.view)));
+  el("courseBtn").addEventListener("click", () => go("settings"));
+  // Back links on sub-screens, and links to another section.
+  document.addEventListener("click", (e) => {
+    const back = e.target.closest("[data-back]");
+    if (back) { showView(back.dataset.back); return; }
+    const link = e.target.closest("[data-goto]");
+    if (link) go(link.dataset.goto);
+  });
 
   // ---------- Home ----------
-  const el = (id) => document.getElementById(id);
+
+  const icon = (name, cls = "icon") => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 
   function renderHome() {
     const due = cardsDueNow().length;
     const fresh = cardsNewAvailable().length;
-    const learned = learnedCount();
     el("dueCount").textContent = due;
     el("newCount").textContent = fresh;
-    el("learnedCount").textContent = learned;
     el("totalCount").textContent = DECK.length;
     el("streakCount").textContent = state.streak;
+    el("homeSub").textContent = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
 
     document.querySelectorAll(".dir-btn").forEach((b) => b.classList.toggle("active", b.dataset.dir === state.direction));
 
     const goal = state.dailyGoal;
-    const doneToday = (state.log[todayKey()] || { reviewed: 0 }).reviewed;
-    const pct = Math.min(1, doneToday / goal);
-    const circumference = 2 * Math.PI * 52;
-    el("dailyRing").style.strokeDashoffset = String(circumference * (1 - pct));
-    el("dailyDoneNum").textContent = doneToday;
+    const today = state.log[todayKey()] || { reviewed: 0, correct: 0 };
+    el("dailyProgress").style.width = `${Math.min(100, Math.round((today.reviewed / goal) * 100))}%`;
+    el("dailyDoneNum").textContent = today.reviewed;
     el("dailyGoalNum").textContent = goal;
+    el("todayAccuracy").textContent = today.reviewed ? `${Math.round((today.correct / today.reviewed) * 100)} %` : "–";
     el("dailyGoal").value = goal;
     el("dailyGoalDisplay").textContent = goal;
 
@@ -244,18 +252,81 @@
     const keepLearningBtn = el("keepLearningBtn");
     if (due + fresh === 0) {
       startBtn.disabled = true;
-      startBtn.textContent = "Alles erledigt für heute ✓";
+      startBtn.textContent = "Für heute erledigt";
       el("sessionHint").textContent = moreWordsWaiting
-        ? "Tageslimit für neue Wörter erreicht."
-        : "Komm morgen für neue Wiederholungen wieder.";
+        ? "Das Tageslimit für neue Wörter ist erreicht."
+        : "Morgen gibt es neue Wiederholungen.";
       keepLearningBtn.hidden = !moreWordsWaiting;
     } else {
       startBtn.disabled = false;
-      startBtn.textContent = "Sitzung starten";
-      el("sessionHint").textContent = `${due} fällig, ${fresh} neu · Karteikarten · Multiple Choice · Tippen`;
+      startBtn.textContent = today.reviewed ? "Weiterlernen" : "Sitzung starten";
+      el("sessionHint").textContent = `${due} fällig · ${fresh} neu`;
       keepLearningBtn.hidden = true;
     }
+    renderToday();
   }
+
+  // "Außerdem heute": the lesson, new exercise sets, grammar with recent mistakes.
+  function todayList() {
+    return TODAY.items({
+      lesson: LESSON.current(), packs, events,
+      grammarCards: state.grammarCards, grammarItems: GRAMMAR.ITEMS, grammarLabels: GRAMMAR.CATEGORY_LABELS,
+    });
+  }
+  const TODAY_ICONS = { lesson: "headphones", pack: "coach", grammar: "grammar" };
+  function todayRow(it) {
+    return `<button class="list-row" data-today="${it.kind}" data-id="${esc(it.id || "")}">
+      <span class="row-icon">${icon(TODAY_ICONS[it.kind])}</span>
+      <span class="grow"><span class="title">${esc(it.title)}</span><span class="meta">${esc(it.meta)}</span></span>
+      ${it.done ? icon("check", "icon chev ok") : icon("chev", "icon chev")}</button>`;
+  }
+  function renderToday() {
+    const list = todayList();
+    el("todayList").hidden = !list.length;
+    el("todayEmpty").hidden = list.length > 0;
+    el("todayList").innerHTML = list.map(todayRow).join("");
+  }
+  function openTodayItem(kind, id) {
+    if (kind === "lesson") showView("lesson");
+    else if (kind === "pack") { const p = packs.find((x) => x.id === id); if (p) startPack(p); }
+    else if (kind === "grammar") startGrammar([id]);
+  }
+  document.addEventListener("click", (e) => {
+    const row = e.target.closest("[data-today]");
+    if (row) openTodayItem(row.dataset.today, row.dataset.id);
+  });
+
+  // ---------- Üben ----------
+  function renderPractice() {
+    const due = cardsDueNow().length;
+    const fresh = cardsNewAvailable().length;
+    el("practiceVocabMeta").textContent = due + fresh ? `${due} fällig · ${fresh} neu` : "Für heute erledigt";
+    el("practiceConjMeta").textContent = conjSelectedTenses.size
+      ? [...conjSelectedTenses].map((t) => CONJUGATE.TENSE_LABELS[t]).join(", ")
+      : `${CONJUGATE.ALL_VERBS.length} Verben`;
+    el("practiceGrammarMeta").textContent = `${GRAMMAR.CATEGORIES.length} Themen`;
+    el("totalCount").textContent = DECK.length;
+
+    const practised = new Set(events.filter((e) => e.kind === "pack").map((e) => e.packId));
+    const newest = packs.slice().sort((a, b) => b.addedAt - a.addedAt).slice(0, 3);
+    el("practicePacks").innerHTML = newest.map((p) => `<button class="list-row" data-pack-start="${esc(p.id)}">
+        <span class="row-icon">${icon("coach")}</span>
+        <span class="grow"><span class="title">${esc(p.title)}</span><span class="meta">${p.items.length} Aufgaben${practised.has(p.id) ? "" : " · neu"}</span></span>
+        ${practised.has(p.id) ? "" : '<span class="dot" aria-label="neu"></span>'}${icon("chev", "icon chev")}</button>`).join("") +
+      `<button class="list-row" data-open="packs"><span class="row-icon">${icon("target")}</span>
+        <span class="grow"><span class="title">${packs.length ? "Alle Übungssätze" : "Übungssätze"}</span>
+        <span class="meta">${packs.length ? `${packs.length} insgesamt · Datei importieren` : "Noch keine – lass sie im Coach erstellen"}</span></span>${icon("chev", "icon chev")}</button>`;
+  }
+  el("view-practice").addEventListener("click", (e) => {
+    const start = e.target.closest("[data-pack-start]");
+    if (start) { const p = packs.find((x) => x.id === start.dataset.packStart); if (p) startPack(p); return; }
+    const row = e.target.closest("[data-open]");
+    if (!row) return;
+    if (row.dataset.open === "vocab") {
+      if (!startSession()) showView("home");
+    } else showView(row.dataset.open);
+  });
+
   el("keepLearningBtn").addEventListener("click", () => {
     state.newCapOverrideDay = todayKey();
     save();
@@ -265,7 +336,6 @@
   el("dailyGoal").addEventListener("input", (e) => {
     state.dailyGoal = Number(e.target.value);
     el("dailyGoalDisplay").textContent = state.dailyGoal;
-    el("dailyGoalNum").textContent = state.dailyGoal;
     save();
   });
 
@@ -308,11 +378,12 @@
 
   function startSession() {
     const queue = buildSessionQueue();
-    if (!queue.length) return;
-    session = { queue, idx: 0, reviewed: 0, correct: 0 };
+    if (!queue.length) return false;
+    session = { queue, idx: 0, reviewed: 0, correct: 0, missed: new Set() };
     touchStreak();
     showView("session");
     renderCurrentCard();
+    return true;
   }
   el("startSessionBtn").addEventListener("click", startSession);
   el("exitSessionBtn").addEventListener("click", () => { session = null; el("sessionContinueBtn").hidden = true; showView("home"); });
@@ -544,6 +615,7 @@
     cards[item.deck.term] = SRS.review(c, grade, { desiredRetention: 0.9, mode: item.mode });
     session.reviewed += 1;
     if (correct) session.correct += 1;
+    else session.missed.add(item.deck.term);
     logReview(correct);
     logEvent({
       kind: "vocab", id: item.deck.term, dir: state.direction, mode: item.mode,
@@ -562,19 +634,50 @@
     renderCurrentCard();
   }
 
-  function finishSession() {
-    const reviewed = session ? session.reviewed : 0;
-    const correct = session ? session.correct : 0;
-    el("doneReviewedLabel").textContent = "Karten geübt";
+  /**
+   * The end of any session: the numbers, what went wrong, and one suggestion
+   * for what to do next from the Heute list.
+   */
+  let doneNext = null;
+  function showDone({ reviewed, correct, label, withStreak, missed, back, finished }) {
+    el("doneTitle").textContent = reviewed && correct === reviewed ? "Alles richtig" : "Geschafft";
+    el("doneReviewedLabel").textContent = label;
     el("doneReviewed").textContent = reviewed;
-    el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
+    el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)} %` : "–";
     el("doneStreak").textContent = state.streak;
-    el("doneStreakBlock").hidden = false;
+    el("doneStreakBlock").hidden = !withStreak;
+    el("doneMissedBlock").hidden = !missed.length;
+    el("doneMissed").innerHTML = missed.slice(0, 12).map((m) => `<${m.term ? `button class="list-row" data-word="${esc(m.term)}"` : 'div class="list-row"'}>
+        <span class="grow"><span class="title" lang="${COURSE.lang}">${m.html || esc(m.title)}</span>${m.meta ? `<span class="meta">${esc(m.meta)}</span>` : ""}</span>
+        ${m.term ? icon("chev", "icon chev") : ""}</${m.term ? "button" : "div"}>`).join("");
+
+    const due = cardsDueNow().length + cardsNewAvailable().length;
+    doneNext = finished.kind !== "vocab" && due ? { kind: "vocab", title: "Vokabeln" } : TODAY.nextStep(todayList(), finished);
+    const next = el("doneNextBtn");
+    next.hidden = !doneNext;
+    if (doneNext) next.textContent = `Als Nächstes: ${doneNext.title}`;
+    el("doneContinueBtn").textContent = doneNext ? "Fertig" : "Weiter";
+    doneReturnView = back;
+    syncFolder();
+    showView("done");
+  }
+  el("doneNextBtn").addEventListener("click", () => {
+    if (!doneNext) return;
+    if (doneNext.kind === "vocab") { if (!startSession()) showView("home"); }
+    else openTodayItem(doneNext.kind, doneNext.id);
+  });
+
+  function finishSession() {
+    const s = session || { reviewed: 0, correct: 0, missed: new Set() };
     el("sessionContinueBtn").hidden = true;
     session = null;
-    syncFolder();
-    doneReturnView = "home";
-    showView("done");
+    const byTerm = new Map(DECK.map((d) => [d.term, d]));
+    showDone({
+      reviewed: s.reviewed, correct: s.correct, label: "Karten geübt", withStreak: true, back: "home",
+      finished: { kind: "vocab" },
+      missed: [...s.missed].map((t) => byTerm.get(t)).filter(Boolean)
+        .map((d) => ({ term: d.term, title: d.term, meta: d.de.replace(/\|/g, ", ") })),
+    });
   }
 
   // ---------- Conjugation ----------
@@ -694,7 +797,7 @@
   el("startConjBtn").addEventListener("click", () => {
     const queue = shuffle(buildConjQueue());
     if (!queue.length) return;
-    conjSession = { queue, idx: 0, reviewed: 0, correct: 0 };
+    conjSession = { queue, idx: 0, reviewed: 0, correct: 0, missed: [] };
     touchStreak();
     showView("conjsession");
     renderConjItem();
@@ -769,6 +872,7 @@
     logConjAttempt(item, ok, correctForm, input.value);
     conjSession.reviewed += 1;
     if (ok) conjSession.correct += 1;
+    else conjSession.missed.push({ title: correctForm, meta: `${verb.infinitive} · ${CONJUGATE.TENSE_LABELS[item.tense]} · ${CONJUGATE.PERSON_LABELS[item.person]}` });
     el("conjScore").textContent = `${conjSession.correct} / ${conjSession.reviewed} richtig`;
     if (!ok && !item.requeued) {
       const reinsertAt = Math.min(conjSession.queue.length, conjSession.idx + 3 + Math.floor(Math.random() * 3));
@@ -786,17 +890,11 @@
   });
 
   function finishConjSession() {
-    const reviewed = conjSession ? conjSession.reviewed : 0;
-    const correct = conjSession ? conjSession.correct : 0;
-    el("doneReviewedLabel").textContent = "Formen geübt";
-    el("doneReviewed").textContent = reviewed;
-    el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
-    el("doneStreakBlock").hidden = true;
+    const s = conjSession || { reviewed: 0, correct: 0, missed: [] };
     el("conjContinueBtn").hidden = true;
     conjSession = null;
-    syncFolder();
-    doneReturnView = "conj";
-    showView("done");
+    showDone({ reviewed: s.reviewed, correct: s.correct, label: "Formen geübt", withStreak: false,
+      missed: s.missed, back: "conj", finished: { kind: "conj" } });
   }
 
   // ---------- Grammar ----------
@@ -832,9 +930,9 @@
     el("startGrammarBtn").disabled = itemCount === 0;
   }
 
-  function buildGrammarQueue() {
+  function buildGrammarQueue(categories) {
     const items = [];
-    grammarSelectedCategories.forEach((c) => items.push(...GRAMMAR.itemsForCategory(c)));
+    categories.forEach((c) => items.push(...GRAMMAR.itemsForCategory(c)));
     return items
       .map((it) => ({ it, score: practiceScore(state.grammarCards[it.id]) }))
       .sort((a, b) => b.score - a.score)
@@ -842,14 +940,16 @@
       .map((x) => x.it);
   }
 
-  el("startGrammarBtn").addEventListener("click", () => {
-    const queue = shuffle(buildGrammarQueue());
+  /** A grammar session over these categories (the chosen ones, or one topic from Heute). */
+  function startGrammar(categories) {
+    const queue = shuffle(buildGrammarQueue(categories));
     if (!queue.length) return;
-    grammarSession = { queue, idx: 0, reviewed: 0, correct: 0 };
+    grammarSession = { queue, idx: 0, reviewed: 0, correct: 0, missed: [], categories };
     touchStreak();
     showView("grammarsession");
     renderGrammarItem();
-  });
+  }
+  el("startGrammarBtn").addEventListener("click", () => startGrammar([...grammarSelectedCategories]));
   el("exitGrammarBtn").addEventListener("click", () => { grammarSession = null; el("grammarContinueBtn").hidden = true; showView("grammar"); });
 
   function logGrammarAttempt(item, ok, chosen) {
@@ -881,6 +981,7 @@
     el("grammarCategoryLabel").textContent = GRAMMAR.CATEGORY_LABELS[item.category];
     el("grammarPrompt").textContent = item.prompt;
     el("grammarExplanation").textContent = "";
+    el("grammarVerdict").hidden = true;
     el("grammarScore").textContent = `${grammarSession.correct} / ${grammarSession.reviewed} richtig`;
     el("grammarContinueBtn").hidden = true;
 
@@ -898,9 +999,13 @@
           else if (o === b && !ok) o.classList.add("wrong");
         });
         el("grammarExplanation").textContent = item.explanation;
+        el("grammarVerdict").hidden = false;
+        el("grammarVerdict").className = "verdict " + (ok ? "correct" : "wrong");
+        el("grammarVerdict").textContent = ok ? "Richtig" : `Nicht ganz – richtig ist „${item.answer}“`;
         logGrammarAttempt(item, ok, opt);
         grammarSession.reviewed += 1;
         if (ok) grammarSession.correct += 1;
+        else grammarSession.missed.push({ html: fillGap(item.prompt, item.answer), meta: GRAMMAR.CATEGORY_LABELS[item.category] });
         el("grammarScore").textContent = `${grammarSession.correct} / ${grammarSession.reviewed} richtig`;
         if (!ok && !item.requeued) {
           const reinsertAt = Math.min(grammarSession.queue.length, grammarSession.idx + 3 + Math.floor(Math.random() * 3));
@@ -914,17 +1019,12 @@
   el("grammarContinueBtn").addEventListener("click", () => { if (!grammarSession) return; grammarSession.idx += 1; renderGrammarItem(); });
 
   function finishGrammarSession() {
-    const reviewed = grammarSession ? grammarSession.reviewed : 0;
-    const correct = grammarSession ? grammarSession.correct : 0;
-    el("doneReviewedLabel").textContent = "Fragen beantwortet";
-    el("doneReviewed").textContent = reviewed;
-    el("doneAccuracy").textContent = reviewed ? `${Math.round((correct / reviewed) * 100)}%` : "–";
-    el("doneStreakBlock").hidden = true;
+    const s = grammarSession || { reviewed: 0, correct: 0, missed: [], categories: [] };
     el("grammarContinueBtn").hidden = true;
     grammarSession = null;
-    syncFolder();
-    doneReturnView = "grammar";
-    showView("done");
+    showDone({ reviewed: s.reviewed, correct: s.correct, label: "Fragen beantwortet", withStreak: false,
+      missed: s.missed, back: "grammar",
+      finished: { kind: "grammar", id: s.categories.length === 1 ? s.categories[0] : null } });
   }
 
   // ---------- Playing exercise sets ----------
@@ -1046,6 +1146,7 @@
 
     logEvent({ kind: "pack", packId, itemType: item.type, prompt: item.prompt, ok, typed: given, expected: solution });
     DRILL.record(packSession, ok);
+    if (!ok) (packSession.missed || (packSession.missed = [])).push({ title: solution, meta: item.prompt });
     save();
     el("packScore").textContent = `${packSession.correct} / ${packSession.reviewed} richtig`;
     const cont = el("packContinueBtn");
@@ -1065,16 +1166,11 @@
   });
 
   function finishPackSession() {
-    const reviewed = packSession ? packSession.reviewed : 0;
-    el("doneReviewedLabel").textContent = "Aufgaben gelöst";
-    el("doneReviewed").textContent = reviewed;
-    el("doneAccuracy").textContent = DRILL.accuracy(packSession) == null ? "–" : `${DRILL.accuracy(packSession)}%`;
-    el("doneStreakBlock").hidden = true;
+    const s = packSession;
     el("packContinueBtn").hidden = true;
     packSession = null;
-    doneReturnView = "packs";
-    showView("done");
-    syncFolder();
+    showDone({ reviewed: s ? s.reviewed : 0, correct: s ? s.correct : 0, label: "Aufgaben gelöst", withStreak: false,
+      missed: (s && s.missed) || [], back: "packs", finished: { kind: "pack", id: s && s.meta.packId } });
   }
 
   function renderPacks() {
@@ -1167,12 +1263,13 @@
   });
 
   // ---------- Browse ----------
-  function stateEmoji(c) {
-    if (!c || c.state === "new") return "⚪";
-    if (c.state === "learning" || c.state === "relearning") return "🟡";
-    if (c.stability >= 21) return "🟢";
-    return "🔵";
+  function stateClass(c) {
+    if (!c || c.state === "new") return "";
+    if (c.state === "learning" || c.state === "relearning") return "learning";
+    if (c.stability >= 21) return "mature";
+    return "young";
   }
+  const STATE_LABELS = { "": "neu", learning: "am Lernen", young: "jung", mature: "gefestigt" };
   function populateBrowseFilters() {
     const topics = [...new Set(DECK.map((d) => d.topic))].sort();
     const levels = [...new Set(DECK.map((d) => d.level))].sort();
@@ -1199,7 +1296,7 @@
     list.innerHTML = filtered.map((d) => {
       const c = cards[d.term];
       return `<div class="browse-item">
-        <span class="bi-state">${stateEmoji(c)}</span>
+        <span class="bi-state ${stateClass(c)}" title="${STATE_LABELS[stateClass(c)]}"></span>
         <div class="bi-main"><div class="bi-es" lang="${COURSE.lang}">${esc(d.term)}</div><div class="bi-de">${esc(d.de.replace(/\|/g, ", "))}</div></div>
         <span class="bi-level">${esc(d.level)}</span>
       </div>`;
@@ -1212,6 +1309,7 @@
 
   // ---------- Stats ----------
   function renderStats() {
+    el("statsSub").textContent = `${learnedCount()} von ${DECK.length} Wörtern begonnen`;
     const totalReviews = Object.values(state.log).reduce((s, d) => s + d.reviewed, 0);
     el("statTotalReviews").textContent = totalReviews;
 
@@ -1242,7 +1340,7 @@
     });
     buckets.neu += DECK.length - Object.keys(cards).length;
     const total = DECK.length;
-    const colors = { neu: "var(--surface-2)", lernend: "var(--warn)", jung: "var(--blue)", reif: "var(--good)" };
+    const colors = { neu: "var(--surface-3)", lernend: "var(--warn)", jung: "var(--blue)", reif: "var(--good)" };
     const labels = { neu: "Neu", lernend: "Lernend", jung: "Jung", reif: "Gefestigt" };
     el("maturityBar").innerHTML = Object.entries(buckets).map(([k, v]) =>
       `<div style="width:${(v / total) * 100}%; background:${colors[k]}"></div>`
@@ -1270,6 +1368,7 @@
   function renderConjStats() {
     const totalConjReviews = Object.values(state.conjLog).reduce((s, d) => s + d.reviewed, 0);
     el("conjStatAttempts").textContent = totalConjReviews;
+    el("conjStatsBlock").hidden = totalConjReviews === 0;   // only once there is something to show
 
     const last30 = last30Keys();
     let rev = 0, cor = 0;
@@ -1335,6 +1434,7 @@
   function renderGrammarStats() {
     const totalReviews = Object.values(state.grammarLog).reduce((s, d) => s + d.reviewed, 0);
     el("grammarStatAttempts").textContent = totalReviews;
+    el("grammarStatsBlock").hidden = totalReviews === 0;
 
     const last30 = last30Keys();
     let rev = 0, cor = 0;
@@ -1419,8 +1519,8 @@
   function renderSyncStatus() {
     const status = el("syncStatus");
     if (!status) return;
-    status.textContent = "Mit dem Server verbunden. Fortschritt, Antwortprotokoll und Auswertung " +
-      "liegen in der Datenbank; der Coach liest sie und legt daraus neue Übungen an.";
+    status.textContent = "Dein Lernstand wird auf dem Server gespeichert. Hier kannst du ihn herunterladen – " +
+      "den Fortschritt als Datei oder den Lernbericht, aus dem der Coach seine Übungen baut.";
   }
 
   // ---------- Keyboard ----------
@@ -1432,9 +1532,6 @@
   };
   /* Only the button of the currently visible drill may react. Otherwise
      Enter reaches the leftover button of a finished drill. */
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && sidenav.classList.contains("open")) setNavOpen(false);
-  });
   function pressContinue() {
     const btn = el(CONTINUE_BTN[currentView] || "");
     if (!btn || btn.hidden) return false;
@@ -1483,11 +1580,9 @@
     }
   });
 
-  /** Show on the start page whether a lesson is ready for today. */
+  /** Heute lists the lesson; refresh it when the lesson changes. */
   function markiereLektion() {
-    const hinweis = el("lessonHint");
-    if (!hinweis) return;
-    hinweis.hidden = !LESSON.hatLektion();
+    if (currentView === "home") renderToday();
   }
 
   // ---------- Exercise sets from the coach ----------
@@ -1527,18 +1622,24 @@
     STORE.onExercisesChanged(async () => {
       packs = await STORE.allPacks();
       if (currentView === "packs") renderPacks();
-      const badge = el("tab-packs");
-      if (badge && currentView !== "packs") badge.classList.add("tab-alert");
+      if (currentView === "practice") renderPractice();
+      if (currentView === "home") renderToday();
+      if (!["packs", "practice"].includes(currentView)) el("tab-practice").classList.add("tab-alert");
     });
     STORE.onLessonsChanged(async () => {
       await LESSON.load();
-      if (currentView !== "lesson") el("tab-lesson").classList.add("tab-alert");
+      if (!["lesson", "home"].includes(currentView)) el("tab-home").classList.add("tab-alert");
       markiereLektion();
     });
     LESSON.setOnSubmitted(markiereLektion);
-    COACH.init({ isVisible: () => currentView === "coach", alert: () => el("tab-coach").classList.add("tab-alert") });
+    COACH.init({
+      isVisible: () => currentView === "coach",
+      alert: () => el("tab-coach").classList.add("tab-alert"),
+      openSettings: () => { go("settings"); requestAnimationFrame(() => el("settingsCoach").scrollIntoView({ block: "start" })); },
+    });
 
     stellePositionHer();
+    document.body.dataset.ready = "1";   // for the browser tests: handlers are attached
   }
 
   boot().catch((e) => {

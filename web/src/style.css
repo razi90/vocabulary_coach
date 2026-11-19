@@ -128,21 +128,6 @@ a { color: var(--accent); }
 }
 .streak span { color: var(--text); }
 
-/* Burger: three bars that turn into an X when open. */
-.menu-btn {
-  display: none; flex-direction: column; justify-content: center; gap: 4px;
-  width: 36px; height: 36px; padding: 0 9px; flex-shrink: 0; margin-left: -8px;
-  border: none; background: transparent; border-radius: var(--radius-sm); cursor: pointer;
-}
-.menu-btn:hover { background: var(--surface-2); }
-.menu-btn span {
-  display: block; height: 1.75px; width: 100%; background: var(--text); border-radius: 2px;
-  transition: transform .2s ease, opacity .15s ease;
-}
-.menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(5.75px) rotate(45deg); }
-.menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5.75px) rotate(-45deg); }
-
 /* ---------- Frame: navigation on the left, content on the right ---------- */
 .shell { flex: 1; display: flex; align-items: flex-start; min-height: 0; }
 
@@ -169,30 +154,26 @@ a { color: var(--accent); }
 main { padding: 32px 24px 56px; max-width: 720px; margin: 0 auto; }
 main.wide { max-width: 980px; }
 
-.nav-scrim { display: none; }
-
-/* Narrow: the list slides in as a drawer. */
+/* Narrow: the four sections become a tab bar at the bottom. */
 @media (max-width: 860px) {
-  .menu-btn { display: flex; }
-  /* Above the drawer, so the menu button (an X while open) closes it again. */
-  .topbar { z-index: 45; padding: 0 16px; }
-  .topbar-section {
-    display: block; font-size: 14px; font-weight: 550; color: var(--text-dim);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
+  .topbar { padding: 0 16px; }
   .sidenav {
-    position: fixed; top: 0; left: 0; bottom: 0; z-index: 40;
-    width: 248px; height: auto; padding-top: calc(var(--topbar-h) + 14px);
-    box-shadow: var(--shadow-float); border-right: 1px solid var(--border);
-    transform: translateX(-100%); transition: transform .22s ease;
+    position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 40;
+    width: auto; height: auto; display: flex; padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    border-right: none; border-top: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: saturate(180%) blur(12px); -webkit-backdrop-filter: saturate(180%) blur(12px);
   }
-  .sidenav.open { transform: none; }
-  .tab { padding: 11px 10px; font-size: 15px; }
-  .nav-scrim {
-    display: block; position: fixed; inset: 0; z-index: 35;
-    background: var(--scrim); border: none; padding: 0; animation: fade .18s ease;
+  .sidenav .tab {
+    flex: 1; flex-direction: column; gap: 3px; padding: 6px 2px; margin: 0; font-size: 11px; font-weight: 550;
+    border-radius: 10px; color: var(--text-faint); justify-content: center; min-height: 48px;
   }
-  main { padding: 22px 16px 48px; }
+  .sidenav .tab + .tab { margin-top: 0; }
+  .sidenav .tab .icon { width: 22px; height: 22px; }
+  .sidenav .tab:hover { background: transparent; }
+  .sidenav .tab.active { background: transparent; color: var(--text); }
+  .tab.tab-alert::after { top: 6px; right: calc(50% - 18px); transform: none; }
+  main { padding: 22px 16px calc(var(--tabbar-h) + 40px + env(safe-area-inset-bottom)); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -420,8 +401,8 @@ button.list-row { cursor: pointer; }
 button.list-row:hover { background: var(--surface-2); }
 .list-row + .list-row { border-top: 1px solid var(--border); }
 .list-row .grow { flex: 1; min-width: 0; }
-.list-row .title { font-weight: 550; }
-.list-row .meta { font-size: 13px; color: var(--text-dim); margin-top: 1px; }
+.list-row .title { display: block; font-weight: 550; }
+.list-row .meta { display: block; font-size: 13px; color: var(--text-dim); margin-top: 1px; }
 .list-row .chev { color: var(--text-faint); width: 16px; height: 16px; }
 .row-icon {
   width: 32px; height: 32px; border-radius: 9px; background: var(--surface-2); color: var(--text-dim);
@@ -704,8 +685,56 @@ button.browse-item:hover { background: var(--surface-2); }
   .browse-toolbar input, .browse-toolbar select,
   .conj-lookup select, .lesson-textarea { font-size: 16px; }
   /* Fingers need about 44px. */
-  .menu-btn, .icon-btn { width: 44px; height: 44px; }
-  .menu-btn { padding: 0 12px; }
+  .icon-btn { width: 44px; height: 44px; }
   .chip { min-height: 40px; padding: 8px 14px; }
   .auth-switch a { display: inline-block; padding: 10px 4px; }
 }
+
+/* ---------- Shell pieces of the four-section layout ---------- */
+.course-btn { margin-right: auto; }
+.brand-name { white-space: nowrap; }
+main { max-width: 1000px; }
+.view { max-width: 680px; margin: 0 auto; }
+#view-home, #view-stats { max-width: 960px; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 4px; border: none; background: transparent; color: var(--text-dim);
+  font-size: 14px; font-weight: 550; padding: 6px 8px 6px 2px; margin: -6px 0 10px -2px; cursor: pointer; border-radius: var(--radius-sm);
+}
+.back-link:hover { color: var(--text); }
+.link-btn { border: none; background: none; padding: 0; color: var(--text); font-weight: 600; text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-color: var(--border-strong); cursor: pointer; font-size: inherit; }
+.section-label.first { margin-top: 0; }
+
+/* Heute */
+.home-grid { display: grid; gap: 28px; }
+@media (min-width: 1000px) { .home-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; } }
+.today-panel { padding: 20px; }
+.today-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+.today-nums div { display: flex; flex-direction: column; }
+.today-nums b { font-size: 22px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.today-nums b small { font-size: 14px; color: var(--text-faint); font-weight: 550; }
+.today-nums > div > span { font-size: 12.5px; color: var(--text-dim); }
+.today-nums .due b { color: var(--accent); }
+.today-panel .progress { margin-bottom: 18px; }
+.today-panel .direction-toggle { margin-bottom: 14px; }
+.today-panel .hint { margin-bottom: 0; }
+.today-empty { color: var(--text-dim); font-size: 14px; line-height: 1.55; margin: 0; }
+.icon.chev.ok { color: var(--good); width: 18px; height: 18px; }
+.list-row > .dot { margin-left: 4px; }
+
+/* Done */
+.done-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+.done-actions .btn-secondary { margin: 0; width: 100%; padding: 12px; }
+#doneMissedBlock { text-align: left; margin-top: 8px; }
+
+/* Settings */
+#view-settings .panel .field:last-child, #view-settings .panel .field-help:last-child { margin-bottom: 0; }
+#view-settings .goal-row { margin-top: 0; }
+#view-settings details summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+.btn-secondary .icon, .btn-primary .icon { width: 16px; height: 16px; vertical-align: -3px; margin-right: 6px; }
+.pack-toolbar .btn-secondary { display: inline-flex; align-items: center; }
+
+/* Fortschritt: mistake lists folded away */
+details.conj-stats-sub { margin-top: 10px; }
+details.conj-stats-sub > summary { cursor: pointer; font-size: 13.5px; font-weight: 550; color: var(--text-dim); padding: 6px 0; }
+details.conj-stats-sub > summary:hover { color: var(--text); }

@@ -16,7 +16,7 @@ const COACH = (() => {
   let settings = null;
   let runs = [];
   let me = null;
-  let hooks = { isVisible: () => false, alert: () => {} };
+  let hooks = { isVisible: () => false, alert: () => {}, openSettings: () => {} };
   let loadedModelsFor = null;
 
   // ---------- Loading ----------
@@ -25,6 +25,7 @@ const COACH = (() => {
 
   async function init(options) {
     hooks = { ...hooks, ...options };
+    el("coachSetup").addEventListener("click", () => hooks.openSettings());
     wire();
     try {
       [me] = await Promise.all([STORE.call("GET", "auth/me"), loadSettings(), loadRuns()]);
@@ -63,8 +64,11 @@ const COACH = (() => {
 
   function renderOrder() {
     const info = el("coachReady");
+    el("coachSetup").hidden = !!ready();
+    document.querySelector("#coachOrder .coach-actions").hidden = !ready();
+    el("coachNoteField").hidden = !ready();
     if (!ready()) {
-      info.innerHTML = "Richte den Coach unten unter <strong>Einstellungen</strong> ein: Anbieter, Modell, API-Schlüssel.";
+      info.innerHTML = "Der Coach braucht einen Anbieter, ein Modell und deinen API-Schlüssel. Das dauert eine Minute.";
     } else if (running()) {
       info.innerHTML = "Der Coach arbeitet gerade. Ergebnisse erscheinen unten im Verlauf.";
     } else {

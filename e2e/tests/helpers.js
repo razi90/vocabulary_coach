@@ -65,20 +65,28 @@ async function openApp(page) {
   await appReady(page);
 }
 
-/** The app has loaded its data and attached its handlers (the deck size is shown). */
+/** The app has loaded its data and attached its handlers (boot sets data-ready). */
 async function appReady(page) {
-  await expect(page.locator("#totalCount")).not.toHaveText("0");
+  await expect(page.locator("body")).toHaveAttribute("data-ready", "1", { timeout: 15_000 });
 }
 
-/** Opens a section; on a phone through the menu. */
+/* Where each screen is reached from: the four sections directly, trainers
+   and lists through Üben, settings through the course button. */
+const VIA_PRACTICE = new Set(["browse", "conj", "grammar", "packs"]);
+
+/** Opens a screen the way a learner would. */
 async function openTab(page, id) {
-  // On a phone the menu slides in from the side; it is off-screen, not hidden.
-  const menu = page.locator("#menuBtn");
-  if (await menu.isVisible() && (await menu.getAttribute("aria-expanded")) !== "true") {
-    await menu.click();
-    await expect(menu).toHaveAttribute("aria-expanded", "true");
+  if (id === "settings") {
+    await page.locator("#courseBtn").click();
+  } else if (VIA_PRACTICE.has(id)) {
+    await page.locator("#tab-practice").click();
+    await page.locator(`#view-practice [data-open="${id}"]`).click();
+  } else if (id === "lesson") {
+    await page.locator("#tab-home").click();
+    await page.locator('[data-today="lesson"]').click();
+  } else {
+    await page.locator(`#tab-${id}`).click();
   }
-  await page.locator(`#tab-${id}`).click();
   await expect(page.locator(`#view-${id}`)).toBeVisible();
 }
 

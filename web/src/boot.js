@@ -5,7 +5,7 @@
    have to run first and in order - hence one script after the other. */
 (() => {
   const COURSES = ["es", "en"];
-  const APP_SCRIPTS = ["src/srs.js", "src/packs.js", "src/drill.js", "src/lesson.js", "src/coach.js", "src/app.js"];
+  const APP_SCRIPTS = ["src/srs.js", "src/packs.js", "src/drill.js", "src/lesson.js", "src/coach.js", "src/today.js", "src/app.js"];
 
   function load(src) {
     return new Promise((resolve, reject) => {

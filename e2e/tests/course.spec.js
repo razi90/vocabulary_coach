@@ -1,5 +1,5 @@
 const { test, expect } = require("@playwright/test");
-const { api, signUp, openApp, openTab } = require("./helpers");
+const { api, signUp, openApp, appReady, openTab } = require("./helpers");
 
 /** The X-Course header of every /api request the page makes. */
 function courseHeaders(page) {
@@ -17,10 +17,10 @@ test("switching the course reloads the app in the other language", async ({ page
   await openApp(page);
   await expect(page).toHaveTitle("Español – Vokabeltrainer");
 
-  await openTab(page, "coach");
+  await openTab(page, "settings");
   await page.locator("#courseSelect").selectOption("en");
   await expect(page).toHaveTitle("English – Vokabeltrainer");
-  await expect(page.locator("#totalCount")).not.toHaveText("0");
+  await appReady(page);
   expect((await api(context, "GET", "auth/me")).course).toBe("en");
 });
 
@@ -33,7 +33,7 @@ test("a tab left open on the old course keeps writing into its own course", asyn
   const phoneHeaders = courseHeaders(phone);
 
   // Switch on the laptop; the phone still shows Spanish.
-  await openTab(laptop, "coach");
+  await openTab(laptop, "settings");
   await laptop.locator("#courseSelect").selectOption("en");
   await expect(laptop).toHaveTitle("English – Vokabeltrainer");
 
