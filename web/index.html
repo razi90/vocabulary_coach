@@ -96,6 +96,7 @@
             <button class="btn-primary btn-huge" id="startSessionBtn">Sitzung starten</button>
             <p class="hint" id="sessionHint"></p>
             <button class="btn-secondary" id="keepLearningBtn" hidden>Trotzdem weiterlernen</button>
+            <button class="btn-secondary" id="restartSessionBtn" hidden>Neue Sitzung beginnen</button>
           </div>
           <div class="today-more">
             <div class="section-label first">Außerdem heute</div>
@@ -127,7 +128,7 @@
       <!-- ================= SESSION (Karteikarte / MC / Tippen) ================= -->
       <section id="view-session" class="view">
         <div class="session-top">
-          <button class="icon-btn" id="exitSessionBtn" aria-label="Beenden">✕</button>
+          <button class="icon-btn" id="exitSessionBtn" aria-label="Pausieren">✕</button>
           <div class="session-progress">
             <div class="session-progress-bar" id="sessionProgressBar"></div>
           </div>
@@ -333,13 +334,14 @@
         </div>
 
         <button class="btn-primary btn-huge" id="startConjBtn" style="margin-top: 20px;">Konjugation üben</button>
+        <button class="btn-secondary" id="restartConjBtn" hidden>Neu beginnen</button>
         <p class="hint" id="conjHint"></p>
       </section>
 
       <!-- ================= KONJUGATION: Drill ================= -->
       <section id="view-conjsession" class="view">
         <div class="session-top">
-          <button class="icon-btn" id="exitConjBtn" aria-label="Beenden">✕</button>
+          <button class="icon-btn" id="exitConjBtn" aria-label="Pausieren">✕</button>
           <div class="session-progress">
             <div class="session-progress-bar" id="conjProgressBar"></div>
           </div>
@@ -373,12 +375,13 @@
         <div class="conj-tense-explanation" id="grammarCategoryExplanation" style="margin-top: 10px;"></div>
 
         <button class="btn-primary btn-huge" id="startGrammarBtn" style="margin-top: 20px;">Grammatik üben</button>
+        <button class="btn-secondary" id="restartGrammarBtn" hidden>Neu beginnen</button>
       </section>
 
       <!-- ================= GRAMMATIK: Drill ================= -->
       <section id="view-grammarsession" class="view">
         <div class="session-top">
-          <button class="icon-btn" id="exitGrammarBtn" aria-label="Beenden">✕</button>
+          <button class="icon-btn" id="exitGrammarBtn" aria-label="Pausieren">✕</button>
           <div class="session-progress">
             <div class="session-progress-bar" id="grammarProgressBar"></div>
           </div>
@@ -445,7 +448,7 @@
       <!-- ================= ÜBUNGS-SITZUNG ================= -->
       <section id="view-packsession" class="view">
         <div class="session-top">
-          <button class="icon-btn" id="exitPackBtn" aria-label="Beenden">✕</button>
+          <button class="icon-btn" id="exitPackBtn" aria-label="Pausieren">✕</button>
           <div class="session-progress">
             <div class="session-progress-bar" id="packProgressBar"></div>
           </div>

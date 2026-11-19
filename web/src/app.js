@@ -196,21 +196,8 @@
   window.addEventListener("beforeunload", merkePosition);
   window.addEventListener("pagehide", merkePosition);
 
-  /** Is a drill running that the switch would throw away? */
-  function activeDrill() {
-    if (session && session.reviewed >= 0 && currentView === "session") return () => { session = null; };
-    if (conjSession && currentView === "conjsession") return () => { conjSession = null; };
-    if (grammarSession && currentView === "grammarsession") return () => { grammarSession = null; };
-    if (packSession && currentView === "packsession") return () => { packSession = null; };
-    return null;
-  }
-  /** Switches screens; a running drill is only left after asking. */
+  /** Switches screens. A running drill is only paused by that (see "Pausing"). */
   function go(name) {
-    const abandon = activeDrill();
-    if (abandon) {
-      if (!confirm("Die laufende Übung wird beendet. Fortfahren?")) return false;
-      abandon();
-    }
     showView(name);
     return true;
   }
@@ -237,9 +224,7 @@
     const item = e.target.closest("[data-course]");
     if (!item) return;
     if (item.dataset.course === COURSE.id) { courseMenu.hidePopover(); return; }
-    const abandon = activeDrill();
-    if (abandon && !confirm("Die laufende Übung wird beendet. Fortfahren?")) return;
-    item.disabled = true;
+    item.disabled = true;   // a running drill stays paused in its own course
     try {
       await STORE.call("PUT", "auth/course", { course: item.dataset.course });
       try { sessionStorage.removeItem("voco:position"); } catch (err) { /* egal */ }
@@ -284,7 +269,13 @@
     const startBtn = el("startSessionBtn");
     const moreWordsWaiting = allFreshCards().length > fresh;
     const keepLearningBtn = el("keepLearningBtn");
-    if (due + fresh === 0) {
+    el("restartSessionBtn").hidden = !session;
+    if (session) {
+      startBtn.disabled = false;
+      startBtn.textContent = `Fortsetzen · ${session.idx} von ${session.queue.length}`;
+      el("sessionHint").textContent = "Deine Sitzung ist pausiert.";
+      keepLearningBtn.hidden = true;
+    } else if (due + fresh === 0) {
       startBtn.disabled = true;
       startBtn.textContent = "Für heute erledigt";
       el("sessionHint").textContent = moreWordsWaiting
@@ -310,18 +301,31 @@
   const TODAY_ICONS = { lesson: "headphones", pack: "coach", grammar: "grammar" };
   function todayRow(it) {
     return `<button class="list-row" data-today="${it.kind}" data-id="${esc(it.id || "")}">
-      <span class="row-icon">${icon(TODAY_ICONS[it.kind])}</span>
+      <span class="row-icon">${icon(it.icon || TODAY_ICONS[it.kind])}</span>
       <span class="grow"><span class="title">${esc(it.title)}</span><span class="meta">${esc(it.meta)}</span></span>
       ${it.done ? icon("check", "icon chev ok") : icon("chev", "icon chev")}</button>`;
   }
+  /** Paused verb, grammar and exercise drills, to continue from Heute. */
+  function pausedRows() {
+    const rows = [];
+    if (conjSession) rows.push({ kind: "resume", id: "conj", icon: "verb", title: "Verben fortsetzen", meta: `${conjSession.idx} von ${conjSession.queue.length}` });
+    if (grammarSession) rows.push({ kind: "resume", id: "grammar", icon: "grammar", title: "Grammatik fortsetzen", meta: `${grammarSession.idx} von ${grammarSession.queue.length}` });
+    if (packSession) rows.push({ kind: "resume", id: "pack", icon: "coach", title: `${packSession.meta.title} fortsetzen`, meta: `${packSession.idx} von ${packSession.items.length}` });
+    return rows;
+  }
   function renderToday() {
-    const list = todayList();
+    const paused = pausedRows();
+    const list = [...paused, ...todayList().filter((it) => !(it.kind === "pack" && packSession && packSession.meta.packId === it.id))];
     el("todayList").hidden = !list.length;
     el("todayEmpty").hidden = list.length > 0;
     el("todayList").innerHTML = list.map(todayRow).join("");
   }
   function openTodayItem(kind, id) {
-    if (kind === "lesson") showView("lesson");
+    if (kind === "resume") {
+      if (id === "conj") startConj();
+      else if (id === "grammar") startGrammar();
+      else if (id === "pack" && packSession) { const p = packs.find((x) => x.id === packSession.meta.packId); if (p) startPack(p); }
+    } else if (kind === "lesson") showView("lesson");
     else if (kind === "pack") { const p = packs.find((x) => x.id === id); if (p) startPack(p); }
     else if (kind === "grammar") startGrammar([id]);
   }
@@ -334,18 +338,22 @@
   function renderPractice() {
     const due = cardsDueNow().length;
     const fresh = cardsNewAvailable().length;
-    el("practiceVocabMeta").textContent = due + fresh ? `${due} fällig · ${fresh} neu` : "Für heute erledigt";
-    el("practiceConjMeta").textContent = conjSelectedTenses.size
+    const pausedAt = (s, n) => `Pausiert · ${s.idx} von ${n}`;
+    el("practiceVocabMeta").textContent = session ? pausedAt(session, session.queue.length)
+      : due + fresh ? `${due} fällig · ${fresh} neu` : "Für heute erledigt";
+    el("practiceConjMeta").textContent = conjSession ? pausedAt(conjSession, conjSession.queue.length) : conjSelectedTenses.size
       ? [...conjSelectedTenses].map((t) => CONJUGATE.TENSE_LABELS[t]).join(", ")
       : `${CONJUGATE.ALL_VERBS.length} Verben`;
-    el("practiceGrammarMeta").textContent = `${GRAMMAR.CATEGORIES.length} Themen`;
+    el("practiceGrammarMeta").textContent = grammarSession
+      ? pausedAt(grammarSession, grammarSession.queue.length) : `${GRAMMAR.CATEGORIES.length} Themen`;
     el("totalCount").textContent = DECK.length;
 
     const practised = new Set(events.filter((e) => e.kind === "pack").map((e) => e.packId));
     const newest = packs.slice().sort((a, b) => b.addedAt - a.addedAt).slice(0, 3);
     el("practicePacks").innerHTML = newest.map((p) => `<button class="list-row" data-pack-start="${esc(p.id)}">
         <span class="row-icon">${icon("coach")}</span>
-        <span class="grow"><span class="title">${esc(p.title)}</span><span class="meta">${p.items.length} Aufgaben${practised.has(p.id) ? "" : " · neu"}</span></span>
+        <span class="grow"><span class="title">${esc(p.title)}</span><span class="meta">${packSession && packSession.meta.packId === p.id
+          ? pausedAt(packSession, packSession.items.length) : `${p.items.length} Aufgaben${practised.has(p.id) ? "" : " · neu"}`}</span></span>
         ${practised.has(p.id) ? "" : '<span class="dot" aria-label="neu"></span>'}${icon("chev", "icon chev")}</button>`).join("") +
       `<button class="list-row" data-open="packs"><span class="row-icon">${icon("target")}</span>
         <span class="grow"><span class="title">${packs.length ? "Alle Übungssätze" : "Übungssätze"}</span>
@@ -410,17 +418,22 @@
     return arr;
   }
 
+  /** Continues a paused session, or starts a new one. */
   function startSession() {
-    const queue = buildSessionQueue();
-    if (!queue.length) return false;
-    session = { queue, idx: 0, reviewed: 0, correct: 0, missed: new Set() };
-    touchStreak();
+    if (!session) {
+      const queue = buildSessionQueue();
+      if (!queue.length) return false;
+      session = { queue, idx: 0, reviewed: 0, correct: 0, missed: new Set() };
+      touchStreak();
+    }
     showView("session");
     renderCurrentCard();
     return true;
   }
   el("startSessionBtn").addEventListener("click", startSession);
-  el("exitSessionBtn").addEventListener("click", () => { session = null; el("sessionContinueBtn").hidden = true; showView("home"); });
+  el("restartSessionBtn").addEventListener("click", () => { session = null; persistPaused(); if (!startSession()) renderHome(); });
+  // ✕ pauses: the place is kept, Heute offers to continue.
+  el("exitSessionBtn").addEventListener("click", () => { el("sessionContinueBtn").hidden = true; showView("home"); });
 
   let doneReturnView = "home";
   el("doneContinueBtn").addEventListener("click", () => showView(doneReturnView));
@@ -436,6 +449,7 @@
 
   function renderCurrentCard() {
     if (!session || session.idx >= session.queue.length) return finishSession();
+    persistPaused();
     const item = currentItem();
     const d = item.deck;
     el("sessionIdx").textContent = session.idx + 1;
@@ -702,6 +716,7 @@
     if (doneNext) next.textContent = `Als Nächstes: ${doneNext.title}`;
     el("doneContinueBtn").textContent = doneNext ? "Fertig" : "Weiter";
     doneReturnView = back;
+    persistPaused();          // the finished drill is gone from the paused ones
     syncFolder();
     showView("done");
   }
@@ -799,7 +814,8 @@
     el("conjHint").textContent = tenseCount === 0
       ? "Wähle mindestens eine Zeit aus."
       : `${verbCount} Verben × ${tenseCount} Zeit(en) × 6 Personen`;
-    el("startConjBtn").disabled = tenseCount === 0;
+    el("startConjBtn").disabled = !conjSession && tenseCount === 0;
+    resumeButtons("startConjBtn", "restartConjBtn", conjSession && { at: conjSession.idx, of: conjSession.queue.length }, "Konjugation üben");
   }
   el("verbsetChips").addEventListener("click", (e) => {
     const btn = e.target.closest(".chip");
@@ -838,18 +854,23 @@
       .map((x) => x.it);
   }
 
-  el("startConjBtn").addEventListener("click", () => {
-    const queue = shuffle(buildConjQueue());
-    if (!queue.length) return;
-    conjSession = { queue, idx: 0, reviewed: 0, correct: 0, missed: [] };
-    touchStreak();
+  function startConj() {
+    if (!conjSession) {
+      const queue = shuffle(buildConjQueue());
+      if (!queue.length) return;
+      conjSession = { queue, idx: 0, reviewed: 0, correct: 0, missed: [] };
+      touchStreak();
+    }
     showView("conjsession");
     renderConjItem();
-  });
-  el("exitConjBtn").addEventListener("click", () => { conjSession = null; el("conjContinueBtn").hidden = true; showView("conj"); });
+  }
+  el("startConjBtn").addEventListener("click", startConj);
+  el("restartConjBtn").addEventListener("click", () => { conjSession = null; startConj(); });
+  el("exitConjBtn").addEventListener("click", () => { el("conjContinueBtn").hidden = true; showView("conj"); });
 
   function renderConjItem() {
     if (!conjSession || conjSession.idx >= conjSession.queue.length) return finishConjSession();
+    persistPaused();
     const item = conjSession.queue[conjSession.idx];
     const verb = CONJUGATE.findVerb(item.infinitive);
     el("conjIdx").textContent = conjSession.idx + 1;
@@ -971,7 +992,8 @@
       : "Wähle mindestens eine Kategorie aus.";
 
     const itemCount = selected.reduce((sum, c) => sum + GRAMMAR.itemsForCategory(c).length, 0);
-    el("startGrammarBtn").disabled = itemCount === 0;
+    el("startGrammarBtn").disabled = !grammarSession && itemCount === 0;
+    resumeButtons("startGrammarBtn", "restartGrammarBtn", grammarSession && { at: grammarSession.idx, of: grammarSession.queue.length }, "Grammatik üben");
   }
 
   function buildGrammarQueue(categories) {
@@ -986,6 +1008,12 @@
 
   /** A grammar session over these categories (the chosen ones, or one topic from Heute). */
   function startGrammar(categories) {
+    if (grammarSession && !categories) {        // the start button continues a paused session
+      showView("grammarsession");
+      renderGrammarItem();
+      return;
+    }
+    categories = categories || [...grammarSelectedCategories];
     const queue = shuffle(buildGrammarQueue(categories));
     if (!queue.length) return;
     grammarSession = { queue, idx: 0, reviewed: 0, correct: 0, missed: [], categories };
@@ -993,8 +1021,9 @@
     showView("grammarsession");
     renderGrammarItem();
   }
-  el("startGrammarBtn").addEventListener("click", () => startGrammar([...grammarSelectedCategories]));
-  el("exitGrammarBtn").addEventListener("click", () => { grammarSession = null; el("grammarContinueBtn").hidden = true; showView("grammar"); });
+  el("startGrammarBtn").addEventListener("click", () => startGrammar());
+  el("restartGrammarBtn").addEventListener("click", () => { grammarSession = null; startGrammar(); });
+  el("exitGrammarBtn").addEventListener("click", () => { el("grammarContinueBtn").hidden = true; showView("grammar"); });
 
   function logGrammarAttempt(item, ok, chosen) {
     if (!state.grammarCards[item.id]) state.grammarCards[item.id] = { attempts: 0, correct: 0, wrongCount: 0, lastResult: null, lastAt: 0 };
@@ -1018,6 +1047,7 @@
 
   function renderGrammarItem() {
     if (!grammarSession || grammarSession.idx >= grammarSession.queue.length) return finishGrammarSession();
+    persistPaused();
     const item = grammarSession.queue[grammarSession.idx];
     el("grammarIdx").textContent = grammarSession.idx + 1;
     el("grammarTotal").textContent = grammarSession.queue.length;
@@ -1134,7 +1164,12 @@
   };
   const rendererFor = (item) => (item.type === "choice" ? PACK_RENDERERS.choice : PACK_RENDERERS.typed);
 
-  function startPack(pack) {
+  function startPack(pack, { fresh = false } = {}) {
+    if (!fresh && packSession && packSession.meta.packId === pack.id) {   // continue where it was left
+      showView("packsession");
+      renderPackItem();
+      return;
+    }
     const key = (it) => `${pack.id}|${pack.items.indexOf(it)}`;
     const chosen = DRILL.select(pack.items, key, state.packCards || {}, 40);
     packSession = DRILL.create(chosen, { meta: { packId: pack.id, title: pack.title } });
@@ -1145,6 +1180,7 @@
 
   function renderPackItem() {
     if (DRILL.isDone(packSession)) return finishPackSession();
+    persistPaused();
     const item = DRILL.current(packSession);
     el("packIdx").textContent = packSession.idx + 1;
     el("packTotal").textContent = packSession.items.length;
@@ -1204,7 +1240,6 @@
     renderPackItem();
   });
   el("exitPackBtn").addEventListener("click", () => {
-    packSession = null;
     el("packContinueBtn").hidden = true;
     showView("packs");
   });
@@ -1252,7 +1287,8 @@
               ${acc == null ? "· noch nicht geübt" : `· zuletzt ${acc} % richtig`}</div>
           </div>
           <div class="pack-card-actions">
-            <button class="btn-primary pack-start" data-pack="${esc(p.id)}">Üben</button>
+            <button class="btn-primary pack-start" data-pack="${esc(p.id)}">${packSession && packSession.meta.packId === p.id
+              ? `Fortsetzen · ${packSession.idx} von ${packSession.items.length}` : "Üben"}</button>
             <button class="icon-btn pack-delete" data-pack="${esc(p.id)}" aria-label="Übung entfernen">🗑</button>
           </div>
         </div>`;
@@ -1669,6 +1705,63 @@
     return { count: packs.length, errors: [] };
   }
 
+  // ---------- Pausing and resuming drills ----------
+  /* Leaving a drill never throws it away: the ✕, another section, a reload or
+     closing the app all keep its place. The answers are saved on the server
+     as they happen; what is kept here is only the rest of the queue and the
+     counters - in this browser, per course, for the current day (tomorrow
+     other cards are due, so yesterday's queue would be wrong). */
+  const pauseKey = () => `voco:paused:${COURSE.id}`;
+  function persistPaused() {
+    const out = { day: todayKey() };
+    if (session) {
+      out.vocab = {
+        queue: session.queue.map((q) => ({ term: q.deck.term, mode: q.mode, requeued: !!q.requeued })),
+        idx: session.idx, reviewed: session.reviewed, correct: session.correct,
+        missed: [...session.missed], barPct: session.barPct || 0,
+      };
+    }
+    if (conjSession) out.conj = conjSession;
+    if (grammarSession) out.grammar = { ...grammarSession, queue: grammarSession.queue.map((it) => ({ id: it.id, requeued: !!it.requeued })) };
+    if (packSession) {
+      const pack = packs.find((p) => p.id === packSession.meta.packId);
+      const indexOf = (it) => (pack ? pack.items.findIndex((x) => x.type === it.type && x.prompt === it.prompt) : -1);
+      out.pack = { ...packSession, items: packSession.items.map((it) => ({ i: indexOf(it), r: !!it.__requeued })) };
+    }
+    try { localStorage.setItem(pauseKey(), JSON.stringify(out)); } catch (e) { /* privater Modus: dann nur im Speicher */ }
+  }
+  /** Back from storage; anything whose content no longer exists is dropped. */
+  function restorePaused() {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(pauseKey()) || "null"); } catch (e) { return; }
+    if (!saved || saved.day !== todayKey()) return;
+    const byTerm = new Map(DECK.map((d) => [d.term, d]));
+    if (saved.vocab) {
+      const queue = saved.vocab.queue.filter((q) => byTerm.has(q.term)).map((q) => ({ deck: byTerm.get(q.term), mode: q.mode, requeued: q.requeued }));
+      if (saved.vocab.idx < queue.length) session = { ...saved.vocab, queue, missed: new Set(saved.vocab.missed) };
+    }
+    if (saved.conj && saved.conj.idx < saved.conj.queue.length && saved.conj.queue.every((q) => CONJUGATE.findVerb(q.infinitive))) {
+      conjSession = saved.conj;
+    }
+    if (saved.grammar) {
+      const queue = saved.grammar.queue.map((q) => {
+        const it = GRAMMAR.findItem(q.id);
+        return it && (q.requeued ? { ...it, requeued: true } : it);
+      }).filter(Boolean);
+      if (saved.grammar.idx < queue.length) grammarSession = { ...saved.grammar, queue };
+    }
+    if (saved.pack) {
+      const pack = packs.find((p) => p.id === saved.pack.meta.packId);
+      const items = pack ? saved.pack.items.filter((x) => pack.items[x.i]).map((x) => (x.r ? { ...pack.items[x.i], __requeued: true } : pack.items[x.i])) : [];
+      if (saved.pack.idx < items.length) packSession = { ...saved.pack, items };
+    }
+  }
+  /** A trainer's start button continues a paused drill; "Neu beginnen" next to it starts over. */
+  function resumeButtons(startId, restartId, paused, label) {
+    el(startId).textContent = paused ? `Fortsetzen · ${paused.at} von ${paused.of}` : label;
+    el(restartId).hidden = !paused;
+  }
+
   // ---------- Welcome (first start in a course) ----------
   /* Four steps: the language, the idea, the daily goal, the four sections.
      Picking the other language switches the course and reloads into it;
@@ -1763,6 +1856,7 @@
     conjSelectedTenses = new Set(state.conjTenses);
     conjVerbSet = state.conjVerbSet;
     grammarSelectedCategories = new Set(state.grammarCategories);
+    restorePaused();
 
     renderHome();
     renderPacks();

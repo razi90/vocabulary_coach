@@ -214,6 +214,17 @@ answers in this course never see it. Opening a second course for the first
 time does show it (the browser only knows the current course, and the daily
 goal is per course anyway); it is one tap to skip.
 
+### Pausing drills (added after the first build)
+
+Leaving a drill pauses it instead of throwing it away: the ✕ (now "Pausieren"),
+another section, a course switch, a reload or closing the app. The trainer's
+start button then reads "Fortsetzen · 7 von 20" with "Neu beginnen" next to
+it; Heute lists paused verb, grammar and exercise drills; Üben shows
+"Pausiert". Answers are saved on the server as they happen, so only the rest
+of the queue is kept - in this browser, per course, for the current day
+(tomorrow other cards are due). The "Die laufende Übung wird beendet" prompt
+is gone.
+
 ### Data
 
 Everything the features need is already in the browser after startup:
