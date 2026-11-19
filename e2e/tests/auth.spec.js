@@ -34,6 +34,7 @@ test("register in the English course, log out, log back in @phone", async ({ pag
   await expect(page).toHaveTitle("English – Vokabeltrainer");
   await expect(page.locator("#bootError")).toBeHidden();
   await appReady(page);
+  await page.locator("#welcomeSkip").click();              // a brand-new account starts with the welcome
 
   await openTab(page, "settings");
   await expect(page.locator("#accountEmail")).toContainText(email);

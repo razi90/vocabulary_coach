@@ -1,7 +1,7 @@
 /* Offline use: the app is nothing but static files, so a cache that is filled
    on install and replaced with every version is enough.
    Bump VERSION whenever the files change. */
-const VERSION = "voco-v9";
+const VERSION = "voco-v10";
 const ASSETS = [
   ".",
   "index.html",
@@ -17,6 +17,9 @@ const ASSETS = [
   "src/lesson.js",
   "src/coach.js",
   "src/today.js",
+  "src/insights.js",
+  "src/speech.js",
+  "src/wordsheet.js",
   "src/app.js",
   ...["es", "en"].flatMap((c) => ["course", "deck", "conjugate", "grammar"].map((f) => `src/courses/${c}/${f}.js`)),
 ];

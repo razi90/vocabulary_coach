@@ -15,8 +15,8 @@ comments and documentation are English.
 | 🇪🇸 Spanish | 608 words, 44 verbs in 6 tenses, 58 grammar items (ser/estar, por/para, articles, prepositions) |
 | 🇬🇧 English | 779 words incl. 36 false friends, 44 verbs in 6 tenses, 73 grammar items aimed at German speakers (Present Perfect vs. Simple Past, since/for, Simple vs. Progressive, some/any, in/on/at, false friends, -ing vs. to-infinitive, if-clauses) |
 
-Learners pick a course when they register and can switch any time in the Coach
-tab. Progress is kept per course: cards, answers, exercises, lessons and coach
+Learners pick a course when they register and can switch any time in the
+settings (the course name at the top). Progress is kept per course: cards, answers, exercises, lessons and coach
 runs of the other course stay as they are. The coach, the video search and the
 subtitles follow the current course.
 
@@ -36,8 +36,8 @@ Open `http://localhost:8080` and log in with `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
 On first start the server creates the schema and mirrors the learning content
 of both courses into the database.
 
-Then open the **Coach** tab, pick a provider and model, paste an API key, and
-give the coach an order.
+Then open **Coach** → *Coach einrichten*, pick a provider and model, paste an
+API key, and give the coach an order.
 
 ```bash
 docker compose up -d --build    # after backend changes
@@ -64,7 +64,7 @@ container, a browser reload is enough.
 
 ## The coach
 
-The coach runs on the server. A learner clicks an order in the Coach tab —
+The coach runs on the server. A learner clicks an order in the Coach section —
 *Neue Übungen*, *Tageslektion*, *Feedback zu Abgaben* or a free-text order —
 and the server runs a tool-calling loop against the chosen model:
 

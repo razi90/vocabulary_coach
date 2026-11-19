@@ -46,7 +46,7 @@ const LESSON = (() => {
       box.innerHTML = `<div class="lesson-feedback-head">Rückmeldung deines Coaches</div>${esc(abgabe.feedback)}`;
     } else {
       box.innerHTML = `<div class="lesson-feedback-head">Abgegeben</div>` +
-        `<span class="lesson-await">Warte auf die Rückmeldung deines Coaches – im Tab „Coach“ ` +
+        `<span class="lesson-await">Warte auf die Rückmeldung deines Coaches – im Bereich „Coach“ ` +
         `auf „Feedback zu Abgaben“ tippen.</span>`;
     }
   }

@@ -22,13 +22,17 @@ async function api(context, method, route, data, course) {
   return type.includes("json") ? res.json() : res.text();
 }
 
-/** Registers a fresh learner and logs them in. */
-async function signUp(context, { course = "es" } = {}) {
+/**
+ * Registers a fresh learner and logs them in. The first-run welcome is marked
+ * as seen unless the test is about the welcome itself.
+ */
+async function signUp(context, { course = "es", welcome = false } = {}) {
   const code = process.env.E2E_REGISTRATION_CODE;
   if (!code) throw new Error("E2E_REGISTRATION_CODE is not set and .env has no REGISTRATION_CODE");
   const email = `e2e-${crypto.randomUUID().slice(0, 8)}@example.com`;
   await context.request.get("/api/auth/config");          // sets the CSRF cookie
   await api(context, "POST", "auth/register", { email, password: PASSWORD, code, course, displayName: "E2E" });
+  if (!welcome) await api(context, "PUT", "state", { welcomeSeen: true }, course);
   return { email, password: PASSWORD, course };
 }
 

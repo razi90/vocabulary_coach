@@ -23,7 +23,13 @@ coach. Only port 8080 is published, by default on `127.0.0.1`.
 | `web/src/text.js` | Normalization and answer grading (browser only). |
 | `web/src/packs.js` | Exercise-set schema, validation and checking in the browser. |
 | `web/src/store.js` | Browser access to the API: CSRF header, 401 → login, live updates. |
-| `web/src/coach.js` | Coach tab: settings, orders, run history, account. |
+| `web/src/app.js` | The shell (four sections: Heute, Üben, Coach, Fortschritt, plus settings) and the trainers. |
+| `web/src/today.js` | What Heute lists besides vocabulary, and the next step after a session (pure, tested in Node). |
+| `web/src/insights.js` | Word history, practice calendar, week summary, hardest words (pure, tested in Node). |
+| `web/src/wordsheet.js` | The word detail sheet, opened from anything with `data-word`. |
+| `web/src/speech.js` | Pronunciation with the browser's speech; speaker buttons (`data-say`) only when a voice exists. |
+| `web/src/coach.js` | Coach section (orders, run history) and its settings, account and course switch on the settings page. |
+| `web/src/style.css`, `web/fonts/` | The "Graphit" look: design tokens, light and dark, Inter (self-hosted). Design: `docs/superpowers/specs/2026-11-19-graphit-redesign-design.md`. |
 | `web/src/auth.js` | Login and registration page. |
 | `tools/export-content.js` | Turns the content into `content.json` for the backend. |
 | `backend/.../db/migration/` | Flyway migrations: schema and analysis views. |

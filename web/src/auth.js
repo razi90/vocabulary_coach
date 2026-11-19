@@ -28,7 +28,11 @@
     el("toLogin").hidden = !register;
     el("authSubtitle").textContent = register ? "Neues Konto anlegen" : "Anmelden, um weiterzulernen";
     showError("");
-    (register ? registerForm : loginForm).querySelector("input").focus();
+    // Not when the learner is already typing in this form: showMode runs again once
+    // the server's config arrives, and stealing focus then sends the password into
+    // the email field.
+    const form = register ? registerForm : loginForm;
+    if (!form.contains(document.activeElement)) form.querySelector("input").focus();
   }
 
   async function busy(form, fn) {

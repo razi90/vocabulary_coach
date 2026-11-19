@@ -30,7 +30,14 @@ Structure and data model: [ARCHITECTURE.md](ARCHITECTURE.md).
   and commit the regenerated `content.json`. Deck terms are card ids: they must
   be unique within a course.
 - Nothing language-specific in shared code: in the browser use `COURSE`, on the
-  server `Course`.
+  server `Course`. That includes the look: each course's accent colour is
+  `COURSE.accent`.
+- The UI follows the "Graphit" design (calm, minimal; see
+  `docs/superpowers/specs/2026-11-19-graphit-redesign-design.md`): colours only
+  through the tokens in `style.css`, icons from the SVG sprite in `index.html`
+  (no emoji as icons), one primary button per screen. Logic that decides
+  *what* to show goes in a pure module (`today.js`, `insights.js`) with a test
+  in `web/test/`.
 - The coach's behavior lives in `backend/src/main/resources/coach/`:
   `system-prompt.md` (shared instructions with placeholders), `course-<id>.md`
   (per course) and `tools.json` (tool descriptions, which the model reads —

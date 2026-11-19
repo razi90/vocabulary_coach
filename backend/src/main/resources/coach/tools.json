@@ -120,7 +120,7 @@
   },
   {
     "name": "create_exercise",
-    "description": "Einen Übungssatz anlegen oder ersetzen. Er erscheint sofort in der App im Tab „Übungen“ (bei status=ready). Aufgabentypen: choice (Auswahl, options + answer), cloze (Lückentext mit ___ und answer), translate (prompt + answer). Bei cloze und translate werden Akzente ignoriert und ein Tippfehler als „fast richtig“ gewertet – eine Wortverwechslung nicht. In `explanation` gehört das Warum, nicht die Lösung.",
+    "description": "Einen Übungssatz anlegen oder ersetzen. Er erscheint sofort in der App unter „Heute“ und „Üben“ (bei status=ready). Aufgabentypen: choice (Auswahl, options + answer), cloze (Lückentext mit ___ und answer), translate (prompt + answer). Bei cloze und translate werden Akzente ignoriert und ein Tippfehler als „fast richtig“ gewertet – eine Wortverwechslung nicht. In `explanation` gehört das Warum, nicht die Lösung.",
     "parameters": {
       "type": "object",
       "required": [

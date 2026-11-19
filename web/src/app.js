@@ -127,7 +127,7 @@
     lesson: "home", session: "home", done: "home",
     browse: "practice", conj: "practice", grammar: "practice", packs: "practice",
     conjsession: "practice", grammarsession: "practice", packsession: "practice",
-    settings: null,
+    settings: null, welcome: null,
   };
   const SECTION_TITLES = { home: "Heute", practice: "Üben", coach: "Coach", stats: "Fortschritt", settings: "Einstellungen" };
 
@@ -144,6 +144,7 @@
       if (on) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current");
     });
     el("topbarSection").textContent = SECTION_TITLES[section || name] || "";
+    document.body.classList.toggle("welcoming", name === "welcome");
     if (previous !== name) window.scrollTo(0, 0);
 
     if (name === "browse") renderBrowse();
@@ -161,7 +162,7 @@
   }
   /* After a reload the tab should carry on where you were.
      sessionStorage rather than localStorage: a freshly opened tab starts on
-     "Start" as usual, only reloading the same tab restores. */
+     "Heute" as usual, only reloading the same tab restores. */
   const POSITION_KEY = "voco:position";
   /* Running drills live in memory only and do not survive a reload. Instead
      of jumping into an empty session, fall back to the overview. */
@@ -441,6 +442,8 @@
     el("flipEx").textContent = d.ex || "";
     el("flipExDe").textContent = d.exDe || "";
     el("gradeRow").classList.add("hidden-until-flip");
+    el("cardSpeak").dataset.say = d.term;
+    updateCardSpeaker();
 
     void flashcardInner.offsetWidth; // force a reflow before re-enabling the transition
     flashcardInner.style.transition = "";
@@ -457,6 +460,14 @@
     flashcardEl.classList.toggle("flipped", flipped);
     flashcardEl.setAttribute("aria-pressed", flipped ? "true" : "false");
     el("gradeRow").classList.toggle("hidden-until-flip", !flipped);
+    updateCardSpeaker();
+  }
+  /* Going German -> course language, saying the word would give the answer
+     away: the speaker appears only once the card is turned. */
+  function updateCardSpeaker() {
+    const b = el("cardSpeak");
+    b.dataset.sayHidden = state.direction === "de-es" && !flipped ? "1" : "";
+    b.hidden = b.dataset.sayHidden === "1" || !SPEECH.available();
   }
   flashcardEl.addEventListener("click", toggleFlip);
   document.querySelectorAll(".grade-btn").forEach((btn) => {
@@ -1186,7 +1197,7 @@
 
     if (!packs.length) {
       msg.hidden = false;
-      msg.innerHTML = "Noch keine Übungen. Lass sie im Tab „Coach“ erstellen — " +
+      msg.innerHTML = "Noch keine Übungen. Lass sie im Bereich „Coach“ erstellen — " +
         "sie erscheinen hier von selbst. Alternativ eine JSON-Datei importieren.";
       list.innerHTML = "";
       return;
@@ -1296,16 +1307,21 @@
     list.innerHTML = filtered.map((d) => {
       const c = cards[d.term];
       return `<div class="browse-item">
-        <span class="bi-state ${stateClass(c)}" title="${STATE_LABELS[stateClass(c)]}"></span>
-        <div class="bi-main"><div class="bi-es" lang="${COURSE.lang}">${esc(d.term)}</div><div class="bi-de">${esc(d.de.replace(/\|/g, ", "))}</div></div>
-        <span class="bi-level">${esc(d.level)}</span>
+        <button class="bi-open" data-word="${esc(d.term)}">
+          <span class="bi-state ${stateClass(c)}" title="${STATE_LABELS[stateClass(c)]}"></span>
+          <span class="bi-main"><span class="bi-es" lang="${COURSE.lang}">${esc(d.term)}</span><span class="bi-de">${esc(d.de.replace(/\|/g, ", "))}</span></span>
+          <span class="bi-level">${esc(d.level)}</span>
+        </button>
+        <button class="icon-btn speak-btn" data-say="${esc(d.term)}" aria-label="${esc(d.term)} aussprechen" hidden>${icon("speaker", "icon sm")}</button>
       </div>`;
     }).join("");
+    SPEECH.updateButtons(list);
   }
-  ["browseSearch", "browseTopic", "browseLevel"].forEach((id) => {
-    el(id).addEventListener("input", renderBrowse);
-    el(id).addEventListener("change", renderBrowse);
-  });
+  /* The search reacts to typing only. A "change" on it fires when it loses
+     focus - that is, in the middle of tapping a result - and redrawing the
+     list then would swallow the tap. */
+  el("browseSearch").addEventListener("input", renderBrowse);
+  ["browseTopic", "browseLevel"].forEach((id) => el(id).addEventListener("change", renderBrowse));
 
   // ---------- Stats ----------
   function renderStats() {
@@ -1320,15 +1336,17 @@
     el("statStreak").textContent = state.streak;
     el("statMature").textContent = matureCount();
 
-    // Bar chart of the last 14 days
-    const last14 = last30.slice(-14);
-    const max = Math.max(1, ...last14.map((k) => (state.log[k] ? state.log[k].reviewed : 0)));
-    el("barChart").innerHTML = last14.map((k) => {
-      const d = state.log[k] || { reviewed: 0 };
-      const h = Math.round((d.reviewed / max) * 100);
-      const label = k.slice(8, 10);
-      return `<div class="bar-col"><div class="bar-fill" style="height:${h}%"></div><div class="bar-day">${label}</div></div>`;
-    }).join("");
+    renderCalendar();
+    const week = INSIGHTS.weekSummary(events);
+    el("weekSummary").innerHTML = `
+      <div><strong>${week.answers}</strong><span>Antworten diese Woche</span></div>
+      <div><strong>${week.accuracy == null ? "–" : `${week.accuracy} %`}</strong><span>richtig</span></div>
+      <div><strong>${week.days} / 7</strong><span>Tage geübt</span></div>`;
+    const hardest = INSIGHTS.hardestWords({ events, cards, deck: DECK });
+    el("hardestBlock").hidden = !hardest.length;
+    el("hardestList").innerHTML = hardest.map((w) => `<button class="list-row" data-word="${esc(w.term)}">
+        <span class="grow"><span class="title" lang="${COURSE.lang}">${esc(w.term)}</span><span class="meta">${esc(w.de)}</span></span>
+        <span class="count">${w.wrong}× falsch</span>${icon("chev", "icon chev")}</button>`).join("");
 
     // Maturity
     const buckets = { neu: 0, lernend: 0, jung: 0, reif: 0 };
@@ -1352,6 +1370,31 @@
     renderConjStats();
     renderGrammarStats();
   }
+
+  // The month shown in the calendar; arrows step through earlier months.
+  let calMonth = null;
+  const MONTHS = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+  function renderCalendar() {
+    const now = new Date();
+    if (!calMonth) calMonth = { y: now.getFullYear(), m: now.getMonth() };
+    const weeks = INSIGHTS.calendar(events, calMonth.y, calMonth.m);
+    el("calTitle").textContent = `${MONTHS[calMonth.m]} ${calMonth.y}`;
+    el("calNext").disabled = calMonth.y === now.getFullYear() && calMonth.m === now.getMonth();
+    const head = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((d) => `<span class="cal-dow">${d}</span>`).join("");
+    el("calendar").innerHTML = head + weeks.flat().map((c) => {
+      if (!c) return '<span class="cal-day empty"></span>';
+      const label = `${c.day}. ${MONTHS[calMonth.m]}: ${c.answers ? `${c.answers} ${c.answers === 1 ? "Antwort" : "Antworten"}` : "nicht geübt"}`;
+      return `<span class="cal-day l${c.level}${c.today ? " today" : ""}${c.future ? " future" : ""}" title="${label}" aria-label="${label}" role="img"></span>`;
+    }).join("");
+  }
+  el("calPrev").addEventListener("click", () => {
+    calMonth = calMonth.m === 0 ? { y: calMonth.y - 1, m: 11 } : { y: calMonth.y, m: calMonth.m - 1 };
+    renderCalendar();
+  });
+  el("calNext").addEventListener("click", () => {
+    calMonth = calMonth.m === 11 ? { y: calMonth.y + 1, m: 0 } : { y: calMonth.y, m: calMonth.m + 1 };
+    renderCalendar();
+  });
 
   function personShort(personIdx) {
     return ["yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas"][personIdx];
@@ -1593,6 +1636,31 @@
     return { count: packs.length, errors: [] };
   }
 
+  // ---------- Welcome (first start in a course) ----------
+  let welcomeStep = 1;
+  function showWelcomeStep(n) {
+    welcomeStep = n;
+    document.querySelectorAll(".welcome-step").forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
+    document.querySelectorAll(".welcome .dots i").forEach((d) => d.classList.toggle("on", Number(d.dataset.dot) === n));
+    document.querySelectorAll(".welcome .choice").forEach((c) => {
+      const on = Number(c.dataset.goal) === state.dailyGoal;
+      c.classList.toggle("on", on);
+      c.setAttribute("aria-checked", on ? "true" : "false");
+    });
+    el("welcomeNext").textContent = n === 3 ? "Los geht's" : "Weiter";
+  }
+  function finishWelcome() {
+    state.welcomeSeen = true;
+    save();
+    showView("home");
+  }
+  document.querySelectorAll(".welcome .choice").forEach((c) => c.addEventListener("click", () => {
+    state.dailyGoal = Number(c.dataset.goal);
+    showWelcomeStep(2);
+  }));
+  el("welcomeNext").addEventListener("click", () => (welcomeStep < 3 ? showWelcomeStep(welcomeStep + 1) : finishWelcome()));
+  el("welcomeSkip").addEventListener("click", finishWelcome);
+
   // ---------- Startup ----------
   async function boot() {
     await STORE.init();
@@ -1638,7 +1706,11 @@
       openSettings: () => { go("settings"); requestAnimationFrame(() => el("settingsCoach").scrollIntoView({ block: "start" })); },
     });
 
+    WORDSHEET.init({ cards: () => cards, events: () => events });
+
     stellePositionHer();
+    // Learners with answers in this course never see the welcome.
+    if (!state.welcomeSeen && !events.length) { showView("welcome"); showWelcomeStep(1); }
     document.body.dataset.ready = "1";   // for the browser tests: handlers are attached
   }
 

@@ -140,7 +140,10 @@
               aria-label="Karteikarte umdrehen">
               <div class="flashcard-inner" id="flashcardInner">
                 <div class="flashcard-face front">
-                  <span class="pos-badge" id="flipPos"></span>
+                  <div class="card-meta">
+                    <span class="pos-badge" id="flipPos"></span>
+                    <button class="icon-btn speak-btn" id="cardSpeak" data-say="" aria-label="Aussprechen" hidden><svg class="icon sm" aria-hidden="true"><use href="#i-speaker"/></svg></button>
+                  </div>
                   <div class="es-word" id="flipFront"></div>
                   <div class="tap-hint">Zum Umdrehen tippen <span class="kbd">Leertaste</span></div>
                 </div>
@@ -215,7 +218,7 @@
       <section id="view-lesson" class="view" tabindex="-1">
         <button class="back-link" data-back="home"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Heute</button>
         <div id="lessonEmpty" class="empty-state">
-          Für heute gibt es noch keine Lektion. Lass sie im Tab „Coach“ erstellen —
+          Für heute gibt es noch keine Lektion. Lass sie im Bereich „Coach“ erstellen —
           sie erscheint hier von selbst.
         </div>
 
@@ -487,9 +490,21 @@
             <div class="stats-card-label">Gefestigte Karten</div>
           </div>
         </div>
-        <h3 class="section-title small">Letzte 14 Tage</h3>
-        <div class="bar-chart" id="barChart"></div>
-        <h3 class="section-title small">Reifegrad</h3>
+        <h3 class="section-title small">Übungstage</h3>
+        <div class="panel cal-panel">
+          <div class="cal-head">
+            <button class="icon-btn" id="calPrev" aria-label="Voriger Monat"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg></button>
+            <span id="calTitle"></span>
+            <button class="icon-btn" id="calNext" aria-label="Nächster Monat"><svg class="icon sm" aria-hidden="true"><use href="#i-chev"/></svg></button>
+          </div>
+          <div class="cal-grid" id="calendar"></div>
+          <div class="week-sum" id="weekSummary"></div>
+        </div>
+        <div id="hardestBlock" hidden>
+          <h3 class="section-title small">Schwierigste Wörter</h3>
+          <div class="list" id="hardestList"></div>
+        </div>
+        <h3 class="section-title small">Wortschatz</h3>
         <div class="maturity-bar" id="maturityBar"></div>
         <div class="maturity-legend" id="maturityLegend"></div>
 
@@ -538,6 +553,43 @@
         </div>
       </section>
 
+
+      <!-- ================= WILLKOMMEN (first start in a course) ================= -->
+      <section id="view-welcome" class="view" tabindex="-1">
+        <div class="welcome">
+          <div class="welcome-step" data-step="1">
+            <p class="welcome-kicker">Willkommen</p>
+            <h1 class="page-title" data-course-text="Jeden Tag ein bisschen {nameDe}."></h1>
+            <p class="page-sub">Kurze Sitzungen mit Karteikarten, die genau dann wiederkommen, wenn du sie sonst vergessen würdest.
+              Und ein Coach, der aus deinen Fehlern neue Übungen baut.</p>
+          </div>
+          <div class="welcome-step" data-step="2" hidden>
+            <p class="welcome-kicker">Schritt 2 von 3</p>
+            <h1 class="page-title">Wie viel pro Tag?</h1>
+            <p class="page-sub">Lieber wenig und dafür jeden Tag. Du kannst das jederzeit in den Einstellungen ändern.</p>
+            <div class="choices" role="radiogroup" aria-label="Tagesziel">
+              <button class="choice" role="radio" data-goal="10"><span>Locker</span><small>10 Karten · ca. 5 Min</small></button>
+              <button class="choice" role="radio" data-goal="20"><span>Normal</span><small>20 Karten · ca. 10 Min</small></button>
+              <button class="choice" role="radio" data-goal="40"><span>Intensiv</span><small>40 Karten · ca. 20 Min</small></button>
+            </div>
+          </div>
+          <div class="welcome-step" data-step="3" hidden>
+            <p class="welcome-kicker">Schritt 3 von 3</p>
+            <h1 class="page-title">Vier Bereiche</h1>
+            <div class="list">
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-today"/></svg></span><span class="grow"><span class="title">Heute</span><span class="meta">Was heute dran ist – ein Knopf, und es geht los.</span></span></div>
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-practice"/></svg></span><span class="grow"><span class="title">Üben</span><span class="meta">Vokabeln, Verben, Grammatik und die Wortliste.</span></span></div>
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-coach"/></svg></span><span class="grow"><span class="title">Coach</span><span class="meta">Neue Übungen, Tageslektionen und Feedback zu deinen Texten.</span></span></div>
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-stats"/></svg></span><span class="grow"><span class="title">Fortschritt</span><span class="meta">Deine Übungstage und die Wörter, die noch hängen.</span></span></div>
+            </div>
+          </div>
+          <div class="dots" aria-hidden="true"><i data-dot="1"></i><i data-dot="2"></i><i data-dot="3"></i></div>
+          <div class="welcome-actions">
+            <button class="btn-secondary" id="welcomeSkip">Überspringen</button>
+            <button class="btn-primary" id="welcomeNext">Weiter</button>
+          </div>
+        </div>
+      </section>
 
       <!-- ================= EINSTELLUNGEN ================= -->
       <section id="view-settings" class="view" tabindex="-1">
@@ -635,6 +687,8 @@
     </main>
       </div><!-- .content -->
     </div><!-- .shell -->
+
+    <dialog class="sheet" id="wordSheet" aria-labelledby="wordSheetTitle"></dialog>
   </div>
 
   <script src="src/text.js"></script>
