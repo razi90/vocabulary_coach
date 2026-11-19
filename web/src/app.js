@@ -759,7 +759,7 @@
         <div class="conj-tense-title">${CONJUGATE.TENSE_LABELS[t]}</div>
         <div class="conj-tense-explanation">${CONJUGATE.TENSE_EXPLANATIONS[t]}</div>
         <div class="conj-pattern">${verb.irregular
-          ? "⚠️ Unregelmäßig — weicht vom Muster ab, am besten auswendig lernen."
+          ? "Unregelmäßig — weicht vom Muster ab, am besten auswendig lernen."
           : CONJUGATE.regularPatternExplanation(verb.infinitive, verb.group, t)}</div>
         <div class="conj-form-grid">
           ${forms[t].map((f, i) => `<div class="conj-form-row"><span class="conj-form-person">${CONJUGATE.PERSON_LABELS[i]}</span><span class="conj-form-value">${f}</span></div>`).join("")}
@@ -880,7 +880,7 @@
     el("conjInfinitive").textContent = verb.infinitive;
     el("conjPersonLabel").textContent = CONJUGATE.PERSON_LABELS[item.person];
     const pattern = verb.irregular
-      ? "⚠️ Unregelmäßig — weicht vom Muster ab."
+      ? "Unregelmäßig — weicht vom Muster ab."
       : CONJUGATE.regularPatternExplanation(verb.infinitive, verb.group, item.tense);
     el("conjDrillExplanation").innerHTML = `${CONJUGATE.TENSE_EXPLANATIONS[item.tense]}<br><strong>${pattern}</strong>`;
     const input = el("conjInput");
@@ -1289,7 +1289,7 @@
           <div class="pack-card-actions">
             <button class="btn-primary pack-start" data-pack="${esc(p.id)}">${packSession && packSession.meta.packId === p.id
               ? `Fortsetzen · ${packSession.idx} von ${packSession.items.length}` : "Üben"}</button>
-            <button class="icon-btn pack-delete" data-pack="${esc(p.id)}" aria-label="Übung entfernen">🗑</button>
+            <button class="icon-btn pack-delete" data-pack="${esc(p.id)}" aria-label="Übung entfernen"><svg class="icon sm" aria-hidden="true"><use href="#i-trash"/></svg></button>
           </div>
         </div>`;
       }).join("");

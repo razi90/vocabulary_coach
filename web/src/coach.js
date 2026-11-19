@@ -106,7 +106,7 @@ const COACH = (() => {
   }
 
   function renderStep(s) {
-    if (s.kind === "message") return `<li>💬 ${esc(s.text)}</li>`;
+    if (s.kind === "message") return `<li class="step-msg">${esc(s.text)}</li>`;
     const mark = s.ok ? "✓" : "✗";
     return `<li class="${s.ok ? "" : "step-bad"}"><details><summary>${mark}
       <span class="step-tool">${esc(s.tool)}</span></summary>

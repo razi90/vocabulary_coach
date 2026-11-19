@@ -44,6 +44,7 @@
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 20V9M7 13.5l5-5 5 5M5 4h14"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
   </svg>
 
@@ -128,7 +129,7 @@
       <!-- ================= SESSION (Karteikarte / MC / Tippen) ================= -->
       <section id="view-session" class="view">
         <div class="session-top">
-          <button class="icon-btn" id="exitSessionBtn" aria-label="Pausieren">✕</button>
+          <button class="icon-btn" id="exitSessionBtn" aria-label="Pausieren" title="Pausieren – du kannst später weitermachen"><svg class="icon sm" aria-hidden="true"><use href="#i-pause"/></svg></button>
           <div class="session-progress">
             <div class="session-progress-bar" id="sessionProgressBar"></div>
           </div>
@@ -234,7 +235,7 @@
 
           <!-- Hören -->
           <section class="lesson-part" id="partListening" hidden>
-            <div class="lesson-part-head"><span class="lesson-part-icon">🎧</span>
+            <div class="lesson-part-head"><span class="lesson-part-icon"><svg class="icon" aria-hidden="true"><use href="#i-headphones"/></svg></span>
               <h3>Hören</h3><span class="lesson-done" id="doneListening" hidden>✓</span>
             </div>
             <p class="lesson-task" id="listeningTask"></p>
@@ -249,7 +250,7 @@
 
           <!-- Schreiben -->
           <section class="lesson-part" id="partWriting" hidden>
-            <div class="lesson-part-head"><span class="lesson-part-icon">✍️</span>
+            <div class="lesson-part-head"><span class="lesson-part-icon"><svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg></span>
               <h3>Schreiben</h3><span class="lesson-done" id="doneWriting" hidden>✓</span>
             </div>
             <p class="lesson-task" id="writingPrompt"></p>
@@ -263,7 +264,7 @@
 
           <!-- Sätze übersetzen -->
           <section class="lesson-part" id="partSentences" hidden>
-            <div class="lesson-part-head"><span class="lesson-part-icon">🔤</span>
+            <div class="lesson-part-head"><span class="lesson-part-icon"><svg class="icon" aria-hidden="true"><use href="#i-translate"/></svg></span>
               <h3>Sätze</h3><span class="lesson-done" id="doneSentences" hidden>✓</span>
             </div>
             <p class="lesson-task" id="sentencesTask"></p>
@@ -275,7 +276,7 @@
 
           <!-- Sprechen -->
           <section class="lesson-part" id="partSpeaking" hidden>
-            <div class="lesson-part-head"><span class="lesson-part-icon">🗣️</span>
+            <div class="lesson-part-head"><span class="lesson-part-icon"><svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg></span>
               <h3>Sprechen</h3><span class="lesson-done" id="doneSpeaking" hidden>✓</span>
             </div>
             <p class="lesson-task" id="speakingTopic"></p>
@@ -341,7 +342,7 @@
       <!-- ================= KONJUGATION: Drill ================= -->
       <section id="view-conjsession" class="view">
         <div class="session-top">
-          <button class="icon-btn" id="exitConjBtn" aria-label="Pausieren">✕</button>
+          <button class="icon-btn" id="exitConjBtn" aria-label="Pausieren" title="Pausieren – du kannst später weitermachen"><svg class="icon sm" aria-hidden="true"><use href="#i-pause"/></svg></button>
           <div class="session-progress">
             <div class="session-progress-bar" id="conjProgressBar"></div>
           </div>
@@ -381,7 +382,7 @@
       <!-- ================= GRAMMATIK: Drill ================= -->
       <section id="view-grammarsession" class="view">
         <div class="session-top">
-          <button class="icon-btn" id="exitGrammarBtn" aria-label="Pausieren">✕</button>
+          <button class="icon-btn" id="exitGrammarBtn" aria-label="Pausieren" title="Pausieren – du kannst später weitermachen"><svg class="icon sm" aria-hidden="true"><use href="#i-pause"/></svg></button>
           <div class="session-progress">
             <div class="session-progress-bar" id="grammarProgressBar"></div>
           </div>
@@ -448,7 +449,7 @@
       <!-- ================= ÜBUNGS-SITZUNG ================= -->
       <section id="view-packsession" class="view">
         <div class="session-top">
-          <button class="icon-btn" id="exitPackBtn" aria-label="Pausieren">✕</button>
+          <button class="icon-btn" id="exitPackBtn" aria-label="Pausieren" title="Pausieren – du kannst später weitermachen"><svg class="icon sm" aria-hidden="true"><use href="#i-pause"/></svg></button>
           <div class="session-progress">
             <div class="session-progress-bar" id="packProgressBar"></div>
           </div>

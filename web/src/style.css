@@ -559,7 +559,8 @@ button.browse-item:hover { background: var(--surface-2); }
 .lesson-part[hidden] { display: none; }
 .lesson-part-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .lesson-part-head h3 { margin: 0; font-size: 16px; font-weight: 650; letter-spacing: -0.015em; }
-.lesson-part-icon { font-size: 16px; }
+.lesson-part-icon { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--surface-2); color: var(--text-dim); }
+.lesson-part-icon .icon { width: 17px; height: 17px; }
 .lesson-done { margin-left: auto; color: var(--good); font-weight: 650; }
 .lesson-done[hidden] { display: none; }
 .lesson-task { font-size: 14.5px; line-height: 1.55; margin: 0 0 12px; }
@@ -855,3 +856,5 @@ body.welcoming .sidenav, body.welcoming .course-btn, body.welcoming .streak, bod
 .course-menu-item[aria-checked="true"] .icon { color: var(--accent); }
 .course-menu-item:disabled { opacity: .5; }
 @media (pointer: coarse) { .course-menu-item { min-height: 44px; } }
+.coach-steps .step-msg { color: var(--text); font-style: italic; }
+.pack-delete:hover { color: var(--bad); }
