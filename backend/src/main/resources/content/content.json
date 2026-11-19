@@ -1818,8 +1818,8 @@
     "pos": "noun",
     "level": "A1",
     "topic": "Kalender",
-    "exampleTerm": "¿Qué haces el fin de semana?",
-    "exampleDe": "Was machst du am Wochenende?"
+    "exampleTerm": "Este fin de semana vamos a la playa.",
+    "exampleDe": "Dieses Wochenende fahren wir an den Strand."
    },
    {
     "term": "la hora",
@@ -4888,8 +4888,8 @@
     "pos": "noun",
     "level": "A1",
     "topic": "Freizeit",
-    "exampleTerm": "Escucho música mientras trabajo.",
-    "exampleDe": "Ich höre Musik, während ich arbeite."
+    "exampleTerm": "¿Qué tipo de música te gusta?",
+    "exampleDe": "Welche Musik magst du?"
    },
    {
     "term": "el libro",
@@ -5478,8 +5478,8 @@
     "pos": "adv",
     "level": "A1",
     "topic": "Adverbien",
-    "exampleTerm": "Vivo aquí desde hace un año.",
-    "exampleDe": "Ich wohne seit einem Jahr hier."
+    "exampleTerm": "Aquí hace mucho calor en verano.",
+    "exampleDe": "Hier ist es im Sommer sehr heiß."
    },
    {
     "term": "allí",
@@ -6018,8 +6018,8 @@
     "pos": "phrase",
     "level": "A2",
     "topic": "Redemittel",
-    "exampleTerm": "Creo que tienes razón.",
-    "exampleDe": "Ich glaube, du hast recht."
+    "exampleTerm": "Tienes razón, es demasiado caro.",
+    "exampleDe": "Du hast recht, es ist zu teuer."
    },
    {
     "term": "tener prisa",

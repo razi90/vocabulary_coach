@@ -15,6 +15,9 @@ Structure and data model: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 - Build and test: `cd backend && ./mvnw test`. The integration test needs
   Docker (Testcontainers) or `TEST_DATABASE_URL` pointing at an empty Postgres.
+- Frontend and content: `node --test web/test/` (no install). Browser tests:
+  `cd e2e && npm test` against the running stack (`docker compose up -d`).
+  After a UI change, run both; a new feature gets a spec in `e2e/tests/`.
 - Every learner-owned table has `user_id` and `course`. Every query filters by
   both; get the `Learner` from `UserAccounts.currentLearner()` in controllers
   and pass it explicitly everywhere else.

@@ -83,7 +83,18 @@ const TEXT = (() => {
     return "wrong";
   }
 
-  return { norm, esc, editDistance, judge, isTypo };
+  /**
+   * The accepted answers for a deck meaning such as "groß (Person)|hoch",
+   * normalized. A bracketed note is there to read, not to type: each meaning
+   * also counts without it ("groß").
+   */
+  function meanings(de) {
+    const all = String(de).split("|")
+      .flatMap((m) => [norm(m), norm(m.replace(/\s*\([^)]*\)/g, ""))]);
+    return [...new Set(all)].filter(Boolean);
+  }
+
+  return { norm, esc, editDistance, judge, isTypo, meanings };
 })();
 
 /* Usable from Node too (tests, tools). */

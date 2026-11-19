@@ -178,6 +178,24 @@ available. Without Docker, point it at an empty database:
 `TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/voco_test TEST_DATABASE_USER=voco ./mvnw test`.
 Without either, it is skipped.
 
+Frontend logic and course content (answer checking, exercise sets, spaced
+repetition, every course's deck, verbs and grammar, and that `content.json`
+is up to date) - plain Node, no install:
+
+```bash
+node --test web/test/
+```
+
+Browser tests (Playwright) against the running app - `docker compose up -d`
+first. Each test registers its own learner with `REGISTRATION_CODE` from
+`.env`, so run them against a local or test instance only:
+
+```bash
+cd e2e
+npm install && npx playwright install chromium   # once
+npm test                                         # E2E_BASE_URL to point elsewhere
+```
+
 ## Looking into the database
 
 ```bash

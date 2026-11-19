@@ -524,13 +524,9 @@
     }
     return synonymIndex.get(norm(germanPrimary(d.de))) || [d];
   }
-  /* A bracketed note in a German meaning ("vor (zeitlich)", "kurz (nicht:
-     der Brief)") is there to read, not to type: the meaning without it counts
-     as well. */
-  const withoutNote = (s) => s.replace(/\s*\([^)]*\)/g, "");
   function answerAlternatives(d, dir) {
     return dir === "es-de"
-      ? [...new Set(d.de.split("|").flatMap((x) => [norm(x), norm(withoutNote(x))]))].filter(Boolean)
+      ? TEXT.meanings(d.de)
       : germanGroup(d).map((x) => norm(x.term));
   }
 
@@ -773,6 +769,7 @@
     logConjAttempt(item, ok, correctForm, input.value);
     conjSession.reviewed += 1;
     if (ok) conjSession.correct += 1;
+    el("conjScore").textContent = `${conjSession.correct} / ${conjSession.reviewed} richtig`;
     if (!ok && !item.requeued) {
       const reinsertAt = Math.min(conjSession.queue.length, conjSession.idx + 3 + Math.floor(Math.random() * 3));
       conjSession.queue.splice(reinsertAt, 0, { ...item, requeued: true });
@@ -904,6 +901,7 @@
         logGrammarAttempt(item, ok, opt);
         grammarSession.reviewed += 1;
         if (ok) grammarSession.correct += 1;
+        el("grammarScore").textContent = `${grammarSession.correct} / ${grammarSession.reviewed} richtig`;
         if (!ok && !item.requeued) {
           const reinsertAt = Math.min(grammarSession.queue.length, grammarSession.idx + 3 + Math.floor(Math.random() * 3));
           grammarSession.queue.splice(reinsertAt, 0, { ...item, requeued: true });
