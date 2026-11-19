@@ -26,6 +26,12 @@ const COACH = (() => {
   async function init(options) {
     hooks = { ...hooks, ...options };
     el("coachSetup").addEventListener("click", () => hooks.openSettings());
+    el("coachModelSelect").addEventListener("change", (e) => {
+      const custom = e.target.value === CUSTOM;
+      el("coachModel").hidden = !custom;
+      if (custom) { el("coachModel").value = ""; el("coachModel").focus(); }
+      else el("coachModel").value = e.target.value;
+    });
     el("coachRuns").addEventListener("click", (e) => {
       const toggle = e.target.closest("[data-run-toggle]");
       if (toggle) {
@@ -144,6 +150,7 @@ const COACH = (() => {
     }
     select.value = settings.provider || settings.providers[0].id;
     if (document.activeElement !== el("coachModel")) el("coachModel").value = settings.model || "";
+    syncModelSelect();
     el("coachKey").value = "";
     el("coachKey").placeholder = settings.hasKey ? `gespeichert (${settings.keyHint || "…"}) – leer lassen, um ihn zu behalten` : "sk-…";
     el("coachDeleteKey").hidden = !settings.hasKey;
@@ -164,17 +171,40 @@ const COACH = (() => {
       : "Wird beim Speichern beim Anbieter geprüft, wo das möglich ist.";
   }
 
+  /* The model: a real dropdown of the provider's models (a text field with
+     suggestions filtered by its own value, so with a model chosen it only ever
+     offered that one). "Andere Modell-ID" opens the text field; without a model
+     list the text field is all there is. The text field holds the value. */
+  const CUSTOM = "__custom";
+  let modelIds = [];
+
+  function syncModelSelect() {
+    const select = el("coachModelSelect");
+    const input = el("coachModel");
+    if (!modelIds.length) { select.hidden = true; input.hidden = false; return; }
+    const known = modelIds.includes(input.value);
+    select.hidden = false;
+    select.value = !input.value ? "" : known ? input.value : CUSTOM;
+    input.hidden = known || !input.value;
+  }
+
   async function loadModels(provider) {
     if (loadedModelsFor === provider) return;
     loadedModelsFor = provider;
-    const list = el("coachModelList");
-    list.innerHTML = "";
+    modelIds = [];
+    syncModelSelect();
     el("coachModelHelp").textContent = "Modelle werden geladen …";
     try {
       const models = await STORE.call("GET", `coach/models?provider=${encodeURIComponent(provider)}`);
       if (loadedModelsFor !== provider) return;
-      list.innerHTML = models.map((m) => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join("");
-      el("coachModelHelp").textContent = `${models.length} Modelle verfügbar. Tippen zum Suchen.`;
+      modelIds = models.map((m) => m.id);
+      el("coachModelSelect").innerHTML = `<option value="" disabled>Modell wählen …</option>` + models.map((m) =>
+        `<option value="${esc(m.id)}">${esc(m.name && m.name !== m.id ? `${m.name} (${m.id})` : m.id)}</option>`).join("") +
+        `<option value="${CUSTOM}">Andere Modell-ID eintragen …</option>`;
+      el("coachModelHelp").textContent = models.length
+        ? `${models.length} Modelle, die Werkzeuge aufrufen können.`
+        : "Keine Modellliste – trag die Modell-ID direkt ein.";
+      syncModelSelect();
     } catch (e) {
       loadedModelsFor = null;
       el("coachModelHelp").textContent = "Modellliste nicht verfügbar – die Modell-ID lässt sich auch direkt eintragen.";

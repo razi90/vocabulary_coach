@@ -108,10 +108,30 @@ test("coach settings: a key is required, and a stored key does not move to anoth
   await expect(page.locator("#view-settings")).toBeVisible();
 
   await page.locator("#coachProvider").selectOption("openrouter");
-  await page.locator("#coachModel").fill("test/model");
+  await page.locator("#coachModelSelect").selectOption("test/model");   // a real dropdown of the provider's models
   await page.locator('#coachSettingsForm button[type="submit"]').click();
   await expect(page.locator("#coachSettingsError")).toHaveText("Bitte einen API-Schlüssel für OpenRouter eingeben.");
   expect((await api(context, "GET", "coach/settings")).hasKey).toBe(false);
 });
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+test("coach settings: every model can be picked, and another ID typed in", async ({ page, context }) => {
+  await page.route("**/api/coach/models**", (r) => r.fulfill({ json: [
+    { id: "deepseek/deepseek-v4-pro", name: "DeepSeek V4 Pro" },
+    { id: "anthropic/claude-haiku-5.5", name: "Claude Haiku 5.5" },
+    { id: "deepseek/deepseek-v4-flash", name: "DeepSeek V4 Flash" },
+  ] }));
+  await signUp(context);
+  await openApp(page);
+  await openTab(page, "settings");
+  const select = page.locator("#coachModelSelect");
+  await expect(select.locator("option")).toHaveCount(5);          // placeholder, three models, "other"
+  await select.selectOption("anthropic/claude-haiku-5.5");
+  await expect(page.locator("#coachModel")).toBeHidden();
+  await expect(page.locator("#coachModel")).toHaveValue("anthropic/claude-haiku-5.5");
+  await select.selectOption("__custom");
+  await expect(page.locator("#coachModel")).toBeVisible();
+  await page.locator("#coachModel").fill("qwen/qwen3.8-flash");
+  await expect(page.locator("#coachModel")).toHaveValue("qwen/qwen3.8-flash");
+});

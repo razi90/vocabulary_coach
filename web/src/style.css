@@ -875,3 +875,5 @@ body.welcoming .sidenav, body.welcoming .course-btn, body.welcoming .streak, bod
 .coach-run:not(.open) .coach-run-more { display: none; }
 .run-toggle { display: inline-block; margin-top: 8px; font-size: 13.5px; color: var(--text-dim); }
 .runs-more { display: block; margin-top: 12px; font-size: 13.5px; }
+
+#coachModelSelect + #coachModel:not([hidden]) { margin-top: 8px; }

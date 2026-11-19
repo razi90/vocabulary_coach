@@ -632,9 +632,8 @@
             </label>
             <label class="field">
               <span class="field-label">Modell</span>
-              <input id="coachModel" list="coachModelList" autocomplete="off" spellcheck="false"
-                placeholder="Modell suchen …">
-              <datalist id="coachModelList"></datalist>
+              <select id="coachModelSelect" hidden></select>
+              <input id="coachModel" autocomplete="off" spellcheck="false" placeholder="Modell-ID, z. B. anthropic/claude-haiku-5.5">
               <span class="field-help" id="coachModelHelp">Nur Modelle, die Werkzeuge aufrufen können.</span>
             </label>
             <label class="field">
@@ -644,8 +643,10 @@
             </label>
             <div class="form-error" id="coachSettingsError" role="alert" hidden></div>
             <div class="form-note" id="coachSettingsNote" hidden></div>
-            <button class="btn-primary" type="submit">Speichern</button>
-            <button class="btn-secondary" type="button" id="coachDeleteKey" hidden>Schlüssel löschen</button>
+            <div class="btn-row">
+              <button class="btn-primary" type="submit">Speichern</button>
+              <button class="btn-secondary" type="button" id="coachDeleteKey" hidden>Schlüssel löschen</button>
+            </div>
           </form>
         </div>
 
