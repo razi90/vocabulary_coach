@@ -59,7 +59,7 @@ test("grammar: switching sections keeps the drill; continue or start over", asyn
   await page.locator("#tab-stats").click();                 // just leave
   await expect(page.locator("#view-stats")).toBeVisible();
   await openTab(page, "home");
-  await expect(page.locator('[data-today="resume"][data-id="grammar"]')).toContainText(`1 von ${total}`);
+  await expect(page.locator('[data-today="resume"][data-id^="grammar:"]')).toContainText(`1 von ${total}`);
 
   await openTab(page, "grammar");
   await expect(page.locator("#startGrammarBtn")).toHaveText(`Fortsetzen · 1 von ${total}`);
@@ -88,7 +88,7 @@ test("an exercise set paused halfway is offered on Heute and in the list", async
 
   await expect(page.locator(".pack-start")).toHaveText(/^Fortsetzen · 1 von \d+$/);
   await openTab(page, "home");
-  const row = page.locator('[data-today="resume"][data-id="pack"]');
+  const row = page.locator('[data-today="resume"][data-id="pack:since-for"]');
   await expect(row).toContainText("since oder for fortsetzen");
   await row.click();
   await expect(page.locator("#packIdx")).toHaveText("2");
@@ -107,4 +107,73 @@ test("yesterday's paused session is not offered any more", async ({ page, contex
   await openApp(page);
   await expect(page.locator("#startSessionBtn")).toHaveText(/Sitzung starten|Weiterlernen/);
   await expect(page.locator("#restartSessionBtn")).toBeHidden();
+});
+
+const pack = (id, title) => ({
+  schema: "vocab-coach/exercise-pack@1", id, title,
+  items: [1, 2, 3, 4].map((n) => ({ type: "choice", prompt: `${title} ${n} ___`, options: ["a", "b"], answer: "a" })),
+});
+
+test("two exercise sets keep their own paused place @phone", async ({ page, context }) => {
+  await signUp(context, { course: "es" });
+  await api(context, "POST", "packs", pack("por-para", "Por oder para"));
+  await api(context, "POST", "packs", pack("ser-estar", "Ser oder estar"));
+  await openApp(page);
+  await openTab(page, "packs");
+  const card = (title) => page.locator(".pack-card", { hasText: title });
+
+  const answer = async (n) => {
+    for (let i = 0; i < n; i++) {
+      await page.locator("#packGrid button", { hasText: "a" }).click();   // the options are "a" and "b"
+      await page.locator("#packContinueBtn").click();
+    }
+  };
+  await card("Por oder para").locator(".pack-start").click();
+  await answer(1);
+  await page.locator("#exitPackBtn").click();
+  await card("Ser oder estar").locator(".pack-start").click();
+  await answer(2);
+  await page.locator("#exitPackBtn").click();
+
+  await expect(card("Por oder para").locator(".pack-start")).toHaveText("Fortsetzen · 1 von 4");
+  await expect(card("Ser oder estar").locator(".pack-start")).toHaveText("Fortsetzen · 2 von 4");
+  await openApp(page);                                      // both survive a reload
+  await openTab(page, "home");
+  await expect(page.locator('[data-today="resume"][data-id^="pack:"]')).toHaveCount(2);
+  await page.locator('[data-today="resume"][data-id="pack:por-para"]').click();
+  await expect(page.locator("#packIdx")).toHaveText("2");
+});
+
+test("opening a set and leaving without an answer is not a pause", async ({ page, context }) => {
+  await signUp(context, { course: "es" });
+  await api(context, "POST", "packs", pack("por-para", "Por oder para"));
+  await openApp(page);
+  await openTab(page, "packs");
+  await page.locator(".pack-start").click();
+  await page.locator("#exitPackBtn").click();
+  await expect(page.locator(".pack-start")).toHaveText("Üben");
+  await openTab(page, "home");
+  await expect(page.locator('[data-today="resume"]')).toHaveCount(0);
+});
+
+test("a grammar topic from Heute does not replace a paused grammar session", async ({ page, context }) => {
+  await signUp(context, { course: "en" });
+  // A recent mistake puts this topic on Heute.
+  await api(context, "PUT", "state", { ...(await api(context, "GET", "snapshot")).state,
+    grammarCards: { sf1: { attempts: 1, correct: 0, wrongCount: 1, lastResult: "wrong", lastAt: Date.now() } } });
+  await openApp(page);
+  await openTab(page, "grammar");
+  await page.locator("#startGrammarBtn").click();
+  await page.locator("#grammarGrid .mc-option").first().click();
+  await page.locator("#grammarContinueBtn").click();
+  await page.locator("#exitGrammarBtn").click();
+
+  await openTab(page, "home");
+  await page.locator('[data-today="grammar"][data-id="since_for"]').click();
+  await page.locator("#grammarGrid .mc-option").first().click();
+  await page.locator("#grammarContinueBtn").click();
+  await page.locator("#exitGrammarBtn").click();
+
+  await openTab(page, "home");
+  await expect(page.locator('[data-today="resume"][data-id^="grammar:"]')).toHaveCount(2);
 });
