@@ -5,6 +5,9 @@ const TEXT = (() => {
   function norm(s) {
     return String(s == null ? "" : s).trim().toLowerCase()
       .normalize("NFD").replace(/[̀-ͯ]/g, "")
+      // Phone keyboards type curly apostrophes and quotes, and a single
+      // ellipsis character: the same as the plain ones.
+      .replace(/[‘’ʼ]/g, "'").replace(/[“”„]/g, '"').replace(/…/g, "...")
       // Edge punctuation and double spaces are never the material.
       .replace(/^[¡¿"'«»(]+|[.,;:!?"'«»)]+$/g, "")
       .replace(/\s+/g, " ")

@@ -524,9 +524,13 @@
     }
     return synonymIndex.get(norm(germanPrimary(d.de))) || [d];
   }
+  /* A bracketed note in a German meaning ("vor (zeitlich)", "kurz (nicht:
+     der Brief)") is there to read, not to type: the meaning without it counts
+     as well. */
+  const withoutNote = (s) => s.replace(/\s*\([^)]*\)/g, "");
   function answerAlternatives(d, dir) {
     return dir === "es-de"
-      ? d.de.split("|").map(norm)
+      ? [...new Set(d.de.split("|").flatMap((x) => [norm(x), norm(withoutNote(x))]))].filter(Boolean)
       : germanGroup(d).map((x) => norm(x.term));
   }
 

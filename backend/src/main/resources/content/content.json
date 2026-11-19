@@ -7670,7 +7670,7 @@
    },
    {
     "term": "dish",
-    "de": "das Gericht|der Teller",
+    "de": "das Gericht|die Schüssel",
     "dePrimary": "das Gericht",
     "pos": "noun",
     "level": "A2",
@@ -10586,7 +10586,7 @@
     "level": "A1",
     "topic": "Wetter",
     "exampleTerm": "We got caught in the rain.",
-    "exampleDe": "Wir sind in den Regen gekommen."
+    "exampleDe": "Wir sind in den Regen geraten."
    },
    {
     "term": "to rain",
@@ -11595,8 +11595,8 @@
     "pos": "adv",
     "level": "B1",
     "topic": "Falsche Freunde",
-    "exampleTerm": "I'll possibly come later.",
-    "exampleDe": "Ich komme eventuell später."
+    "exampleTerm": "We could possibly meet on Friday.",
+    "exampleDe": "Wir könnten uns eventuell am Freitag treffen."
    },
    {
     "term": "sympathetic",
@@ -12506,7 +12506,7 @@
     "level": "A2",
     "topic": "Reisen",
     "exampleTerm": "I've booked a table for eight.",
-    "exampleDe": "Ich habe einen Tisch für acht Uhr reserviert."
+    "exampleDe": "Ich habe einen Tisch für acht Personen reserviert."
    },
    {
     "term": "sightseeing",
@@ -13465,8 +13465,8 @@
     "pos": "noun",
     "level": "A2",
     "topic": "Freizeit",
-    "exampleTerm": "We go camping every summer.",
-    "exampleDe": "Wir gehen jeden Sommer zelten."
+    "exampleTerm": "Camping is a cheap way to travel.",
+    "exampleDe": "Zelten ist eine günstige Art zu reisen."
    },
    {
     "term": "board game",
@@ -15287,7 +15287,7 @@
      "have lost"
     ],
     "answer": "have lost",
-    "explanation": "Die Folge ist jetzt sichtbar (die Schlüssel fehlen), kein Zeitpunkt genannt → Present Perfect."
+    "explanation": "Die Folge ist jetzt sichtbar (die Schlüssel fehlen), kein Zeitpunkt genannt → Present Perfect. Im amerikanischen Englisch hört man hier auch das Simple Past."
    },
    {
     "id": "pp5",
@@ -15664,7 +15664,7 @@
    {
     "id": "ff4",
     "category": "false_friends",
-    "prompt": "We need the ___ figures for this month. (aktuell)",
+    "prompt": "Is this information still ___? (aktuell)",
     "options": [
      "actual",
      "current"
@@ -15675,7 +15675,7 @@
    {
     "id": "ff5",
     "category": "false_friends",
-    "prompt": "He's very ___. He always helps people. (sympathisch)",
+    "prompt": "I like your new colleague – he's very ___. (sympathisch)",
     "options": [
      "sympathetic",
      "nice"
@@ -15903,7 +15903,7 @@
      "am"
     ],
     "answer": "were",
-    "explanation": "Feste Wendung für Ratschläge: If I were you … (were ist hier die korrekte Form, auch bei I)."
+    "explanation": "Feste Wendung für Ratschläge: If I were you … (were ist hier die korrekte Form, auch bei I; „If I was you“ hört man nur umgangssprachlich)."
    },
    {
     "id": "cd6",
