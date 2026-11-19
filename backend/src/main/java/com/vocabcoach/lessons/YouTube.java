@@ -142,6 +142,19 @@ public class YouTube {
 
   // ---------- Subtitles (best effort) ----------
 
+  /**
+   * Whether subtitles can be read at all. Since 2025 YouTube hands subtitle
+   * files only to its own player (the links carry {@code exp=xpe} and need a
+   * token the player creates); any other client gets an empty file, so every
+   * video looked as if it had no subtitles. The official API serves captions
+   * only to a video's owner. Until there is a permitted way, the coach is not
+   * offered get_video_transcript and builds listening as a summary task.
+   * {@link #transcript} stays for that day.
+   */
+  public boolean transcriptsAvailable() {
+    return false;
+  }
+
   /** Subtitles in {@code language} ("es", "en"); regional variants such as es-ES count too. */
   public Optional<Transcript> transcript(String videoId, String language) {
     try {

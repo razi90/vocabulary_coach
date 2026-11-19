@@ -119,10 +119,12 @@ about 100, so roughly 100 lesson searches a day for the whole server.
 - **Open task.** Without subtitles, the learner writes in Spanish what they
   understood. The submission waits for feedback like a writing task.
 
-There is no official way to read another channel's subtitles. The app reads
-them from the public watch page, best effort. YouTube often shows its bot
-check to servers in data centers. A cloud or VPS server will then mostly get
-open tasks; a server on a home connection usually gets the subtitles.
+**Currently only the open task.** There is no official way to read another
+channel's subtitles, and since 2025 YouTube hands subtitle files only to its own
+player (any other client gets an empty file). So the coach is not offered
+`get_video_transcript` for now (`YouTube.transcriptsAvailable()`) and builds the
+listening part as an open task. If you want questions, copy the video's
+transcript from YouTube ("Transkript anzeigen") into the note for the coach.
 
 ## Accounts and security
 

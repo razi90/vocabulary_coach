@@ -438,8 +438,25 @@ class AppIntegrationTest {
     when(youtube.searchAvailable()).thenReturn(true);
     waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "lesson")).path("id").asLong());
 
-    assertThat(names(toolLists.get(0))).doesNotContain("search_youtube").contains("get_video_transcript");
+    assertThat(names(toolLists.get(0))).doesNotContain("search_youtube");
     assertThat(names(toolLists.get(1))).contains("search_youtube");
+  }
+
+  @Test
+  void subtitlesAreOnlyOfferedWhileTheyCanBeRead() throws Exception {
+    Learner a = coachedLearner("subtitles");
+    List<ArrayNode> toolLists = new ArrayList<>();
+    when(llm.chat(any(), any(), any())).thenAnswer(inv -> {
+      toolLists.add(inv.getArgument(2));
+      return new LlmClient.Reply(json.createObjectNode().put("role", "assistant").put("content", "ok"), "stop", 1, 1);
+    });
+    when(youtube.transcriptsAvailable()).thenReturn(false);
+    waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "lesson")).path("id").asLong());
+    when(youtube.transcriptsAvailable()).thenReturn(true);
+    waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "lesson")).path("id").asLong());
+
+    assertThat(names(toolLists.get(0))).doesNotContain("get_video_transcript");
+    assertThat(names(toolLists.get(1))).contains("get_video_transcript");
   }
 
   private static List<String> names(ArrayNode tools) {

@@ -88,13 +88,15 @@ public class CoachTools {
 
   /**
    * The tool list in Chat Completions format, worded for the course
-   * ({{sprache}} & co. filled in). Video search only if the server has a key.
+   * ({{sprache}} & co. filled in). Video search only if the server has a key,
+   * subtitles only while they can be read (see YouTube#transcriptsAvailable).
    */
   public ArrayNode chatTools(Course course) {
     ArrayNode out = json.createArrayNode();
     ArrayNode filled = (ArrayNode) json.readTree(course.fill(json.writeValueAsString(definitions)));
     for (JsonNode d : filled) {
       if ("search_youtube".equals(d.path("name").asString()) && !youtube.searchAvailable()) continue;
+      if ("get_video_transcript".equals(d.path("name").asString()) && !youtube.transcriptsAvailable()) continue;
       ObjectNode fn = json.createObjectNode();
       fn.put("name", d.path("name").asString());
       fn.put("description", d.path("description").asString());

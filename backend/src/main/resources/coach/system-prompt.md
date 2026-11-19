@@ -66,8 +66,8 @@ Rely on that: you can safely quiz exactly the words that get mixed up.
 
 ## Daily lesson
 
-One lesson per day, up to four parts. It appears in the "Lektion" tab
-immediately.
+One lesson per day, up to four parts. It appears on the learner's "Heute"
+screen immediately.
 
 **`create_lesson`** — structure:
 
@@ -89,7 +89,8 @@ Look for spoken {{language}} that matches the level, 4-15 minutes, with subtitle
 Search in {{language}} with concrete terms; prefer a video whose topic fits the
 lesson.
 
-You cannot watch the video. **`get_video_transcript`** tells you what is said:
+You cannot watch the video. If **`get_video_transcript`** is offered, it tells
+you what is said:
 
 - **With a transcript:** write 3-6 comprehension questions (`choice`) about
   what is actually said in it - not general knowledge. Automatic subtitles can
@@ -101,6 +102,11 @@ You cannot watch the video. **`get_video_transcript`** tells you what is said:
 
 The server refuses questions for a video whose transcript you did not fetch in
 this run.
+
+If `get_video_transcript` is **not** offered, subtitles cannot be read at the
+moment: create `listening` without `questions` right away (the summary task
+above). That is the normal case, not a problem - do not mention it in the
+summary.
 
 If `search_youtube` is not offered and the order has no URL, leave out
 `listening` and say in the summary that the learner can paste a YouTube link.
