@@ -459,6 +459,30 @@ class AppIntegrationTest {
     assertThat(names(toolLists.get(1))).contains("get_video_transcript");
   }
 
+  @Test
+  void severalWordsAreCheckedInOneCall() throws Exception {
+    Learner a = coachedLearner("terms");
+    List<String> toolReplies = new ArrayList<>();
+    AtomicInteger round = new AtomicInteger();
+    when(llm.chat(any(), any(), any())).thenAnswer(inv -> {
+      ArrayNode messages = inv.getArgument(1);
+      messages.forEach(m -> { if ("tool".equals(m.path("role").asString())) toolReplies.add(m.path("content").asString()); });
+      if (round.getAndIncrement() == 0) {
+        return toolCall("call_0", "search_vocabulary", "{\"terms\":[\"casa\",\"el perro\",\"xyzzy\"]}");
+      }
+      return new LlmClient.Reply(json.createObjectNode().put("role", "assistant").put("content", "ok"), "stop", 1, 1);
+    });
+    waitFor(a, a.ok("POST", "/api/coach/runs", json.createObjectNode().put("task", "exercises")).path("id").asLong());
+
+    JsonNode result = json.readTree(toolReplies.get(toolReplies.size() - 1));
+    assertThat(result).hasSize(3);
+    assertThat(result.get(0).path("query").asString()).isEqualTo("casa");
+    assertThat(result.get(0).path("found").get(0).path("term").asString()).isEqualTo("la casa");   // exact word first
+    assertThat(result.get(1).path("found").get(0).path("term").asString()).isEqualTo("el perro");
+    assertThat(result.get(2).path("found")).isEmpty();
+    assertThat(result.get(2).path("note").asString()).isEqualTo("nicht im Kurs");
+  }
+
   private static List<String> names(ArrayNode tools) {
     List<String> out = new ArrayList<>();
     tools.forEach(t -> out.add(t.path("function").path("name").asString()));

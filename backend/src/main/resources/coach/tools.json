@@ -68,10 +68,21 @@
   },
   {
     "name": "search_vocabulary",
-    "description": "Das Vokabular durchsuchen – nach Text, Thema, Niveau oder Wortart. Nützlich, um Übungen aus Wörtern zu bauen, die der Lernende wirklich kennt.",
+    "description": "Das Vokabular durchsuchen – nach Text, Thema, Niveau oder Wortart. Nützlich, um Übungen aus Wörtern zu bauen, die der Lernende wirklich kennt. Mehrere Wörter prüfst du in EINEM Aufruf mit terms – nie Wort für Wort einzeln, jeder Aufruf kostet.",
     "parameters": {
       "type": "object",
       "properties": {
+        "terms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "maxItems": 40,
+          "description": "Bis zu 40 Wörter auf einmal prüfen. Liefert je Wort die passenden Einträge samt Lernstand oder „nicht im Kurs“. Die anderen Filter gelten dann nicht."
+        },
+        "topics": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Mehrere Themen auf einmal, z. B. [\"Essen\", \"Reisen\"]."
+        },
         "search": {
           "type": "string",
           "description": "Teilstring in der Lernsprache ({{sprache}}) oder auf Deutsch."

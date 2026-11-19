@@ -158,8 +158,14 @@ public class CoachTools {
     handlers.put("query_events", (ctx, a) -> store.getEvents(ctx.learner(), text(a, "kind"),
         a.hasNonNull("since") ? a.get("since").asLong() : null, clamp(a, "limit", 200, 1, 5000)));
 
-    handlers.put("search_vocabulary", (ctx, a) -> store.searchVocabulary(ctx.learner(), text(a, "search"),
-        text(a, "topic"), text(a, "level"), text(a, "pos"), clamp(a, "limit", 50, 1, 500)));
+    handlers.put("search_vocabulary", (ctx, a) -> {
+      List<String> terms = strings(a, "terms");
+      if (!terms.isEmpty()) return store.lookupTerms(ctx.learner(), terms);
+      List<String> topics = new java.util.ArrayList<>(strings(a, "topics"));
+      if (text(a, "topic") != null) topics.add(text(a, "topic"));
+      return store.searchVocabulary(ctx.learner(), text(a, "search"), topics, text(a, "level"), text(a, "pos"),
+          clamp(a, "limit", 50, 1, 500));
+    });
 
     handlers.put("list_exercises", (ctx, a) -> {
       String status = text(a, "status");
@@ -310,4 +316,14 @@ public class CoachTools {
     return Math.max(min, Math.min(max, n));
   }
 
+
+  /** A string array argument; a single string counts as a list of one. */
+  private static List<String> strings(JsonNode a, String field) {
+    JsonNode v = a.get(field);
+    if (v == null || v.isNull()) return List.of();
+    if (v.isString()) return v.asString().isBlank() ? List.of() : List.of(v.asString());
+    List<String> out = new java.util.ArrayList<>();
+    if (v.isArray()) v.forEach(x -> { if (x.isString() && !x.asString().isBlank()) out.add(x.asString()); });
+    return out;
+  }
 }

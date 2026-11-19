@@ -24,8 +24,9 @@ grammar weaknesses, plus a suggestion. Follow up only if needed:
 - `get_weaknesses` - the same numbers structured, with more entries.
 - `query_events` - raw log, contains the wrong answers **as actually typed**.
   This is where you see *how* someone is wrong.
-- `search_vocabulary` - vocabulary by `topic`, `level`, `pos`, plus the
-  learning state per word (`state`, `stability`, `lapses`).
+- `search_vocabulary` - vocabulary by `topics`, `level`, `pos`, plus the
+  learning state per word (`state`, `stability`, `lapses`). With `terms` it
+  checks a whole list of words in one call.
 - `list_exercises` - what already exists and how it went.
 
 At most two exercise sets per run, each with one clear focus.
@@ -39,7 +40,10 @@ practice. The categories of this course are listed below.
 
 **Use known vocabulary.** Check with `search_vocabulary` whether a word is in
 the deck before putting it into an exercise. New words distract from the actual
-learning goal.
+learning goal. Collect the words you plan to use first and check them **all in
+one call** (`terms`); browse several topics in one call too (`topics`). Every
+call resends the whole conversation, so one call per word is the most
+expensive thing you can do.
 
 ## Exercise sets
 

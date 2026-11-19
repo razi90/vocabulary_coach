@@ -208,7 +208,52 @@ public class LearningStore {
 
   // ---------- Vocabulary with the learner's state per word ----------
 
-  public List<Map<String, Object>> searchVocabulary(Learner l, String search, String topic, String level,
+  /** Separates list items for string_to_array: a control character no word contains. */
+  private static final String SEP = "\u001f";
+
+  /**
+   * Several words at once: per word the closest deck entries (an exact term or
+   * one ending in it first, e.g. "regalo" -> "el regalo") with the learner's
+   * state - or none, meaning the word is not in the course. One query, so the
+   * coach does not need a round trip per word.
+   */
+  public List<Map<String, Object>> lookupTerms(Learner l, List<String> terms) {
+    List<String> clean = terms.stream().map(String::trim).filter(t -> !t.isEmpty()).distinct().limit(40).toList();
+    if (clean.isEmpty()) return List.of();
+    List<Map<String, Object>> rows = this.rows.normalize(jdbc.sql("""
+        SELECT q.t AS query, q.n, v.term, v.de_primary, v.pos, v.level, v.topic, c.state, c.stability, c.lapses
+        FROM unnest(string_to_array(:terms, :sep)) WITH ORDINALITY AS q(t, n)
+        LEFT JOIN LATERAL (
+          SELECT * FROM vocabulary v
+          WHERE v.course = :course AND (v.term ILIKE '%' || q.t || '%' OR v.de ILIKE '%' || q.t || '%')
+          ORDER BY (lower(v.term) = lower(q.t) OR lower(v.term) LIKE '% ' || lower(q.t)) DESC, length(v.term), v.term
+          LIMIT 3) v ON true
+        LEFT JOIN cards c ON c.user_id = :user AND c.course = :course AND c.id = v.term
+        ORDER BY q.n""")
+        .param("terms", String.join(SEP, clean)).param("sep", SEP)
+        .param("course", l.courseId()).param("user", l.userId())
+        .query().listOfRows());
+    Map<String, Map<String, Object>> byQuery = new LinkedHashMap<>();
+    for (Map<String, Object> r : rows) {
+      Map<String, Object> entry = byQuery.computeIfAbsent((String) r.get("query"), q -> {
+        Map<String, Object> e = new LinkedHashMap<>();
+        e.put("query", q);
+        e.put("found", new java.util.ArrayList<Map<String, Object>>());
+        return e;
+      });
+      if (r.get("term") == null) continue;
+      Map<String, Object> hit = new LinkedHashMap<>(r);
+      hit.remove("query");
+      hit.remove("n");
+      @SuppressWarnings("unchecked")
+      List<Map<String, Object>> found = (List<Map<String, Object>>) entry.get("found");
+      found.add(hit);
+    }
+    byQuery.values().forEach(e -> { if (((List<?>) e.get("found")).isEmpty()) e.put("note", "nicht im Kurs"); });
+    return List.copyOf(byQuery.values());
+  }
+
+  public List<Map<String, Object>> searchVocabulary(Learner l, String search, List<String> topics, String level,
                                                     String pos, int limit) {
     StringBuilder sql = new StringBuilder("""
         SELECT v.term, v.de_primary, v.de, v.pos, v.level, v.topic, v.example_term, v.example_de,
@@ -220,7 +265,11 @@ public class LearningStore {
     params.put("user", l.userId());
     params.put("course", l.courseId());
     if (notBlank(search)) { sql.append(" AND (v.term ILIKE :search OR v.de ILIKE :search)"); params.put("search", "%" + search + "%"); }
-    if (notBlank(topic)) { sql.append(" AND v.topic = :topic"); params.put("topic", topic); }
+    if (!topics.isEmpty()) {
+      sql.append(" AND v.topic = ANY(string_to_array(:topics, :sep))");
+      params.put("topics", String.join(SEP, topics));
+      params.put("sep", SEP);
+    }
     if (notBlank(level)) { sql.append(" AND v.level = :level"); params.put("level", level); }
     if (notBlank(pos)) { sql.append(" AND v.pos = :pos"); params.put("pos", pos); }
     sql.append(" ORDER BY v.term LIMIT :limit");
