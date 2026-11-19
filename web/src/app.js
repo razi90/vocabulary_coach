@@ -1637,28 +1637,79 @@
   }
 
   // ---------- Welcome (first start in a course) ----------
+  /* Four steps: the language, the idea, the daily goal, the four sections.
+     Picking the other language switches the course and reloads into it;
+     the welcome then carries on there with step 2. */
+  const WELCOME_STEPS = 4;
+  const WELCOME_RESUME = "voco:welcome-step";
   let welcomeStep = 1;
+  let welcomeCourse = null;
+
+  function markChoices(container, attr, value) {
+    container.querySelectorAll(".choice").forEach((c) => {
+      const on = c.dataset[attr] === String(value);
+      c.classList.toggle("on", on);
+      c.setAttribute("aria-checked", on ? "true" : "false");
+    });
+  }
+  async function renderWelcomeCourses() {
+    const box = el("welcomeCourses");
+    if (!box.children.length) {
+      // The courses come from the server - no language list in shared code.
+      const { courses = [] } = await STORE.call("GET", "auth/config");
+      box.innerHTML = courses.map((c) =>
+        `<button class="choice" role="radio" data-course="${esc(c.id)}"><span>${esc(c.name)}</span></button>`).join("");
+    }
+    markChoices(box, "course", welcomeCourse);
+  }
   function showWelcomeStep(n) {
     welcomeStep = n;
     document.querySelectorAll(".welcome-step").forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
     document.querySelectorAll(".welcome .dots i").forEach((d) => d.classList.toggle("on", Number(d.dataset.dot) === n));
-    document.querySelectorAll(".welcome .choice").forEach((c) => {
-      const on = Number(c.dataset.goal) === state.dailyGoal;
-      c.classList.toggle("on", on);
-      c.setAttribute("aria-checked", on ? "true" : "false");
-    });
-    el("welcomeNext").textContent = n === 3 ? "Los geht's" : "Weiter";
+    markChoices(el("welcomeGoals"), "goal", state.dailyGoal);
+    if (n === 1) renderWelcomeCourses().catch(() => showWelcomeStep(2));
+    el("welcomeNext").textContent = n === WELCOME_STEPS ? "Los geht's" : "Weiter";
   }
+  async function welcomeNext() {
+    if (welcomeStep === 1 && welcomeCourse !== COURSE.id) {
+      try {
+        await STORE.call("PUT", "auth/course", { course: welcomeCourse });
+        try { sessionStorage.setItem(WELCOME_RESUME, "2"); sessionStorage.removeItem("voco:position"); } catch (e) { /* egal */ }
+        location.reload();
+        return;
+      } catch (e) {
+        alert("Kurswechsel fehlgeschlagen: " + e.message);
+        return;
+      }
+    }
+    if (welcomeStep < WELCOME_STEPS) showWelcomeStep(welcomeStep + 1);
+    else finishWelcome();
+  }
+  function startWelcome() {
+    welcomeCourse = COURSE.id;
+    let resume = 1;
+    try { resume = Number(sessionStorage.getItem(WELCOME_RESUME)) || 1; sessionStorage.removeItem(WELCOME_RESUME); } catch (e) { /* egal */ }
+    showView("welcome");
+    showWelcomeStep(resume);
+  }
+  el("welcomeCourses").addEventListener("click", (e) => {
+    const c = e.target.closest(".choice");
+    if (!c) return;
+    welcomeCourse = c.dataset.course;
+    markChoices(el("welcomeCourses"), "course", welcomeCourse);
+  });
   function finishWelcome() {
     state.welcomeSeen = true;
     save();
     showView("home");
   }
-  document.querySelectorAll(".welcome .choice").forEach((c) => c.addEventListener("click", () => {
+  el("welcomeGoals").addEventListener("click", (e) => {
+    const c = e.target.closest(".choice");
+    if (!c) return;
     state.dailyGoal = Number(c.dataset.goal);
-    showWelcomeStep(2);
-  }));
-  el("welcomeNext").addEventListener("click", () => (welcomeStep < 3 ? showWelcomeStep(welcomeStep + 1) : finishWelcome()));
+    markChoices(el("welcomeGoals"), "goal", state.dailyGoal);
+  });
+  el("welcomeNext").addEventListener("click", welcomeNext);
   el("welcomeSkip").addEventListener("click", finishWelcome);
 
   // ---------- Startup ----------
@@ -1710,7 +1761,7 @@
 
     stellePositionHer();
     // Learners with answers in this course never see the welcome.
-    if (!state.welcomeSeen && !events.length) { showView("welcome"); showWelcomeStep(1); }
+    if (!state.welcomeSeen && !events.length) startWelcome();
     document.body.dataset.ready = "1";   // for the browser tests: handlers are attached
   }
 

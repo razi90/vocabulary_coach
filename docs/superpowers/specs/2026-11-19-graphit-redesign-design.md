@@ -195,11 +195,15 @@ the 14-day bar chart. Squares have accessible labels ("12. November: 34
 Antworten").
 
 **First-run welcome** — shown once to an account with no answers in this
-course and no `welcomeSeen` flag in its saved settings. Three short steps:
-1. the idea: a little every day; the coach builds exercises from your
+course and no `welcomeSeen` flag in its saved settings. Four short steps:
+1. the language to learn (the courses from `/api/auth/config`, the current
+   one preselected). Picking another switches the course and reloads; the
+   welcome carries on there with step 2. Registration no longer asks for the
+   language, so it is asked once, here.
+2. the idea: a little every day; the coach builds exercises from your
    mistakes
-2. the daily goal: Locker 10, Normal 20 (default), Intensiv 40
-3. the four sections, one line each
+3. the daily goal: Locker 10, Normal 20 (default), Intensiv 40
+4. the four sections, one line each
 
 Skippable at every step. Finishing or skipping sets `welcomeSeen` (in the
 existing settings blob, no schema change) and lands on Heute. Learners with

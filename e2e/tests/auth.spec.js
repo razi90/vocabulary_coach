@@ -18,7 +18,7 @@ test("a wrong password is refused with a message", async ({ page }) => {
   await expect(page).toHaveURL(/login\.html/);
 });
 
-test("register in the English course, log out, log back in @phone", async ({ page }) => {
+test("register, pick English as the first step, log out, log back in @phone", async ({ page }) => {
   const email = `e2e-${crypto.randomUUID().slice(0, 8)}@example.com`;
   await page.goto("/login.html");
   await page.locator("#toRegister a").click();
@@ -27,14 +27,19 @@ test("register in the English course, log out, log back in @phone", async ({ pag
   await form.locator('input[name="displayName"]').fill("E2E");
   await form.locator('input[name="email"]').fill(email);
   await form.locator('input[name="password"]').fill(PASSWORD);
-  await form.locator('select[name="course"]').selectOption("en");
   await form.locator('input[name="code"]').fill(process.env.E2E_REGISTRATION_CODE);
   await form.locator('button[type="submit"]').click();
 
-  await expect(page).toHaveTitle("English – Vokabeltrainer");
-  await expect(page.locator("#bootError")).toBeHidden();
+  // The first thing a new learner does: choose the language.
   await appReady(page);
-  await page.locator("#welcomeSkip").click();              // a brand-new account starts with the welcome
+  await expect(page.locator('.welcome-step[data-step="1"] h1')).toHaveText("Welche Sprache möchtest du lernen?");
+  await page.locator('#welcomeCourses .choice[data-course="en"]').click();
+  await page.locator("#welcomeNext").click();
+  await expect(page).toHaveTitle("English – Vokabeltrainer");
+  await appReady(page);
+  await expect(page.locator('.welcome-step[data-step="2"] h1')).toHaveText("Jeden Tag ein bisschen Englisch.");
+  await page.locator("#welcomeSkip").click();
+  await expect(page.locator("#view-home")).toBeVisible();
 
   await openTab(page, "settings");
   await expect(page.locator("#accountEmail")).toContainText(email);

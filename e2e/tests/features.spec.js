@@ -20,18 +20,22 @@ async function fakeSpeech(page, langs) {
 }
 
 test.describe("welcome", () => {
-  test("a new learner is welcomed once and picks a daily goal @phone", async ({ page, context }) => {
+  test("a new learner keeps the language, picks a daily goal, and is welcomed once @phone", async ({ page, context }) => {
     await signUp(context, { course: "en", welcome: true });
     await openApp(page);
     await expect(page.locator("#view-welcome")).toBeVisible();
-    await expect(page.locator('.welcome-step[data-step="1"] h1')).toHaveText("Jeden Tag ein bisschen Englisch.");
     await expect(page.locator("#tab-home")).toBeHidden();            // no navigation during the welcome
+    // Step 1: the language, the current course chosen.
+    await expect(page.locator('#welcomeCourses .choice[data-course="en"]')).toHaveAttribute("aria-checked", "true");
+    await expect(page.locator("#welcomeCourses .choice")).toHaveText(["Spanisch", "Englisch"]);
+    await page.locator("#welcomeNext").click();
 
+    await expect(page.locator('.welcome-step[data-step="2"] h1')).toHaveText("Jeden Tag ein bisschen Englisch.");
     await page.locator("#welcomeNext").click();
-    await page.locator('.choice[data-goal="40"]').click();
-    await expect(page.locator('.choice[data-goal="40"]')).toHaveAttribute("aria-checked", "true");
+    await page.locator('#welcomeGoals .choice[data-goal="40"]').click();
+    await expect(page.locator('#welcomeGoals .choice[data-goal="40"]')).toHaveAttribute("aria-checked", "true");
     await page.locator("#welcomeNext").click();
-    await expect(page.locator('.welcome-step[data-step="3"]')).toBeVisible();
+    await expect(page.locator('.welcome-step[data-step="4"]')).toBeVisible();
     await page.locator("#welcomeNext").click();
 
     await expect(page.locator("#view-home")).toBeVisible();
@@ -39,6 +43,19 @@ test.describe("welcome", () => {
     await expect.poll(async () => (await api(context, "GET", "snapshot")).state.welcomeSeen).toBe(true);
     await openApp(page);
     await expect(page.locator("#view-home")).toBeVisible();
+  });
+
+  test("choosing the other language switches the course and the welcome carries on there", async ({ page, context }) => {
+    await signUp(context, { course: "es", welcome: true });
+    await openApp(page);
+    await page.locator('#welcomeCourses .choice[data-course="en"]').click();
+    await page.locator("#welcomeNext").click();
+    await expect(page).toHaveTitle("English – Vokabeltrainer");
+    await expect(page.locator('.welcome-step[data-step="2"]')).toBeVisible();   // not back to step 1
+    expect((await api(context, "GET", "auth/me")).course).toBe("en");
+    await page.locator("#welcomeSkip").click();
+    await expect(page.locator("#view-home")).toBeVisible();
+    await expect(page.locator(".brand-name")).toHaveText("English");
   });
 
   test("a learner with answers in the course never sees it", async ({ page, context }) => {

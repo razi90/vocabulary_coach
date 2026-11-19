@@ -96,8 +96,6 @@
     .then((config) => {
       registrationOpen = !!config.registrationOpen;
       el("passwordHelp").textContent = `Mindestens ${config.minPassword} Zeichen.`;
-      el("registerCourse").innerHTML = (config.courses || [])
-        .map((c) => `<option value="${c.id}">${c.name}</option>`).join("");
       showMode();
     })
     .catch(() => showError("Der Server ist nicht erreichbar."));
