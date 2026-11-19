@@ -45,7 +45,7 @@ public class SecurityConfig {
       throws Exception {
     http
         .authorizeHttpRequests(a -> a
-            .requestMatchers("/login.html", "/src/auth.js", "/src/style.css",
+            .requestMatchers("/login.html", "/src/auth.js", "/src/style.css", "/fonts/**",
                 "/manifest.webmanifest", "/sw.js", "/api/auth/register", "/api/auth/config",
                 "/actuator/health/**", "/error")
             .permitAll()

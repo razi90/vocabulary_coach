@@ -9,5 +9,6 @@ const COURSE = {
   inDe: "auf Englisch",
   hintExample: "Mehr zu since und for",   // in the coach's hint field
   praise: "Correct!",
+  accent: { light: "#2f5fcf", dark: "#7ea3f5" },
   defaultTenses: ["simple_past", "present_perfect"],
 };

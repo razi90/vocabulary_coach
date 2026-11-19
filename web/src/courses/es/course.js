@@ -12,5 +12,8 @@ const COURSE = {
   inDe: "auf Spanisch",   // "Schreib deinen Text auf Spanisch"
   hintExample: "Mehr zu ser und estar",   // in the coach's hint field
   praise: "¡Correcto!",
+  // The one accent colour of this course (light and dark theme): main button,
+  // progress, active section, focus ring.
+  accent: { light: "#d9501c", dark: "#f0814f" },
   defaultTenses: ["presente", "indefinido"],
 };

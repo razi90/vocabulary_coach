@@ -1,12 +1,13 @@
 /* Offline use: the app is nothing but static files, so a cache that is filled
    on install and replaced with every version is enough.
    Bump VERSION whenever the files change. */
-const VERSION = "voco-v7";
+const VERSION = "voco-v8";
 const ASSETS = [
   ".",
   "index.html",
   "manifest.webmanifest",
   "src/style.css",
+  "fonts/inter-latin-wght.woff2",
   "src/text.js",
   "src/store.js",
   "src/boot.js",

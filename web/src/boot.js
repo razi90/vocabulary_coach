@@ -25,6 +25,11 @@
     document.querySelectorAll("[data-course-text]").forEach((e) => { e.textContent = fill(e.dataset.courseText); });
     document.querySelectorAll("[data-course-placeholder]").forEach((e) => { e.placeholder = fill(e.dataset.coursePlaceholder); });
     document.title = `${COURSE.name} – Vokabeltrainer`;
+    // The course colour; style.css picks the light or dark one.
+    if (COURSE.accent) {
+      document.documentElement.style.setProperty("--course-accent", COURSE.accent.light);
+      document.documentElement.style.setProperty("--course-accent-dark", COURSE.accent.dark);
+    }
     const icon = document.querySelector("link[rel=icon]");
     if (icon) icon.href = icon.href.replace(/🇪🇸|%F0%9F%87%AA%F0%9F%87%B8/, encodeURIComponent(COURSE.flag));
   }
