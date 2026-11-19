@@ -71,3 +71,13 @@ test("recognition ending after a pause is started again until the learner stops"
   await page.waitForTimeout(800);
   expect(await page.evaluate(() => window.__recognition.starts)).toBe(starts);   // stopped means stopped
 });
+
+test("in Brave the speaking part says so up front and runs the timer only", async ({ page, context }) => {
+  await fakeRecognition(page, "network");
+  await page.addInitScript(() => { Object.defineProperty(navigator, "brave", { value: { isBrave: () => Promise.resolve(true) } }); });
+  await openSpeaking(page, context);
+  await expect(page.locator("#speakHint")).toContainText("In Brave gibt es keine Spracherkennung");
+  await page.locator("#speakStart").click();
+  await expect(page.locator("#speakTimer")).toHaveText(/^0:0[1-9] \/ 1:00$/, { timeout: 4000 });
+  expect(await page.evaluate(() => window.__recognition.created)).toBe(0);   // no doomed attempt
+});

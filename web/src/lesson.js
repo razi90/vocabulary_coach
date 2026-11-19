@@ -307,9 +307,11 @@ const LESSON = (() => {
     start.hidden = false;
     submit.hidden = false;
     const Erkenner = window.SpeechRecognition || window.webkitSpeechRecognition;
+    // Brave ships the API but never reaches a recognition service: say so before the first try.
+    if (navigator.brave) nurUhr = true;
     el("speakHint").classList.remove("warn");
-    el("speakHint").textContent = Erkenner && !nurUhr
-      ? "Sprich frei. Was erkannt wird, erscheint unten — du kannst es vor dem Abgeben korrigieren."
+    el("speakHint").textContent = navigator.brave ? IN_BRAVE
+      : Erkenner && !nurUhr ? "Sprich frei. Was erkannt wird, erscheint unten — du kannst es vor dem Abgeben korrigieren."
       : OHNE_ERKENNUNG;
     // Speaking practice works without recognition too: the timer runs, the learner types.
     start.hidden = false;
@@ -331,6 +333,8 @@ const LESSON = (() => {
 
   const OHNE_ERKENNUNG = "Sprich laut – die Uhr läuft. Die Spracherkennung ist hier nicht verfügbar, " +
     "also tippe danach ein, was du gesagt hast.";
+  const IN_BRAVE = "In Brave gibt es keine Spracherkennung. Sprich laut – die Uhr läuft – und tippe danach ein, " +
+    "was du gesagt hast. In Chrome, Edge oder Safari erscheint der Text von selbst.";
 
   /* The browser's recognition is not on the device: Chrome sends the audio to
      Google, Safari and Edge to their own services. Brave, Opera and other
