@@ -26,6 +26,17 @@ const COACH = (() => {
   async function init(options) {
     hooks = { ...hooks, ...options };
     el("coachSetup").addEventListener("click", () => hooks.openSettings());
+    el("coachRuns").addEventListener("click", (e) => {
+      const toggle = e.target.closest("[data-run-toggle]");
+      if (toggle) {
+        const id = runs.find((r) => String(r.id) === toggle.dataset.runToggle)?.id;
+        if (expanded.has(id)) expanded.delete(id); else expanded.add(id);
+        renderRuns();
+      } else if (e.target.closest("[data-runs-all]")) {
+        showAllRuns = true;
+        renderRuns();
+      }
+    });
     wire();
     try {
       [me] = await Promise.all([STORE.call("GET", "auth/me"), loadSettings(), loadRuns()]);
@@ -76,13 +87,21 @@ const COACH = (() => {
     document.querySelectorAll("#coachOrder [data-task]").forEach((b) => { b.disabled = !ready() || running(); });
   }
 
+  /* The history stays short: the latest runs, each with the first lines of
+     its report. "Mehr anzeigen" opens the whole report and the steps. */
+  const SHOWN_RUNS = 3;
+  const expanded = new Set();
+  let showAllRuns = false;
+
   function renderRuns() {
     const box = el("coachRuns");
     if (!runs.length) {
       box.innerHTML = '<p class="coach-setup-summary">Noch keine Aufträge.</p>';
       return;
     }
-    box.innerHTML = runs.map(renderRun).join("");
+    const shown = showAllRuns ? runs : runs.slice(0, SHOWN_RUNS);
+    box.innerHTML = shown.map(renderRun).join("") + (runs.length > shown.length
+      ? `<button class="link-btn runs-more" data-runs-all>Ältere Aufträge anzeigen (${runs.length - shown.length})</button>` : "");
   }
 
   function renderRun(r) {
@@ -91,17 +110,22 @@ const COACH = (() => {
     const tokens = r.prompt_tokens + r.completion_tokens;
     const meta = [when, r.model, tokens ? `${tokens.toLocaleString("de-DE")} Tokens` : ""].filter(Boolean).join(" · ");
     const steps = (r.steps || []).map(renderStep).join("");
-    return `<div class="coach-run">
+    const open = expanded.has(r.id) || r.status === "running";
+    const hasMore = !!steps || !!r.note || (r.summary || "").length > 160 || (r.summary || "").includes("\n");
+    return `<div class="coach-run${open ? " open" : ""}">
       <div class="coach-run-head">
         <span class="coach-status ${esc(r.status)}">${esc(STATUS_LABELS[r.status] || r.status)}</span>
         ${esc(TASK_LABELS[r.task] || r.task)}
         <span class="coach-run-meta">${esc(meta)}</span>
       </div>
-      ${r.note ? `<p class="coach-run-meta" style="margin:6px 0 0;">Hinweis: ${esc(r.note)}</p>` : ""}
-      ${r.summary ? `<p class="coach-summary">${esc(r.summary)}</p>` : ""}
+      ${r.summary ? `<div class="coach-summary md">${TEXT.markdownLite(r.summary)}</div>` : ""}
       ${r.error ? `<p class="coach-error">${esc(r.error)}</p>` : ""}
-      ${steps ? `<details ${r.status === "running" ? "open" : ""}><summary class="coach-run-meta" style="cursor:pointer; margin-top:8px;">
-        ${r.steps.length} ${r.steps.length === 1 ? "Schritt" : "Schritte"}</summary><ul class="coach-steps">${steps}</ul></details>` : ""}
+      <div class="coach-run-more">
+        ${r.note ? `<p class="coach-run-meta" style="margin:8px 0 0;">Dein Hinweis: ${esc(r.note)}</p>` : ""}
+        ${steps ? `<details ${r.status === "running" ? "open" : ""}><summary class="coach-run-meta" style="cursor:pointer; margin-top:8px;">
+          ${r.steps.length} ${r.steps.length === 1 ? "Schritt" : "Schritte"} im Detail</summary><ul class="coach-steps">${steps}</ul></details>` : ""}
+      </div>
+      ${hasMore && r.status !== "running" ? `<button class="link-btn run-toggle" data-run-toggle="${esc(String(r.id))}">${open ? "Weniger anzeigen" : "Mehr anzeigen"}</button>` : ""}
     </div>`;
   }
 

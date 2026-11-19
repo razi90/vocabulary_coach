@@ -63,3 +63,13 @@ test("meanings: a bracketed note does not have to be typed", () => {
 test("esc escapes everything that could become markup", () => {
   assert.equal(TEXT.esc(`<img src=x onerror="a('b')">&`), "&lt;img src=x onerror=&quot;a(&#39;b&#39;)&quot;&gt;&amp;");
 });
+
+test("markdownLite renders the coach's report safely", () => {
+  const md = TEXT.markdownLite;
+  assert.equal(md("**Thema:** Alltag und *ser vs. estar*."), "<p><strong>Thema:</strong> Alltag und <em>ser vs. estar</em>.</p>");
+  assert.equal(md("Erst\n\n- eins\n- **zwei**"), "<p>Erst</p><ul><li>eins</li><li><strong>zwei</strong></li></ul>");
+  assert.equal(md("Zeile 1\nZeile 2"), "<p>Zeile 1<br>Zeile 2</p>");
+  assert.equal(md('<img src=x onerror="alert(1)"> **<b>x</b>**'), "<p>&lt;img src=x onerror=&quot;alert(1)&quot;&gt; <strong>&lt;b&gt;x&lt;/b&gt;</strong></p>");
+  assert.equal(md("3 * 4 = 12, a*b"), "<p>3 * 4 = 12, a*b</p>");          // no stray italics
+  assert.equal(md(""), "");
+});

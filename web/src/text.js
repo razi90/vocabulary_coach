@@ -94,7 +94,27 @@ const TEXT = (() => {
     return [...new Set(all)].filter(Boolean);
   }
 
-  return { norm, esc, editDistance, judge, isTypo, meanings };
+  /**
+   * The coach's reports are written in light Markdown. This renders exactly
+   * that much - paragraphs, "- " lists, **bold**, *italic* - and nothing else.
+   * The text is escaped first, so no markup from the model gets through.
+   */
+  function markdownLite(text) {
+    const inline = (s) => esc(s)
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/(^|[^*\w])\*(?!\s)(.+?)\*(?![*\w])/g, "$1<em>$2</em>");
+    const source = String(text == null ? "" : text).trim();
+    if (!source) return "";
+    return source.split(/\n\s*\n/).map((block) => {
+      const lines = block.split("\n");
+      if (lines.every((l) => /^\s*[-*•]\s+/.test(l))) {
+        return `<ul>${lines.map((l) => `<li>${inline(l.replace(/^\s*[-*•]\s+/, ""))}</li>`).join("")}</ul>`;
+      }
+      return `<p>${lines.map(inline).join("<br>")}</p>`;
+    }).join("");
+  }
+
+  return { norm, esc, editDistance, judge, isTypo, meanings, markdownLite };
 })();
 
 /* Usable from Node too (tests, tools). */
