@@ -276,6 +276,8 @@ const LESSON = (() => {
   let erkennung = null;
   let sekunden = 0;
   let uhr = null;
+  let aufnahmeLaeuft = false;   // the learner pressed start and not yet stop
+  let nurUhr = false;           // recognition is out of reach on this page: timer only
 
   function renderSpeaking(teil, abgabe) {
     el("partSpeaking").hidden = !teil;
@@ -305,16 +307,18 @@ const LESSON = (() => {
     start.hidden = false;
     submit.hidden = false;
     const Erkenner = window.SpeechRecognition || window.webkitSpeechRecognition;
-    el("speakHint").textContent = Erkenner
+    el("speakHint").classList.remove("warn");
+    el("speakHint").textContent = Erkenner && !nurUhr
       ? "Sprich frei. Was erkannt wird, erscheint unten — du kannst es vor dem Abgeben korrigieren."
-      : "Dieser Browser kann keine Spracherkennung. Sprich laut und tippe danach ein, was du gesagt hast.";
-    start.hidden = !Erkenner;
+      : OHNE_ERKENNUNG;
+    // Speaking practice works without recognition too: the timer runs, the learner types.
+    start.hidden = false;
 
     const pruefe = () => { submit.disabled = woerter(feld.value) < 5; };
     feld.oninput = pruefe;
     pruefe();
 
-    start.onclick = () => (erkennung ? stoppen() : starten(teil, Erkenner, feld, start, pruefe));
+    start.onclick = () => (aufnahmeLaeuft ? stoppen() : starten(teil, Erkenner, feld, start, pruefe));
 
     submit.onclick = async () => {
       stoppen();
@@ -325,12 +329,46 @@ const LESSON = (() => {
     };
   }
 
+  const OHNE_ERKENNUNG = "Sprich laut – die Uhr läuft. Die Spracherkennung ist hier nicht verfügbar, " +
+    "also tippe danach ein, was du gesagt hast.";
+
+  /* The browser's recognition is not on the device: Chrome sends the audio to
+     Google, Safari and Edge to their own services. Brave, Opera and other
+     Chromium browsers ship the API but cannot reach that service ("network",
+     although the device is online). Then the timer keeps running and the
+     learner types; the app stops retrying for this page. */
+  const KAPUTT = {
+    network: "Die Spracherkennung dieses Browsers ist nicht erreichbar (Chrome schickt die Aufnahme an Google; " +
+      "Brave, Opera oder Vivaldi lassen das nicht zu). Sprich weiter – die Uhr läuft – und tippe danach ein, was du gesagt hast.",
+    "service-not-allowed": "Die Spracherkennung ist in diesem Browser gesperrt. Sprich weiter und tippe danach ein, was du gesagt hast.",
+    "language-not-supported": "Für diese Sprache gibt es hier keine Spracherkennung. Sprich weiter und tippe danach ein, was du gesagt hast.",
+    "audio-capture": "Kein Mikrofon gefunden. Sprich trotzdem laut und tippe danach ein, was du gesagt hast.",
+  };
+
+  function hinweis(text, warn) {
+    const h = el("speakHint");
+    h.textContent = text;
+    h.classList.toggle("warn", !!warn);
+  }
+
   function starten(teil, Erkenner, feld, start, pruefe) {
+    start.textContent = "Aufnahme stoppen";
+    start.classList.add("recording");
+    aufnahmeLaeuft = true;
+    sekunden = 0;
+    uhr = setInterval(() => {
+      sekunden += 1;
+      el("speakTimer").textContent = `${zeit(sekunden)} / ${zeit(teil.minSeconds)}`;
+      el("speakTimer").style.color = sekunden >= teil.minSeconds ? "var(--good)" : "";
+    }, 1000);
+    if (!Erkenner || nurUhr) { hinweis(OHNE_ERKENNUNG); return; }
+
     erkennung = new Erkenner();
     erkennung.lang = COURSE.speechLang;
     erkennung.continuous = true;
     erkennung.interimResults = true;
     let fest = feld.value ? feld.value + " " : "";
+    let neustarts = [];
 
     erkennung.onresult = (e) => {
       let vorlaeufig = "";
@@ -343,34 +381,37 @@ const LESSON = (() => {
       pruefe();
     };
     erkennung.onerror = (e) => {
-      const grund = {
-        "not-allowed": "Zugriff aufs Mikrofon wurde abgelehnt. Tippe stattdessen ein, was du gesagt hast.",
-        "service-not-allowed": "Die Spracherkennung ist in diesem Browser gesperrt. Tippe stattdessen ein.",
-        "no-speech": "Nichts gehört — sprich etwas lauter oder näher am Mikrofon.",
-        network: "Die Spracherkennung braucht eine Internetverbindung.",
-      }[e.error] || `Spracherkennung fehlgeschlagen (${e.error}). Tippen geht immer.`;
-      const hinweis = el("speakHint");
-      hinweis.textContent = grund;
-      hinweis.classList.add("warn");
-      stoppen();
+      if (e.error === "aborted") return;
+      if (e.error === "no-speech") { hinweis("Nichts gehört — sprich etwas lauter oder näher am Mikrofon.", true); return; }
+      if (e.error === "not-allowed") {
+        hinweis("Zugriff aufs Mikrofon wurde abgelehnt. Tippe stattdessen ein, was du gesagt hast.", true);
+        stoppen();
+        return;
+      }
+      // The service is out of reach: keep the timer, stop asking the service.
+      nurUhr = true;
+      hinweis(KAPUTT[e.error] || `Spracherkennung fehlgeschlagen (${e.error}). Sprich weiter und tippe danach ein, was du gesagt hast.`, true);
+      const r = erkennung;
+      erkennung = null;
+      try { r.abort(); } catch (err) { /* egal */ }
     };
-    erkennung.onend = () => { if (erkennung) stoppen(); };
+    // Chrome ends a continuous recognition by itself after a pause. While the
+    // learner has not stopped, start it again - unless it keeps dying at once.
+    erkennung.onend = () => {
+      if (!erkennung || !aufnahmeLaeuft) return;
+      const jetzt = Date.now();
+      neustarts = neustarts.filter((t) => jetzt - t < 5000).concat(jetzt);
+      if (neustarts.length > 3) { nurUhr = true; hinweis(OHNE_ERKENNUNG, true); erkennung = null; return; }
+      try { erkennung.start(); } catch (err) { erkennung = null; }
+    };
 
     try { erkennung.start(); }
-    catch (e) { el("speakHint").textContent = "Aufnahme ließ sich nicht starten: " + e.message; erkennung = null; return; }
-
-    start.textContent = "Aufnahme stoppen";
-    start.classList.add("recording");
-    sekunden = 0;
-    uhr = setInterval(() => {
-      sekunden += 1;
-      el("speakTimer").textContent = `${zeit(sekunden)} / ${zeit(teil.minSeconds)}`;
-      el("speakTimer").style.color = sekunden >= teil.minSeconds ? "var(--good)" : "";
-    }, 1000);
+    catch (e) { nurUhr = true; erkennung = null; hinweis(OHNE_ERKENNUNG, true); }
   }
 
   function stoppen() {
-    if (erkennung) { try { erkennung.stop(); } catch (e) { /* egal */ } erkennung = null; }
+    aufnahmeLaeuft = false;
+    if (erkennung) { const r = erkennung; erkennung = null; try { r.stop(); } catch (e) { /* egal */ } }
     clearInterval(uhr);
     const start = el("speakStart");
     start.textContent = "Aufnahme starten";
