@@ -108,6 +108,8 @@ const STORE = (() => {
       source = new EventSource("/api/stream");
       Object.keys(listeners).forEach((name) =>
         source.addEventListener(name, () => listeners[name].forEach((fn) => fn())));
+      // Development only (DEV_RELOAD): a file under web/ changed. Production never sends it.
+      source.addEventListener("reload", () => location.reload());
       source.onerror = () => { source.close(); source = null; setTimeout(() => { if (!source) connect(); }, 3000); };
     };
     connect();

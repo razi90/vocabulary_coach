@@ -31,6 +31,8 @@ services:
       REGISTRATION_CODE: ${REGISTRATION_CODE:-}
       YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      # Development: open tabs reload by themselves when a file under web/ changes.
+      DEV_RELOAD: ${DEV_RELOAD:-false}
     # The frontend is mounted, not just copied: edits under web/ show up on
     # the next reload without a rebuild. Directory mount on purpose - editors
     # replace files by renaming, which a single-file mount would not see.

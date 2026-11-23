@@ -76,6 +76,18 @@ public class LiveUpdates {
     }
   }
 
+  /** An event for every open tab, whoever is logged in (development reload). */
+  void publishAll(String event) {
+    streams.values().forEach(set -> set.removeIf(emitter -> {
+      try {
+        emitter.send(SseEmitter.event().name(event).data("{}"));
+        return false;
+      } catch (IOException | IllegalStateException e) {
+        return true;
+      }
+    }));
+  }
+
   /** Proxies drop idle connections; a comment every 25 s keeps them open. */
   @Scheduled(fixedRate = 25_000)
   void ping() {

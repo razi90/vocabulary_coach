@@ -47,7 +47,8 @@ docker compose down -v          # stop and wipe all learning state
 ```
 
 Changes under `web/` need no rebuild: the folder is mounted into the
-container, a browser reload is enough.
+container, a browser reload is enough. With `DEV_RELOAD=true` in `.env` the
+open tabs reload by themselves and come back to the same screen.
 
 ## Configuration
 
@@ -61,6 +62,7 @@ container, a browser reload is enough.
 | `APP_BIND` | Interface the app listens on, default `127.0.0.1`. |
 | `COOKIE_SECURE` | `true` as soon as the app is served over HTTPS. |
 | `COACH_MAX_STEPS` | Model round trips per coach run, default 25. |
+| `DEV_RELOAD` | `true` for development: open tabs reload by themselves when a file under `web/` changes. Leave it off in production. |
 
 ## The coach
 
