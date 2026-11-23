@@ -10,11 +10,11 @@ const smallFields = (page) => page.evaluate(() =>
     .filter((e) => e.getBoundingClientRect().width > 0 && parseFloat(getComputedStyle(e).fontSize) < 16)
     .map((e) => e.id || e.name || e.className));
 
-test("the four sections sit in a tab bar at the bottom @phone", async ({ page, context }) => {
+test("the five sections sit in a tab bar at the bottom @phone", async ({ page, context }) => {
   await signUp(context);
   await openApp(page);
   const vh = page.viewportSize().height;
-  for (const id of ["home", "practice", "coach", "stats"]) {
+  for (const id of ["home", "course", "practice", "coach", "stats"]) {
     const box = await page.locator(`#tab-${id}`).boundingBox();
     expect(box.y + box.height, `${id} at the bottom`).toBeGreaterThan(vh - 90);
     expect(Math.min(box.width, box.height), `${id} big enough to tap`).toBeGreaterThanOrEqual(44);
@@ -30,7 +30,7 @@ test("no screen scrolls sideways and no field makes iOS zoom @phone", async ({ p
 
   await signUp(context, { course: "en" });
   await openApp(page);
-  for (const tab of ["home", "practice", "coach", "stats", "settings", "browse", "conj", "grammar", "packs"]) {
+  for (const tab of ["home", "course", "practice", "coach", "stats", "settings", "browse", "conj", "grammar", "packs"]) {
     await openTab(page, tab);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, `${tab} scrolls sideways`).toBeLessThanOrEqual(0);
@@ -41,7 +41,7 @@ test("no screen scrolls sideways and no field makes iOS zoom @phone", async ({ p
 test("answer fields switch off autocorrect, which would fix the learner's mistakes @phone", async ({ page, context }) => {
   await signUp(context);
   await openApp(page);
-  for (const id of ["typeInput", "conjInput", "packInput"]) {
+  for (const id of ["typeInput", "conjInput", "packInput", "checkInput"]) {
     await expect(page.locator(`#${id}`)).toHaveAttribute("autocorrect", "off");
     await expect(page.locator(`#${id}`)).toHaveAttribute("autocapitalize", "off");
   }

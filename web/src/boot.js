@@ -1,12 +1,12 @@
 /* Startup: find out which course the learner is in, load that course's
-   content (COURSE, DECK, CONJUGATE, GRAMMAR), then the app.
+   content (COURSE, DECK, CONJUGATE, GRAMMAR, COURSE_PATH), then the app.
 
    The content files define globals the app reads while it starts, so they
    have to run first and in order - hence one script after the other. */
 (() => {
   const COURSES = ["es", "en"];
-  const APP_SCRIPTS = ["src/srs.js", "src/packs.js", "src/drill.js", "src/lesson.js", "src/coach.js", "src/today.js",
-    "src/insights.js", "src/speech.js", "src/wordsheet.js", "src/app.js"];
+  const APP_SCRIPTS = ["src/srs.js", "src/packs.js", "src/drill.js", "src/lesson.js", "src/coach.js",
+    "src/insights.js", "src/speech.js", "src/wordsheet.js", "src/path.js", "src/dictation.js", "src/pathui.js", "src/app.js"];
 
   function load(src) {
     return new Promise((resolve, reject) => {
@@ -41,7 +41,7 @@
     if (!res.ok) throw new Error(`Server antwortet mit ${res.status}`);
     const me = await res.json();
     const course = COURSES.includes(me.course) ? me.course : "es";
-    for (const file of ["course", "deck", "conjugate", "grammar"]) await load(`src/courses/${course}/${file}.js`);
+    for (const file of ["course", "deck", "conjugate", "grammar", "path"]) await load(`src/courses/${course}/${file}.js`);
     applyCourse();
     for (const src of APP_SCRIPTS) await load(src);
   }

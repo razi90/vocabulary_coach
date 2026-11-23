@@ -857,4 +857,9 @@ const DECK = [
   { term: "outdoor screening", de: "das Public Viewing", pos: "noun", level: "B1", topic: "Falsche Freunde", ex: "We watched the final at an outdoor screening.", exDe: "Wir haben das Finale beim Public Viewing geschaut." },
   { term: "old-timer", de: "der alte Hase (nicht: der Oldtimer)", pos: "noun", level: "B1", topic: "Falsche Freunde", ex: "He's an old-timer in the company.", exDe: "Er ist ein alter Hase in der Firma." },
   { term: "vintage car", de: "der Oldtimer", pos: "noun", level: "B1", topic: "Falsche Freunde", ex: "He drives a vintage car.", exDe: "Er fährt einen Oldtimer." },
+  // --- the first words of everyday conversation (used by the lesson units) ---
+  { term: "hi", de: "hallo|hi", pos: "phrase", level: "A1", topic: "Redemittel", ex: "Hi, how are you?", exDe: "Hallo, wie geht's?" },
+  { term: "name", de: "der Name", pos: "noun", level: "A1", topic: "Menschen", ex: "Can you spell your name, please?", exDe: "Kannst du bitte deinen Namen buchstabieren?" },
+  { term: "day", de: "der Tag", pos: "noun", level: "A1", topic: "Kalender", ex: "It was a long day at work.", exDe: "Es war ein langer Tag bei der Arbeit." },
+  { term: "from", de: "aus|von", pos: "prep", level: "A1", topic: "Präpositionen", ex: "She's from Italy.", exDe: "Sie kommt aus Italien." },
 ];

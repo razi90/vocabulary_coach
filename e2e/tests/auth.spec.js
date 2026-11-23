@@ -37,7 +37,7 @@ test("register, pick English as the first step, log out, log back in @phone", as
   await page.locator("#welcomeNext").click();
   await expect(page).toHaveTitle("English – Vokabeltrainer");
   await appReady(page);
-  await expect(page.locator('.welcome-step[data-step="2"] h1')).toHaveText("Jeden Tag ein bisschen Englisch.");
+  await expect(page.locator('.welcome-step[data-step="2"] h1')).toHaveText("Wo stehst du?");
   await page.locator("#welcomeSkip").click();
   await expect(page.locator("#view-home")).toBeVisible();
 

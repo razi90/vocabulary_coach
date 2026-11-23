@@ -25,7 +25,10 @@ Structure and data model: [ARCHITECTURE.md](ARCHITECTURE.md).
 - Schema changes go in a new Flyway migration; never edit an existing one.
 - Exercise validation exists twice: `web/src/packs.js` (browser) and
   `PackValidator.java` (server). Change both, and extend `PackValidatorTest`.
-- Course content lives in `web/src/courses/<course>/`. After editing a
+- Course content lives in `web/src/courses/<course>/`. `path.js` there
+  groups the deck into units by level and topic and holds the grammar
+  explanations; a new deck word needs a unit (`node --test web/test/` says
+  which level and topic is uncovered). After editing a
   `deck.js`, `conjugate.js` or `grammar.js`, run `node tools/export-content.js`
   and commit the regenerated `content.json`. Deck terms are card ids: they must
   be unique within a course.
@@ -36,7 +39,7 @@ Structure and data model: [ARCHITECTURE.md](ARCHITECTURE.md).
   `docs/superpowers/specs/2026-11-19-graphit-redesign-design.md`): colours only
   through the tokens in `style.css`, icons from the SVG sprite in `index.html`
   (no emoji as icons), one primary button per screen. Logic that decides
-  *what* to show goes in a pure module (`today.js`, `insights.js`) with a test
+  *what* to show goes in a pure module (`path.js`, `insights.js`) with a test
   in `web/test/`.
 - The coach's behavior lives in `backend/src/main/resources/coach/`:
   `system-prompt.md` (shared instructions with placeholders), `course-<id>.md`

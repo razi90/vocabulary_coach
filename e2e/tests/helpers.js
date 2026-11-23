@@ -86,8 +86,8 @@ async function openTab(page, id) {
     await page.locator("#tab-practice").click();
     await page.locator(`#view-practice [data-open="${id}"]`).click();
   } else if (id === "lesson") {
-    await page.locator("#tab-home").click();
-    await page.locator('[data-today="lesson"]').click();
+    await page.locator("#tab-practice").click();
+    await page.locator('#view-practice [data-open="lesson"]').click();
   } else {
     await page.locator(`#tab-${id}`).click();
   }
@@ -100,4 +100,9 @@ async function switchCourse(page, id) {
   await page.locator(`#courseMenu [data-course="${id}"]`).click();
 }
 
-module.exports = { switchCourse, api, signUp, seedTypingDrill, openApp, appReady, openTab, todayKey, PASSWORD };
+/** Starts the vocabulary session from Heute's plan, whatever step comes first. */
+async function startWords(page) {
+  await page.locator('#planList [data-kind="vocab"]').click();
+}
+
+module.exports = { startWords, switchCourse, api, signUp, seedTypingDrill, openApp, appReady, openTab, todayKey, PASSWORD };

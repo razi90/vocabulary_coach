@@ -35,7 +35,8 @@ async function openSpeaking(page, context) {
   await page.route("**/api/lesson", (r) => (r.request().method() === "GET" ? r.fulfill({ json: LESSON }) : r.continue()));
   await signUp(context, { course: "es" });
   await openApp(page);
-  await page.locator('[data-today="lesson"]').click();
+  await page.locator("#tab-practice").click();
+  await page.locator('#view-practice [data-open="lesson"]').click();
   await expect(page.locator("#partSpeaking")).toBeVisible();
 }
 

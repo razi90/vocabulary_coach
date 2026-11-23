@@ -1,5 +1,5 @@
 const { test, expect } = require("@playwright/test");
-const { api, signUp, openApp, appReady, switchCourse } = require("./helpers");
+const { api, signUp, openApp, appReady, switchCourse, startWords } = require("./helpers");
 
 /** The X-Course header of every /api request the page makes. */
 function courseHeaders(page) {
@@ -58,7 +58,7 @@ test("a tab left open on the old course keeps writing into its own course", asyn
   await switchCourse(laptop, "en");
   await expect(laptop).toHaveTitle("English – Vokabeltrainer");
 
-  await phone.locator("#startSessionBtn").click();
+  await startWords(phone);
   const term = (await phone.locator("#flipFront").textContent()).trim();
   await phone.locator("#flashcard").click();
   const logged = phone.waitForResponse((r) => r.url().endsWith("/api/events") && r.request().method() === "POST");

@@ -1,7 +1,7 @@
 /* The four features from the redesign: welcome, word detail, pronunciation,
    practice calendar - plus the settings that moved. */
 const { test, expect } = require("@playwright/test");
-const { api, signUp, openApp, openTab, seedTypingDrill } = require("./helpers");
+const { api, signUp, openApp, openTab, seedTypingDrill, startWords } = require("./helpers");
 
 const vocab = (id, ok, typed, expected, dir = "es-de") =>
   ({ t: Date.now(), kind: "vocab", id, dir, mode: "type", grade: ok ? 3 : 1, ok, typed, expected });
@@ -30,7 +30,7 @@ test.describe("welcome", () => {
     await expect(page.locator("#welcomeCourses .choice")).toHaveText(["Spanisch", "Englisch"]);
     await page.locator("#welcomeNext").click();
 
-    await expect(page.locator('.welcome-step[data-step="2"] h1')).toHaveText("Jeden Tag ein bisschen Englisch.");
+    await expect(page.locator('.welcome-step[data-step="2"] h1')).toHaveText("Wo stehst du?");
     await page.locator("#welcomeNext").click();
     await page.locator('#welcomeGoals .choice[data-goal="40"]').click();
     await expect(page.locator('#welcomeGoals .choice[data-goal="40"]')).toHaveAttribute("aria-checked", "true");
@@ -111,7 +111,7 @@ test.describe("pronunciation", () => {
     await signUp(context, { course: "es" });
     await api(context, "PUT", "state", { ...(await api(context, "GET", "snapshot")).state, direction: "de-es" });
     await openApp(page);
-    await page.locator("#startSessionBtn").click();
+    await startWords(page);
     await expect(page.locator("#mode-flip")).toBeVisible();
     await expect(page.locator("#cardSpeak")).toBeHidden();
     await page.locator("#flashcard").click();
@@ -163,7 +163,7 @@ test("the session end lists the missed word and opens it", async ({ page, contex
   await signUp(context, { course: "es" });
   await seedTypingDrill(context, ["el perro"]);
   await openApp(page);
-  await page.locator("#startSessionBtn").click();
+  await startWords(page);
   await page.locator("#typeInput").fill("die Katze");
   await page.locator("#typeCheckBtn").click();
   await page.locator("#sessionContinueBtn").click();

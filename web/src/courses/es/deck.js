@@ -669,4 +669,17 @@ const DECK = [
   { term: "tener miedo", de: "Angst haben", pos: "phrase", level: "A2", topic: "Redemittel", ex: "Tiene miedo a las alturas.", exDe: "Er hat Höhenangst." },
   { term: "hacer caso", de: "beachten|zuhören", pos: "phrase", level: "B1", topic: "Redemittel", ex: "Nadie me hace caso.", exDe: "Niemand hört mir zu." },
   { term: "ponerse de acuerdo", de: "sich einigen", pos: "phrase", level: "B1", topic: "Redemittel", ex: "No conseguimos ponernos de acuerdo.", exDe: "Wir konnten uns nicht einigen." },
+  // --- the first words of everyday conversation (used by the lesson units) ---
+  { term: "hola", de: "hallo", pos: "phrase", level: "A1", topic: "Redemittel", ex: "¡Hola! ¿Qué tal?", exDe: "Hallo! Wie geht's?" },
+  { term: "buenos días", de: "guten Morgen|guten Tag", pos: "phrase", level: "A1", topic: "Redemittel", ex: "Buenos días, señora López.", exDe: "Guten Morgen, Frau López." },
+  { term: "gracias", de: "danke", pos: "phrase", level: "A1", topic: "Redemittel", ex: "Muchas gracias por la cena.", exDe: "Vielen Dank für das Abendessen." },
+  { term: "por favor", de: "bitte", pos: "phrase", level: "A1", topic: "Redemittel", ex: "Dos cafés, por favor.", exDe: "Zwei Kaffee, bitte." },
+  { term: "hasta luego", de: "bis später|tschüss", pos: "phrase", level: "A1", topic: "Redemittel", ex: "Hasta luego, nos vemos mañana.", exDe: "Bis später, wir sehen uns morgen." },
+  { term: "encantado", de: "freut mich|sehr erfreut", pos: "phrase", level: "A1", topic: "Redemittel", ex: "Encantado de conocerte.", exDe: "Freut mich, dich kennenzulernen." },
+  { term: "llamarse", de: "heißen", pos: "verb", level: "A1", topic: "Verben", ex: "Me llamo Carmen, ¿y tú?", exDe: "Ich heiße Carmen, und du?" },
+  { term: "algo", de: "etwas", pos: "pron", level: "A1", topic: "Pronomen", ex: "¿Quieres algo de beber?", exDe: "Möchtest du etwas trinken?" },
+  { term: "la naranja", de: "die Orange|die Apfelsine", pos: "noun", level: "A1", topic: "Essen", ex: "Me gusta el zumo de naranja.", exDe: "Ich mag Orangensaft." },
+  { term: "el euro", de: "der Euro", pos: "noun", level: "A1", topic: "Geld", ex: "La entrada cuesta doce euros.", exDe: "Der Eintritt kostet zwölf Euro." },
+  { term: "el kilo", de: "das Kilo", pos: "noun", level: "A1", topic: "Einkaufen", ex: "Un kilo de tomates, por favor.", exDe: "Ein Kilo Tomaten, bitte." },
+  { term: "el cambio", de: "das Wechselgeld", pos: "noun", level: "A1", topic: "Geld", ex: "Aquí tiene el cambio.", exDe: "Hier ist Ihr Wechselgeld." },
 ];

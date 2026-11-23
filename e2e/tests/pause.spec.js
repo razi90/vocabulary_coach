@@ -1,6 +1,6 @@
 /* Leaving a drill pauses it; the trainer then offers to continue. */
 const { test, expect } = require("@playwright/test");
-const { api, signUp, openApp, openTab } = require("./helpers");
+const { api, signUp, openApp, openTab, startWords } = require("./helpers");
 
 /** Turns and grades the current flashcard. */
 async function learnCard(page) {
@@ -12,7 +12,7 @@ test("vocabulary: pause with ✕, survive a reload, continue where it was @phone
   page.on("dialog", () => { throw new Error("leaving a drill must not ask"); });
   await signUp(context, { course: "es" });
   await openApp(page);
-  await page.locator("#startSessionBtn").click();
+  await startWords(page);
   const total = await page.locator("#sessionTotal").textContent();
   await learnCard(page);
   await learnCard(page);
@@ -36,7 +36,7 @@ test("vocabulary: pause with ✕, survive a reload, continue where it was @phone
 test("vocabulary: a new session on request", async ({ page, context }) => {
   await signUp(context, { course: "es" });
   await openApp(page);
-  await page.locator("#startSessionBtn").click();
+  await startWords(page);
   await learnCard(page);
   await page.locator("#exitSessionBtn").click();
   await page.locator("#restartSessionBtn").click();
@@ -58,8 +58,8 @@ test("grammar: switching sections keeps the drill; continue or start over", asyn
 
   await page.locator("#tab-stats").click();                 // just leave
   await expect(page.locator("#view-stats")).toBeVisible();
-  await openTab(page, "home");
-  await expect(page.locator('[data-today="resume"][data-id^="grammar:"]')).toContainText(`1 von ${total}`);
+  await openTab(page, "practice");
+  await expect(page.locator('#practicePaused [data-resume^="grammar:"]')).toContainText(`1 von ${total}`);
 
   await openTab(page, "grammar");
   await expect(page.locator("#startGrammarBtn")).toHaveText(`Fortsetzen · 1 von ${total}`);
@@ -87,8 +87,8 @@ test("an exercise set paused halfway is offered on Heute and in the list", async
   await page.locator("#exitPackBtn").click();
 
   await expect(page.locator(".pack-start")).toHaveText(/^Fortsetzen · 1 von \d+$/);
-  await openTab(page, "home");
-  const row = page.locator('[data-today="resume"][data-id="pack:since-for"]');
+  await openTab(page, "practice");
+  const row = page.locator('#practicePaused [data-resume="pack:since-for"]');
   await expect(row).toContainText("since oder for fortsetzen");
   await row.click();
   await expect(page.locator("#packIdx")).toHaveText("2");
@@ -97,7 +97,7 @@ test("an exercise set paused halfway is offered on Heute and in the list", async
 test("yesterday's paused session is not offered any more", async ({ page, context }) => {
   await signUp(context, { course: "es" });
   await openApp(page);
-  await page.locator("#startSessionBtn").click();
+  await startWords(page);
   await learnCard(page);
   await page.evaluate(() => {
     const key = "voco:paused:es";
@@ -105,7 +105,7 @@ test("yesterday's paused session is not offered any more", async ({ page, contex
     localStorage.setItem(key, JSON.stringify({ ...saved, day: "2000-01-01" }));
   });
   await openApp(page);
-  await expect(page.locator("#startSessionBtn")).toHaveText(/Sitzung starten|Weiterlernen/);
+  await expect(page.locator("#startSessionBtn")).not.toHaveText(/Fortsetzen/);
   await expect(page.locator("#restartSessionBtn")).toBeHidden();
 });
 
@@ -138,9 +138,9 @@ test("two exercise sets keep their own paused place @phone", async ({ page, cont
   await expect(card("Por oder para").locator(".pack-start")).toHaveText("Fortsetzen · 1 von 4");
   await expect(card("Ser oder estar").locator(".pack-start")).toHaveText("Fortsetzen · 2 von 4");
   await openApp(page);                                      // both survive a reload
-  await openTab(page, "home");
-  await expect(page.locator('[data-today="resume"][data-id^="pack:"]')).toHaveCount(2);
-  await page.locator('[data-today="resume"][data-id="pack:por-para"]').click();
+  await openTab(page, "practice");
+  await expect(page.locator('#practicePaused [data-resume^="pack:"]')).toHaveCount(2);
+  await page.locator('#practicePaused [data-resume="pack:por-para"]').click();
   await expect(page.locator("#packIdx")).toHaveText("2");
 });
 
@@ -152,15 +152,12 @@ test("opening a set and leaving without an answer is not a pause", async ({ page
   await page.locator(".pack-start").click();
   await page.locator("#exitPackBtn").click();
   await expect(page.locator(".pack-start")).toHaveText("Üben");
-  await openTab(page, "home");
-  await expect(page.locator('[data-today="resume"]')).toHaveCount(0);
+  await openTab(page, "practice");
+  await expect(page.locator("#practicePaused [data-resume]")).toHaveCount(0);
 });
 
-test("a grammar topic from Heute does not replace a paused grammar session", async ({ page, context }) => {
+test("a grammar topic from its unit does not replace a paused grammar session", async ({ page, context }) => {
   await signUp(context, { course: "en" });
-  // A recent mistake puts this topic on Heute.
-  await api(context, "PUT", "state", { ...(await api(context, "GET", "snapshot")).state,
-    grammarCards: { sf1: { attempts: 1, correct: 0, wrongCount: 1, lastResult: "wrong", lastAt: Date.now() } } });
   await openApp(page);
   await openTab(page, "grammar");
   await page.locator("#startGrammarBtn").click();
@@ -168,12 +165,13 @@ test("a grammar topic from Heute does not replace a paused grammar session", asy
   await page.locator("#grammarContinueBtn").click();
   await page.locator("#exitGrammarBtn").click();
 
-  await openTab(page, "home");
-  await page.locator('[data-today="grammar"][data-id="since_for"]').click();
+  await page.locator("#tab-course").click();
+  await page.locator('#courseRoute [data-unit="a2-health"]').click();      // since vs. for
+  await page.locator("#unitSteps [data-focus-practice]").click();
   await page.locator("#grammarGrid .mc-option").first().click();
   await page.locator("#grammarContinueBtn").click();
   await page.locator("#exitGrammarBtn").click();
 
-  await openTab(page, "home");
-  await expect(page.locator('[data-today="resume"][data-id^="grammar:"]')).toHaveCount(2);
+  await openTab(page, "practice");
+  await expect(page.locator('#practicePaused [data-resume^="grammar:"]')).toHaveCount(2);
 });

@@ -90,11 +90,13 @@ test("the word list finds a word with its meanings", async ({ page, context }) =
   await expect(row.locator(".bi-de")).toHaveText("schließlich, irgendwann");
 });
 
-test("without a lesson Heute lists none and says what else there is", async ({ page, context }) => {
+test("Heute is only today's unit; without a lesson Üben lists none", async ({ page, context }) => {
   await signUp(context);
   await openApp(page);
-  await expect(page.locator('[data-today="lesson"]')).toHaveCount(0);
-  await expect(page.locator("#todayEmpty")).toBeVisible();
+  await expect(page.locator("#view-home .list-row")).toHaveCount(0);       // no list of extras
+  await page.locator("#tab-practice").click();
+  await expect(page.locator('#view-practice [data-open="lesson"]')).toHaveCount(0);
+  await expect(page.locator("#practicePausedBlock")).toBeHidden();
 });
 
 test("coach settings: a key is required, and a stored key does not move to another provider", async ({ page, context }) => {

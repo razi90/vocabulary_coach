@@ -14,7 +14,9 @@ tense choice, word order, and words that look German but are not.
 
 **Grammar categories:** `simple_progressive`, `perfect_past`, `since_for`,
 `some_any`, `prepositions` (in/on/at), `false_friends`, `gerund_infinitive`,
-`conditionals` (if-clauses).
+`conditionals` (if-clauses), `questions_do`, `articles` (a/an/the),
+`possessives`, `adverbs_adjectives`, `there_is`, `can_ability`, `much_many`,
+`comparatives`, `must_have_to`, `relatives`, `used_to`, `passive`.
 
 **Typical German mistakes - build exercises against them:**
 

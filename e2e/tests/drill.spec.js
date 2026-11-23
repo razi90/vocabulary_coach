@@ -1,10 +1,10 @@
 const { test, expect } = require("@playwright/test");
-const { api, signUp, seedTypingDrill, openApp } = require("./helpers");
+const { api, signUp, seedTypingDrill, openApp, startWords } = require("./helpers");
 
 test("a new learner learns the first flashcard and it is recorded @phone", async ({ page, context }) => {
   await signUp(context, { course: "es" });
   await openApp(page);
-  await page.locator("#startSessionBtn").click();
+  await startWords(page);
 
   await expect(page.locator("#mode-flip")).toBeVisible();
   const front = await page.locator("#flipFront").textContent();
@@ -26,7 +26,7 @@ test("typing the German meaning without its bracketed note counts as right", asy
   await signUp(context, { course: "en" });
   await seedTypingDrill(context, ["ago"]);              // de: "vor (zeitlich)"
   await openApp(page);
-  await page.locator("#startSessionBtn").click();
+  await startWords(page);
 
   await expect(page.locator("#mode-type")).toBeVisible();
   await expect(page.locator("#typePrompt")).toHaveText("ago");
@@ -39,7 +39,7 @@ test("a curly apostrophe from a phone keyboard counts as right @phone", async ({
   await signUp(context, { course: "en" });
   await seedTypingDrill(context, ["I'm afraid"], { direction: "de-es" });   // German prompt, English answer
   await openApp(page);
-  await page.locator("#startSessionBtn").click();
+  await startWords(page);
 
   await expect(page.locator("#typePrompt")).toHaveText("leider");
   await page.locator("#typeInput").fill("I’m afraid");
@@ -51,7 +51,7 @@ test("a typo is almost right and shows the spelling, a wrong word is wrong", asy
   await signUp(context, { course: "es" });
   await seedTypingDrill(context, ["la casa", "el perro"]);
   await openApp(page);
-  await page.locator("#startSessionBtn").click();
+  await startWords(page);
 
   for (let i = 0; i < 2; i++) {
     const prompt = (await page.locator("#typePrompt").textContent()).trim();

@@ -18,8 +18,8 @@ function load(...files) {
 }
 
 /** The full content of one course, as the page loads it. */
-const course = (id) => load("text.js", ...["course", "deck", "conjugate", "grammar"]
-  .map((f) => `courses/${id}/${f}.js`));
+const course = (id) => load("text.js", ...["course", "deck", "conjugate", "grammar", "path"]
+  .map((f) => `courses/${id}/${f}.js`), "path.js");
 
 const COURSES = fs.readdirSync(path.join(SRC, "courses"));
 

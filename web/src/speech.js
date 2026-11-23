@@ -36,6 +36,28 @@ const SPEECH = (() => {
     return true;
   }
 
+  /**
+   * Reads several texts one after another (a dialogue). onLine(i) is called
+   * as line i starts, and with -1 when the last one ends or reading stops.
+   */
+  function speakAll(texts, onLine = () => {}) {
+    const voice = voiceFor(COURSE.speechLang);
+    if (!synth || !voice || !texts.length) return false;
+    synth.cancel();
+    texts.forEach((text, i) => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.voice = voice;
+      u.lang = voice.lang;
+      u.rate = 0.9;
+      u.onstart = () => onLine(i);
+      if (i === texts.length - 1) u.onend = () => onLine(-1);
+      u.onerror = () => onLine(-1);
+      synth.speak(u);
+    });
+    return true;
+  }
+  function stopSpeaking() { if (synth) synth.cancel(); }
+
   function refresh() {
     voices = synth ? synth.getVoices() : [];
     updateButtons();
@@ -56,5 +78,5 @@ const SPEECH = (() => {
     }, true);
   }
 
-  return { available, speak, updateButtons };
+  return { available, speak, speakAll, stopSpeaking, updateButtons };
 })();

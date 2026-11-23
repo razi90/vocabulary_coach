@@ -76,8 +76,11 @@
       return c && c.state !== "new" && c.due <= now;
     });
   }
+  /* New words come from the learner's current unit of the course path only
+     (path.js), in deck order. */
+  const DECK_BY_TERM = new Map(DECK.map((d) => [d.term, d]));
   function allFreshCards() {
-    return DECK.filter((d) => !cards[d.term] || cards[d.term].state === "new");
+    return PATHUI.freshTerms().map((t) => DECK_BY_TERM.get(t)).filter(Boolean);
   }
   // The daily limit for new cards equals the daily goal, but a click lifts it.
   function cardsNewAvailable() {
@@ -124,12 +127,13 @@
      stays marked while a trainer or the lesson is open. Settings belong to
      none: they open from the course button. */
   const SECTION_OF = {
-    lesson: "home", session: "home", done: "home",
+    lesson: "practice", session: "home", done: "home",
+    unit: "course", guide: "course", check: "course", dialog: "course", task: "course",
     browse: "practice", conj: "practice", grammar: "practice", packs: "practice",
     conjsession: "practice", grammarsession: "practice", packsession: "practice",
     settings: null, welcome: null,
   };
-  const SECTION_TITLES = { home: "Heute", practice: "Üben", coach: "Coach", stats: "Fortschritt", settings: "Einstellungen" };
+  const SECTION_TITLES = { home: "Heute", course: "Kurs", practice: "Üben", coach: "Coach", stats: "Fortschritt", settings: "Einstellungen" };
 
   let currentView = "home";
 
@@ -144,10 +148,13 @@
       if (on) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current");
     });
     el("topbarSection").textContent = SECTION_TITLES[section || name] || "";
-    document.body.classList.toggle("welcoming", name === "welcome");
+    // No navigation during the welcome and the placement that follows it.
+    document.body.classList.toggle("welcoming", name === "welcome" || (name === "check" && PATHUI.isPlacing()));
     if (previous !== name) window.scrollTo(0, 0);
 
     if (name === "browse") renderBrowse();
+    if (name === "course") PATHUI.renderCourse();
+    if (name === "unit") PATHUI.renderUnit();
     if (name === "stats") renderStats();
     if (name === "home") { el("tab-home").classList.remove("tab-alert"); renderHome(); }
     if (name === "practice") { el("tab-practice").classList.remove("tab-alert"); renderPractice(); }
@@ -158,6 +165,7 @@
     if (name === "coach") { el("tab-coach").classList.remove("tab-alert"); COACH.render(); }
     if (name === "settings") { COACH.render(); renderSyncStatus(); }
     // Nobody wants the video to keep playing while they drill vocabulary.
+    if (name !== "dialog" && name !== "task") PATHUI.stopLesson();
     if (name !== "lesson") { LESSON.stoppen(); const f = el("listeningFrame"); if (f && f.src) f.src = f.src; }
   }
   /* After a reload the tab should carry on where you were.
@@ -168,7 +176,7 @@
      of jumping into an empty session, fall back to the overview. */
   const VIEW_FALLBACK = {
     session: "home", conjsession: "conj", grammarsession: "grammar",
-    packsession: "packs", done: "home",
+    packsession: "packs", done: "home", check: "unit",
   };
 
   function merkePosition() {
@@ -176,6 +184,7 @@
       sessionStorage.setItem(POSITION_KEY, JSON.stringify({
         view: VIEW_FALLBACK[currentView] || currentView,
         scrollY: Math.round(window.scrollY),
+        path: PATHUI.position(),          // which unit, explanation or task is open
       }));
     } catch (e) { /* privater Modus: dann eben ohne */ }
   }
@@ -185,7 +194,9 @@
     try { saved = JSON.parse(sessionStorage.getItem(POSITION_KEY) || "null"); }
     catch (e) { return; }
     if (!saved || !views[saved.view]) return;
-    if (saved.view !== currentView) showView(saved.view);
+    if (PATHUI.restore(saved.view, saved.path)) { /* the path screens open themselves */ }
+    else if (["unit", "guide", "dialog", "task"].includes(saved.view)) showView("course");
+    else if (saved.view !== currentView) showView(saved.view);
     // Scroll only after painting, otherwise the page is still too short.
     requestAnimationFrame(() => window.scrollTo(0, saved.scrollY || 0));
   }
@@ -246,11 +257,13 @@
 
   const icon = (name, cls = "icon") => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 
+  /* Heute: the current unit, today's plan in order, one button for the first
+     open step. The plan comes from path.js; vocabulary is always step one. */
+  let homeNext = null;
+  function vocabCounts() { return { due: cardsDueNow().length, fresh: cardsNewAvailable().length }; }
+
   function renderHome() {
-    const due = cardsDueNow().length;
-    const fresh = cardsNewAvailable().length;
-    el("dueCount").textContent = due;
-    el("newCount").textContent = fresh;
+    const { due, fresh } = vocabCounts();
     el("totalCount").textContent = DECK.length;
     el("streakCount").textContent = state.streak;
     el("homeSub").textContent = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
@@ -266,78 +279,75 @@
     el("dailyGoal").value = goal;
     el("dailyGoalDisplay").textContent = goal;
 
+    PATHUI.renderBanner();
+    const { steps } = PATHUI.plan({ due, fresh });
+    if (isPaused(session)) steps[0] = { ...steps[0], meta: `Pausiert · ${session.idx} von ${session.queue.length}`, done: false };
+    const next = PATH.nextStep(steps);
+    homeNext = next;
+    el("planList").innerHTML = steps.map((st, i) => `<li>
+        <button class="plan-step${st.done ? " done" : ""}${st.later ? " later" : ""}${st === next ? " next" : ""}" data-plan="${i}" data-kind="${st.kind}">
+          <span class="plan-num" aria-hidden="true">${st.done ? icon("check", "icon sm") : i + 1}</span>
+          <span class="grow"><span class="title">${esc(st.title)}</span><span class="meta">${esc(st.meta)}</span></span>
+          ${st.done ? '<span class="sr-only">erledigt</span>' : icon("chev", "icon chev")}
+        </button></li>`).join("");
+    homeSteps = steps;
+
     const startBtn = el("startSessionBtn");
     const moreWordsWaiting = allFreshCards().length > fresh;
     const keepLearningBtn = el("keepLearningBtn");
     el("restartSessionBtn").hidden = !isPaused(session);
+    keepLearningBtn.hidden = !(moreWordsWaiting && fresh === 0 && !isPaused(session));
+    startBtn.disabled = false;
     if (isPaused(session)) {
-      startBtn.disabled = false;
       startBtn.textContent = `Fortsetzen · ${session.idx} von ${session.queue.length}`;
       el("sessionHint").textContent = "Deine Sitzung ist pausiert.";
-      keepLearningBtn.hidden = true;
-    } else if (due + fresh === 0) {
+    } else if (!next) {
       startBtn.disabled = true;
       startBtn.textContent = "Für heute erledigt";
       el("sessionHint").textContent = moreWordsWaiting
         ? "Das Tageslimit für neue Wörter ist erreicht."
         : "Morgen gibt es neue Wiederholungen.";
-      keepLearningBtn.hidden = !moreWordsWaiting;
-    } else {
-      startBtn.disabled = false;
+    } else if (next.kind === "vocab") {
       startBtn.textContent = today.reviewed ? "Weiterlernen" : "Sitzung starten";
-      el("sessionHint").textContent = `${due} fällig · ${fresh} neu`;
-      keepLearningBtn.hidden = true;
+      el("sessionHint").textContent = "";
+    } else {
+      startBtn.textContent = PATHUI.stepLabel(next);
+      el("sessionHint").textContent = moreWordsWaiting && fresh === 0 ? "Das Tageslimit für neue Wörter ist erreicht." : "";
     }
-    renderToday();
   }
+  let homeSteps = [];
+  function runPlanStep(step) {
+    if (!step) return;
+    if (step.kind === "vocab") { if (!startSession()) renderHome(); }
+    else PATHUI.runStep(step);
+  }
+  el("planList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-plan]");
+    if (b) runPlanStep(homeSteps[Number(b.dataset.plan)]);
+  });
 
-  // "Außerdem heute": the lesson, new exercise sets, grammar with recent mistakes.
-  function todayList() {
-    return TODAY.items({
-      lesson: LESSON.current(), packs, events,
-      grammarCards: state.grammarCards, grammarItems: GRAMMAR.ITEMS, grammarLabels: GRAMMAR.CATEGORY_LABELS,
-    });
-  }
-  const TODAY_ICONS = { lesson: "headphones", pack: "coach", grammar: "grammar" };
-  function todayRow(it) {
-    return `<button class="list-row" data-today="${it.kind}" data-id="${esc(it.id || "")}">
-      <span class="row-icon">${icon(it.icon || TODAY_ICONS[it.kind])}</span>
-      <span class="grow"><span class="title">${esc(it.title)}</span><span class="meta">${esc(it.meta)}</span></span>
-      ${it.done ? icon("check", "icon chev ok") : icon("chev", "icon chev")}</button>`;
-  }
-  /** Paused verb, grammar and exercise drills, to continue from Heute. */
+  /** Drills left in the middle (verbs, grammar topics, coach sets): Üben lists them under "Angefangen". */
   function pausedRows() {
     const rows = [];
-    if (isPaused(conjSession)) rows.push({ kind: "resume", id: "conj", icon: "verb", title: "Verben fortsetzen", meta: `${conjSession.idx} von ${conjSession.queue.length}` });
+    if (isPaused(conjSession)) rows.push({ id: "conj", icon: "verb", title: "Verben fortsetzen", meta: `${conjSession.idx} von ${conjSession.queue.length}` });
     allPausedGrammar().forEach((g) => {
       const topics = g.categories.length === GRAMMAR.CATEGORIES.length ? "alle Themen"
         : g.categories.map((c) => GRAMMAR.CATEGORY_LABELS[c] || c).join(", ");
-      rows.push({ kind: "resume", id: `grammar:${grammarKey(g.categories)}`, icon: "grammar",
+      rows.push({ id: `grammar:${grammarKey(g.categories)}`, icon: "grammar",
         title: "Grammatik fortsetzen", meta: `${topics} · ${g.idx} von ${g.queue.length}` });
     });
-    allPausedPacks().forEach((p) => rows.push({ kind: "resume", id: `pack:${p.meta.packId}`, icon: "coach",
+    allPausedPacks().forEach((p) => rows.push({ id: `pack:${p.meta.packId}`, icon: "coach",
       title: `${p.meta.title} fortsetzen`, meta: `${p.idx} von ${p.items.length}` }));
     return rows;
   }
-  function renderToday() {
-    const paused = pausedRows();
-    const list = [...paused, ...todayList().filter((it) => !(it.kind === "pack" && pausedPack(it.id)))];
-    el("todayList").hidden = !list.length;
-    el("todayEmpty").hidden = list.length > 0;
-    el("todayList").innerHTML = list.map(todayRow).join("");
-  }
-  function openTodayItem(kind, id) {
-    if (kind === "resume") {
-      if (id === "conj") startConj();
-      else if (id.startsWith("grammar:")) startGrammar(id.slice(8).split(","));
-      else if (id.startsWith("pack:")) { const p = packs.find((x) => x.id === id.slice(5)); if (p) startPack(p); }
-    } else if (kind === "lesson") showView("lesson");
-    else if (kind === "pack") { const p = packs.find((x) => x.id === id); if (p) startPack(p); }
-    else if (kind === "grammar") startGrammar([id]);
+  function resume(id) {
+    if (id === "conj") startConj();
+    else if (id.startsWith("grammar:")) startGrammar(id.slice(8).split(","));
+    else if (id.startsWith("pack:")) { const p = packs.find((x) => x.id === id.slice(5)); if (p) startPack(p); }
   }
   document.addEventListener("click", (e) => {
-    const row = e.target.closest("[data-today]");
-    if (row) openTodayItem(row.dataset.today, row.dataset.id);
+    const row = e.target.closest("[data-resume]");
+    if (row) resume(row.dataset.resume);
   });
 
   // ---------- Üben ----------
@@ -354,9 +364,22 @@
       ? pausedAt(grammarSession, grammarSession.queue.length) : `${GRAMMAR.CATEGORIES.length} Themen`;
     el("totalCount").textContent = DECK.length;
 
+    const paused = pausedRows();
+    el("practicePausedBlock").hidden = !paused.length;
+    el("practiceTrainerLabel").classList.toggle("first", !paused.length);
+    el("practicePaused").innerHTML = paused.map((r) => `<button class="list-row" data-resume="${esc(r.id)}">
+        <span class="row-icon">${icon(r.icon)}</span>
+        <span class="grow"><span class="title">${esc(r.title)}</span><span class="meta">${esc(r.meta)}</span></span>
+        ${icon("chev", "icon chev")}</button>`).join("");
+
     const practised = new Set(events.filter((e) => e.kind === "pack").map((e) => e.packId));
     const newest = packs.slice().sort((a, b) => b.addedAt - a.addedAt).slice(0, 3);
-    el("practicePacks").innerHTML = newest.map((p) => `<button class="list-row" data-pack-start="${esc(p.id)}">
+    const lesson = LESSON.current();
+    const lessonRow = lesson && lesson.id ? `<button class="list-row" data-open="lesson">
+        <span class="row-icon">${icon("headphones")}</span>
+        <span class="grow"><span class="title">${esc(lesson.title || "Tageslektion")}</span><span class="meta">Tageslektion vom Coach</span></span>
+        ${icon("chev", "icon chev")}</button>` : "";
+    el("practicePacks").innerHTML = lessonRow + newest.map((p) => `<button class="list-row" data-pack-start="${esc(p.id)}">
         <span class="row-icon">${icon("coach")}</span>
         <span class="grow"><span class="title">${esc(p.title)}</span><span class="meta">${pausedPack(p.id)
           ? pausedAt(pausedPack(p.id), pausedPack(p.id).items.length) : `${p.items.length} Aufgaben${practised.has(p.id) ? "" : " · neu"}`}</span></span>
@@ -436,7 +459,7 @@
     renderCurrentCard();
     return true;
   }
-  el("startSessionBtn").addEventListener("click", startSession);
+  el("startSessionBtn").addEventListener("click", () => runPlanStep(isPaused(session) ? { kind: "vocab" } : homeNext));
   el("restartSessionBtn").addEventListener("click", () => { session = null; persistPaused(); if (!startSession()) renderHome(); });
   // ✕ pauses: the place is kept, Heute offers to continue.
   el("exitSessionBtn").addEventListener("click", () => { el("sessionContinueBtn").hidden = true; showView("home"); });
@@ -715,8 +738,9 @@
         <span class="grow"><span class="title" lang="${COURSE.lang}">${m.html || esc(m.title)}</span>${m.meta ? `<span class="meta">${esc(m.meta)}</span>` : ""}</span>
         ${m.term ? icon("chev", "icon chev") : ""}</${m.term ? "button" : "div"}>`).join("");
 
-    const due = cardsDueNow().length + cardsNewAvailable().length;
-    doneNext = finished.kind !== "vocab" && due ? { kind: "vocab", title: "Vokabeln" } : TODAY.nextStep(todayList(), finished);
+    // The next open step of today's plan, else the next item of "Außerdem heute".
+    const planStep = PATH.nextStep(PATHUI.plan(vocabCounts()).steps.filter((st) => !(st.kind === "vocab" && finished.kind === "vocab")));
+    doneNext = planStep ? { kind: "plan", step: planStep, title: planStep.kind === "vocab" ? "Wörter" : planStep.title } : null;
     const next = el("doneNextBtn");
     next.hidden = !doneNext;
     if (doneNext) next.textContent = `Als Nächstes: ${doneNext.title}`;
@@ -728,8 +752,7 @@
   }
   el("doneNextBtn").addEventListener("click", () => {
     if (!doneNext) return;
-    if (doneNext.kind === "vocab") { if (!startSession()) showView("home"); }
-    else openTodayItem(doneNext.kind, doneNext.id);
+    runPlanStep(doneNext.step);
   });
 
   function finishSession() {
@@ -815,6 +838,8 @@
     document.querySelectorAll("#tenseChips .chip").forEach((c) => c.classList.toggle("active", conjSelectedTenses.has(c.dataset.tense)));
     document.querySelectorAll("#verbsetChips .chip").forEach((c) => c.classList.toggle("active", c.dataset.set === conjVerbSet));
 
+    el("conjGuides").innerHTML = [...conjSelectedTenses].filter((t) => COURSE_PATH.GUIDES[`tense:${t}`])
+      .map((t) => `<button class="link-btn" data-guide="tense:${t}" data-guide-from="conj">${esc(CONJUGATE.TENSE_LABELS[t])} erklärt</button>`).join("");
     const verbCount = conjVerbsForSet(conjVerbSet).length;
     const tenseCount = conjSelectedTenses.size;
     el("conjHint").textContent = tenseCount === 0
@@ -845,10 +870,9 @@
     return wrongWeight + staleness + mastered + Math.random() * 2;
   }
 
-  function buildConjQueue() {
-    const tenses = [...conjSelectedTenses];
+  function buildConjQueue(tenses = [...conjSelectedTenses], verbSet = conjVerbSet) {
     const items = [];
-    conjVerbsForSet(conjVerbSet).forEach((v) => {
+    conjVerbsForSet(verbSet).forEach((v) => {
       tenses.forEach((t) => {
         for (let p = 0; p < 6; p++) items.push({ infinitive: v.infinitive, tense: t, person: p });
       });
@@ -861,6 +885,7 @@
   }
 
   function startConj() {
+    if (conjSession && conjSession.tense) conjSession = null;   // a unit's drill does not stand in for the chosen one
     if (!conjSession) {
       const queue = shuffle(buildConjQueue());
       if (!queue.length) return;
@@ -870,9 +895,20 @@
     showView("conjsession");
     renderConjItem();
   }
+  /** A drill of one tense over all verbs, for a unit of the course path. */
+  function startConjFor(tense, back) {
+    if (!conjSession || conjSession.tense !== tense) {
+      const queue = shuffle(buildConjQueue([tense], "all")).slice(0, 20);
+      if (!queue.length) return;
+      conjSession = { queue, idx: 0, reviewed: 0, correct: 0, missed: [], tense, back };
+      touchStreak();
+    }
+    showView("conjsession");
+    renderConjItem();
+  }
   el("startConjBtn").addEventListener("click", startConj);
   el("restartConjBtn").addEventListener("click", () => { conjSession = null; startConj(); });
-  el("exitConjBtn").addEventListener("click", () => { el("conjContinueBtn").hidden = true; showView("conj"); });
+  el("exitConjBtn").addEventListener("click", () => { el("conjContinueBtn").hidden = true; showView((conjSession && conjSession.back) || "conj"); });
 
   function renderConjItem() {
     if (!conjSession || conjSession.idx >= conjSession.queue.length) return finishConjSession();
@@ -965,19 +1001,26 @@
     el("conjContinueBtn").hidden = true;
     conjSession = null;
     showDone({ reviewed: s.reviewed, correct: s.correct, label: "Formen geübt", withStreak: false,
-      missed: s.missed, back: "conj", finished: { kind: "conj" } });
+      missed: s.missed, back: s.back || "conj", finished: { kind: "conj" } });
   }
 
   // ---------- Grammar ----------
+  /** A link to a topic's explanation, where the course has one. */
+  const guideLink = (key, from) => (COURSE_PATH.GUIDES[key]
+    ? ` <button class="link-btn" data-guide="${key}" data-guide-from="${from}">Mehr dazu</button>` : "");
   let grammarSelectedCategories = new Set();
   let grammarSession = null; // { queue: [item...], idx, reviewed, correct }
 
   function renderGrammarOverview() {
     const chips = el("grammarCategoryChips");
     if (!chips.dataset.filled) {
-      chips.innerHTML = GRAMMAR.CATEGORIES.map((c) =>
-        `<button class="chip" data-cat="${c}" title="${GRAMMAR.CATEGORY_EXPLANATIONS[c].replace(/"/g, "&quot;")}">${GRAMMAR.CATEGORY_LABELS[c]}</button>`
-      ).join("");
+      // Grouped by the level where the course path teaches each topic.
+      const levels = PATHUI.categoryLevels();
+      const chip = (c) => `<button class="chip" data-cat="${c}" title="${GRAMMAR.CATEGORY_EXPLANATIONS[c].replace(/"/g, "&quot;")}">${GRAMMAR.CATEGORY_LABELS[c]}</button>`;
+      chips.innerHTML = PATH.LEVEL_ORDER.map((l) => {
+        const own = GRAMMAR.CATEGORIES.filter((c) => (levels[c] || "A1") === l);
+        return own.length ? `<div class="chip-group"><div class="conj-group-label">${l}</div><div class="chip-row">${own.map(chip).join("")}</div></div>` : "";
+      }).join("");
       chips.addEventListener("click", (e) => {
         const btn = e.target.closest(".chip");
         if (!btn) return;
@@ -994,7 +1037,7 @@
 
     const selected = [...grammarSelectedCategories];
     el("grammarCategoryExplanation").innerHTML = selected.length
-      ? selected.map((c) => `<strong>${GRAMMAR.CATEGORY_LABELS[c]}:</strong> ${GRAMMAR.CATEGORY_EXPLANATIONS[c]}`).join("<br><br>")
+      ? selected.map((c) => `<strong>${GRAMMAR.CATEGORY_LABELS[c]}:</strong> ${GRAMMAR.CATEGORY_EXPLANATIONS[c]}${guideLink(`grammar:${c}`, "grammar")}`).join("<br><br>")
       : "Wähle mindestens eine Kategorie aus.";
 
     const itemCount = selected.reduce((sum, c) => sum + GRAMMAR.itemsForCategory(c).length, 0);
@@ -1016,7 +1059,7 @@
   /* One pause per topic selection: starting "por oder para" from Heute keeps
      a paused session over all topics, and the other way round. */
   const grammarKey = (categories) => [...categories].sort().join(",");
-  function startGrammar(categories) {
+  function startGrammar(categories, back) {
     if (!categories && grammarSession) {        // the start button continues the current session
       showView("grammarsession");
       renderGrammarItem();
@@ -1037,7 +1080,7 @@
     }
     const queue = shuffle(buildGrammarQueue(categories));
     if (!queue.length) return;
-    grammarSession = { queue, idx: 0, reviewed: 0, correct: 0, missed: [], categories };
+    grammarSession = { queue, idx: 0, reviewed: 0, correct: 0, missed: [], categories, back };
     touchStreak();
     showView("grammarsession");
     renderGrammarItem();
@@ -1049,7 +1092,7 @@
     delete pausedGrammar[grammarKey(grammarSelectedCategories)];
     startGrammar();
   });
-  el("exitGrammarBtn").addEventListener("click", () => { el("grammarContinueBtn").hidden = true; showView("grammar"); });
+  el("exitGrammarBtn").addEventListener("click", () => { el("grammarContinueBtn").hidden = true; showView((grammarSession && grammarSession.back) || "grammar"); });
 
   function logGrammarAttempt(item, ok, chosen) {
     if (!state.grammarCards[item.id]) state.grammarCards[item.id] = { attempts: 0, correct: 0, wrongCount: 0, lastResult: null, lastAt: 0 };
@@ -1123,7 +1166,7 @@
     el("grammarContinueBtn").hidden = true;
     grammarSession = null;
     showDone({ reviewed: s.reviewed, correct: s.correct, label: "Fragen beantwortet", withStreak: false,
-      missed: s.missed, back: "grammar",
+      missed: s.missed, back: s.back || "grammar",
       finished: { kind: "grammar", id: s.categories.length === 1 ? s.categories[0] : null } });
   }
 
@@ -1675,6 +1718,7 @@
     conjsession: "conjContinueBtn",
     grammarsession: "grammarContinueBtn",
     packsession: "packContinueBtn",
+    check: "checkContinueBtn",
   };
   /* Only the button of the currently visible drill may react. Otherwise
      Enter reaches the leftover button of a finished drill. */
@@ -1724,11 +1768,14 @@
     if (currentView === "packsession" && packSession && ["1", "2", "3", "4", "5", "6"].includes(e.key)) {
       if (clickNthOption("packGrid", Number(e.key))) e.preventDefault();
     }
+    if (currentView === "check" && ["1", "2", "3", "4"].includes(e.key)) {
+      if (clickNthOption("checkGrid", Number(e.key))) e.preventDefault();
+    }
   });
 
-  /** Heute lists the lesson; refresh it when the lesson changes. */
+  /** Üben lists the coach's lesson; refresh it when the lesson changes. */
   function markiereLektion() {
-    if (currentView === "home") renderToday();
+    if (currentView === "practice") renderPractice();
   }
 
   // ---------- Exercise sets from the coach ----------
@@ -1820,6 +1867,7 @@
   const WELCOME_RESUME = "voco:welcome-step";
   let welcomeStep = 1;
   let welcomeCourse = null;
+  let welcomeStart = "new";     // "new" or "placement"
 
   function markChoices(container, attr, value) {
     container.querySelectorAll(".choice").forEach((c) => {
@@ -1843,8 +1891,9 @@
     document.querySelectorAll(".welcome-step").forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
     document.querySelectorAll(".welcome .dots i").forEach((d) => d.classList.toggle("on", Number(d.dataset.dot) === n));
     markChoices(el("welcomeGoals"), "goal", state.dailyGoal);
+    markChoices(el("welcomeLevels"), "start", welcomeStart);
     if (n === 1) renderWelcomeCourses().catch(() => showWelcomeStep(2));
-    el("welcomeNext").textContent = n === WELCOME_STEPS ? "Los geht's" : "Weiter";
+    el("welcomeNext").textContent = n < WELCOME_STEPS ? "Weiter" : welcomeStart === "placement" ? "Zur Einstufung" : "Los geht's";
   }
   async function welcomeNext() {
     if (welcomeStep === 1 && welcomeCourse !== COURSE.id) {
@@ -1877,8 +1926,15 @@
   function finishWelcome() {
     state.welcomeSeen = true;
     save();
-    showView("home");
+    if (welcomeStart === "placement") PATHUI.startPlacement();
+    else showView("home");
   }
+  el("welcomeLevels").addEventListener("click", (e) => {
+    const c = e.target.closest(".choice");
+    if (!c) return;
+    welcomeStart = c.dataset.start;
+    markChoices(el("welcomeLevels"), "start", welcomeStart);
+  });
   el("welcomeGoals").addEventListener("click", (e) => {
     const c = e.target.closest(".choice");
     if (!c) return;
@@ -1886,7 +1942,7 @@
     markChoices(el("welcomeGoals"), "goal", state.dailyGoal);
   });
   el("welcomeNext").addEventListener("click", welcomeNext);
-  el("welcomeSkip").addEventListener("click", finishWelcome);
+  el("welcomeSkip").addEventListener("click", () => { welcomeStart = "new"; finishWelcome(); });
 
   // ---------- Startup ----------
   async function boot() {
@@ -1896,11 +1952,21 @@
     events = await STORE.allEvents();
     packs = await STORE.allPacks();
 
-    if (!state.grammarCategories) state.grammarCategories = [...GRAMMAR.CATEGORIES];
-    // Categories added to the course since the learner's last visit start selected;
-    // ones they switched off themselves stay off.
+    PATHUI.init({
+      state: () => state, cards: () => cards, save, logEvent, showView, touchStreak,
+      counts: vocabCounts, logGrammarAttempt, logConjAttempt,
+      startVocab: startSession,
+      practise: (kind, id, back) => (kind === "grammar" ? startGrammar([id], back) : startConjFor(id, back)),
+    });
+
+    // Grammar topics start selected up to the learner's level on the path. Topics
+    // added since the last visit join the same way; ones switched off stay off.
+    const topicLevels = PATHUI.categoryLevels();
+    const upTo = PATH.LEVEL_ORDER.indexOf(PATHUI.currentLevel());
+    const reached = (c) => PATH.LEVEL_ORDER.indexOf(topicLevels[c] || "A1") <= upTo;
+    if (!state.grammarCategories) state.grammarCategories = GRAMMAR.CATEGORIES.filter(reached);
     const knownCategories = state.grammarKnownCategories || state.grammarCategories;
-    GRAMMAR.CATEGORIES.filter((c) => !knownCategories.includes(c) && !state.grammarCategories.includes(c))
+    GRAMMAR.CATEGORIES.filter((c) => !knownCategories.includes(c) && !state.grammarCategories.includes(c) && reached(c))
       .forEach((c) => state.grammarCategories.push(c));
     state.grammarKnownCategories = [...GRAMMAR.CATEGORIES];
     conjSelectedTenses = new Set(state.conjTenses);
@@ -1919,12 +1985,11 @@
       packs = await STORE.allPacks();
       if (currentView === "packs") renderPacks();
       if (currentView === "practice") renderPractice();
-      if (currentView === "home") renderToday();
       if (!["packs", "practice"].includes(currentView)) el("tab-practice").classList.add("tab-alert");
     });
     STORE.onLessonsChanged(async () => {
       await LESSON.load();
-      if (!["lesson", "home"].includes(currentView)) el("tab-home").classList.add("tab-alert");
+      if (!["lesson", "practice"].includes(currentView)) el("tab-practice").classList.add("tab-alert");
       markiereLektion();
     });
     LESSON.setOnSubmitted(markiereLektion);

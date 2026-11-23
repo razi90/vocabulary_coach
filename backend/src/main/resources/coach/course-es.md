@@ -9,7 +9,11 @@ typoExample: "gracias para tu ayuda" is wrong, "gracias pro tu ayuda" almost rig
 -->
 ## This course: Spanish
 
-**Grammar categories:** `ser_estar`, `por_para`, `articles`, `prepositions`.
+**Grammar categories:** `ser_estar`, `por_para`, `articles`, `prepositions`,
+`question_words`, `time_expressions`, `agreement`, `gustar`, `reflexive`,
+`hay_estar`, `ir_a`, `possessives`, `comparatives`, `imperative`,
+`object_pronouns`, `muy_mucho`, `perfecto`, `indef_imperf`, `estar_gerundio`,
+`relatives`, `connectors`, `se_impersonal`.
 
 **Conjugation by pattern, not by single form.** If `yo` and
 `ellos/ellas/ustedes` are shaky in the presente, it is usually diphthongization

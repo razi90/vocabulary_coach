@@ -14,7 +14,7 @@ const POS = new Set(["noun", "verb", "adj", "adv", "num", "pron", "prep", "conj"
 const balanced = (s) => (s.match(/\(/g) || []).length === (s.match(/\)/g) || []).length;
 
 for (const id of COURSES) {
-  const { COURSE, DECK, CONJUGATE, GRAMMAR, TEXT } = course(id);
+  const { COURSE, DECK, CONJUGATE, GRAMMAR, TEXT, COURSE_PATH, PATH } = course(id);
 
   test(`${id}: course metadata`, () => {
     assert.equal(COURSE.id, id);
@@ -94,6 +94,70 @@ for (const id of COURSES) {
     for (const c of GRAMMAR.CATEGORIES) {
       assert.ok(GRAMMAR.CATEGORY_EXPLANATIONS[c], `${id} category ${c}: explanation`);
       assert.ok(GRAMMAR.itemsForCategory(c).length >= 4, `${id} category ${c}: too few items to drill`);
+    }
+  });
+
+  test(`${id}: every deck word is in exactly one unit of the path`, () => {
+    const built = PATH.build(COURSE_PATH, DECK);
+    const owner = new Map();
+    for (const u of built.units) {
+      assert.ok(u.words.length >= 8, `${id} unit ${u.id}: only ${u.words.length} words`);
+      for (const t of u.words) {
+        assert.ok(!owner.has(t), `${id} "${t}" is in ${owner.get(t)} and ${u.id}`);
+        owner.set(t, u.id);
+      }
+    }
+    assert.deepEqual([...DECK.filter((d) => !owner.has(d.term)).map((d) => `${d.level} ${d.topic}: ${d.term}`)], []);
+  });
+
+  test(`${id}: units are complete and point at what the course has`, () => {
+    const ids = new Set();
+    let lastLevel = 0;
+    for (const u of COURSE_PATH.UNITS) {
+      const where = `${id} unit ${u.id}`;
+      assert.ok(!ids.has(u.id), `${where}: duplicate id`);
+      ids.add(u.id);
+      assert.ok(COURSE_PATH.LEVELS[u.level], `${where}: level ${u.level} has no title`);
+      const rank = PATH.LEVEL_ORDER.indexOf(u.level);
+      assert.ok(rank >= lastLevel, `${where}: levels go in order`);
+      lastLevel = rank;
+      assert.ok(u.title && u.goal && u.topics.length, `${where}: title, goal, topics`);
+      if (u.part) {
+        // Slices only partition when every unit splitting a list names the same topics.
+        const siblings = COURSE_PATH.UNITS.filter((x) => x.part && x.level === u.level && x.part[1] === u.part[1]
+          && x.topics.some((t) => u.topics.includes(t)));
+        siblings.forEach((x) => assert.deepEqual([...x.topics].sort(), [...u.topics].sort(), `${where}: ${x.id} splits other topics`));
+      }
+      if (u.vocab) {
+        const terms = new Set(DECK.map((d) => d.term));
+        u.vocab.forEach((t) => assert.ok(terms.has(t), `${where}: vocab "${t}" is not in the deck`));
+        const elsewhere = COURSE_PATH.UNITS.filter((x) => x !== u && x.vocab && x.vocab.some((t) => u.vocab.includes(t)));
+        assert.deepEqual([...elsewhere.map((x) => x.id)], [], `${where}: vocab claimed by another unit too`);
+      }
+      if (u.lesson) {
+        const { dialogue: d, sentences, task } = u.lesson;
+        assert.ok(d.title && d.scene && d.lines.length >= 4, `${where}: dialogue needs a title, a scene and lines`);
+        d.lines.forEach((l, i) => assert.ok(l.who && l.t && l.de, `${where}: dialogue line ${i + 1}`));
+        assert.ok(d.questions.length >= 2, `${where}: at least two questions on the dialogue`);
+        d.questions.forEach((q) => {
+          assert.ok(q.options.includes(q.answer), `${where}: "${q.prompt}" answer is not an option`);
+          assert.equal(new Set(q.options).size, q.options.length, `${where}: "${q.prompt}" duplicate option`);
+        });
+        assert.ok(sentences.length >= 4, `${where}: at least four sentences`);
+        sentences.forEach((x) => assert.ok(x.de && x.t && TEXT.judge(x.t, [x.t, ...(x.alt || [])]) === "exact", `${where}: sentence "${x.de}"`));
+        assert.ok(["speak", "write"].includes(task.kind) && task.title && task.prompt && task.model && task.phrases.length,
+          `${where}: task needs kind, title, prompt, phrases, model`);
+      }
+      if (!u.focus) continue;
+      if (u.focus.kind === "grammar") assert.ok(GRAMMAR.CATEGORY_LABELS[u.focus.id], `${where}: unknown grammar ${u.focus.id}`);
+      else if (u.focus.kind === "tense") assert.ok(CONJUGATE.TENSE_LABELS[u.focus.id], `${where}: unknown tense ${u.focus.id}`);
+      else assert.fail(`${where}: focus kind ${u.focus.kind}`);
+      const guide = COURSE_PATH.GUIDES[`${u.focus.kind}:${u.focus.id}`];
+      assert.ok(guide, `${where}: no guide for ${u.focus.kind}:${u.focus.id}`);
+    }
+    for (const [key, g] of Object.entries(COURSE_PATH.GUIDES)) {
+      assert.ok(g.title && g.body.length && g.examples.length >= 3, `${id} guide ${key}: title, body, three examples`);
+      g.examples.forEach((e) => assert.ok(e.t && e.de, `${id} guide ${key}: example needs t and de`));
     }
   });
 

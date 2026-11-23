@@ -19,12 +19,13 @@ coach. Only port 8080 is published, by default on `127.0.0.1`.
 | --- | --- |
 | `web/` | Frontend: plain HTML/JS/CSS, served as static files. |
 | `web/src/boot.js` | Asks the server for the learner's course, loads that course's content, then the app. |
-| `web/src/courses/<course>/` | Course content as source: `course.js` (metadata), `deck.js`, `conjugate.js`, `grammar.js`. Same interface in every course. |
+| `web/src/courses/<course>/` | Course content as source: `course.js` (metadata), `deck.js`, `conjugate.js`, `grammar.js`, `path.js` (levels, units, explanations). Same interface in every course. |
 | `web/src/text.js` | Normalization and answer grading (browser only). |
 | `web/src/packs.js` | Exercise-set schema, validation and checking in the browser. |
 | `web/src/store.js` | Browser access to the API: CSRF header, 401 → login, live updates. |
-| `web/src/app.js` | The shell (four sections: Heute, Üben, Coach, Fortschritt, plus settings) and the trainers. |
-| `web/src/today.js` | What Heute lists besides vocabulary, and the next step after a session (pure, tested in Node). |
+| `web/src/app.js` | The shell (five sections: Heute, Kurs, Üben, Coach, Fortschritt, plus settings) and the trainers. |
+| `web/src/path.js` | The course path: current unit, which new words are on offer, today's plan, unit checks, placement (pure, tested in Node). Design: `docs/superpowers/specs/2026-11-21-learning-path-design.md`. |
+| `web/src/pathui.js` | The path on screen: Kurs, a unit, an explanation, the check and the placement. |
 | `web/src/insights.js` | Word history, practice calendar, week summary, hardest words (pure, tested in Node). |
 | `web/src/wordsheet.js` | The word detail sheet, opened from anything with `data-word`. |
 | `web/src/speech.js` | Pronunciation with the browser's speech; speaker buttons (`data-say`) only when a voice exists. |
@@ -116,7 +117,7 @@ notification as a server-sent event to that learner's open tabs only.
 
 ## Extending
 
-**New course:** a folder `web/src/courses/<id>/` with the four files (same
+**New course:** a folder `web/src/courses/<id>/` with the five files (same
 interfaces as the others), the id in `boot.js`, `sw.js` and
 `tools/export-content.js`, an entry in `Course`, a `course-<id>.md`, and a
 migration adding the row to `courses`.
@@ -138,3 +139,16 @@ existing migration.
 **Note:** the vocabulary, conjugation and grammar drills still run on three
 separate, largely identical loops instead of on `DRILL`. Mechanically
 convertible, not done so far.
+
+## The course path
+
+Every course is a path of units (`courses/<id>/path.js`) grouped by level.
+A unit's words are the deck entries of its level and topics, so every deck
+word belongs to exactly one unit (a content test checks it). New words in
+the vocabulary session come only from the learner's current unit. A unit
+is done when its check is passed (80 %); the placement in the welcome skips
+whole levels. The learner's progress on the path is part of the state blob
+(`state.path`), not a table: it is derived from what the learner did and
+chose, and nothing on the server reads it. Check answers are logged as
+ordinary `vocab`/`grammar`/`conj` events (`mode: "check"` for vocabulary);
+placement answers are not logged.

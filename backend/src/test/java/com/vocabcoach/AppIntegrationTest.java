@@ -286,6 +286,13 @@ class AppIntegrationTest {
     assertThat(res.body()).contains("noch nicht eingerichtet");
   }
 
+  /** Words in a course's deck, from the content the server loads (it grows with the course). */
+  private int deckSize(String course) throws Exception {
+    try (var in = getClass().getResourceAsStream("/content/content.json")) {
+      return json.readTree(in).path(course).path("vocabulary").size();
+    }
+  }
+
   @Test
   void eachCourseKeepsItsOwnProgress() throws Exception {
     Learner a = new Learner().register(unique("courses"));
@@ -305,12 +312,12 @@ class AppIntegrationTest {
     assertThat(a.ok("GET", "/api/snapshot", null).path("cards").properties()).hasSize(1)
         .as("a Spanish word is no card in the English course");
     String english = a.send("GET", "/api/briefing", null).body();
-    assertThat(english).contains("779 Vokabeln").contains("to become").doesNotContain("la puerta");
+    assertThat(english).contains(deckSize("en") + " Vokabeln").contains("to become").doesNotContain("la puerta");
 
     a.ok("PUT", "/api/auth/course", json.createObjectNode().put("course", "es"));
     assertThat(a.ok("GET", "/api/events", null)).hasSize(1);
     assertThat(a.ok("GET", "/api/snapshot", null).path("state").path("streak").asInt()).isEqualTo(5);
-    assertThat(a.send("GET", "/api/briefing", null).body()).contains("608 Vokabeln").contains("la puerta");
+    assertThat(a.send("GET", "/api/briefing", null).body()).contains(deckSize("es") + " Vokabeln").contains("la puerta");
 
     assertThat(a.send("PUT", "/api/auth/course", json.createObjectNode().put("course", "fr")).statusCode())
         .isEqualTo(400);
