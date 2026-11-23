@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f0f11" media="(prefers-color-scheme: dark)">
+  <title>Vokabeltrainer</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="src/style.css">
+</head>
+
+<body>
+  <!-- Icons: one sprite, line style after Lucide (ISC licence), drawn with currentColor.
+       Use: <svg class="icon"><use href="#i-name"/></svg> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-today" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+    <symbol id="i-practice" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+    <symbol id="i-coach" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M18 15l.8 2.2 2.2.8-2.2.8L18 21l-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
+    <symbol id="i-stats" viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H17a3.5 3.5 0 0 0 0-7H7a3.5 3.5 0 0 1 0-7h8.5"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M3 4.5h5.5A3.5 3.5 0 0 1 12 8v12a2.5 2.5 0 0 0-2.5-2.5H3z"/><path d="M21 4.5h-5.5A3.5 3.5 0 0 0 12 8v12a2.5 2.5 0 0 1 2.5-2.5H21z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-cards" viewBox="0 0 24 24"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 3.5h11a2 2 0 0 1 2 2V16"/></symbol>
+    <symbol id="i-verb" viewBox="0 0 24 24"><path d="M4 7h11M4 12h16M4 17h8"/></symbol>
+    <symbol id="i-grammar" viewBox="0 0 24 24"><path d="M12 4v16M6 8h12M6 8l-3 6h6zM18 8l-3 6h6z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+    <symbol id="i-translate" viewBox="0 0 24 24"><path d="M4 5h8M8 3v2M6 5c0 4 3 7 6 8M10 5c0 4-3 7-6 8"/><path d="m13 21 4-9 4 9M14.5 18h5"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 20H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h4M16 16l4-4-4-4M20 12H9"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21c3.9 0 6.5-2.6 6.5-6.2 0-3.4-2.4-5.6-3.6-8.3-.4 1.9-1.4 3.1-2.6 3.8C12.6 7.4 11.3 4.6 9 3c.3 3.2-3.5 5.6-3.5 11.3C5.5 18.2 8.1 21 12 21z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 20V9M7 13.5l5-5 5 5M5 4h14"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
+  </svg>
+
+  <div id="app">
+
+    <header class="topbar">
+      <button class="course-btn" id="courseBtn" popovertarget="courseMenu" aria-haspopup="menu" aria-label="Kurs wechseln">
+        <span class="flag" data-course-text="{flag}"></span>
+        <span class="brand-name" data-course-text="{name}"></span>
+        <svg class="icon" aria-hidden="true"><use href="#i-chev-down"/></svg>
+      </button>
+      <div class="topbar-section" id="topbarSection" hidden>Heute</div>
+      <div class="streak" id="streakBadge" title="Tage in Folge"><svg class="icon sm" aria-hidden="true"><use href="#i-flame"/></svg><span id="streakCount">0</span></div>
+      <button class="icon-btn topbar-btn" id="settingsBtn" aria-label="Einstellungen"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg></button>
+      <div class="course-menu" id="courseMenu" popover role="menu" aria-label="Kurs wechseln"></div>
+    </header>
+
+    <div class="shell">
+      <nav class="sidenav" id="sidenav" aria-label="Bereiche">
+        <button class="tab active" id="tab-home" data-view="home" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-today"/></svg><span>Heute</span></button>
+        <button class="tab" id="tab-course" data-view="course"><svg class="icon" aria-hidden="true"><use href="#i-route"/></svg><span>Kurs</span></button>
+        <button class="tab" id="tab-practice" data-view="practice"><svg class="icon" aria-hidden="true"><use href="#i-practice"/></svg><span>Üben</span></button>
+        <button class="tab" id="tab-coach" data-view="coach"><svg class="icon" aria-hidden="true"><use href="#i-coach"/></svg><span>Coach</span></button>
+        <button class="tab" id="tab-stats" data-view="stats"><svg class="icon" aria-hidden="true"><use href="#i-stats"/></svg><span>Fortschritt</span></button>
+      </nav>
+
+      <div class="content">
+        <p id="bootError" class="boot-error" hidden>
+          Der Lernstand konnte nicht geladen werden. Läuft der Browser im privaten Modus?
+        </p>
+
+    <main id="main">
+
+      <!-- ================= HEUTE ================= -->
+      <section id="view-home" class="view active" tabindex="-1">
+        <h1 class="page-title">Heute</h1>
+        <p class="page-sub" id="homeSub"></p>
+        <div class="home-grid">
+          <div class="home-main">
+            <div class="panel today-panel">
+              <button class="unit-head" id="homeUnit" aria-describedby="homeUnitGoal">
+                <span class="grow">
+                  <span class="unit-banner-where" id="homeUnitWhere"></span>
+                  <span class="unit-banner-title" id="homeUnitTitle"></span>
+                </span>
+                <svg class="icon chev" aria-hidden="true"><use href="#i-chev"/></svg>
+              </button>
+              <p class="unit-head-goal" id="homeUnitGoal"></p>
+              <ol class="plan" id="planList" aria-label="Schritte dieser Einheit"></ol>
+              <button class="btn-primary btn-huge" id="startSessionBtn">Sitzung starten</button>
+              <p class="hint" id="sessionHint"></p>
+              <button class="btn-secondary" id="keepLearningBtn" hidden>Trotzdem weiterlernen</button>
+              <button class="btn-secondary" id="restartSessionBtn" hidden>Neue Sitzung beginnen</button>
+              <div class="today-line">
+                <span><b id="dailyDoneNum">0</b> von <span id="dailyGoalNum">20</span> Karten heute</span>
+                <span><b id="todayAccuracy">–</b> richtig</span>
+              </div>
+              <div class="progress" aria-hidden="true"><i id="dailyProgress"></i></div>
+              <div class="direction-toggle" id="directionToggle" role="group" aria-label="Richtung">
+                <button class="dir-btn active" data-dir="es-de" data-course-text="{name} → Deutsch"></button>
+                <button class="dir-btn" data-dir="de-es" data-course-text="Deutsch → {name}"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= KURS ================= -->
+      <section id="view-course" class="view" tabindex="-1">
+        <h1 class="page-title">Kurs</h1>
+        <p class="page-sub" id="courseSub"></p>
+        <div class="route" id="courseRoute"></div>
+      </section>
+
+      <!-- ================= EINHEIT ================= -->
+      <section id="view-unit" class="view" tabindex="-1">
+        <button class="back-link" data-back="course"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Kurs</button>
+        <p class="unit-where" id="unitWhere"></p>
+        <h1 class="page-title" id="unitTitle"></h1>
+        <p class="page-sub" id="unitGoal"></p>
+        <ol class="unit-steps" id="unitSteps"></ol>
+        <button class="btn-primary btn-huge" id="unitPrimary"></button>
+        <p class="hint" id="unitHint"></p>
+        <div class="unit-more">
+          <button class="link-btn" id="unitCheckAnyway" hidden>Ich kann das schon: Check machen</button>
+        </div>
+      </section>
+
+      <!-- ================= ERKLÄRUNG ================= -->
+      <section id="view-guide" class="view" tabindex="-1">
+        <button class="back-link" id="guideBack" data-back="unit"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg><span id="guideBackLabel">Einheit</span></button>
+        <h1 class="page-title" id="guideTitle"></h1>
+        <div class="guide-body" id="guideBody"></div>
+        <h2 class="panel-title guide-ex-title">Beispiele</h2>
+        <ul class="examples" id="guideExamples"></ul>
+        <button class="btn-primary btn-huge" id="guidePractice">Jetzt üben</button>
+      </section>
+
+      <!-- ================= DIALOG ================= -->
+      <section id="view-dialog" class="view" tabindex="-1">
+        <button class="back-link" data-back="unit"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Einheit</button>
+        <p class="unit-where">Dialog</p>
+        <h1 class="page-title" id="dialogTitle"></h1>
+        <p class="page-sub" id="dialogScene"></p>
+        <div class="dialog-tools">
+          <button class="btn-secondary btn-small" id="dialogPlay" hidden><svg class="icon sm" aria-hidden="true"><use href="#i-speaker"/></svg><span>Anhören</span></button>
+          <button class="btn-secondary btn-small" id="dialogTranslate" aria-pressed="false">Übersetzung zeigen</button>
+        </div>
+        <ol class="dialog-lines" id="dialogLines"></ol>
+        <button class="btn-primary btn-huge" id="dialogQuestions">Fragen zum Dialog</button>
+      </section>
+
+      <!-- ================= SPRECHEN / SCHREIBEN ================= -->
+      <section id="view-task" class="view" tabindex="-1">
+        <button class="back-link" data-back="unit"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Einheit</button>
+        <p class="unit-where" id="taskKind"></p>
+        <h1 class="page-title" id="taskTitle"></h1>
+        <p class="page-sub" id="taskPrompt"></p>
+        <h2 class="panel-title">Das hilft dir</h2>
+        <div class="word-chips task-phrases" id="taskPhrases"></div>
+        <textarea id="taskText" class="lesson-textarea" data-course-lang rows="6" spellcheck="false"
+          placeholder="Deine Antwort …"></textarea>
+        <div class="task-controls">
+          <button class="btn-secondary" id="taskRecord" hidden>Aufnahme starten</button>
+          <p class="speak-hint" id="taskHint"></p>
+        </div>
+        <button class="btn-primary btn-huge" id="taskSubmit" disabled>Fertig</button>
+        <div class="task-model" id="taskModelBlock" hidden>
+          <h2 class="panel-title">So könnte es klingen</h2>
+          <p class="task-model-text"><span id="taskModel" data-course-lang></span>
+            <button class="icon-btn speak-btn" id="taskModelSay" data-say="" aria-label="Aussprechen" hidden><svg class="icon sm" aria-hidden="true"><use href="#i-speaker"/></svg></button></p>
+          <p class="hint task-model-hint">Vergleiche mit deiner Antwort: Welche Wendungen hast du benutzt, welche könntest du übernehmen?</p>
+          <button class="btn-secondary" id="taskBack">Zurück zur Einheit</button>
+        </div>
+      </section>
+
+      <!-- ================= CHECK / EINSTUFUNG ================= -->
+      <section id="view-check" class="view" tabindex="-1">
+        <div id="checkRun">
+          <div class="session-top">
+            <button class="icon-btn" id="exitCheckBtn" aria-label="Abbrechen" title="Abbrechen"><svg class="icon sm" aria-hidden="true"><use href="#i-x"/></svg></button>
+            <div class="session-progress"><div class="session-progress-bar" id="checkProgressBar"></div></div>
+            <div class="session-counter"><span id="checkIdx">1</span>/<span id="checkTotal">0</span></div>
+          </div>
+          <div class="card-stage check-stage">
+            <p class="check-ask" id="checkAsk"></p>
+            <div class="es-word check-prompt" id="checkPrompt"></div>
+            <p class="check-meta" id="checkMeta"></p>
+            <div class="mc-grid" id="checkGrid"></div>
+            <div class="check-typed" id="checkTypedWrap" hidden>
+              <input type="text" id="checkInput" class="type-input" autocomplete="off" autocapitalize="off"
+                autocorrect="off" spellcheck="false" placeholder="Antwort eintippen …">
+              <button class="btn-primary" id="checkCheckBtn">Prüfen</button>
+            </div>
+            <button class="link-btn check-skip" id="checkSkipBtn">Weiß ich nicht</button>
+            <div class="type-feedback" id="checkFeedback"></div>
+            <p class="check-explanation" id="checkExplanation"></p>
+            <button class="btn-primary btn-huge" id="checkContinueBtn" hidden>Weiter</button>
+          </div>
+        </div>
+        <div class="done-panel" id="checkResult" hidden>
+          <div class="done-mark" id="checkResultMark"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></div>
+          <h2 id="checkResultTitle"></h2>
+          <p class="check-result-text" id="checkResultText"></p>
+          <div id="checkMissedBlock" hidden>
+            <div class="section-label first">Noch nicht sicher</div>
+            <div class="list" id="checkMissed"></div>
+          </div>
+          <div class="done-actions">
+            <button class="btn-primary btn-huge" id="checkResultPrimary"></button>
+            <button class="btn-secondary" id="checkResultSecondary"></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= ÜBEN ================= -->
+      <section id="view-practice" class="view" tabindex="-1">
+        <h1 class="page-title">Üben</h1>
+        <p class="page-sub">Frei üben, unabhängig vom Tagesplan.</p>
+        <div id="practicePausedBlock" hidden>
+          <div class="section-label first">Angefangen</div>
+          <div class="list" id="practicePaused"></div>
+        </div>
+        <div class="section-label first" id="practiceTrainerLabel">Trainer</div>
+        <div class="list">
+          <button class="list-row" data-open="vocab"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-cards"/></svg></span><span class="grow"><span class="title">Vokabeln</span><span class="meta" id="practiceVocabMeta"></span></span><svg class="icon chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
+          <button class="list-row" data-open="conj"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-verb"/></svg></span><span class="grow"><span class="title">Verben</span><span class="meta" id="practiceConjMeta"></span></span><svg class="icon chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
+          <button class="list-row" data-open="grammar"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-grammar"/></svg></span><span class="grow"><span class="title">Grammatik</span><span class="meta" id="practiceGrammarMeta"></span></span><svg class="icon chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
+        </div>
+        <div class="section-label">Vom Coach</div>
+        <div class="list" id="practicePacks"></div>
+        <div class="section-label">Nachschlagen</div>
+        <div class="list">
+          <button class="list-row" data-open="browse"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg></span><span class="grow"><span class="title">Wortliste</span><span class="meta"><span id="totalCount">0</span> Wörter</span></span><svg class="icon chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
+        </div>
+      </section>
+
+      <!-- ================= SESSION (Karteikarte / MC / Tippen) ================= -->
+      <section id="view-session" class="view">
+        <div class="session-top">
+          <button class="icon-btn" id="exitSessionBtn" aria-label="Pausieren" title="Pausieren – du kannst später weitermachen"><svg class="icon sm" aria-hidden="true"><use href="#i-pause"/></svg></button>
+          <div class="session-progress">
+            <div class="session-progress-bar" id="sessionProgressBar"></div>
+          </div>
+          <div class="session-counter"><span id="sessionIdx">0</span>/<span id="sessionTotal">0</span></div>
+        </div>
+
+        <div class="card-stage" id="cardStage">
+
+          <!-- Karteikarte -->
+          <div class="mode-panel" id="mode-flip">
+            <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-pressed="false"
+              aria-label="Karteikarte umdrehen">
+              <div class="flashcard-inner" id="flashcardInner">
+                <div class="flashcard-face front">
+                  <div class="card-meta">
+                    <span class="pos-badge" id="flipPos"></span>
+                    <button class="icon-btn speak-btn" id="cardSpeak" data-say="" aria-label="Aussprechen" hidden><svg class="icon sm" aria-hidden="true"><use href="#i-speaker"/></svg></button>
+                  </div>
+                  <div class="es-word" id="flipFront"></div>
+                  <div class="tap-hint">Zum Umdrehen tippen <span class="kbd">Leertaste</span></div>
+                </div>
+                <div class="flashcard-face back">
+                  <div class="de-word" id="flipBack"></div>
+                  <div class="ex-sentence" id="flipEx" data-course-lang></div>
+                  <div class="ex-sentence-de" id="flipExDe" lang="de"></div>
+                </div>
+              </div>
+            </div>
+            <div class="grade-row" id="gradeRow">
+              <button class="grade-btn again" data-grade="1"><span class="g-label">Nochmal</span><span class="g-iv"
+                  id="iv1"></span></button>
+              <button class="grade-btn hard" data-grade="2"><span class="g-label">Schwer</span><span class="g-iv"
+                  id="iv2"></span></button>
+              <button class="grade-btn good" data-grade="3"><span class="g-label">Gut</span><span class="g-iv"
+                  id="iv3"></span></button>
+              <button class="grade-btn easy" data-grade="4"><span class="g-label">Leicht</span><span class="g-iv"
+                  id="iv4"></span></button>
+            </div>
+            <p class="kbd-hint"><span class="kbd">Leertaste</span> umdrehen &middot; <span class="kbd">1</span>–<span
+                class="kbd">4</span> bewerten</p>
+          </div>
+
+          <!-- Multiple Choice -->
+          <div class="mode-panel" id="mode-mc" hidden>
+            <span class="pos-badge" id="mcPos"></span>
+            <div class="es-word" id="mcPrompt"></div>
+            <div class="mc-grid" id="mcGrid"></div>
+            <p class="kbd-hint"><span class="kbd">1</span>–<span class="kbd">4</span> wählen &middot; <span
+                class="kbd">Enter</span> weiter</p>
+          </div>
+
+          <!-- Tippen -->
+          <div class="mode-panel" id="mode-type" hidden>
+            <span class="pos-badge" id="typePos"></span>
+            <div class="es-word" id="typePrompt"></div>
+            <input type="text" id="typeInput" class="type-input" placeholder="Übersetzung eintippen …"
+              autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+            <div class="type-feedback" id="typeFeedback"></div>
+            <button class="btn-primary" id="typeCheckBtn">Prüfen</button>
+            <p class="kbd-hint"><span class="kbd">Enter</span> prüfen, dann nochmal <span class="kbd">Enter</span> für
+              weiter</p>
+          </div>
+
+          <button class="btn-primary btn-huge" id="sessionContinueBtn" hidden style="margin-top: 16px;">Weiter</button>
+        </div>
+      </section>
+
+      <!-- ================= SESSION COMPLETE ================= -->
+      <section id="view-done" class="view">
+        <div class="done-panel">
+          <div class="done-mark"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></div>
+          <h2 id="doneTitle">Geschafft</h2>
+          <div class="done-stats">
+            <div><strong id="doneReviewed">0</strong><span id="doneReviewedLabel">Karten geübt</span></div>
+            <div><strong id="doneAccuracy">0%</strong><span>richtig</span></div>
+            <div id="doneStreakBlock"><strong id="doneStreak">0</strong><span>Tage in Folge</span></div>
+          </div>
+          <div id="doneMissedBlock" hidden>
+            <div class="section-label first">Noch nicht sicher</div>
+            <div class="list" id="doneMissed"></div>
+          </div>
+          <div class="done-actions">
+            <button class="btn-primary btn-huge" id="doneNextBtn" hidden></button>
+            <button class="btn-secondary" id="doneContinueBtn">Fertig</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAGESLEKTION ================= -->
+      <section id="view-lesson" class="view" tabindex="-1">
+        <button class="back-link" data-back="practice"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Üben</button>
+        <div id="lessonEmpty" class="empty-state">
+          Für heute gibt es noch keine Lektion. Lass sie im Bereich „Coach“ erstellen —
+          sie erscheint hier von selbst.
+        </div>
+
+        <div id="lessonBody" hidden>
+          <div class="lesson-head">
+            <div class="lesson-date" id="lessonDate"></div>
+            <h2 class="section-title" id="lessonTitle" style="margin-bottom:4px;"></h2>
+            <div class="lesson-meta" id="lessonMeta"></div>
+          </div>
+
+          <!-- Hören -->
+          <section class="lesson-part" id="partListening" hidden>
+            <div class="lesson-part-head"><span class="lesson-part-icon"><svg class="icon" aria-hidden="true"><use href="#i-headphones"/></svg></span>
+              <h3>Hören</h3><span class="lesson-done" id="doneListening" hidden>✓</span>
+            </div>
+            <p class="lesson-task" id="listeningTask"></p>
+            <div class="video-wrap"><iframe id="listeningFrame" title="Video zur Lektion"
+                allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>
+            <div class="video-caption" id="listeningCaption"></div>
+            <div id="listeningQuestions"></div>
+            <button class="btn-primary" id="listeningSubmit" hidden>Antworten abgeben</button>
+            <div class="lesson-feedback" id="listeningFeedback" hidden></div>
+          </section>
+
+          <!-- Schreiben -->
+          <section class="lesson-part" id="partWriting" hidden>
+            <div class="lesson-part-head"><span class="lesson-part-icon"><svg class="icon" aria-hidden="true"><use href="#i-pen"/></svg></span>
+              <h3>Schreiben</h3><span class="lesson-done" id="doneWriting" hidden>✓</span>
+            </div>
+            <p class="lesson-task" id="writingPrompt"></p>
+            <div class="target-words" id="writingTargets"></div>
+            <textarea id="writingText" class="lesson-textarea" data-course-lang rows="9"
+              data-course-placeholder="Schreib deinen Text {inDe} …" spellcheck="false"></textarea>
+            <div class="lesson-counter"><span id="writingCount">0</span> / <span id="writingMin">0</span> Wörter</div>
+            <button class="btn-primary" id="writingSubmit" disabled>Text abgeben</button>
+            <div class="lesson-feedback" id="writingFeedback" hidden></div>
+          </section>
+
+          <!-- Sätze übersetzen -->
+          <section class="lesson-part" id="partSentences" hidden>
+            <div class="lesson-part-head"><span class="lesson-part-icon"><svg class="icon" aria-hidden="true"><use href="#i-translate"/></svg></span>
+              <h3>Sätze</h3><span class="lesson-done" id="doneSentences" hidden>✓</span>
+            </div>
+            <p class="lesson-task" id="sentencesTask"></p>
+            <ol class="satzliste" id="sentencesList"></ol>
+            <div class="lesson-counter"><span id="sentencesCount">0</span> / <span id="sentencesTotal">0</span> übersetzt</div>
+            <button class="btn-primary" id="sentencesSubmit" disabled>Sätze abgeben</button>
+            <div class="lesson-feedback" id="sentencesFeedback" hidden></div>
+          </section>
+
+          <!-- Sprechen -->
+          <section class="lesson-part" id="partSpeaking" hidden>
+            <div class="lesson-part-head"><span class="lesson-part-icon"><svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg></span>
+              <h3>Sprechen</h3><span class="lesson-done" id="doneSpeaking" hidden>✓</span>
+            </div>
+            <p class="lesson-task" id="speakingTopic"></p>
+            <ul class="lesson-prompts" id="speakingPrompts" data-course-lang></ul>
+            <div class="target-words" id="speakingPhrases"></div>
+            <div class="speak-controls">
+              <button class="btn-primary" id="speakStart">Aufnahme starten</button>
+              <span class="speak-timer" id="speakTimer">0:00 / 0:00</span>
+            </div>
+            <div class="speak-hint" id="speakHint"></div>
+            <textarea id="speakingText" class="lesson-textarea" data-course-lang rows="6"
+              placeholder="Hier erscheint, was erkannt wurde. Du kannst es auch selbst eintippen."></textarea>
+            <button class="btn-primary" id="speakingSubmit" disabled>Abgeben</button>
+            <div class="lesson-feedback" id="speakingFeedback" hidden></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ================= BROWSE ================= -->
+      <section id="view-browse" class="view" tabindex="-1">
+        <button class="back-link" data-back="practice"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Üben</button>
+        <h1 class="page-title">Wortliste</h1>
+        <p class="page-sub">Alle Wörter des Kurses mit deinem Lernstand.</p>
+        <div class="browse-toolbar">
+          <input type="search" id="browseSearch" placeholder="Suchen …">
+          <select id="browseTopic">
+            <option value="">Alle Themen</option>
+          </select>
+          <select id="browseLevel">
+            <option value="">Alle Stufen</option>
+          </select>
+        </div>
+        <div class="browse-list" id="browseList"></div>
+      </section>
+
+      <!-- ================= KONJUGATION: Übersicht ================= -->
+      <section id="view-conj" class="view" tabindex="-1">
+        <button class="back-link" data-back="practice"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Üben</button>
+        <h1 class="page-title">Verben</h1>
+        <p class="page-sub">Formen nachschlagen und üben.</p>
+
+        <div class="conj-lookup">
+          <label for="conjVerbSelect" class="conj-group-label">Nachschlagen</label>
+          <select id="conjVerbSelect"></select>
+          <div class="conj-table" id="conjTable" data-course-lang></div>
+        </div>
+
+        <div class="conj-group-label" style="margin-top: 26px;">Zeiten üben</div>
+        <div class="chip-row" id="tenseChips"></div>
+        <div class="guide-links" id="conjGuides"></div>
+
+        <div class="conj-group-label">Verben</div>
+        <div class="chip-row" id="verbsetChips">
+          <button class="chip active" data-set="irregular">Unregelmäßig</button>
+          <button class="chip" data-set="regular">Regelmäßig</button>
+          <button class="chip" data-set="all">Alle</button>
+        </div>
+
+        <button class="btn-primary btn-huge" id="startConjBtn" style="margin-top: 20px;">Konjugation üben</button>
+        <button class="btn-secondary" id="restartConjBtn" hidden>Neu beginnen</button>
+        <p class="hint" id="conjHint"></p>
+      </section>
+
+      <!-- ================= KONJUGATION: Drill ================= -->
+      <section id="view-conjsession" class="view">
+        <div class="session-top">
+          <button class="icon-btn" id="exitConjBtn" aria-label="Pausieren" title="Pausieren – du kannst später weitermachen"><svg class="icon sm" aria-hidden="true"><use href="#i-pause"/></svg></button>
+          <div class="session-progress">
+            <div class="session-progress-bar" id="conjProgressBar"></div>
+          </div>
+          <div class="session-counter"><span id="conjIdx">0</span>/<span id="conjTotal">0</span></div>
+        </div>
+
+        <div class="mode-panel">
+          <span class="pos-badge" id="conjTenseLabel"></span>
+          <div class="conj-infinitive" id="conjInfinitive" data-course-lang></div>
+          <div class="conj-person" id="conjPersonLabel"></div>
+          <div class="conj-drill-explanation" id="conjDrillExplanation"></div>
+          <input type="text" id="conjInput" data-course-lang class="type-input"
+            placeholder="Form eintippen …" autocomplete="off" autocapitalize="off" autocorrect="off"
+            spellcheck="false">
+          <div class="type-feedback" id="conjFeedback"></div>
+          <button class="btn-primary" id="conjCheckBtn">Prüfen</button>
+          <button class="btn-primary btn-huge" id="conjContinueBtn" hidden style="margin-top: 10px;">Weiter</button>
+          <div class="conj-score" id="conjScore"></div>
+        </div>
+      </section>
+
+      <!-- ================= GRAMMATIK: Übersicht ================= -->
+      <section id="view-grammar" class="view" tabindex="-1">
+        <button class="back-link" data-back="practice"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Üben</button>
+        <h1 class="page-title">Grammatik</h1>
+        <p class="hint" style="margin-bottom: 16px;">Lückentexte zu typischen Stolperfallen — jede Frage hat eine
+          eindeutig richtige Antwort.</p>
+
+        <div class="chip-groups" id="grammarCategoryChips"></div>
+        <div class="conj-tense-explanation" id="grammarCategoryExplanation" style="margin-top: 10px;"></div>
+
+        <button class="btn-primary btn-huge" id="startGrammarBtn" style="margin-top: 20px;">Grammatik üben</button>
+        <button class="btn-secondary" id="restartGrammarBtn" hidden>Neu beginnen</button>
+      </section>
+
+      <!-- ================= GRAMMATIK: Drill ================= -->
+      <section id="view-grammarsession" class="view">
+        <div class="session-top">
+          <button class="icon-btn" id="exitGrammarBtn" aria-label="Pausieren" title="Pausieren – du kannst später weitermachen"><svg class="icon sm" aria-hidden="true"><use href="#i-pause"/></svg></button>
+          <div class="session-progress">
+            <div class="session-progress-bar" id="grammarProgressBar"></div>
+          </div>
+          <div class="session-counter"><span id="grammarIdx">0</span>/<span id="grammarTotal">0</span></div>
+        </div>
+
+        <div class="mode-panel">
+          <span class="pos-badge" id="grammarCategoryLabel"></span>
+          <div class="grammar-prompt" id="grammarPrompt" data-course-lang></div>
+          <div class="mc-grid" id="grammarGrid"></div>
+          <p class="kbd-hint"><span class="kbd">1</span>–<span class="kbd">3</span> wählen &middot; <span
+              class="kbd">Enter</span> weiter</p>
+          <div class="verdict" id="grammarVerdict" role="status" hidden></div>
+          <div class="conj-drill-explanation" id="grammarExplanation"></div>
+          <button class="btn-primary btn-huge" id="grammarContinueBtn" hidden style="margin-top: 10px;">Weiter</button>
+          <div class="conj-score" id="grammarScore"></div>
+        </div>
+      </section>
+
+      <!-- ================= COACH ================= -->
+      <section id="view-coach" class="view" tabindex="-1">
+        <h1 class="page-title">Coach</h1>
+        <p class="page-sub">Erstellt Übungen und Lektionen aus deinen Fehlern und gibt Feedback zu deinen Texten.</p>
+
+        <div class="coach-box" id="coachOrder">
+          <h3>Auftrag geben</h3>
+          <p class="coach-setup-summary" id="coachReady"></p>
+          <button class="btn-primary" id="coachSetup" hidden style="margin-top:12px;">Coach einrichten</button>
+          <label class="field" id="coachNoteField">
+            <span class="field-label">Hinweis an den Coach <span style="font-weight:400">(optional)</span></span>
+            <textarea id="coachNote" rows="3" maxlength="2000"
+              data-course-placeholder="z. B. „{hintExample}“ oder eine YouTube-URL für die Hörübung der Lektion"></textarea>
+          </label>
+          <div class="coach-actions">
+            <button class="btn-primary" data-task="exercises">Neue Übungen</button>
+            <button class="btn-primary" data-task="lesson">Tageslektion</button>
+            <button class="btn-primary" data-task="feedback">Feedback zu Abgaben</button>
+            <button class="btn-primary" data-task="custom">Eigener Auftrag</button>
+          </div>
+          <div class="form-error" id="coachRunError" role="alert" hidden style="margin:12px 0 0;"></div>
+        </div>
+
+        <div class="coach-box">
+          <h3>Verlauf</h3>
+          <div id="coachRuns"><p class="coach-setup-summary">Noch keine Aufträge.</p></div>
+        </div>
+      </section>
+
+      <!-- ================= ÜBUNGEN ================= -->
+      <section id="view-packs" class="view" tabindex="-1">
+        <button class="back-link" data-back="practice"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg>Üben</button>
+        <h1 class="page-title">Übungssätze</h1>
+        <p class="page-sub">Vom Coach für dich erstellt – oder als Datei importiert.</p>
+        <div class="pack-toolbar">
+          <button class="btn-secondary" id="reloadPacksBtn"><svg class="icon sm" aria-hidden="true"><use href="#i-refresh"/></svg>Neu laden</button>
+          <label class="btn-secondary pack-import" for="importPackInput"><svg class="icon sm" aria-hidden="true"><use href="#i-upload"/></svg>Datei importieren</label>
+          <input type="file" id="importPackInput" accept="application/json,.json" multiple hidden>
+        </div>
+        <div class="pack-message" id="packMessage" hidden></div>
+        <div class="pack-errors" id="packErrors" hidden></div>
+        <div class="pack-list" id="packList"></div>
+      </section>
+
+      <!-- ================= ÜBUNGS-SITZUNG ================= -->
+      <section id="view-packsession" class="view">
+        <div class="session-top">
+          <button class="icon-btn" id="exitPackBtn" aria-label="Pausieren" title="Pausieren – du kannst später weitermachen"><svg class="icon sm" aria-hidden="true"><use href="#i-pause"/></svg></button>
+          <div class="session-progress">
+            <div class="session-progress-bar" id="packProgressBar"></div>
+          </div>
+          <div class="session-counter"><span id="packIdx">0</span>/<span id="packTotal">0</span></div>
+        </div>
+        <div class="mode-panel">
+          <span class="pos-badge" id="packTypeLabel"></span>
+          <div class="grammar-prompt" id="packPrompt" data-course-lang></div>
+
+          <div class="mc-grid" id="packGrid" hidden></div>
+
+          <div class="pack-typed" id="packTypedWrap" hidden>
+            <input type="text" id="packInput" data-course-lang class="type-input" placeholder="Antwort eintippen …"
+              autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+            <button class="btn-primary" id="packCheckBtn" style="margin-top:12px;">Prüfen</button>
+          </div>
+
+          <div class="type-feedback" id="packFeedback"></div>
+          <div class="conj-drill-explanation" id="packExplanation"></div>
+          <button class="btn-primary btn-huge" id="packContinueBtn" hidden style="margin-top:16px;">Weiter</button>
+          <div class="conj-score" id="packScore"></div>
+        </div>
+      </section>
+
+      <!-- ================= STATS ================= -->
+      <section id="view-stats" class="view" tabindex="-1">
+        <h1 class="page-title">Fortschritt</h1>
+        <p class="page-sub" id="statsSub"></p>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-num" id="statTotalReviews">0</div>
+            <div class="stats-card-label">Wiederholungen gesamt</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="statAccuracy">0%</div>
+            <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="statStreak">0</div>
+            <div class="stats-card-label">Aktuelle Serie</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="statMature">0</div>
+            <div class="stats-card-label">Gefestigte Karten</div>
+          </div>
+        </div>
+        <h3 class="section-title small">Übungstage</h3>
+        <div class="panel cal-panel">
+          <div class="cal-head">
+            <button class="icon-btn" id="calPrev" aria-label="Voriger Monat"><svg class="icon sm" aria-hidden="true"><use href="#i-back"/></svg></button>
+            <span id="calTitle"></span>
+            <button class="icon-btn" id="calNext" aria-label="Nächster Monat"><svg class="icon sm" aria-hidden="true"><use href="#i-chev"/></svg></button>
+          </div>
+          <div class="cal-grid" id="calendar"></div>
+          <div class="week-sum" id="weekSummary"></div>
+        </div>
+        <div id="hardestBlock" hidden>
+          <h3 class="section-title small">Schwierigste Wörter</h3>
+          <div class="list" id="hardestList"></div>
+        </div>
+        <h3 class="section-title small">Wortschatz</h3>
+        <div class="maturity-bar" id="maturityBar"></div>
+        <div class="maturity-legend" id="maturityLegend"></div>
+
+        <div id="conjStatsBlock" hidden>
+        <h3 class="section-title small">Verben</h3>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-num" id="conjStatAttempts">0</div>
+            <div class="stats-card-label">Versuche gesamt</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="conjStatAccuracy">0%</div>
+            <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+          </div>
+        </div>
+        <details class="conj-stats-sub" id="conjStatsSub" hidden>
+          <summary>Fehler und letzte Versuche</summary>
+          <h4 class="conj-stats-subtitle">Häufige Fehler</h4>
+          <div class="conj-log-list" id="conjMistakesList"></div>
+          <h4 class="conj-stats-subtitle">Letzte Versuche</h4>
+          <div class="conj-log-list" id="conjRecentList"></div>
+        </details>
+        <p class="empty-state" id="conjStatsEmpty" style="display:none;">Noch keine Konjugationsübung gemacht.</p>
+        </div>
+
+        <div id="grammarStatsBlock" hidden>
+        <h3 class="section-title small">Grammatik</h3>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-num" id="grammarStatAttempts">0</div>
+            <div class="stats-card-label">Versuche gesamt</div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-num" id="grammarStatAccuracy">0%</div>
+            <div class="stats-card-label">Genauigkeit (30 Tage)</div>
+          </div>
+        </div>
+        <details class="conj-stats-sub" id="grammarStatsSub" hidden>
+          <summary>Fehler und letzte Versuche</summary>
+          <h4 class="conj-stats-subtitle">Häufige Fehler</h4>
+          <div class="conj-log-list" id="grammarMistakesList"></div>
+          <h4 class="conj-stats-subtitle">Letzte Versuche</h4>
+          <div class="conj-log-list" id="grammarRecentList"></div>
+        </details>
+        <p class="empty-state" id="grammarStatsEmpty" style="display:none;">Noch keine Grammatikübung gemacht.</p>
+        </div>
+      </section>
+
+
+      <!-- ================= WILLKOMMEN (first start in a course) ================= -->
+      <section id="view-welcome" class="view" tabindex="-1">
+        <div class="welcome">
+          <div class="welcome-step" data-step="1">
+            <p class="welcome-kicker">Willkommen</p>
+            <h1 class="page-title">Welche Sprache möchtest du lernen?</h1>
+            <p class="page-sub">Du kannst später jederzeit wechseln – dein Fortschritt bleibt je Sprache erhalten.</p>
+            <div class="choices" id="welcomeCourses" role="radiogroup" aria-label="Sprache"></div>
+          </div>
+          <div class="welcome-step" data-step="2" hidden>
+            <p class="welcome-kicker">Schritt 2 von 4</p>
+            <h1 class="page-title">Wo stehst du?</h1>
+            <p class="page-sub">Der Kurs führt dich in kleinen Einheiten von A1 bis B1. Jede Einheit bringt neue Wörter, ein Grammatikthema und einen kurzen Check.</p>
+            <div class="choices" id="welcomeLevels" role="radiogroup" aria-label="Vorkenntnisse">
+              <button class="choice" role="radio" data-start="new"><span>Ich fange neu an</span><small>Du beginnst mit der ersten Einheit.</small></button>
+              <button class="choice" role="radio" data-start="placement"><span>Ich kann schon etwas</span><small>Ein kurzer Test pro Niveau zeigt, wo du einsteigst. Etwa drei Minuten.</small></button>
+            </div>
+          </div>
+          <div class="welcome-step" data-step="3" hidden>
+            <p class="welcome-kicker">Schritt 3 von 4</p>
+            <h1 class="page-title">Wie viel pro Tag?</h1>
+            <p class="page-sub">Lieber wenig und dafür jeden Tag. Du kannst das jederzeit in den Einstellungen ändern.</p>
+            <div class="choices" id="welcomeGoals" role="radiogroup" aria-label="Tagesziel">
+              <button class="choice" role="radio" data-goal="10"><span>Locker</span><small>10 Karten · ca. 5 Min</small></button>
+              <button class="choice" role="radio" data-goal="20"><span>Normal</span><small>20 Karten · ca. 10 Min</small></button>
+              <button class="choice" role="radio" data-goal="40"><span>Intensiv</span><small>40 Karten · ca. 20 Min</small></button>
+            </div>
+          </div>
+          <div class="welcome-step" data-step="4" hidden>
+            <p class="welcome-kicker">Schritt 4 von 4</p>
+            <h1 class="page-title">So ist die App aufgebaut</h1>
+            <div class="list">
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-today"/></svg></span><span class="grow"><span class="title">Heute</span><span class="meta">Dein Plan für heute – ein Knopf, und es geht los.</span></span></div>
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-route"/></svg></span><span class="grow"><span class="title">Kurs</span><span class="meta">Alle Einheiten von A1 bis B1 und wo du gerade stehst.</span></span></div>
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-practice"/></svg></span><span class="grow"><span class="title">Üben</span><span class="meta">Frei üben: Vokabeln, Verben, Grammatik und die Wortliste.</span></span></div>
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-coach"/></svg></span><span class="grow"><span class="title">Coach</span><span class="meta">Neue Übungen, Tageslektionen und Feedback zu deinen Texten.</span></span></div>
+              <div class="list-row"><span class="row-icon"><svg class="icon" aria-hidden="true"><use href="#i-stats"/></svg></span><span class="grow"><span class="title">Fortschritt</span><span class="meta">Deine Übungstage und die Wörter, die noch hängen.</span></span></div>
+            </div>
+          </div>
+          <div class="dots" aria-hidden="true"><i data-dot="1"></i><i data-dot="2"></i><i data-dot="3"></i><i data-dot="4"></i></div>
+          <div class="welcome-actions">
+            <button class="btn-secondary" id="welcomeSkip">Überspringen</button>
+            <button class="btn-primary" id="welcomeNext">Weiter</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= EINSTELLUNGEN ================= -->
+      <section id="view-settings" class="view" tabindex="-1">
+        <h1 class="page-title">Einstellungen</h1>
+        <p class="page-sub">Lernziel, Coach und Konto. Den Kurs wechselst du oben über seinen Namen.</p>
+
+<div class="section-label first">Lernen</div>
+        <div class="panel">
+          <div class="goal-row">
+            <label for="dailyGoal">Tagesziel</label>
+            <input type="range" id="dailyGoal" min="5" max="60" step="5" value="20">
+            <span id="dailyGoalDisplay">20</span>
+          </div>
+          <p class="field-help">Karten pro Tag. Lieber wenig und dafür jeden Tag.</p>
+        </div>
+
+        <div class="section-label" id="settingsCoach">Coach</div>
+        <div class="panel">
+          <p class="coach-setup-summary" style="margin-top:0;">
+            Der Coach nutzt ein Sprachmodell über deinen eigenen API-Schlüssel. Die Kosten laufen über dein
+            Konto beim Anbieter. Der Schlüssel wird verschlüsselt gespeichert und nie wieder angezeigt.
+          </p>
+          <form id="coachSettingsForm" novalidate>
+            <label class="field">
+              <span class="field-label">Anbieter</span>
+              <select id="coachProvider"></select>
+              <span class="field-help" id="coachKeysLink"></span>
+            </label>
+            <label class="field">
+              <span class="field-label">Modell</span>
+              <select id="coachModelSelect" hidden></select>
+              <input id="coachModel" autocomplete="off" spellcheck="false" placeholder="Modell-ID, z. B. anthropic/claude-haiku-5.5">
+              <span class="field-help" id="coachModelHelp">Nur Modelle, die Werkzeuge aufrufen können.</span>
+            </label>
+            <label class="field">
+              <span class="field-label">API-Schlüssel</span>
+              <input id="coachKey" type="password" autocomplete="off" spellcheck="false">
+              <span class="field-help" id="coachKeyHelp"></span>
+            </label>
+            <div class="form-error" id="coachSettingsError" role="alert" hidden></div>
+            <div class="form-note" id="coachSettingsNote" hidden></div>
+            <div class="btn-row">
+              <button class="btn-primary" type="submit">Speichern</button>
+              <button class="btn-secondary" type="button" id="coachDeleteKey" hidden>Schlüssel löschen</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="section-label">Konto</div>
+        <div class="panel">
+          <div class="account-row">
+            <span id="accountEmail"></span>
+            <button class="btn-secondary" id="logoutBtn">Abmelden</button>
+          </div>
+          <details style="margin-top:14px;">
+            <summary style="cursor:pointer; font-size:14px; font-weight:700;">Passwort ändern</summary>
+            <form id="passwordForm" novalidate style="margin-top:12px;">
+              <label class="field">
+                <span class="field-label">Bisheriges Passwort</span>
+                <input type="password" name="current" autocomplete="current-password">
+              </label>
+              <label class="field">
+                <span class="field-label">Neues Passwort</span>
+                <input type="password" name="next" autocomplete="new-password">
+                <span class="field-help">Mindestens 10 Zeichen.</span>
+              </label>
+              <div class="form-error" id="passwordError" role="alert" hidden></div>
+              <div class="form-note" id="passwordNote" hidden></div>
+              <button class="btn-primary" type="submit">Passwort ändern</button>
+            </form>
+          </details>
+        </div>
+
+        <div class="section-label">Daten</div>
+        <div class="panel">
+          <div class="sync-status" id="syncStatus"></div>
+          <div class="btn-row" style="margin-top:12px;">
+            <button class="btn-secondary" id="exportDataBtn"><svg class="icon sm" aria-hidden="true"><use href="#i-download"/></svg>Fortschritt (JSON)</button>
+            <button class="btn-secondary" id="exportBriefingBtn"><svg class="icon sm" aria-hidden="true"><use href="#i-download"/></svg>Lernbericht</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+      </div><!-- .content -->
+    </div><!-- .shell -->
+
+    <dialog class="sheet" id="wordSheet" aria-labelledby="wordSheetTitle"></dialog>
+  </div>
+
+  <script src="src/text.js"></script>
+  <script src="src/store.js"></script>
+  <!-- Loads the learner's course content, then the app. -->
+  <script src="src/boot.js"></script>
+  <script>
+    // Offline use: only possible over http(s), silently skipped on file://.
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => { }));
+    }
+  </script>
+
+</body>
+
+</html>

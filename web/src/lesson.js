@@ -1,0 +1,442 @@
+/* Daily lesson: listening, writing, speaking.
+
+   The three parts work differently: listening is graded immediately (closed
+   questions), writing and speaking the app cannot grade - they are submitted
+   and the coach responds later. That is deliberate: automatically grading
+   free text would be guesswork, not measurement. */
+const LESSON = (() => {
+  const el = (id) => document.getElementById(id);
+  const esc = TEXT.esc;
+
+  let lesson = null;
+  let onSubmitted = () => {};
+
+  const zeit = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  const woerter = (t) => (t.trim() ? t.trim().split(/\s+/).length : 0);
+
+  async function load() {
+    lesson = await STORE.call("GET", "lesson");
+    render();
+  }
+
+  function render() {
+    const hat = !!(lesson && lesson.id);
+    el("lessonEmpty").hidden = hat;
+    el("lessonBody").hidden = !hat;
+    if (!hat) return;
+
+    el("lessonDate").textContent = new Date(lesson.day).toLocaleDateString("de-DE",
+      { weekday: "long", day: "2-digit", month: "long" });
+    el("lessonTitle").textContent = lesson.title;
+    el("lessonMeta").textContent = [lesson.theme, `Niveau ${lesson.level}`].filter(Boolean).join(" · ");
+
+    const abgaben = lesson.submissions || {};
+    renderListening(lesson.listening, abgaben.listening);
+    renderWriting(lesson.writing, abgaben.writing);
+    renderSentences(lesson.sentences, abgaben.sentences);
+    renderSpeaking(lesson.speaking, abgaben.speaking);
+  }
+
+  /** The coach's feedback - or the note that it is still pending. */
+  function renderFeedback(boxId, abgabe) {
+    const box = el(boxId);
+    if (!abgabe) { box.hidden = true; return; }
+    box.hidden = false;
+    if (abgabe.feedback) {
+      box.innerHTML = `<div class="lesson-feedback-head">Rückmeldung deines Coaches</div>${esc(abgabe.feedback)}`;
+    } else {
+      box.innerHTML = `<div class="lesson-feedback-head">Abgegeben</div>` +
+        `<span class="lesson-await">Warte auf die Rückmeldung deines Coaches – im Bereich „Coach“ ` +
+        `auf „Feedback zu Abgaben“ tippen.</span>`;
+    }
+  }
+
+  // ---------- Listening ----------
+  function renderListening(teil, abgabe) {
+    el("partListening").hidden = !teil;
+    if (!teil) return;
+    el("doneListening").hidden = !abgabe;
+    el("listeningTask").textContent = teil.task;
+    // nocookie variant: no tracking as long as nothing is played.
+    el("listeningFrame").src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(teil.videoId)}`;
+    el("listeningCaption").textContent = `${teil.videoTitle} — ${teil.channel}`;
+
+    const box = el("listeningQuestions");
+    const submit = el("listeningSubmit");
+    // Without a transcript the coach cannot ask questions: the learner writes
+    // what they understood and gets feedback later, as for writing.
+    if (!(teil.questions || []).length) return renderListeningSummary(teil, abgabe, box, submit);
+    submit.textContent = "Antworten abgeben";
+    submit.disabled = false;
+    if (abgabe) {
+      const c = abgabe.content || {};
+      box.innerHTML = `<div class="lesson-counter reached">${c.correct} von ${c.total} richtig</div>`;
+      submit.hidden = true;
+      renderFeedback("listeningFeedback", abgabe);
+      return;
+    }
+
+    const gewaehlt = new Map();
+    box.innerHTML = "";
+    teil.questions.forEach((frage, i) => {
+      const wrap = document.createElement("div");
+      wrap.className = "lesson-question";
+      wrap.innerHTML = `<p class="lesson-task" lang="${COURSE.lang}" style="margin-bottom:8px;">${i + 1}. ${esc(frage.prompt)}</p>`;
+      const grid = document.createElement("div");
+      grid.className = "mc-grid";
+      frage.options.forEach((opt) => {
+        const b = document.createElement("button");
+        b.className = "mc-option";
+        b.lang = COURSE.lang;
+        b.textContent = opt;
+        b.addEventListener("click", () => {
+          grid.querySelectorAll(".mc-option").forEach((o) => o.classList.remove("correct"));
+          b.classList.add("correct");
+          gewaehlt.set(i, opt);
+          submit.hidden = gewaehlt.size !== teil.questions.length;
+        });
+        grid.appendChild(b);
+      });
+      wrap.appendChild(grid);
+      box.appendChild(wrap);
+    });
+
+    submit.hidden = true;
+    submit.onclick = async () => {
+      const antworten = teil.questions.map((f, i) => ({
+        prompt: f.prompt, gewaehlt: gewaehlt.get(i), richtig: f.answer,
+        ok: gewaehlt.get(i) === f.answer,
+      }));
+      const correct = antworten.filter((a) => a.ok).length;
+      // Show the solution before the part collapses.
+      box.querySelectorAll(".lesson-question").forEach((wrap, i) => {
+        wrap.querySelectorAll(".mc-option").forEach((o) => {
+          o.classList.add("disabled");
+          if (o.textContent === teil.questions[i].answer) o.classList.add("correct");
+          else if (o.textContent === gewaehlt.get(i)) { o.classList.remove("correct"); o.classList.add("wrong"); }
+        });
+        const erk = teil.questions[i].explanation;
+        if (erk) wrap.insertAdjacentHTML("beforeend", `<p class="speak-hint">${esc(erk)}</p>`);
+      });
+      submit.hidden = true;
+      await abgeben("listening", { answers: antworten, correct, total: antworten.length });
+    };
+  }
+
+  function renderListeningSummary(teil, abgabe, box, submit) {
+    const min = teil.minWords || 40;
+    box.innerHTML = `<textarea class="lesson-textarea" id="listeningText" rows="6" lang="${COURSE.lang}" spellcheck="false"
+        placeholder="Was hast du verstanden? ${COURSE.inDe} …"></textarea>
+      <div class="lesson-counter"><span id="listeningCount">0</span> / ${min} Wörter</div>`;
+    const feld = el("listeningText");
+    submit.textContent = "Zusammenfassung abgeben";
+
+    if (abgabe) {
+      feld.value = (abgabe.content || {}).text || "";
+      feld.disabled = true;
+      el("listeningCount").textContent = woerter(feld.value);
+      submit.hidden = true;
+      renderFeedback("listeningFeedback", abgabe);
+      return;
+    }
+
+    submit.hidden = false;
+    const pruefe = () => {
+      const n = woerter(feld.value);
+      el("listeningCount").textContent = n;
+      el("listeningCount").parentElement.classList.toggle("reached", n >= min);
+      submit.disabled = n < min;
+    };
+    feld.oninput = pruefe;
+    pruefe();
+    submit.onclick = async () => {
+      feld.disabled = true;
+      submit.hidden = true;
+      await abgeben("listening", { text: feld.value.trim(), words: woerter(feld.value) });
+    };
+  }
+
+  // ---------- Writing ----------
+  function renderWriting(teil, abgabe) {
+    el("partWriting").hidden = !teil;
+    if (!teil) return;
+    el("doneWriting").hidden = !abgabe;
+    el("writingPrompt").textContent = teil.prompt;
+    el("writingMin").textContent = teil.minWords;
+
+    const feld = el("writingText");
+    const submit = el("writingSubmit");
+    const ziele = el("writingTargets");
+    ziele.innerHTML = teil.targetWords.map((w) =>
+      `<span class="target-word" data-wort="${esc(TEXT.norm(w))}">${esc(w)}</span>`).join("");
+
+    if (abgabe) {
+      feld.value = (abgabe.content || {}).text || "";
+      feld.disabled = true;
+      submit.hidden = true;
+      markiereZiele(ziele, feld.value);
+      el("writingCount").textContent = woerter(feld.value);
+      renderFeedback("writingFeedback", abgabe);
+      return;
+    }
+
+    feld.disabled = false;
+    submit.hidden = false;
+    const pruefe = () => {
+      const n = woerter(feld.value);
+      el("writingCount").textContent = n;
+      el("writingCount").parentElement.classList.toggle("reached", n >= teil.minWords);
+      submit.disabled = n < teil.minWords;
+      markiereZiele(ziele, feld.value);
+    };
+    feld.oninput = pruefe;
+    pruefe();
+
+    submit.onclick = async () => {
+      feld.disabled = true;
+      submit.hidden = true;
+      await abgeben("writing", { text: feld.value.trim(), words: woerter(feld.value) });
+    };
+  }
+
+  /** Tick off target words as soon as they appear in the text. */
+  function markiereZiele(box, text) {
+    const norm = TEXT.norm(text);
+    box.querySelectorAll(".target-word").forEach((chip) => {
+      chip.classList.toggle("used", norm.includes(chip.dataset.wort));
+    });
+  }
+
+  // ---------- Translating sentences ----------
+  /* Nothing is graded here: whether "Cierra la puerta, por favor" is as good
+     as "Por favor, cierra la puerta" is the coach's call, not a string
+     comparison's. The app only collects and submits. */
+  function renderSentences(teil, abgabe) {
+    el("partSentences").hidden = !teil;
+    if (!teil) return;
+    el("doneSentences").hidden = !abgabe;
+    el("sentencesTask").textContent = teil.task;
+    el("sentencesTotal").textContent = teil.items.length;
+
+    const liste = el("sentencesList");
+    const submit = el("sentencesSubmit");
+    const antworten = ((abgabe && abgabe.content) || {}).answers || [];
+
+    liste.innerHTML = teil.items.map((it, i) => `
+      <li class="satz">
+        <div class="satz-de">${esc(it.de)}</div>
+        ${it.note ? `<div class="satz-note">${esc(it.note)}</div>` : ""}
+        <input type="text" class="type-input satz-input" lang="${COURSE.lang}" data-i="${i}"
+          autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+          placeholder="${COURSE.inDe.charAt(0).toUpperCase() + COURSE.inDe.slice(1)} …">
+      </li>`).join("");
+
+    const felder = [...liste.querySelectorAll(".satz-input")];
+    felder.forEach((f, i) => { f.value = antworten[i] || ""; });
+
+    if (abgabe) {
+      felder.forEach((f) => { f.disabled = true; });
+      el("sentencesCount").textContent = felder.filter((f) => f.value.trim()).length;
+      submit.hidden = true;
+      renderFeedback("sentencesFeedback", abgabe);
+      return;
+    }
+
+    submit.hidden = false;
+    const pruefe = () => {
+      const n = felder.filter((f) => f.value.trim()).length;
+      el("sentencesCount").textContent = n;
+      el("sentencesCount").parentElement.classList.toggle("reached", n === felder.length);
+      // All or nothing: the coach can hardly grade half a submission.
+      submit.disabled = n < felder.length;
+    };
+    felder.forEach((f, i) => {
+      f.oninput = pruefe;
+      // Enter jumps to the next sentence instead of submitting the form.
+      f.onkeydown = (e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        if (felder[i + 1]) felder[i + 1].focus();
+        else if (!submit.disabled) submit.click();
+      };
+    });
+    pruefe();
+
+    submit.onclick = async () => {
+      felder.forEach((f) => { f.disabled = true; });
+      submit.hidden = true;
+      await abgeben("sentences", {
+        answers: felder.map((f) => f.value.trim()),
+        prompts: teil.items.map((it) => it.de),
+      });
+    };
+  }
+
+  // ---------- Speaking ----------
+  let erkennung = null;
+  let sekunden = 0;
+  let uhr = null;
+  let aufnahmeLaeuft = false;   // the learner pressed start and not yet stop
+  let nurUhr = false;           // recognition is out of reach on this page: timer only
+
+  function renderSpeaking(teil, abgabe) {
+    el("partSpeaking").hidden = !teil;
+    if (!teil) return;
+    el("doneSpeaking").hidden = !abgabe;
+    el("speakingTopic").textContent = teil.topic;
+    el("speakingPrompts").innerHTML = teil.prompts.map((p) => `<li>${esc(p)}</li>`).join("");
+    el("speakingPhrases").innerHTML = teil.usefulPhrases.map((p) =>
+      `<span class="target-word">${esc(p)}</span>`).join("");
+    el("speakTimer").textContent = `0:00 / ${zeit(teil.minSeconds)}`;
+
+    const feld = el("speakingText");
+    const start = el("speakStart");
+    const submit = el("speakingSubmit");
+
+    if (abgabe) {
+      feld.value = (abgabe.content || {}).transcript || "";
+      feld.disabled = true;
+      start.hidden = true;
+      submit.hidden = true;
+      el("speakHint").textContent = "";
+      renderFeedback("speakingFeedback", abgabe);
+      return;
+    }
+
+    feld.disabled = false;
+    start.hidden = false;
+    submit.hidden = false;
+    const Erkenner = window.SpeechRecognition || window.webkitSpeechRecognition;
+    // Brave ships the API but never reaches a recognition service: say so before the first try.
+    if (navigator.brave) nurUhr = true;
+    el("speakHint").classList.remove("warn");
+    el("speakHint").textContent = navigator.brave ? IN_BRAVE
+      : Erkenner && !nurUhr ? "Sprich frei. Was erkannt wird, erscheint unten — du kannst es vor dem Abgeben korrigieren."
+      : OHNE_ERKENNUNG;
+    // Speaking practice works without recognition too: the timer runs, the learner types.
+    start.hidden = false;
+
+    const pruefe = () => { submit.disabled = woerter(feld.value) < 5; };
+    feld.oninput = pruefe;
+    pruefe();
+
+    start.onclick = () => (aufnahmeLaeuft ? stoppen() : starten(teil, Erkenner, feld, start, pruefe));
+
+    submit.onclick = async () => {
+      stoppen();
+      feld.disabled = true;
+      start.hidden = true;
+      submit.hidden = true;
+      await abgeben("speaking", { transcript: feld.value.trim(), seconds: sekunden });
+    };
+  }
+
+  const OHNE_ERKENNUNG = "Sprich laut – die Uhr läuft. Die Spracherkennung ist hier nicht verfügbar, " +
+    "also tippe danach ein, was du gesagt hast.";
+  const IN_BRAVE = "In Brave gibt es keine Spracherkennung. Sprich laut – die Uhr läuft – und tippe danach ein, " +
+    "was du gesagt hast. In Chrome, Edge oder Safari erscheint der Text von selbst.";
+
+  /* The browser's recognition is not on the device: Chrome sends the audio to
+     Google, Safari and Edge to their own services. Brave, Opera and other
+     Chromium browsers ship the API but cannot reach that service ("network",
+     although the device is online). Then the timer keeps running and the
+     learner types; the app stops retrying for this page. */
+  const KAPUTT = {
+    network: "Die Spracherkennung dieses Browsers ist nicht erreichbar (Chrome schickt die Aufnahme an Google; " +
+      "Brave, Opera oder Vivaldi lassen das nicht zu). Sprich weiter – die Uhr läuft – und tippe danach ein, was du gesagt hast.",
+    "service-not-allowed": "Die Spracherkennung ist in diesem Browser gesperrt. Sprich weiter und tippe danach ein, was du gesagt hast.",
+    "language-not-supported": "Für diese Sprache gibt es hier keine Spracherkennung. Sprich weiter und tippe danach ein, was du gesagt hast.",
+    "audio-capture": "Kein Mikrofon gefunden. Sprich trotzdem laut und tippe danach ein, was du gesagt hast.",
+  };
+
+  function hinweis(text, warn) {
+    const h = el("speakHint");
+    h.textContent = text;
+    h.classList.toggle("warn", !!warn);
+  }
+
+  function starten(teil, Erkenner, feld, start, pruefe) {
+    start.textContent = "Aufnahme stoppen";
+    start.classList.add("recording");
+    aufnahmeLaeuft = true;
+    sekunden = 0;
+    uhr = setInterval(() => {
+      sekunden += 1;
+      el("speakTimer").textContent = `${zeit(sekunden)} / ${zeit(teil.minSeconds)}`;
+      el("speakTimer").style.color = sekunden >= teil.minSeconds ? "var(--good)" : "";
+    }, 1000);
+    if (!Erkenner || nurUhr) { hinweis(OHNE_ERKENNUNG); return; }
+
+    erkennung = new Erkenner();
+    erkennung.lang = COURSE.speechLang;
+    erkennung.continuous = true;
+    erkennung.interimResults = true;
+    let fest = feld.value ? feld.value + " " : "";
+    let neustarts = [];
+
+    erkennung.onresult = (e) => {
+      let vorlaeufig = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const stueck = e.results[i][0].transcript;
+        if (e.results[i].isFinal) fest += stueck + " ";
+        else vorlaeufig += stueck;
+      }
+      feld.value = (fest + vorlaeufig).replace(/\s+/g, " ").trim();
+      pruefe();
+    };
+    erkennung.onerror = (e) => {
+      if (e.error === "aborted") return;
+      if (e.error === "no-speech") { hinweis("Nichts gehört — sprich etwas lauter oder näher am Mikrofon.", true); return; }
+      if (e.error === "not-allowed") {
+        hinweis("Zugriff aufs Mikrofon wurde abgelehnt. Tippe stattdessen ein, was du gesagt hast.", true);
+        stoppen();
+        return;
+      }
+      // The service is out of reach: keep the timer, stop asking the service.
+      nurUhr = true;
+      hinweis(KAPUTT[e.error] || `Spracherkennung fehlgeschlagen (${e.error}). Sprich weiter und tippe danach ein, was du gesagt hast.`, true);
+      const r = erkennung;
+      erkennung = null;
+      try { r.abort(); } catch (err) { /* egal */ }
+    };
+    // Chrome ends a continuous recognition by itself after a pause. While the
+    // learner has not stopped, start it again - unless it keeps dying at once.
+    erkennung.onend = () => {
+      if (!erkennung || !aufnahmeLaeuft) return;
+      const jetzt = Date.now();
+      neustarts = neustarts.filter((t) => jetzt - t < 5000).concat(jetzt);
+      if (neustarts.length > 3) { nurUhr = true; hinweis(OHNE_ERKENNUNG, true); erkennung = null; return; }
+      try { erkennung.start(); } catch (err) { erkennung = null; }
+    };
+
+    try { erkennung.start(); }
+    catch (e) { nurUhr = true; erkennung = null; hinweis(OHNE_ERKENNUNG, true); }
+  }
+
+  function stoppen() {
+    aufnahmeLaeuft = false;
+    if (erkennung) { const r = erkennung; erkennung = null; try { r.stop(); } catch (e) { /* egal */ } }
+    clearInterval(uhr);
+    const start = el("speakStart");
+    start.textContent = "Aufnahme starten";
+    start.classList.remove("recording");
+  }
+
+  // ---------- Submission ----------
+  async function abgeben(part, content) {
+    try {
+      await STORE.call("POST", `lesson/${lesson.id}/submit`, { part, content });
+      await load();
+      onSubmitted(part);
+    } catch (e) {
+      alert("Abgabe fehlgeschlagen: " + e.message);
+    }
+  }
+
+  return {
+    load, render, stoppen,
+    hatLektion: () => !!(lesson && lesson.id),
+    current: () => lesson,
+    setOnSubmitted: (fn) => { onSubmitted = fn; },
+  };
+})();

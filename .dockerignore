@@ -1,12 +1,11 @@
 .git
 .gitignore
+.env
 fortschritt
 node_modules
+backend/target
 *.md
-!beispiele/*.md
-# The coach's system prompt - agent/coach.js reads it at runtime.
-!coach-instructions.md
+!backend/src/main/resources/**/*.md
 .DS_Store
 Dockerfile
 docker-compose.yml
-__*.html

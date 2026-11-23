@@ -1,34 +1,64 @@
 # Vocabulary Coach — notes for agents
 
-Spanish learning app for a German-speaking learner. The learning state lives in
-Postgres; you reach it through the MCP server `vokabeltrainer` (stdio, runs in
-the container, see `mcp/run.sh`).
+Language learning app for German speakers, with two courses: Spanish and
+English. Spring Boot 4 backend (`backend/`), plain JS frontend (`web/`),
+Postgres. Several learners, each with their own progress per course; a
+built-in coach calls an LLM (OpenRouter or OpenCode Zen) with the learner's own
+API key.
 
 The app's interface and all explanations are German, the exercises themselves
-Spanish. Code, comments and docs are English.
+in the course language. Code, comments and docs are English.
 
-## The flow
+Structure and data model: [ARCHITECTURE.md](ARCHITECTURE.md).
 
-1. **`get_briefing`** — learning state plus a concrete assignment. Always start
-   here.
-2. Follow up if needed: `get_weaknesses` (structured), `query_events` (raw data
-   including the actual typos), `search_vocabulary` (vocabulary with per-word
-   learning state).
-3. **`create_exercise`** — create fitting exercises. They show up in the app's
-   "Übungen" tab immediately; open tabs refresh themselves.
-4. `list_exercises` shows what already exists and how it went. Set what has
-   stuck to `archived` with `set_exercise_status` instead of leaving it around.
+## Working on the code
+
+- Build and test: `cd backend && ./mvnw test`. The integration test needs
+  Docker (Testcontainers) or `TEST_DATABASE_URL` pointing at an empty Postgres.
+- Frontend and content: `node --test web/test/` (no install). Browser tests:
+  `cd e2e && npm test` against the running stack (`docker compose up -d`).
+  After a UI change, run both; a new feature gets a spec in `e2e/tests/`.
+- Every learner-owned table has `user_id` and `course`. Every query filters by
+  both; get the `Learner` from `UserAccounts.currentLearner()` in controllers
+  and pass it explicitly everywhere else.
+- Never write to `events` other than by appending — the log is the truth.
+- Schema changes go in a new Flyway migration; never edit an existing one.
+- Exercise validation exists twice: `web/src/packs.js` (browser) and
+  `PackValidator.java` (server). Change both, and extend `PackValidatorTest`.
+- Course content lives in `web/src/courses/<course>/`. `path.js` there
+  groups the deck into units by level and topic and holds the grammar
+  explanations; a new deck word needs a unit (`node --test web/test/` says
+  which level and topic is uncovered). After editing a
+  `deck.js`, `conjugate.js` or `grammar.js`, run `node tools/export-content.js`
+  and commit the regenerated `content.json`. Deck terms are card ids: they must
+  be unique within a course.
+- Nothing language-specific in shared code: in the browser use `COURSE`, on the
+  server `Course`. That includes the look: each course's accent colour is
+  `COURSE.accent`.
+- The UI follows the "Graphit" design (calm, minimal; see
+  `docs/superpowers/specs/2026-11-19-graphit-redesign-design.md`): colours only
+  through the tokens in `style.css`, icons from the SVG sprite in `index.html`
+  (no emoji as icons), one primary button per screen. Logic that decides
+  *what* to show goes in a pure module (`path.js`, `insights.js`) with a test
+  in `web/test/`.
+- The coach's behavior lives in `backend/src/main/resources/coach/`:
+  `system-prompt.md` (shared instructions with placeholders), `course-<id>.md`
+  (per course) and `tools.json` (tool descriptions, which the model reads —
+  they are German). Handlers are in `CoachTools`. `CoachPromptTest` checks
+  that every course's prompt is complete.
 
 ## What makes a good exercise
 
+This is also what the coach's system prompt asks for. Keep the two in step.
+
 - **Start from real mistakes.** The briefing names confusions such as
-  "la puerta → el retraso". Build minimal pairs for exactly those.
-- **Use vocabulary the learner knows.** Filter `search_vocabulary` by `topic`
-  or `level` rather than dragging in new words.
+  "la puerta → el retraso" or "to become → to get". Build minimal pairs for
+  exactly those.
+- **Use vocabulary the learner knows.** Filter by `topic` or `level` rather
+  than dragging in new words.
 - **`explanation` is where the learning happens.** It holds the why, not the
   solution. "Grund/Ursache → por" is good; "The answer is por" is worthless.
-- **6 to 12 items per set.** More does not get practised in one sitting.
-- **One topic per set.** "Por vs. para" yes, "mixed grammar" no.
+- **6 to 12 items per set. One topic per set.**
 
 ## Item types
 
@@ -40,13 +70,4 @@ Spanish. Code, comments and docs are English.
 
 For `cloze` and `translate` a **mixed-up word** is not forgiven — "gracias para
 tu ayuda" counts as wrong, a typo like "gracias pro tu ayuda" as almost right.
-That is precisely what the exercise is meant to test.
-
-## Important
-
-- Never write to `events` directly — the log belongs to the app.
-- `create_exercise` validates strictly and names the reason for a rejection.
-  Read the error and fix the item; don't work around the schema.
-- If the stack isn't running: `docker compose up -d` in the project directory.
-
-Structure and data model: [ARCHITECTURE.md](ARCHITECTURE.md).
+Items default to the course language (`lang`, `to`).
