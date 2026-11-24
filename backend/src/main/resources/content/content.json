@@ -6200,6 +6200,26 @@
     "topic": "Geld",
     "exampleTerm": "Aquí tiene el cambio.",
     "exampleDe": "Hier ist Ihr Wechselgeld."
+   },
+   {
+    "term": "el cumpleaños",
+    "de": "der Geburtstag",
+    "dePrimary": "der Geburtstag",
+    "pos": "noun",
+    "level": "A1",
+    "topic": "Kalender",
+    "exampleTerm": "¡Feliz cumpleaños, Lucía!",
+    "exampleDe": "Alles Gute zum Geburtstag, Lucía!"
+   },
+   {
+    "term": "acostarse",
+    "de": "ins Bett gehen|sich hinlegen",
+    "dePrimary": "ins Bett gehen",
+    "pos": "verb",
+    "level": "A1",
+    "topic": "Verben",
+    "exampleTerm": "Los niños se acuestan a las nueve.",
+    "exampleDe": "Die Kinder gehen um neun ins Bett."
    }
   ],
   "verbs": [

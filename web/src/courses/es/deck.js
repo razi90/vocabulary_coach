@@ -682,4 +682,6 @@ const DECK = [
   { term: "el euro", de: "der Euro", pos: "noun", level: "A1", topic: "Geld", ex: "La entrada cuesta doce euros.", exDe: "Der Eintritt kostet zwölf Euro." },
   { term: "el kilo", de: "das Kilo", pos: "noun", level: "A1", topic: "Einkaufen", ex: "Un kilo de tomates, por favor.", exDe: "Ein Kilo Tomaten, bitte." },
   { term: "el cambio", de: "das Wechselgeld", pos: "noun", level: "A1", topic: "Geld", ex: "Aquí tiene el cambio.", exDe: "Hier ist Ihr Wechselgeld." },
+  { term: "el cumpleaños", de: "der Geburtstag", pos: "noun", level: "A1", topic: "Kalender", ex: "¡Feliz cumpleaños, Lucía!", exDe: "Alles Gute zum Geburtstag, Lucía!" },
+  { term: "acostarse", de: "ins Bett gehen|sich hinlegen", pos: "verb", level: "A1", topic: "Verben", ex: "Los niños se acuestan a las nueve.", exDe: "Die Kinder gehen um neun ins Bett." },
 ];

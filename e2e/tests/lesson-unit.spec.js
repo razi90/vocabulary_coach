@@ -58,12 +58,14 @@ test("the own-words task shows a model answer once it is done", async ({ page, c
   await expect(page.locator('#unitSteps .unit-step.done .step-title', { hasText: "Sprechen" })).toHaveCount(1);
 });
 
-test("units without a lesson keep their three steps", async ({ page, context }) => {
-  await signUp(context, { course: "es" });
+test("units without a lesson keep their three steps; every Spanish unit has one", async ({ page, context }) => {
+  await signUp(context, { course: "en" });
   await openApp(page);
   await page.locator("#tab-course").click();
-  await page.locator('#courseRoute [data-unit="a1-verbs-1"]').click();
+  await page.locator('#courseRoute [data-unit="a1-numbers"]').click();
   await expect(page.locator("#unitSteps .unit-step")).toHaveCount(3);
+  const { COURSE_PATH } = require("../../web/test/load").course("es");
+  expect(COURSE_PATH.UNITS.filter((u) => !u.lesson).map((u) => u.id)).toEqual([]);
 });
 
 test("a reload keeps the open dialogue, explanation and unit", async ({ page, context }) => {
